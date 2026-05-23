@@ -1,0 +1,71 @@
+<div
+  *transloco="let t;"
+  #scrollContainer
+  class="h-full overflow-y-auto bg-white p-ds-xl pb-40"
+>
+  <div class="flex flex-col">
+    <!-- Map Section -->
+    <div class="relative h-[170px] w-full flex-shrink-0">
+      <div id="guardian-mini-map" class="h-full w-full rounded-lg"></div>
+      <div
+        class="expand-map-btn absolute bottom-3 right-3 z-[1000] flex h-10 w-10 items-center justify-center rounded-lg bg-[rgba(0,0,0,0.6)] shadow-md"
+        (click)="expandMap()"
+      >
+        <app-ds-icon [icon]="faMaximize" cssClass="text-white" size="xl" />
+      </div>
+    </div>
+
+    <!-- Date Slider - Sticky -->
+    <div class="sticky -top-ds-xl z-50 -mx-ds-xl bg-white px-ds-xl py-ds-lg">
+      <app-date-slider
+        [startDate]="sliderStartDate()"
+        [endDate]="sliderEndDate()"
+        (dateSelected)="onDateSelected($event)"
+      />
+    </div>
+
+    <!-- Student Cards -->
+    <div class="flex flex-col gap-ds-md">
+      @for (pickup of pickupList(); track pickup.id) {
+      <app-guardian-student-request-card
+        [pickupInfo]="pickup"
+        [isTodaysDateSelected]="isTodaysDateSelected()"
+        (onBtnClicked)="handleBtnClicked($event)"
+      />
+      } @if(!pickupList().length && !noData()) {
+      <div class="flex items-center justify-center py-28">
+        <ion-spinner class="h-10 w-10 text-brand-500"></ion-spinner>
+      </div>
+      }
+    </div>
+  </div>
+
+  @if(noData()) {
+  <div class="flex h-[calc(100vh-28rem)] items-center justify-center">
+    <div class="text-center">
+      <app-hes-icon
+        [hesIcon]="{ src: 'assets/icons/user-times-solid.svg' }"
+        class="text-7xl"
+      ></app-hes-icon>
+      <p class="mt-3 text-base text-[#6B6F80]">
+        {{ t('dismissal.no_student_to_pick.txt') }}
+      </p>
+    </div>
+  </div>
+  }
+
+  <!-- Floating Delegate Pickup Button -->
+  <div
+    class="pointer-events-none fixed bottom-[120px] right-ds-xl z-20"
+    *transloco="let t"
+  >
+    <ds-button
+      class="pointer-events-auto shadow-[0px_0px_10px_-6px_rgba(0,0,0,0.1),0px_20px_25px_-5px_rgba(0,0,0,0.16)]"
+      variant="tertiary"
+      size="lg"
+      (click)="navigateToDelegatePickup()"
+    >
+      {{ t('dismissal.delegate_pickup.txt') }}
+    </ds-button>
+  </div>
+</div>

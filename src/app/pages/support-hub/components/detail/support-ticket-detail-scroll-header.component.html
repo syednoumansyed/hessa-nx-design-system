@@ -1,0 +1,40 @@
+<div
+  class="animate-fade-in cursor-pointer border-b border-stroke-black-08 bg-surface-secondary-light px-ds-xl py-ds-md"
+  (click)="onHeaderClick()"
+>
+  <div class="flex items-center gap-ds-md">
+    <div class="flex flex-1 flex-col gap-ds-xs">
+      <div class="heading-h5-high-emphasis truncate text-emphasis-high">
+        {{ summary().subCategory }}
+      </div>
+      <div
+        class="content-md-default support-ticket-summary-clamp text-emphasis-high"
+      >
+        {{ summary().description }}
+      </div>
+      @if (escalationLabel(); as label) {
+        <div class="content-xs-mid-emphasis text-content-error">
+          {{ label }}
+        </div>
+      }
+    </div>
+    @if (menu(); as menuItems) {
+      <div
+        class="flex shrink-0 items-center justify-center"
+        (click)="$event.stopPropagation()"
+      >
+        <ds-responsive-menu
+          [items]="menuItems"
+          [triggerType]="'button'"
+          [triggerClass]="[
+            'flex items-center justify-center size-ds-2xl rounded-full bg-icon-action border border-icon-high-emphasis-invert p-ds-xs w-8 h-8',
+          ]"
+          [triggerAriaLabel]="'Ticket actions'"
+          (itemSelected)="onMenuItemClick($event)"
+        >
+          <app-ds-icon [icon]="menuIcon" size="xlg"></app-ds-icon>
+        </ds-responsive-menu>
+      </div>
+    }
+  </div>
+</div>

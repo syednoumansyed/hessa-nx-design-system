@@ -1,0 +1,54 @@
+<div
+  class="bottom-nav-container fixed bottom-0 left-0 right-0 z-50 bg-white lg:hidden"
+>
+  <div class="flex items-center justify-around px-2 py-2" *transloco="let t">
+    @for (item of mobileMenuItems(); track item.path) {
+      <div
+        [routerLink]="item.path"
+        routerDirection="root"
+        class="relative flex min-w-0 flex-1 cursor-pointer flex-col items-center justify-center overflow-visible rounded-lg px-1 py-2 transition-all duration-200"
+        [ngClass]="{
+          'bottom-nav-active': isActive(item.path),
+          'bottom-nav-inactive': !isActive(item.path),
+        }"
+        [attr.data-menu-path]="item.path"
+        (click)="onBottomNavClick(item.path, $event)"
+      >
+        @if (isActive(item.path)) {
+          <!-- Yellow rectangle (bottom layer) -->
+          <div class="yellow-rect"></div>
+          <!-- White rectangle (top layer, slightly lower) -->
+          <div class="white-rect"></div>
+        }
+
+        <!-- Icon -->
+        <div class="relative z-10 mb-1">
+          @if (item.iconName) {
+            <ds-animated-icon
+              [icon]="item.iconName"
+              [loop]="false"
+              [autoplay]="isActive(item.path)"
+              [size]="isActive(item.path) ? 'xl' : 'lg'"
+              (animationReady)="savePlayFunctionForItem($event, item)"
+              class="flex-shrink-0 transition-transform duration-200"
+            />
+          }
+        </div>
+        <div class="flex flex-row items-center gap-ds-sm">
+          <span
+            class="relative z-10 max-w-16 truncate text-xs font-medium transition-colors duration-200"
+          >
+            {{ t(item?.titleI18nKey ?? "") }}
+          </span>
+          @if (item.path === "chat" && unreadChatCount() > 0) {
+            <div
+              class="single-line-caption-low-emphasis inline-flex h-[18px] w-[18px] items-center justify-center rounded-full bg-error-ds-400 text-white"
+            >
+              {{ unreadChatCount() }}
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</div>

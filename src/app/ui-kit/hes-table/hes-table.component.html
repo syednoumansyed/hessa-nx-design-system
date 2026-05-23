@@ -1,0 +1,369 @@
+<ng-container *transloco="let t">
+  <div class="flex h-full w-full flex-col items-start justify-start">
+    @if (!hideEntriesSelection() || !hideColumnsSelection()) {
+      <div
+        [ngClass]="{
+          'md:hidden': showFullOverlay(),
+          'md:flex': !showFullOverlay(),
+        }"
+        class="hidden h-auto w-full items-start justify-between rounded-lg p-4 pb-2"
+      >
+        <div class="flex h-11 flex-1 items-center justify-between">
+          @if (loading()) {
+            <div class="Frame38 flex items-center justify-start gap-3">
+              <ion-skeleton-text
+                [animated]="true"
+                class="h-5 w-9 rounded-lg"
+              ></ion-skeleton-text>
+              <ion-skeleton-text
+                [animated]="true"
+                class="h-11 w-20 rounded-lg"
+              ></ion-skeleton-text>
+              <ion-skeleton-text
+                [animated]="true"
+                class="h-5 w-12 rounded-lg"
+              ></ion-skeleton-text>
+            </div>
+            <ion-skeleton-text
+              [animated]="true"
+              class="h-11 w-[20rem] rounded-lg"
+            ></ion-skeleton-text>
+          } @else {
+            <!-- Entries per page -->
+            @if (!hideEntriesSelection()) {
+              <div class="Frame38 flex items-center justify-start gap-3">
+                <div
+                  class="Text text-sm font-medium capitalize leading-tight text-gray-900"
+                >
+                  {{ t("global.show.title") }}
+                </div>
+
+                <app-hes-searchable-select
+                  [data]="itemsperPageList()"
+                  [ngModel]="itemsperPage()"
+                  (ngModelChange)="updateItemsPerPage($event)"
+                  [searchable]="false"
+                  [fill]="'outline'"
+                ></app-hes-searchable-select>
+
+                <div
+                  class="Text text-sm font-medium capitalize leading-tight text-gray-900"
+                >
+                  {{ t("global.entries.title") }}
+                </div>
+              </div>
+            }
+            <!-- Column Selector -->
+            @if (!hideColumnsSelection()) {
+              <div class="inline-flex w-80">
+                <app-hes-searchable-select
+                  class="w-full"
+                  *transloco="let t"
+                  [placeholder]="t('global.select_column.dropdown')"
+                  [persistPlaceholder]="true"
+                  [data]="columnsListDropdown()"
+                  [ngModel]="selectedColumns()"
+                  (ngModelChange)="updateSelectedColumns($event)"
+                  [searchable]="false"
+                  [multiple]="true"
+                  [showChips]="false"
+                  [fill]="'outline'"
+                ></app-hes-searchable-select>
+              </div>
+            }
+          }
+        </div>
+      </div>
+    }
+
+    <!-- The AG Grid component -->
+    <ag-grid-angular
+      style="width: 100%; height: 100%"
+      [rowHeight]="72"
+      [pagination]="false"
+      [rowData]="rows()"
+      [class]="themeClass + ' hes-table'"
+      (sortChanged)="onInternalSortChanged($event)"
+      [floatingFiltersHeight]="floatingFiltersHeight"
+      (gridReady)="onGridReady($event)"
+      [enableRtl]="isRtl()"
+      [rowSelection]="rowSelection"
+      [rowMultiSelectWithClick]="true"
+      [suppressRowClickSelection]="suppressRowClickSelection"
+      (selectionChanged)="onSelectionChanged($event)"
+      [isRowSelectable]="isRowSelectable"
+      [noRowsOverlayComponent]="noRowsOverlayComponent()"
+      [noRowsOverlayComponentParams]="noRowsOverlayComponentParams"
+      [autoSizeStrategy]="autoSizeStrategy()"
+      (rowDataUpdated)="rowDataUpdate($event)"
+      (rowSelected)="onRowSelected($event)"
+      (cellClicked)="onCellClicked($event)"
+      [loadingOverlayComponent]="loadingOverlayComponent()"
+      [loading]="loading() ?? false"
+      [getRowId]="getRowId()"
+      [rowClassRules]="rowClassRules"
+      [suppressDragLeaveHidesColumns]="true"
+      (dragStopped)="onDragStopped($event)"
+    >
+    </ag-grid-angular>
+
+    <!-- Pagination -->
+    @if (pagination) {
+      <nav
+        [ngClass]="{ hidden: showFullOverlay() }"
+        dir="ltr"
+        class="flex w-full items-center justify-between gap-6 border-t border-gray-200 bg-white px-6 py-2"
+      >
+        @if (loading()) {
+          <ion-skeleton-text
+            [animated]="true"
+            class="h-8 w-8 rounded-lg md:w-20"
+          ></ion-skeleton-text>
+          <div class="-mt-px flex items-start justify-start gap-0.5">
+            <ion-skeleton-text
+              [animated]="true"
+              class="h-8 w-8 rounded-lg"
+            ></ion-skeleton-text>
+            <ion-skeleton-text
+              [animated]="true"
+              class="h-8 w-8 rounded-lg"
+            ></ion-skeleton-text>
+            <ion-skeleton-text
+              [animated]="true"
+              class="h-8 w-8 rounded-lg"
+            ></ion-skeleton-text>
+          </div>
+          <ion-skeleton-text
+            [animated]="true"
+            class="h-8 w-8 rounded-lg md:w-20"
+          ></ion-skeleton-text>
+        } @else {
+          <div class="flex w-full items-center justify-center gap-8">
+            <div class="-mt-px flex items-center justify-center gap-4">
+              <button
+                (click)="paginateBackward()"
+                [disabled]="currPage() === 1 || pagination.totalPages === 0"
+                [ngClass]="
+                  currPage() === 1 || pagination.totalPages === 0
+                    ? 'text-gray-400'
+                    : 'text-gray-900'
+                "
+                type="button"
+                class="inline-flex items-center gap-x-1.5 bg-transparent px-2 py-1 text-lg font-semibold"
+                title="page-backward"
+              >
+                <fa-icon
+                  [class]="
+                    currPage() === 1 || pagination.totalPages === 0
+                      ? 'text-gray-300'
+                      : 'text-gray-700'
+                  "
+                  hesBtnIcon
+                  slot="start"
+                  [icon]="faChevronLeft"
+                  size="sm"
+                ></fa-icon>
+              </button>
+              <div class="-mt-px flex flex-1">
+                @for (item of pagesList(); track $index) {
+                  @if (item === -1) {
+                    <div
+                      class="PaginationNumberBase flex h-full w-6 items-center justify-center rounded-lg"
+                    >
+                      <div
+                        class="Content inline-flex w-10 items-center justify-center self-stretch rounded-lg p-3"
+                      >
+                        <div
+                          class="Number text-sm font-medium leading-tight text-gray-500"
+                        >
+                          ...
+                        </div>
+                      </div>
+                    </div>
+                  } @else {
+                    <button
+                      [ngClass]="{
+                        'bg-[#FFFCE7]': item === currPage(),
+                      }"
+                      class="PaginationNumberBase flex min-h-6 min-w-6 items-center justify-center rounded-lg"
+                      (click)="paginateToPage(item)"
+                    >
+                      <div
+                        class="Content inline-flex w-10 items-center justify-center self-stretch rounded-lg p-3"
+                      >
+                        <div
+                          [ngClass]="{
+                            'text-gray-500': item !== currPage(),
+                            'text-[#ECAD01]': item === currPage(),
+                          }"
+                          class="Number text-sm font-medium leading-tight"
+                        >
+                          {{ item }}
+                        </div>
+                      </div>
+                    </button>
+                  }
+                }
+              </div>
+              <button
+                (click)="paginateForward()"
+                [disabled]="
+                  currPage() === pagination.totalPages ||
+                  pagination.totalPages === 0
+                "
+                [ngClass]="
+                  currPage() === pagination.totalPages ||
+                  pagination.totalPages === 0
+                    ? 'text-gray-400'
+                    : 'text-gray-900'
+                "
+                type="button"
+                class="inline-flex items-center gap-x-1.5 bg-transparent px-2 py-1 text-lg font-semibold"
+                title="page-forward"
+              >
+                <fa-icon
+                  [class]="
+                    currPage() === pagination.totalPages ||
+                    pagination.totalPages === 0
+                      ? 'text-gray-300'
+                      : 'text-gray-700'
+                  "
+                  hesBtnIcon
+                  slot="end"
+                  [icon]="faChevronRight"
+                  size="sm"
+                ></fa-icon>
+              </button>
+            </div>
+            <ng-container
+              [ngTemplateOutlet]="entriesPerPageTempRef"
+            ></ng-container>
+          </div>
+        }
+      </nav>
+    }
+  </div>
+
+  <!-- Mobile Column selector and Entries per page -->
+  @if (!hideEntriesSelection() && !hideColumnsSelection() && !loading()) {
+    <div
+      [ngClass]="{
+        hidden: showFullOverlay(),
+      }"
+      class="md:hidden"
+    >
+      <ion-fab class="fixed bottom-0" vertical="bottom" horizontal="end">
+        <ion-fab-button id="open-columns" class="hes-btn hes-btn--primary">
+          <fa-icon [icon]="faSliders"></fa-icon>
+        </ion-fab-button>
+      </ion-fab>
+
+      <ion-modal
+        trigger="open-columns"
+        [initialBreakpoint]="0.9"
+        [breakpoints]="[0, 0.5, 0.9]"
+      >
+        <ng-template>
+          <div
+            class="flex h-auto w-full flex-col items-start justify-start gap-8 bg-white px-4 pb-16 pt-[2.75rem]"
+          >
+            <div class="flex w-full flex-col gap-4">
+              <ion-label class="color-[#343A46] flex-1 font-bold uppercase">
+                FILTERs
+              </ion-label>
+              <ion-label class="color-[#343A46] flex-1">
+                Select Columns
+              </ion-label>
+              <app-hes-checkbox-group
+                [ngModel]="selectedColumns()"
+                (ngModelChange)="updateNextSelectedColumns($event)"
+              >
+                <div class="grid grid-cols-2">
+                  @for (item of columnsList(); track $index) {
+                    <ion-checkbox
+                      hesCheckbox
+                      [hesSize]="'sm'"
+                      labelPlacement="end"
+                      justify="start"
+                      class="px-3.5 py-2"
+                      [value]="item"
+                      >{{ item }}</ion-checkbox
+                    >
+                  }
+                </div>
+              </app-hes-checkbox-group>
+            </div>
+            <div class="flex w-full flex-col gap-4">
+              <ion-label class="color-[#343A46] flex-1">
+                Select No. of Entries
+              </ion-label>
+              <ion-radio-group
+                [ngModel]="itemsperPage()"
+                (ngModelChange)="updateNextItemsPerPage($event)"
+                class="grid grid-cols-3"
+              >
+                @for (item of itemsperPageList(); track item) {
+                  <ion-radio
+                    hesRadio
+                    [hesSize]="'sm'"
+                    justify="start"
+                    labelPlacement="end"
+                    mode="md"
+                    [value]="item.value"
+                    labelPlacement="end"
+                    class="px-3.5 py-2"
+                    >{{ item.displayedValue }}</ion-radio
+                  >
+                }
+              </ion-radio-group>
+            </div>
+            <div class="flex w-full items-center justify-around pb-8">
+              <ion-button
+                class="w-36 capitalize"
+                hesBtn
+                hesColor="secondary"
+                (click)="clearNextConfig()"
+                >clear filters</ion-button
+              >
+              <ion-button
+                class="w-36 capitalize"
+                hesBtn
+                hesColor="primary"
+                (click)="ApplyNextConfig()"
+              >
+                apply filters</ion-button
+              >
+            </div>
+          </div>
+        </ng-template>
+      </ion-modal>
+    </div>
+  }
+  <ng-template #entriesPerPageTempRef>
+    <div class="Frame38 flex items-center justify-start gap-3">
+      @if (!withNewTableIntegration()) {
+        <div
+          class="Text text-sm font-medium capitalize leading-tight text-gray-900"
+        >
+          {{ t("global.show.title") }}
+        </div>
+      }
+
+      <app-hes-searchable-select
+        [data]="itemsperPageList()"
+        [ngModel]="itemsperPage()"
+        (ngModelChange)="updateItemsPerPage($event)"
+        [searchable]="false"
+        [fill]="'outline'"
+        class="min-w-24"
+      ></app-hes-searchable-select>
+      @if (!withNewTableIntegration()) {
+        <div
+          class="Text text-sm font-medium capitalize leading-tight text-gray-900"
+        >
+          {{ t("global.entries.title") }}
+        </div>
+      }
+    </div>
+  </ng-template>
+</ng-container>

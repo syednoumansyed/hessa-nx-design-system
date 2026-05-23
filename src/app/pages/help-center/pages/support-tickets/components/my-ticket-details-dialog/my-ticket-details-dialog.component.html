@@ -1,0 +1,65 @@
+<ng-container *transloco="let t">
+  <div class="flex flex-col items-stretch gap-5 px-4 py-8 lg:gap-8 lg:p-14">
+    <div class="flex flex-col items-stretch gap-5">
+      <div class="flex items-center gap-2">
+        <div
+          class="flex-grow text-lg font-semibold leading-7 text-gray-900 lg:text-2xl"
+        >
+          {{ t("support_ticket.view_ticket.title") }}
+        </div>
+        <app-hes-icon
+          (click)="closeModal()"
+          class="cursor-pointer"
+          [faIcon]="faXmark"
+        ></app-hes-icon>
+      </div>
+      <div class="h-[0.0625rem] w-full bg-gray-200"></div>
+      <app-ticket-details
+        class=""
+        [ticketDetails]="ticketDetails()"
+      ></app-ticket-details>
+      @if (ticketDetailActivities().length) {
+        <app-support-ticket-activity
+          [activities]="ticketDetailActivities()"
+          [isAssigneeView]="false"
+        ></app-support-ticket-activity>
+      }
+    </div>
+    @if (ticketDetails().isResolved) {
+      <div
+        class="flex w-full items-center justify-center gap-4 rounded-lg bg-[#D0F6CC] p-3 lg:px-4 lg:py-6"
+      >
+        <app-hes-icon class="hidden lg:block" [faIcon]="faCircleCheck">
+        </app-hes-icon>
+        <!-- TODO: update after localization is added to frontitude -->
+        <div class="text-base font-semibold leading-5 lg:text-lg">
+          {{ t("support_ticket.issue_resolved.txt") }}
+        </div>
+      </div>
+    } @else if (ticketDetails().status === SupportTicketStatus.RESOLVED) {
+      <div
+        class="flex w-full flex-col items-start justify-between gap-3 rounded-lg bg-[#F6F7F9] px-4 py-6 md:flex-row md:items-center md:gap-2"
+      >
+        <div class="text-base font-semibold leading-5 md:text-lg">
+          {{ t("support_ticket.is_issue_resolved.txt") }}
+        </div>
+        <div *transloco="let t" class="flex w-[19.5rem] items-center gap-3">
+          <ion-button
+            (click)="OpenEscalationConfirmationDialog()"
+            hesSize="lg"
+            class="flex-grow"
+            hesColor="white"
+          >
+            {{ t("global.no.btn") }}
+          </ion-button>
+          <ion-button
+            (click)="resolveMyTicket()"
+            hesSize="lg"
+            class="flex-grow"
+            >{{ t("global.yes.btn") }}</ion-button
+          >
+        </div>
+      </div>
+    }
+  </div>
+</ng-container>

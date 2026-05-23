@@ -1,0 +1,184 @@
+<div class="overflow-y-auto">
+  <app-no-selected-scope-card
+    [requiredScope]="requiredScopes"
+    (onScopeUpdate)="handleDisplayContent($event)"
+  />
+</div>
+@if (displayContent()) {
+<ion-content>
+  <div
+    class="bg-cool-black-02 flex min-h-full flex-col p-ds-lg"
+    *transloco="let t"
+  >
+    <!-- Filter Panel -->
+    <app-ds-filter-panel
+      class="mb-ds-sm"
+      [filters]="filterPanelFilters()"
+      [selection]="filterPanelSelection()"
+      (filtersChange)="onFilterPanelChange($event)"
+    />
+
+    <!-- Swipeable Tabs -->
+    <ds-tabs-with-swipe
+      [tabs]="tabsData()"
+      [activeTabId]="activeTabId()"
+      (tabChange)="onTabChange($event)"
+      variant="secondary"
+      [skeletonComponent]="skeletonComponent"
+      [isLoading]="isLoading()"
+      [contentClass]="'mt-ds-lg flex-1 ' + (isMobileOrTablet() ? 'min-h-[60vh]' : 'min-h-[70vh]')"
+    >
+      <ng-template #content>
+        @if (filteredPickupRequests().length > 0) {
+        <!-- Select All Checkbox - Only shown for admin on requested tab -->
+        @if (showCheckboxes()) {
+        <div class="mb-ds-lg flex w-full items-center gap-ds-sm">
+          <div
+            (click)="toggleSelectAll(); $event.stopPropagation()"
+            class="cursor-pointer"
+          >
+            <app-ds-checkbox
+              class="pointer-events-none [&>label>span]:hidden"
+              [ngModel]="isAllSelected() || isSomeSelected()"
+              [variantInput]="isSomeSelected() ? 'indeterminate' : 'determinate'"
+              size="sm"
+            />
+          </div>
+          <div
+            (click)="toggleSelectAll(); $event.stopPropagation()"
+            class="flex flex-1 cursor-pointer items-center rounded-ds-lg border-2 border-stroke-black-08 bg-white px-ds-xl py-ds-md"
+          >
+            <span class="content-md-high-emphasis"
+              >{{ t('global.select_all.txt') }}</span
+            >
+          </div>
+        </div>
+        }
+
+        <!-- Pickup Request Cards - Responsive Grid -->
+        <!-- 1 col default, 2 cols at md (768px), 3 cols at 2xl (1536px), 4 cols at 3xl (1920px) -->
+        <div
+          class="grid grid-cols-1 gap-ds-lg pb-24 md:grid-cols-2 md:pb-ds-lg 2xl:grid-cols-3 3xl:grid-cols-4"
+        >
+          @for (request of filteredPickupRequests(); track request.id) {
+          <div class="flex items-center gap-ds-sm">
+            <!-- Checkbox - Only shown for admin on requested tab -->
+            @if (showCheckboxes()) {
+            <app-ds-checkbox
+              class="[&>label>span]:hidden"
+              [ngModel]="isSelected(request.id)"
+              (click)="$event.stopPropagation()"
+              (checkedChange)="toggleSelection(request.id)"
+              size="sm"
+            />
+            }
+            <!-- Card wrapper for click handling -->
+            <div
+              class="flex-1"
+              [class.cursor-pointer]="showCheckboxes()"
+              (click)="showCheckboxes() && toggleSelection(request.id)"
+            >
+              <app-pickup-personnel-card
+                [data]="request"
+                [personnelType]="personnelType()"
+                [denialReasons]="denialReasons()"
+                [isHistory]="isHistory()"
+                (onAccept)="onAccept($event)"
+                (onDecline)="onDecline($event)"
+                (onLeftSchool)="onLeftSchool($event)"
+                (onTimelineClick)="onTimelineClick($event)"
+              />
+            </div>
+          </div>
+          }
+        </div>
+        } @else {
+        <!-- Empty State -->
+        <div
+          class="flex flex-col items-center justify-center gap-ds-md"
+          [ngClass]="isMobileOrTablet() ? 'min-h-[60vh]' : 'min-h-[70vh]'"
+        >
+          <img
+            src="assets/illustrations/no-delegate.svg"
+            alt="No pickup request"
+          />
+          <div>
+            <div class="content-lg-high-emphasis text-center">
+              {{ t('dismissal.no_pickup_request.txt') }}
+            </div>
+            <div class="content-sm-mid-emphasis text-center text-content-mid">
+              {{ t('general.pickup_request_empty.txt') }}
+            </div>
+          </div>
+        </div>
+        }
+      </ng-template>
+    </ds-tabs-with-swipe>
+  </div>
+</ion-content>
+
+<!-- Floating Scan Button - Only shown for guards/admin_guards who can process pickup on mobile/tablet (not in history mode) -->
+@if (canProcessPickup && !hasSelection() && isMobileOrTablet() && !isHistory())
+{
+<div
+  class="pointer-events-none fixed bottom-[120px] left-1/2 z-20 -translate-x-1/2"
+  *transloco="let t"
+>
+  <ds-button
+    class="pointer-events-auto shadow-[0px_0px_10px_-6px_rgba(0,0,0,0.1),0px_20px_25px_-5px_rgba(0,0,0,0.16)]"
+    variant="primary"
+    size="lg"
+    [iconStart]="qrcodeIcon"
+    [disabled]="isScanning()"
+    [loading]="isScanning()"
+    (click)="startQrScan()"
+    *hesRbac="scanPermission"
+  >
+    {{ t('global.scan.btn') }}
+  </ds-button>
+</div>
+}
+
+<!-- Bottom Action Bar - Only shown when items are selected -->
+<!-- Mobile: Fixed at bottom with border-top -->
+<!-- Desktop: Floating centered bar with rounded corners and shadow -->
+@if (hasSelection()) {
+<div
+  class="fixed bottom-0 left-0 right-0 z-50 sm:bottom-ds-xl sm:left-1/2 sm:right-auto sm:-translate-x-1/2"
+  *transloco="let t"
+>
+  <div
+    class="flex items-center justify-between gap-ds-lg border-t border-stroke-black-08 bg-white px-ds-xl py-ds-lg sm:min-w-[700px] sm:gap-ds-xl sm:rounded-ds-xl sm:border sm:shadow-lg"
+  >
+    <!-- Left side: Count and Clear Selection -->
+    <div class="flex flex-col gap-ds-sm">
+      <div class="heading-h5-high-emphasis text-emphasis-mid">
+        {{ t('general.student_selected_with_count.txt', { count: selectedCount()
+        }) }}
+      </div>
+      <div
+        class="heading-h5-high-emphasis cursor-pointer text-brand-700"
+        (click)="clearSelection()"
+      >
+        {{ t('general.clear_selection.btn') }}
+      </div>
+    </div>
+
+    <!-- Right side: Action Buttons -->
+    <div class="flex items-center gap-ds-md">
+      <ds-button
+        variant="dangerStroke"
+        size="lg"
+        [iconStart]="xmarkIcon"
+        (click)="onBulkDecline()"
+      />
+      <ds-button
+        variant="tertiary"
+        size="lg"
+        [iconStart]="checkIcon"
+        (click)="onBulkAccept()"
+      />
+    </div>
+  </div>
+</div>
+} }

@@ -1,0 +1,28 @@
+<div *transloco="let t">
+  <div class="flex">
+    <div class="m-4 text-xl text-primary">Hello backoffice 3</div>
+    <div class="temp-testing">testing global style</div>
+    <ion-button
+      hesBtn
+      hesColor="primary"
+      hesSize="xl"
+      class="order-first md:order-none"
+      (click)="onClick()"
+    >
+      button 2
+    </ion-button>
+  </div>
+
+  <app-hes-input
+    [type]="'tel'"
+    [label]="t('global.phone_number.label')"
+    [placeholder]="'XXX XXXXXXX'"
+    [required]="true"
+    fill="solid"
+    [helperText]="t('global.enter_registered_mobile_number.txt')"
+    [formControl]="phoneNumberControl"
+    [errorText]="phoneNumberErr() ?? undefined"
+    [autofocus]="true"
+    [maxLength]="9"
+  ></app-hes-input>
+</div>

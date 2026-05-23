@@ -1,0 +1,103 @@
+<div>
+  @if (displayedReactions.length > 0) {
+    @if (isMobileDevice && canViewReactionDetails()) {
+      <!-- Mobile: Click toggles reaction, long press opens bottom sheet -->
+      <div class="flex flex-wrap gap-ds-sm py-2">
+        @for (reaction of displayedReactions; track reaction.type) {
+          <div
+            (touchstart)="onTouchStart($event)"
+            (touchend)="onTouchEnd(reaction.type)"
+            (touchmove)="onTouchCancel()"
+            (click)="onMobileChipClick($event, reaction.type)"
+          >
+            <app-ds-chip
+              [variant]="reaction.isReacted ? 'primary' : 'default'"
+              [text]="reaction.count.toString()"
+              [startIcon]="getReactionConfig(reaction.type)?.svgIcon || null"
+              [title]="getChipTitle(reaction)"
+              class="cursor-pointer"
+              size="md"
+            />
+          </div>
+        }
+      </div>
+    } @else {
+      <!-- Desktop or no users data: Individual chips with tooltips/clicks -->
+      <div class="flex flex-wrap gap-ds-sm py-2">
+        @for (reaction of displayedReactions; track reaction.type) {
+          @if (
+            !isMobileDevice &&
+            canViewReactionDetails() &&
+            reaction.users?.length
+          ) {
+            <!-- Desktop: Show tooltip on hover -->
+            <div
+              dsTooltip
+              [tooltipTemplate]="reactionTooltipTemplate"
+              (mouseenter)="hoveredReaction.set(reaction)"
+            >
+              <app-ds-chip
+                [variant]="reaction.isReacted ? 'primary' : 'default'"
+                [text]="reaction.count.toString()"
+                [startIcon]="getReactionConfig(reaction.type)?.svgIcon || null"
+                (click)="handleReactionClick(reaction.type)"
+                class="cursor-pointer"
+                [title]="getChipTitle(reaction)"
+                size="md"
+              />
+            </div>
+          } @else {
+            <!-- No users data: Regular chip click toggles reaction -->
+            <app-ds-chip
+              [variant]="reaction.isReacted ? 'primary' : 'default'"
+              [text]="reaction.count.toString()"
+              [startIcon]="getReactionConfig(reaction.type)?.svgIcon || null"
+              (click)="handleReactionClick(reaction.type)"
+              class="cursor-pointer"
+              [title]="getChipTitle(reaction)"
+              size="md"
+            />
+          }
+        }
+      </div>
+    }
+    <!-- Full-width separator -->
+    <div class="-mx-4 border-b border-gray-200"></div>
+  }
+
+  <!-- Single tooltip template that uses the hoveredReaction signal -->
+  <ng-template #reactionTooltipTemplate>
+    @if (hoveredReaction()) {
+      <ds-reaction-detail-tooltip
+        [reaction]="hoveredReaction()!"
+      ></ds-reaction-detail-tooltip>
+    }
+  </ng-template>
+
+  <button
+    #reactButton
+    class="single-line-sm-low-emphasis mt-4 flex items-center gap-ds-sm rounded-lg border border-gray-300 bg-surface-primary px-ds-md py-ds-sm text-gray-600 transition-colors duration-200 hover:bg-gray-50"
+    (click)="toggleOverlay()"
+  >
+    <app-ds-icon icon="react-button" size="100%"></app-ds-icon>
+    <span class="single-line-sm-low-emphasis">{{
+      "feed.button.react" | dsTranslate
+    }}</span>
+  </button>
+
+  <ng-template #overlayTemplate>
+    <div
+      class="flex items-center gap-1 rounded-full border-2 border-gray-200 bg-surface-primary px-ds-md py-ds-sm shadow-lg"
+    >
+      @for (config of reactionConfigs; track config.type) {
+        <button
+          class="relative flex items-center justify-center rounded-full p-ds-md transition-all duration-150 hover:scale-150"
+          (click)="handleReactionClick(config.type)"
+          [title]="getTranslatedLabel(config.label)"
+        >
+          <app-ds-icon [icon]="config.svgIcon" [size]="'2xl'" />
+        </button>
+      }
+    </div>
+  </ng-template>
+</div>

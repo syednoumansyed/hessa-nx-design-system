@@ -1,0 +1,42 @@
+<ng-container *transloco="let t">
+  <div class="hes-card flex w-full flex-1 flex-col items-start justify-start">
+    @if (isLoading()) {
+      <div class="flex items-center gap-4 pb-8">
+        <ion-skeleton-text
+          [animated]="true"
+          class="h-7 w-32 rounded-lg md:w-36"
+        ></ion-skeleton-text>
+        <ion-skeleton-text
+          [animated]="true"
+          class="hidden h-5 w-9 rounded-lg md:block md:w-24"
+        ></ion-skeleton-text>
+      </div>
+    } @else {
+      <div class="hidden gap-4 pb-8 md:flex">
+        <h3>{{ t("roles_permissions.assigned_users.title") }}</h3>
+        <div
+          class="flex items-center justify-center gap-2 rounded-2xl bg-yellow-50 px-2 py-0.5 text-xs font-medium capitalize text-yellow-500"
+        >
+          <span>{{ paginate()?.totalItems }}</span>
+          <span>{{ t("global.users.txt") }}</span>
+        </div>
+      </div>
+      <div class="py-4 text-sm font-semibold uppercase text-gray-400 md:hidden">
+        {{ t("roles_permissions.assigned_users.title") }}
+      </div>
+    }
+
+    <div class="relative min-h-[350px] w-full flex-1">
+      <app-hes-table
+        class="absolute inset-0 block"
+        [columns]="columnDefs"
+        [rowData]="tableData()"
+        [pagination]="paginate()"
+        (filterSortModelChanged)="onTableMetaDataChange($event)"
+        [noRowsOverlayComponentParams]="noRowsOverlayComponentParams()"
+        (rowClicked)="onRowClicked($event)"
+        [loading]="isLoading()"
+      ></app-hes-table>
+    </div>
+  </div>
+</ng-container>

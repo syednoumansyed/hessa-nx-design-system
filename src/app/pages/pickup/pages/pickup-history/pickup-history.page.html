@@ -1,0 +1,35 @@
+<ion-content *transloco="let t;" class="bottom-bar-spacing ds-page-content">
+  <div class="px-ds-xl">
+    <div class="flex flex-col gap-ds-md">
+      <app-date-slider
+        [startDate]="sliderStartDate()"
+        [endDate]="sliderEndDate()"
+        (dateSelected)="onDateSelected($event)"
+      />
+
+      <div class="flex flex-col gap-ds-md">
+        @for (pickupInfo of pickupHistory(); track pickupInfo.id) {
+        <app-guardian-student-request-card
+          [pickupInfo]="pickupInfo"
+          [isTodaysDateSelected]="isTodaysDateSelected()"
+          [isHistory]="true"
+        />
+        }
+      </div>
+    </div>
+  </div>
+
+  @if(noData()) {
+  <div class="flex h-[calc(100vh-28rem)] items-center justify-center">
+    <div class="text-center">
+      <app-hes-icon
+        [hesIcon]="{ src: 'assets/icons/user-times-solid.svg' }"
+        class="text-7xl"
+      ></app-hes-icon>
+      <p class="mt-3 text-base text-[#6B6F80]">
+        {{ t('dismissal.no_student_to_view.txt') }}
+      </p>
+    </div>
+  </div>
+  }
+</ion-content>

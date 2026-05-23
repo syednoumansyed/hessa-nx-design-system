@@ -1,0 +1,74 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Welcome" />
+
+# Hessa Design System
+
+The `ds-` component library for the Hessa educational platform — Angular 19, Ionic 8, mobile-first.
+
+---
+
+## Toolbar Guide
+
+Three global controls appear in the top toolbar and affect every story:
+
+| Toolbar | Values | What it does |
+|---------|--------|--------------|
+| **Viewport** (⊡ icon) | Mobile 375px · Tablet 768px · Desktop 1280px · 1440px | Resizes the canvas — token values update automatically via CSS media queries |
+| **Role** | Teacher (personnel) · Student | Sets `data-role` on `<html>` — activates student-specific Tailwind styles on components that support it |
+| **Direction** | LTR (English) · RTL (Arabic) | Sets `dir` + `lang` — switches font (Nunito ↔ Lama Rounded) and mirrors layout |
+
+---
+
+## Token System
+
+All spacing, typography, and radius tokens are **self-responsive** — defined once in CSS with `@media` overrides at each breakpoint.
+
+```css
+.my-component {
+  padding:       var(--ds-spacing-md);        /* 8px → 10px → 12px */
+  gap:           var(--ds-gaps-sm);           /* 4px → 6px → 8px  */
+  border-radius: var(--ds-corner-radius-lg);  /* 12px → 12px → 16px */
+  font-size:     var(--font-size-lg);         /* 16px → 18px → 20px */
+}
+```
+
+**Spacing / gap / radius** desktop breakpoint: ≥ 1280px  
+**Typography** desktop breakpoint: ≥ 1024px
+
+→ See the [Responsive Tokens](?path=/story/0-tokens-responsive-tokens--all-tokens) story for live values.  
+→ See the [Design Tokens](?path=/story/0-tokens-design-tokens--all-tokens) story for the full colour palette.
+
+---
+
+## Component Tiers
+
+| Tier | Prefix in sidebar | What it contains |
+|------|-------------------|------------------|
+| **P0** | `1. P0 Components` | Core atoms used everywhere — Button, Input, Checkbox, Icon, Modal, Tabs… |
+| **P1** | `2. P1 Components` | Composite controls — Search Box, Sidebar, Tooltip, Text Area… |
+| **P2** | `3. P2 Components` | Complex / contextual — Action List, Expandable, Modal Sheet, Segmented Control… |
+
+---
+
+## Role-Aware Components
+
+Components with a **Student Role** story have visual differences when `data-role="student"` is active:
+
+- **ds-button** — raised 3D bottom border with press animation
+- **ds-input** — thick bottom-heavy "tray" border
+- **ds-picker-select** — same tray border
+- **ds-textarea** — same tray border
+
+Switching the Role toolbar to **Student** will activate these styles globally.
+
+---
+
+## Font Stack
+
+| Context | Font | Source |
+|---------|------|--------|
+| LTR / English | Nunito | Google Fonts CDN |
+| RTL / Arabic | Lama Rounded | Local TTF (`src/assets/fonts/`) |
+
+Font switching is triggered by `html[lang="ar"]` CSS selector — not `dir`.

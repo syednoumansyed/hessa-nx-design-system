@@ -1,0 +1,45 @@
+<section class="flex flex-col gap-4">
+  <div class="flex flex-col gap-4 md:flex-row">
+    <app-ds-select [config]="selectConfig" [formControl]="selectCtrl" />
+
+    <app-ds-select
+      [config]="multiSelectConfig"
+      [formControl]="multiSelectCtrl"
+    />
+  </div>
+</section>
+<section class="flex flex-col gap-4">
+  <h3>Pagination from backend</h3>
+  <div class="flex flex-col gap-4 md:flex-row">
+    <app-ds-select
+      [config]="paginatedConfig"
+      [formControl]="paginatedSelectCtrl"
+    />
+    <app-ds-select
+      [config]="paginatedMultiConfig"
+      [formControl]="paginatedMultiSelectCtrl"
+    />
+  </div>
+</section>
+<section class="flex flex-col gap-4">
+  <h3>without pagination data from backend</h3>
+  <div class="flex flex-col gap-4 md:flex-row">
+    <app-ds-select
+      [config]="nonPaginatedConfig"
+      [formControl]="nonePaginatedSelectControl"
+    />
+    <app-ds-select
+      [config]="nonePaginatedMultiConfig"
+      [formControl]="nonPaginatedMultiSelectControl"
+    />
+    {{ nonPaginatedMultiSelectControl.value | json }}
+  </div>
+</section>
+<section class="flex flex-col gap-4">
+  <h3>Dynamic set options</h3>
+  <div class="flex flex-col items-center gap-4 md:flex-row">
+    <ds-button (click)="onLoad()">click Personal data</ds-button>
+    <app-ds-select [config]="dynamicLoadConfig" [formControl]="dynamicCtrl" />
+    {{ dynamicCtrl.value | json }}
+  </div>
+</section>

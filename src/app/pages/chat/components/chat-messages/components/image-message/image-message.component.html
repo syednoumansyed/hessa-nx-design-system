@@ -1,0 +1,26 @@
+<div
+  (click)="onShowImage()"
+  class="mb-7 max-w-[190px] cursor-pointer overflow-hidden rounded-lg"
+>
+  @if (isLoading() && !hasError()) {
+    <div class="flex h-[100px] w-full items-center justify-center bg-gray-100">
+      <ion-spinner name="crescent" class="h-6 w-6 text-gray-400"></ion-spinner>
+    </div>
+  }
+  <img
+    [src]="messageUrl()"
+    alt=""
+    class="chat-image h-auto w-full object-cover"
+    [class.hidden]="isLoading() || hasError()"
+    (load)="onImageLoad()"
+    (error)="onImageError()"
+  />
+  @if (hasError()) {
+    <div class="flex h-[100px] w-full items-center justify-center bg-gray-100">
+      <div class="text-center text-gray-400">
+        <div class="text-xl">🖼️</div>
+        <div class="text-xs">Failed to load</div>
+      </div>
+    </div>
+  }
+</div>

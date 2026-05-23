@@ -1,0 +1,18 @@
+<div
+  class="flex flex-1 flex-col items-center justify-center rounded-ds-xl border border-stroke-black-08 bg-surface-secondary p-ds-lg"
+>
+  @if (isLoading) {
+    <ion-spinner name="crescent" class="text-primary"></ion-spinner>
+  } @else {
+    <div class="flex flex-col items-center gap-ds-md text-center">
+      <div class="heading-h3-high-emphasis text-emphasis-high">
+        {{ title }}
+      </div>
+      @if (description) {
+        <div class="text-ds-base font-semibold text-emphasis-mid">
+          {{ description }}
+        </div>
+      }
+    </div>
+  }
+</div>

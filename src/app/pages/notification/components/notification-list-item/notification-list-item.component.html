@@ -1,0 +1,36 @@
+<div class="group relative block w-full" *transloco="let t">
+  <div
+    class="flex items-start gap-ds-lg px-ds-xl py-ds-lg transition-colors duration-200"
+    [ngClass]="{
+      'bg-[var(--surface-pastel-background-brand-rich)]':
+        !notification().isRead,
+      'bg-[var(--surface-page)]': notification().isRead,
+    }"
+  >
+    @if (!notification().isRead) {
+      <span
+        class="absolute left-2 top-[35px] h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-[var(--surface-warning-default)]"
+        aria-hidden="true"
+      ></span>
+    }
+
+    <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center">
+      <ds-animated-icon
+        [icon]="notification().icon"
+        size="xl"
+      ></ds-animated-icon>
+    </span>
+
+    <div class="flex flex-1 flex-col gap-ds-xs text-start text-black-0">
+      <div class="content-md-high-emphasis">
+        {{ t(notification().title) }}
+      </div>
+      <div class="content-md-default">
+        {{ t(notification().description) }}
+      </div>
+      <div class="single-line-caption-mid-emphasis text-emphasis-mid">
+        {{ notification().createdAt | hesTimeAgo }}
+      </div>
+    </div>
+  </div>
+</div>

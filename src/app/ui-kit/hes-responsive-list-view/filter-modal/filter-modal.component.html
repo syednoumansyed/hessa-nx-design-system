@@ -1,0 +1,27 @@
+<div
+  *transloco="let t"
+  class="Modal p-v-2 p-h-0 flex flex-col justify-start gap-4 rounded-xl bg-white md:p-7"
+>
+  <div
+    class="flex items-center border-b border-[#EAECF0] pb-5 text-2xl font-semibold text-[#101828]"
+  >
+    {{ t("global.filters.title") }}
+  </div>
+  @for (config of validFilterConfig(); track config.field) {
+    <app-filter-control [params]="config" />
+  }
+  <app-column-visibility-controller />
+  <div class="mb-2 mt-4 grid grid-cols-2 gap-8 gap-y-10 self-stretch">
+    <ion-button
+      hesBtn
+      hesColor="secondary"
+      hesSize="xl"
+      (click)="onCloseModal()"
+    >
+      {{ t("global.cancel.btn") }}
+    </ion-button>
+    <ion-button hesBtn hesColor="primary" hesSize="xl" (click)="applyFilters()">
+      {{ t("global.apply.txt") }}
+    </ion-button>
+  </div>
+</div>

@@ -1,0 +1,67 @@
+<ng-template #projectedTrigger>
+  @if (hasProjectedTrigger()) {
+    <ng-content></ng-content>
+  } @else {
+    <app-ds-icon
+      [icon]="defaultTriggerIcon()"
+      class="text-icon-high"
+    ></app-ds-icon>
+  }
+</ng-template>
+
+@if (!isMobileOrTablet()) {
+  <ds-menu
+    [items]="desktopItems()"
+    [selectedValues]="desktopSelectedValues()"
+    (itemSelected)="onDesktopItemSelected($event)"
+    (selectedItemsChange)="selectedItemsChange.emit($event)"
+    (menuOpened)="menuOpened.emit()"
+    (menuClosed)="menuClosed.emit()"
+  >
+    @if (triggerType() === "button") {
+      <button
+        type="button"
+        [attr.aria-label]="triggerAriaLabel()"
+        [disabled]="triggerDisabled()"
+        [ngClass]="triggerClasses()"
+      >
+        <ng-container [ngTemplateOutlet]="projectedTrigger"></ng-container>
+      </button>
+    } @else {
+      <div
+        role="button"
+        tabindex="0"
+        [attr.aria-label]="triggerAriaLabel()"
+        [ngClass]="triggerClasses()"
+        (keydown.enter)="onTriggerClick()"
+        (keydown.space)="onTriggerClick()"
+      >
+        <ng-container [ngTemplateOutlet]="projectedTrigger"></ng-container>
+      </div>
+    }
+  </ds-menu>
+} @else {
+  @if (triggerType() === "button") {
+    <button
+      type="button"
+      [attr.aria-label]="triggerAriaLabel()"
+      [disabled]="triggerDisabled()"
+      [ngClass]="triggerClasses()"
+      (click)="onTriggerClick()"
+    >
+      <ng-container [ngTemplateOutlet]="projectedTrigger"></ng-container>
+    </button>
+  } @else {
+    <div
+      role="button"
+      tabindex="0"
+      [attr.aria-label]="triggerAriaLabel()"
+      [ngClass]="triggerClasses()"
+      (click)="onTriggerClick()"
+      (keydown.enter)="onTriggerClick()"
+      (keydown.space)="onTriggerClick()"
+    >
+      <ng-container [ngTemplateOutlet]="projectedTrigger"></ng-container>
+    </div>
+  }
+}

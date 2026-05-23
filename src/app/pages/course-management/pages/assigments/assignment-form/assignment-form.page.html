@@ -1,0 +1,78 @@
+<ng-container *transloco="let t">
+  <app-question-wrapper
+    [mainTabTitle]="t('content_management.assignment_details.title')"
+    [bodyTempRef]="bodyTempRef"
+    [ctaTempRef]="ctaTempRef"
+    [title]="assignmentForm.controls.title.value"
+    [isParentEdit]="isReadonlyInput()"
+    [titlePlaceholder]="t('content_management.assignment_title.title')"
+    [isQuestionListShow]="(isQuestionListShow$ | async) ?? true"
+    class="pb-ds-xl pt-ds-xl"
+  >
+    <ng-template #ctaTempRef>
+      <div class="mx-4 mb-4 flex flex-col-reverse md:flex-row">
+        @if(isReadonlyInput()){
+        <ion-button hesBtn class="hes-btn--outline" (click)="onEdit()"
+          >{{t("global.edit.btn")}}</ion-button
+        >
+        } @else {
+        <ion-button hesBtn class="hes-btn--outline" (click)="onCancel()"
+          >{{t("global.cancel.btn")}}</ion-button
+        >
+        <ion-button
+          hesBtn
+          (click)="onSave()"
+          [disabled]="assignmentForm.invalid || loading()"
+          >{{t("global.save.btn")}}</ion-button
+        >
+        }
+      </div>
+    </ng-template>
+    <ng-template #bodyTempRef>
+      <div
+        class="h-full"
+        [ngClass]="{
+      'pointer-events-none select-none': isReadonlyInput()
+    }"
+      >
+        <div
+          class="flex h-auto w-full flex-col items-start justify-start gap-8 bg-white px-4 py-8 md:bg-transparent md:p-0"
+        >
+          <form
+            [formGroup]="assignmentForm"
+            class="flex w-full flex-col items-end justify-start gap-8"
+          >
+            <div
+              class="Frame23 md:shadow-[0_1px_2px_0_rgba(0, 0, 0, 0.05)] flex w-full flex-col items-start justify-start gap-10 bg-white md:rounded-lg md:border md:border-[#F1F1F4] md:p-8"
+            >
+              <div class="flex w-full flex-col gap-8 gap-y-10">
+                @for ( control of assignmentFormConfig(); track $index; let
+                last=$last ) { @if(isReadonlyInput() && last &&
+                assignmentForm.controls.attachments.value.length){
+                <div class="pointer-events-auto flex flex-row gap-4">
+                  @for (item of assignmentForm.controls.attachments.value; track
+                  idx; let idx=$index) {
+                  <app-hes-attachment-preview
+                    [attachment]="assignmentForm.controls.attachments.value[idx]"
+                    [removable]="false"
+                  ></app-hes-attachment-preview>
+                  }
+                </div>
+                } @else {
+                <div class="flex-1">
+                  <app-form-control-generator
+                    [control]="control"
+                  ></app-form-control-generator>
+                </div>
+                } }
+              </div>
+              <div
+                class="Line1 hidden h-[0px] self-stretch border border-slate-200 md:block"
+              ></div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </ng-template>
+  </app-question-wrapper>
+</ng-container>

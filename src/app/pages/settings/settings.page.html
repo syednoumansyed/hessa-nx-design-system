@@ -1,0 +1,17 @@
+<ion-content class="ds-page-content" *transloco="let t">
+  <div class="flex w-full flex-col px-4 pb-6 pt-4 lg:px-0">
+    <div
+      class="mx-auto grid w-full grid-cols-2 gap-ds-lg lg:max-w-[560px] lg:pt-5"
+    >
+      @for (item of listings; track item.titleI18nKey) {
+      <ng-container *hesRbacSome="item.permissions">
+        <app-icon-card
+          [title]="t(item.titleI18nKey)"
+          [icon]="getIconSrc(item.iconName)"
+          (cardClick)="navigate(item.path)"
+        ></app-icon-card>
+      </ng-container>
+      }
+    </div>
+  </div>
+</ion-content>

@@ -1,0 +1,9 @@
+<div>
+  <form [formGroup]="form" class="flex flex-col gap-7">
+    @for (control of formConfig(); track $index) {
+      <app-form-control-generator
+        [control]="control"
+      ></app-form-control-generator>
+    }
+  </form>
+</div>

@@ -1,0 +1,65 @@
+@use "@taiga-ui/core/styles/taiga-ui-local.scss" as taiga;
+:root {
+  --tui-link: var(--h-color-primary, #ecad01);
+}
+
+[tuiWrapper][data-appearance="hes-date-filter"] {
+  width: 18rem;
+  background: white;
+  color: rgba(0, 0, 0, 0.87);
+  border-radius: 0.5rem;
+  --border-end: 0;
+  //   max-height: 2rem;
+
+  //   label.t-placeholder {
+  //     html[dir="rtl"] & {
+  //       direction: rtl;
+  //       text-align: right;
+  //     }
+  //   }
+
+  input {
+    color: var(--Neutral-neutral-100, #141519);
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.25rem; /* 125% */
+    letter-spacing: -0.01563rem;
+    html[dir="rtl"] & {
+      direction: rtl;
+      text-align: right;
+    }
+  }
+
+  &:after {
+    @include taiga.transition(all);
+    height: 100%;
+    background: transparent;
+    border: 1px solid var(--h-color-gray-300);
+  }
+
+  @include taiga.wrapper-hover {
+    &:after {
+      border-color: var(--h-color-primary, #ecad01);
+    }
+  }
+
+  @include taiga.wrapper-focus {
+    // TODO: Better internal elements customization
+
+    &:after {
+      border-color: var(--h-color-primary, #ecad01);
+    }
+  }
+
+  @include taiga.wrapper-invalid {
+    // TODO: Better internal elements customization
+    label {
+      //   color: #b00020 !important;
+    }
+
+    &:after {
+      border-color: #e62e2e;
+    }
+  }
+}

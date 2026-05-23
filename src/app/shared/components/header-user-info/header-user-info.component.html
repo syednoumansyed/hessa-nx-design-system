@@ -1,0 +1,78 @@
+<div
+  class="flex cursor-pointer items-center justify-start gap-4"
+  *transloco="let t"
+>
+  <div [id]="'popover-icon' + randomId" class="flex justify-start gap-4">
+    @if (!prodilePictureUrl()) {
+      <div
+        [ngClass]="{
+          'bg-[#E9F8FF] text-[#01A5EC]': user()?.gender === gender.MALE,
+          'bg-[#F9F5FF] text-[#7F56D9]': user()?.gender === gender.FEMALE,
+        }"
+        class="flex aspect-square items-center justify-center rounded-full"
+      >
+        <div
+          class="flex h-10 w-10 items-center justify-center rounded-full text-center text-base font-medium"
+        >
+          {{ user()?.displayName | hesInitials }}
+        </div>
+      </div>
+    }
+
+    @if (prodilePictureUrl()) {
+      <div
+        class="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-full"
+      >
+        <div class="h-full w-full">
+          <ion-img
+            [src]="prodilePictureUrl()"
+            class="h-full w-full object-cover"
+          />
+        </div>
+      </div>
+    }
+
+    <div class="hidden flex-col items-start justify-start md:flex">
+      <div class="truncate text-base font-semibold leading-tight text-gray-800">
+        {{ user()?.displayName }}
+      </div>
+      <div class="text-sm font-normal leading-tight text-gray-600">
+        {{ auth.typeDisplay() }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<ion-popover
+  class="hes-menu"
+  [trigger]="'popover-icon' + randomId"
+  [dismissOnSelect]="true"
+  *transloco="let t"
+>
+  <ng-template>
+    <ion-list lines="none" class="px-2 py-1">
+      @for (action of actions(); track $index; let last = $last) {
+        @if (last) {
+          <div class="my-2 h-[0.0625rem] w-full bg-[#D9D9D9]"></div>
+        }
+        <ion-item
+          [button]="true"
+          [detail]="false"
+          (click)="action.onClick && action.onClick()"
+          [routerLink]="action.routerLink ? action.routerLink : undefined"
+        >
+          <ng-icon
+            [name]="action.icon"
+            class="me-3 h-4 cursor-pointer text-gray-700"
+          ></ng-icon>
+
+          <div
+            class="text-sm font-medium capitalize leading-tight text-gray-700"
+          >
+            {{ t(action.texti18nKey) }}
+          </div>
+        </ion-item>
+      }
+    </ion-list>
+  </ng-template>
+</ion-popover>

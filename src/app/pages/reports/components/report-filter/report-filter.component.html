@@ -1,0 +1,16 @@
+@if (form()) {
+  <form [formGroup]="form()!">
+    <div class="flex flex-col gap-4">
+      @for (
+        control of config();
+        track control.formControlName;
+        let i = $index;
+        let count = $count
+      ) {
+        <app-form-control-generator
+          [control]="control"
+        ></app-form-control-generator>
+      }
+    </div>
+  </form>
+}

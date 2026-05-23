@@ -1,0 +1,106 @@
+<ion-content class="ds-page-content" *transloco="let t">
+  <div class="hes-card flex w-full flex-col items-start justify-start p-0">
+    <div
+      class="mb-6 flex h-auto w-full flex-col items-start justify-start gap-8 bg-white px-4 py-8 md:bg-transparent md:p-0"
+    >
+      <div
+        class="flex w-full flex-col items-start justify-start bg-white md:rounded-lg md:shadow-sm"
+      >
+        <div class="flex w-full flex-col items-start justify-start gap-6 p-8">
+          <h2 class="text-lg font-semibold leading-7">
+            {{t('virtual_classrooms.virtual_classroom_details.title')}}
+          </h2>
+        </div>
+        @if (_virtualClassroom(); as classroom) {
+        <div class="w-full p-8">
+          <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+            <div class="flex flex-col gap-2">
+              <span class="text-sm font-semibold"
+                >{{t('global.subject.title')}}</span
+              >
+              <span class="text-sm">{{classroom?.subject?.displayName}}</span>
+            </div>
+            <div class="flex flex-col gap-2">
+              <span class="text-sm font-semibold"
+                >{{t('global.level.title')}}</span
+              >
+              <span class="text-sm">{{classroom?.level?.displayName}}</span>
+            </div>
+            <div class="flex flex-col gap-2">
+              <span class="text-sm font-semibold"
+                >{{t('global.class.title')}}</span
+              >
+              <span class="text-sm">{{classroom?.class?.displayName}}</span>
+            </div>
+            <div class="flex flex-col gap-2">
+              <span class="text-sm font-semibold"
+                >{{t('virtual_classrooms.service_provider.title')}}</span
+              >
+              <span class="text-sm">
+                {{ t("enum." + classroom?.serviceProvider) }}
+              </span>
+            </div>
+            <div class="flex flex-col gap-2 md:col-span-2">
+              <span class="text-sm font-semibold"
+                >{{t('virtual_classrooms.meeting_link.title')}}</span
+              >
+              @if (classroom?.serviceProvider === "MICROSOFT_TEAMS") {
+              <a
+                href="{{classroom?.meetingLink}}"
+                target="_blank"
+                class="text-[#ECAD01]"
+              >
+                {{t('content_management.test_link.btn')}}
+                <ng-icon
+                  name="saxExport3Outline"
+                  class="ml-1 text-center"
+                ></ng-icon>
+              </a>
+              } @else{ {{classroom?.meetingLink}} }
+            </div>
+          </div>
+          <div class="mt-8">
+            <h3 class="mb-4 text-lg font-semibold">
+              {{t('virtual_classrooms.link_lecture.title')}}
+            </h3>
+            <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+              <div class="flex flex-col gap-2">
+                <span class="text-sm font-semibold"
+                  >{{t('virtual_classrooms.lecture.title')}}</span
+                >
+                <span class="text-sm">
+                  @for (lecture of classroom?.lectures; track lecture.id) { {{
+                  lecture.dayOfWeek | dayOfWeek }} ({{ t('enum.PERIOD') }}
+                  {{lecture.periodNumber}}: {{lecture.startTime | time12hr}} -
+                  {{lecture.endTime | time12hr}}) @if (!$last) { , } }
+                </span>
+              </div>
+              <div class="flex flex-col gap-2">
+                <span class="text-sm font-semibold"
+                  >{{t('virtual_classrooms.repeat.title')}}</span
+                >
+                <span class="font-small text-sm">
+                  {{ t("enum." + classroom?.repeatOption) }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+      <div
+        class="flex w-full flex-col-reverse gap-3 pr-1 md:flex-row md:justify-end md:pr-8"
+      >
+        <ion-button
+          *hesRbac="updateVrcsPermissionId"
+          hesBtn
+          hesSize="xl"
+          class="w-full md:w-auto md:min-w-[150px] lg:min-w-[200px]"
+          (click)="onEdit()"
+        >
+          {{t('global.edit.btn')}}
+        </ion-button>
+      </div>
+    </div>
+  </div>
+</ion-content>

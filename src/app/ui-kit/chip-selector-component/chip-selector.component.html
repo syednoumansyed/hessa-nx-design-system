@@ -1,0 +1,15 @@
+<div class="flex flex-wrap gap-2">
+  <div
+    *ngFor="let option of options"
+    class="cursor-pointer rounded-full border px-4 py-1 text-sm font-medium transition-colors"
+    [ngClass]="{
+      ' bg-[#FFFCE7] text-[#ECAD01]': isSelected(option.value),
+      ' bg-[#F2F4F7] text-[#344054] hover:bg-gray-200': !isSelected(
+        option.value
+      )
+    }"
+    (click)="toggleValue(option.value)"
+  >
+    {{ option.displayedValue }}
+  </div>
+</div>

@@ -1,0 +1,237 @@
+ion-modal {
+  &,
+  &.modal-default.show-modal ~ ion-modal.modal-default {
+    --width: 25.5rem;
+    --height: auto;
+    --min-height: auto;
+    --border-radius: 0.75rem;
+    --backdrop-opacity: 0.7;
+    --max-width: 100vw;
+    --background: var(--White, #fff);
+    --box-shadow:
+      0px 20px 24px -4px rgba(16, 24, 40, 0.08),
+      0px 8px 8px -4px rgba(16, 24, 40, 0.03);
+    &::part(content) {
+      overflow-y: auto;
+      padding-top: 0;
+      padding-bottom: var(--ion-safe-area-bottom);
+      padding-left: var(--ion-safe-area-left);
+      padding-right: var(--ion-safe-area-right);
+      max-height: 100vh;
+      @supports (max-height: 100dvh) {
+        max-height: 100dvh;
+      }
+    }
+  }
+
+  &.full-modal::part(content) {
+    --width: 100%;
+    --height: 100%;
+    --border-radius: 0;
+  }
+
+  &.xxl-modal::part(content) {
+    --width: 80%;
+  }
+
+  &.xl-mobile-modal::part(content) {
+    --width: 100%;
+  }
+
+  &.xl-modal::part(content) {
+    --width: 50rem;
+  }
+
+  &.lg-modal::part(content) {
+    --width: 36rem;
+  }
+
+  &.sm-modal::part(content) {
+    --width: 25rem;
+  }
+
+  // Design System modal sizes (desktop - fixed width, centered, no safe area needed)
+  &.ds-modal-sm::part(content),
+  &.ds-modal-lg::part(content) {
+    // Reset safe area padding - desktop modals don't touch screen edges
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  &.ds-modal-sm::part(content) {
+    --width: 500px;
+  }
+
+  &.ds-modal-md::part(content) {
+    --width: 560px;
+  }
+
+  &.ds-modal-lg::part(content) {
+    --width: 800px;
+  }
+
+  // Design System mobile bottom sheet
+  // Bottom safe area always applied, top safe area handled at component level
+  &.ds-modal-mobile-sheet {
+    --width: 100%;
+    --max-width: 100%;
+
+    &::part(content) {
+      padding-top: 0 !important;
+      padding-bottom: max(var(--ion-safe-area-bottom), 12px);
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    // When the Ionic handle bar is visible, add top spacing so the header
+    // content doesn't sit flush against the handle.
+    &.ds-modal-with-handle .ion-page {
+      padding-top: 12px;
+    }
+
+    // iOS has aggressive scroll-chaining and momentum bounce that can trigger
+    // Ionic's sheet drag gesture even when the user intends to scroll content.
+    // These properties keep the scroll gesture contained to this element:
+    //   - overscroll-behavior: contain — stops the scroll chain at this box so
+    //     the parent (the sheet) doesn't see leftover momentum as a drag.
+    //   - touch-action: pan-y — declares vertical panning (scrolling) is the
+    //     only gesture we want here, disambiguating from Ionic's drag.
+    .ds-modal-scroll-region {
+      overscroll-behavior: contain;
+      touch-action: pan-y;
+      -webkit-overflow-scrolling: touch;
+    }
+  }
+
+  // Scrollable content modal - sticky header/footer with scrolling content
+  // Desktop: max height 85vh, centered with margin from edges
+  // Mobile: uses breakpoints (0.5, 0.75, 0.9) instead of full height
+  &.ds-modal-scrollable {
+    &::part(content) {
+      max-height: 85vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    // Inner wrapper needs to be flex column with constrained height
+    .ds-modal-inner {
+      display: flex;
+      flex-direction: column;
+      max-height: 85vh;
+      overflow: hidden;
+    }
+  }
+
+  // Prevent modal content from scrolling (for internal scrolling only)
+  &.chat-modal-no-scroll::part(content) {
+    overflow-y: hidden;
+    --height: 90vh;
+    --max-height: 90vh;
+  }
+
+  // Height control classes
+  &.h-90::part(content) {
+    --height: 90vh;
+    --max-height: 90vh;
+  }
+
+  // Background control classes
+  &.bg-brand-35 {
+    --background: var(--colors-brand-35);
+  }
+
+  &.image-slider {
+    --max-width: auto;
+
+    &::part(content) {
+      --border-radius: 0;
+      --background: transparent;
+      --box-shadow: none;
+      --height: 100%;
+      --width: 100%;
+    }
+  }
+}
+
+.transparent-modal {
+  color: #fff;
+  padding: 0 !important;
+  background-color: rgba(0, 0, 0, 0.3) !important;
+  --background: transparent !important;
+
+  .modal-wrapper {
+    background-color: rgba(0, 0, 0, 0.3) !important;
+    --background: transparent !important;
+  }
+
+  .danger-row {
+    background-color: #fef3f2 !important;
+  }
+}
+
+/* full-bleed mobile modal */
+ion-modal.yt-modal {
+  /* remove the default 20 px side gutters */
+  --width: 100vw;
+  --max-width: 100vw;
+  --min-width: 100vw;
+
+  /* optionals – square corners & no internal padding */
+  --border-radius: 0;
+  --padding-start: 0;
+  --padding-end: 0;
+
+  /* make sure the content area itself has no padding */
+  &::part(content) {
+    padding: 0 !important;
+  }
+}
+
+ion-modal.modal-sheet {
+  --width: 100%;
+  --height: auto;
+  --max-height: calc(100dvh - var(--ion-safe-area-top, 0px));
+  @supports not (max-height: 100dvh) {
+    --max-height: calc(100vh - var(--ion-safe-area-top, 0px));
+  }
+  &::part(content) {
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    padding-top: var(--ion-safe-area-top);
+    padding-bottom: var(--ion-safe-area-bottom);
+    padding-left: var(--ion-safe-area-left);
+    padding-right: var(--ion-safe-area-right);
+    max-height: calc(100dvh - var(--ion-safe-area-top, 0px));
+    @supports not (max-height: 100dvh) {
+      max-height: calc(100vh - var(--ion-safe-area-top, 0px));
+    }
+  }
+}
+
+// Reset all custom modal styles to Ionic defaults for mobile bottom sheets
+ion-modal.modal-reset {
+  // Reset to full width for proper bottom sheet behavior
+  --width: 100%;
+  --height: calc(100% - var(--ion-safe-area-top) + 10px);
+  --max-width: 100%;
+  --max-height: 90%;
+  --border-radius: 0.75rem 0.75rem 0 0;
+  --backdrop-opacity: var(--ion-backdrop-opacity, 0.32);
+  --background: var(--White, #fff);
+  --box-shadow: 0px -4px 16px rgba(0, 0, 0, 0.12);
+
+  &::part(content) {
+    width: 100%;
+    padding-top: 0;
+    padding-bottom: calc(var(--ion-safe-area-bottom) + 3rem);
+    padding-left: var(--ion-safe-area-left);
+    padding-right: var(--ion-safe-area-right);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+  }
+}

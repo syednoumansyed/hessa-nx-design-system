@@ -1,0 +1,23 @@
+ngx-otp-input.hes-otp {
+  .ngx-otp-input {
+    &.hes-otp--input {
+      border-color: transparent;
+      padding: 1rem 0.75rem;
+      background-color: #f5f8ff;
+      width: 3rem;
+      height: 3rem;
+      &:focus {
+        border-color: var(--h-color-primary-400);
+        width: 4rem;
+        height: 4rem;
+      }
+      @apply transition-[height,width];
+    }
+    &.hes-otp--filled {
+      border-color: var(--h-color-primary-400);
+    }
+    &.hes-otp--error {
+      border-color: #e62e2e;
+    }
+  }
+}

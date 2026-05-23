@@ -1,0 +1,401 @@
+@if (control()) {
+  <ng-container *transloco="let t" [formGroup]="form">
+    @switch (control().type) {
+      @case ("chip-selector") {
+        <app-hes-chip-selector
+          [formControlName]="control().formControlName ?? null"
+          [options]="control().selectValues ?? []"
+        />
+      }
+      @case ("textarea") {
+        <div class="flex items-center justify-end gap-2">
+          <ion-label class="flex-1 pb-2">
+            {{ control().label }}
+            <span *ngIf="control().required">*</span>
+          </ion-label>
+        </div>
+        @if (control().subLabel) {
+          <div class="mb-3 text-sm font-thin text-[#838799]">
+            {{ control().subLabel }}
+          </div>
+        }
+        <ion-textarea
+          [formControlName]="control().formControlName ?? null"
+          [placeholder]="control().placeholder"
+          [required]="control().required"
+          [readonly]="control().readonly"
+          [helperText]="control().helperText"
+          class="hes-textarea"
+          appNoLeadingSpace
+          [ngClass]="{
+            'view-state': control().viewState ?? false,
+          }"
+        ></ion-textarea>
+        <div class="mt-0">
+          <span
+            *ngIf="ErrorText()?.length"
+            class="flex-1 text-xs font-normal text-[#e62e2e]"
+          >
+            {{ ErrorText() }}
+          </span>
+        </div>
+      }
+      @case ("input") {
+        <app-hes-input
+          [label]="control().label"
+          [labelIcon]="control().labelIcon"
+          [placeholder]="control().placeholder"
+          [formControlName]="control().formControlName ?? null"
+          [type]="control().inputType ?? 'text'"
+          [required]="control().required"
+          fill="solid"
+          [errorText]="ErrorText()"
+          [readonly]="control().readonly"
+          [helperText]="control().helperText"
+          [maxLength]="control().maxLength"
+          [isEditabeControl]="control().isEditableControl ?? false"
+          [(isEditable)]="control().isEditable!"
+          [inputCssClass]="control().inputCssClass ?? ''"
+          [decimalPrecision]="control().decimalPrecision ?? null"
+        ></app-hes-input>
+      }
+      @case ("searchable-select") {
+        <app-hes-searchable-select
+          [label]="control().label"
+          [labelIcon]="control().labelIcon"
+          [required]="control().required"
+          [placeholder]="control().placeholder"
+          [showChips]="control().searchableSelectObject?.showChips ?? false"
+          [searchable]="control().searchableSelectObject?.searchable ?? false"
+          [persistPlaceholder]="
+            control().searchableSelectObject?.persistPlaceholder ?? false
+          "
+          [fill]="control().searchableSelectObject?.fill ?? 'solid'"
+          [data]="controlListing()!"
+          [initSelectedValues]="control().initSelectValues"
+          [formControlName]="control().formControlName ?? null"
+          [multiple]="control().isMultiple ?? false"
+          [pagination]="control().searchableSelectObject?.pagination"
+          (loadMore)="control().searchableSelectObject?.onloadMore($event)"
+          (onSearchInputChanged)="
+            control().searchableSelectObject?.onSearchChanged($event)
+          "
+          [selectOptionTemplate]="
+            control().searchableSelectObject?.selectOptionTemplate
+          "
+          [selectedDisplayTemplate]="
+            control().searchableSelectObject?.selectedDisplayTemplate
+          "
+          [isEditabeControl]="control().isEditableControl ?? false"
+          [(isEditable)]="control().isEditable!"
+          [readonly]="control().readonly ?? false"
+          [condensed]="control().searchableSelectObject?.condensed ?? false"
+          [allowEmptySelection]="
+            control().searchableSelectObject?.allowEmptySelection ?? false
+          "
+          [showClearBtn]="
+            control().searchableSelectObject?.showClearBtn ?? true
+          "
+          [isEnumTranslate]="control().isEnumTranslate ?? false"
+          [formatChipsSelectedValueFn]="
+            control().searchableSelectObject?.formatSelectedValueInChipsFn
+          "
+          [showClockIcon]="
+            control().searchableSelectObject?.showClockIcon ?? false
+          "
+          [disabledValues]="
+            control().searchableSelectObject?.disabledValues ?? []
+          "
+        ></app-hes-searchable-select>
+        @if (control().helperText) {
+          <div
+            class="mt-1 text-xs"
+            [ngStyle]="{ color: control().helperTextColor ?? '#838799' }"
+          >
+            {{ control().helperText }}
+          </div>
+        }
+      }
+      @case ("radio") {
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center justify-end gap-2">
+            <ion-label class="flex-1">
+              {{ control().label }}
+              <span *ngIf="control().required">*</span>
+            </ion-label>
+          </div>
+          <ion-radio-group
+            #radioGroup
+            [formControlName]="control().formControlName ?? null"
+            [required]="control().required"
+            class="radio-group-container"
+          >
+            <div
+              class="grid grid-cols-{{
+                control().noOfChild?.() ?? noOfChild()
+              }} gap-4"
+            >
+              @for (item of control().selectValues; track item.value) {
+                <div>
+                  <ion-radio
+                    hesRadio
+                    [value]="item.value"
+                    labelPlacement="end"
+                    [disabled]="control().readonly"
+                    [ngClass]="{
+                      'view-state': control().viewState ?? false,
+                    }"
+                    mode="md"
+                    >{{ item.displayedValue }}</ion-radio
+                  >
+                </div>
+              }
+            </div>
+          </ion-radio-group>
+        </div>
+      }
+      @case ("checkbox") {
+        @if (control().checkboxInputConfig) {
+          <!-- Checkbox with input fields -->
+          <div class="flex flex-col gap-3">
+            <div class="flex items-center justify-end gap-2">
+              <ion-label class="flex-1">
+                {{ control().label }}
+                <span *ngIf="control().required">*</span>
+              </ion-label>
+            </div>
+
+            <app-hes-checkbox-with-input-group
+              [formControlName]="control().formControlName ?? null"
+              [readonly]="control().readonly ?? false"
+              [checkboxOptions]="control().selectValues ?? []"
+              [showSelectAll]="showSelectAllForCheckboxes()"
+              [inputPlaceholder]="
+                control().checkboxInputConfig?.placeholder ?? ''
+              "
+              [inputType]="control().checkboxInputConfig?.inputType ?? 'text'"
+              [maxLength]="control().checkboxInputConfig?.maxLength"
+              [inputRequired]="control().checkboxInputConfig?.required ?? false"
+              [noOfChild]="
+                control().noOfChild?.() ?? noOfChildForCheckboxWithInput()
+              "
+            />
+          </div>
+        } @else {
+          <!-- Standard checkbox without input -->
+          <div class="flex flex-col gap-3">
+            <div class="flex items-center justify-end gap-2">
+              <ion-label class="flex-1">
+                {{ control().label }}
+                <span *ngIf="control().required">*</span>
+              </ion-label>
+            </div>
+            <app-hes-checkbox-group
+              [formControlName]="control().formControlName ?? null"
+            >
+              <div
+                class="grid grid-cols-{{
+                  control().noOfChild?.() ?? noOfChild()
+                }}"
+              >
+                @if (showSelectAllForCheckboxes()) {
+                  <ion-checkbox
+                    hesCheckbox
+                    [hesSize]="'md'"
+                    labelPlacement="end"
+                    justify="start"
+                    class="capitalize"
+                    [value]="'SELECT_ALL'"
+                    >{{ t("global.select_all.txt") }}</ion-checkbox
+                  >
+                }
+                @for (item of control().selectValues; track item.value) {
+                  <ion-checkbox
+                    hesCheckbox
+                    [hesSize]="'md'"
+                    labelPlacement="end"
+                    justify="start"
+                    class="mt-2 capitalize"
+                    [value]="item.value"
+                    [ngClass]="{
+                      'view-state': control().viewState ?? false,
+                      'pointer-events-none opacity-60': item.disabled,
+                    }"
+                  >
+                    <div class="flex flex-col">
+                      <span>{{ item.displayedValue }}</span>
+                      @if (item.extraData?.subTitle) {
+                        <span class="text-base text-[#667086]">{{
+                          item.extraData?.subTitle
+                        }}</span>
+                      }
+                    </div>
+                  </ion-checkbox>
+                }
+              </div>
+            </app-hes-checkbox-group>
+          </div>
+        }
+      }
+      @case ("date") {
+        <!-- <tui-root> -->
+        <label class="hes-label" [tuiLabel]="label">
+          <tui-input-date
+            [mobileCalendarMinScroll]="control().datePickerConfig?.min ?? null"
+            [formControlName]="control().formControlName ?? null"
+            [tuiTextfieldLabelOutside]="true"
+            [min]="control().datePickerConfig?.min ?? null"
+            [max]="control().datePickerConfig?.max ?? null"
+          >
+            {{ control().placeholder }}
+            <input tuiTextfield />
+          </tui-input-date>
+        </label>
+        <!-- </tui-root> -->
+        <ng-template #label>
+          {{ control().label }}
+          <span class="text-[#e62e2e]" *ngIf="control().required">*</span>
+        </ng-template>
+      }
+      @case ("date-range") {
+        <label class="hes-label hes-date-range" [tuiLabel]="label">
+          <tui-input-date-range
+            [mobileCalendarMinScroll]="control().datePickerConfig?.min ?? null"
+            [formControlName]="control().formControlName ?? null"
+            [tuiTextfieldLabelOutside]="true"
+            [min]="control().datePickerConfig?.min ?? null"
+            [max]="control().datePickerConfig?.max ?? null"
+            [minLength]="control().datePickerConfig?.minLength ?? null"
+            [maxLength]="control().datePickerConfig?.maxLength ?? null"
+            [tuiTextfieldCleaner]="
+              control().datePickerConfig?.showClearBtn ?? false
+            "
+          >
+            {{ control().placeholder }}
+            <input tuiTextfield />
+          </tui-input-date-range>
+        </label>
+        <ng-template #label>
+          {{ control().label }}
+          <span class="text-[#e62e2e]" *ngIf="control().required">*</span>
+        </ng-template>
+        @if (control().helperText) {
+          <div
+            class="mt-1 text-xs"
+            [ngStyle]="{ color: control().helperTextColor ?? '#838799' }"
+          >
+            {{ control().helperText }}
+          </div>
+        }
+      }
+      @case ("date-time") {
+        <label class="hes-label" [tuiLabel]="label">
+          <div
+            class="flex w-full flex-wrap items-center justify-start gap-4 lg:gap-8"
+          >
+            <tui-input-date
+              class="w-full lg:flex-1"
+              [(ngModel)]="selectedDay"
+              [ngModelOptions]="{ standalone: true }"
+              [tuiTextfieldLabelOutside]="true"
+              [disabled]="formControl?.disabled ?? false"
+              [tuiTextfieldSize]="'m'"
+            >
+              {{ control().placeholder }}
+              <input tuiTextfield />
+            </tui-input-date>
+            <div
+              class="flex w-full flex-row flex-wrap items-end gap-2 lg:flex-1 lg:gap-4"
+            >
+              <tui-input-time
+                class="flex-1"
+                [tuiTextfieldLabelOutside]="true"
+                [(ngModel)]="selectedTime"
+                [ngModelOptions]="{ standalone: true }"
+                [items]="timeSlots()"
+                [tuiTextfieldPostfix]="timePostfix()"
+                [disabled]="formControl?.disabled ?? false"
+                [tuiTextfieldSize]="'m'"
+              ></tui-input-time>
+              <tui-toggle
+                [(ngModel)]="isPm"
+                [size]="'l'"
+                [ngModelOptions]="{ standalone: true }"
+                [disabled]="formControl?.disabled ?? false"
+                dir="ltr"
+              ></tui-toggle>
+            </div>
+          </div>
+        </label>
+
+        <ng-template #label>
+          {{ control().label }}
+          <span class="text-[#e62e2e]" *ngIf="control().required">*</span>
+        </ng-template>
+      }
+      @case ("file") {
+        <app-hes-attachment-form-control
+          [formControlName]="control().formControlName ?? null"
+          [label]="control().label"
+          [subLabel]="control().subLabel"
+          [placeholder]="control().placeholder"
+          [acceptFileTypes]="control().acceptFileTypes"
+          [maxSizeInMB]="control().maxSizeInMB ?? 5"
+          [isMultiple]="control().isMultiple ?? false"
+          [isreadonly]="control().readonly ?? false"
+          [required]="control().required ?? false"
+        ></app-hes-attachment-form-control>
+      }
+      @case ("school-structure") {
+        <app-hes-school-structure-control
+          [formControlName]="control().formControlName ?? null"
+          [label]="control().label"
+          [placeholder]="control().placeholder"
+          [required]="control().required"
+          poverOverSize="cover"
+          [isMultiSelect]="control().isMultiple ?? false"
+          [depth]="
+            control().schoolStructureControlConfig?.depth ??
+            StructureDepth.CLASS
+          "
+          [allowedSelections]="
+            control().schoolStructureControlConfig?.allowedSelections ?? null
+          "
+        ></app-hes-school-structure-control>
+      }
+      @case ("editor") {
+        @defer {
+          <app-hes-editor
+            [formControlName]="control().formControlName ?? null"
+            [placeholder]="control().placeholder"
+            [label]="control().label"
+            [uploadImageUrl]="control().uploadImageUrl"
+            [allowImgUpload]="control().editorConfig?.allowImgUpload ?? true"
+            [allowYoutubeExtension]="
+              control().editorConfig?.allowYoutubeExtension ?? false
+            "
+            [isEditabeControl]="control().isEditableControl ?? false"
+            [(isEditable)]="control().isEditable!"
+            [previewOnly]="control().editorConfig?.previewOnly ?? false"
+            [preview]="control().editorConfig?.preview ?? false"
+            [required]="control().required"
+            [maxLength]="control().maxLength"
+            [uploadAsNonBinary]="
+              control().editorConfig?.uploadAsNonBinary ?? false
+            "
+          ></app-hes-editor>
+        }
+      }
+      @case ("searchable-checkbox-select") {
+        <app-searchable-checkbox-select
+          [label]="control().label"
+          [required]="control().required"
+          [placeholder]="control().placeholder"
+          [selectOptions]="control().selectValues"
+          [initSelectedValues]="control().initSelectValues"
+          [formControlName]="control().formControlName ?? null"
+        ></app-searchable-checkbox-select>
+      }
+    }
+  </ng-container>
+}

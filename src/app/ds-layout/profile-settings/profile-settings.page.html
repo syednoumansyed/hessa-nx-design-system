@@ -1,0 +1,70 @@
+<ion-content class="ds-page-content">
+  <div class="px-4 pb-20 pt-8">
+    <!-- Profile Section -->
+    <!-- Light-beige backdrop so the white card “floats” -->
+    <section class="mt-2">
+      <div
+        class="relative w-full items-center rounded-xl bg-surface-primary py-ds-md"
+      >
+        <!-- Avatar (now overlapping) -->
+        <app-ds-avatar
+          class="absolute -top-8 start-[8px]"
+          size="3xl"
+          [imageUrl]="userImage()"
+          [fullName]="user()?.displayName ?? ''"
+        ></app-ds-avatar>
+
+        <!-- Text block -->
+        <div class="ps-[100px]">
+          <div class="heading-h4-mid-emphasis truncate text-emphasis-high">
+            {{ user()?.displayName }}
+          </div>
+          <p class="content-md-default text-emphasis-mid">
+            {{ typeDisplay() }}
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Menu Items -->
+    <div class="mt-4 space-y-1">
+      @for (item of menuItems(); track item) { @if (!item.isHide){
+      <div
+        class="flex items-center gap-4 rounded-lg px-4 py-4 hover:bg-gray-50"
+        (click)="itemClicked(item.route, item.clickable)"
+      >
+        <div class="flex h-6 w-6 flex-shrink-0 items-center justify-center">
+          <app-ds-icon
+            [icon]="item.icon"
+            class="text-emphasis-low"
+            size="md"
+          ></app-ds-icon>
+        </div>
+        <span
+          class="heading-h4-high-emphasis flex-1"
+          [ngClass]="item.textColor ?? 'text-emphasis-high'"
+          >{{ item.title | transloco}}</span
+        >
+        @if (item.showArrow) {
+        <app-ds-icon
+          [icon]="faChevronRight"
+          class="text-emphasis-low rtl:rotate-180"
+          size="md"
+        ></app-ds-icon>
+        }
+      </div>
+      } }
+    </div>
+
+    <!-- Copyright Section - Fixed at bottom -->
+    <div class="fixed bottom-4 left-0 right-0 pt-8">
+      <div class="content-md-default text-center text-emphasis-mid">
+        v{{ appVersion() }}
+      </div>
+      <div class="content-md-default text-center text-emphasis-mid">
+        {{ 'global.copyright.txt' | transloco }} {{ copyRightYear }} {{
+        'global.app_name.txt' | transloco}}
+      </div>
+    </div>
+  </div>
+</ion-content>

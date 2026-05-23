@@ -1,0 +1,15 @@
+<div class="flex h-full w-full flex-col items-start gap-4 p-4">
+  <div class="flex w-full flex-col gap-6 border border-[#F1F0F0] p-2">
+    <div
+      class="flex h-full flex-col items-stretch justify-start gap-1 overflow-y-auto"
+    >
+      @for (item of data(); track item.id) {
+        <app-school-structure-control-item
+          [item]="item"
+          [firstLevel]="true"
+          [expand]="true"
+        ></app-school-structure-control-item>
+      }
+    </div>
+  </div>
+</div>

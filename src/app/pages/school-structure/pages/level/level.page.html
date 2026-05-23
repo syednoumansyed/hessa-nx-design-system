@@ -1,0 +1,96 @@
+<ion-content class="ds-page-content" *transloco="let t">
+  <div class="rounded-lg border border-gray-200 p-4 md:border-none md:p-1">
+    @if(isLoading()){
+    <app-card-list-item-skeleton></app-card-list-item-skeleton>} @else {
+    <app-profile-header
+      [fullName]="levelDetail()?.displayName ?? ''"
+      [metadata]="levelMetaData()"
+      [headerHesIcon]="{src: 'assets/icons/level.svg', class:'text-[3rem]'}"
+      class="rounded-lg"
+      [createdBy]="levelDetail()?.createdBy?.displayName"
+      [creationDate]="levelDetail()?.createdAt?.toString()"
+    ></app-profile-header
+    >}
+  </div>
+  @if(isLoading()){
+  <div
+    [ngClass]="{
+        'rounded-xl border bg-white': !isMobile
+      }"
+    class="mt-4 p-4"
+  >
+    <div
+      [ngClass]="{
+      'border-b': !isMobile,
+      'mb-3': isMobile
+    }"
+      class="flex items-center justify-between p-4 md:p-7"
+    >
+      <ion-skeleton-text
+        [animated]="true"
+        class="h-7 w-24 rounded"
+      ></ion-skeleton-text>
+
+      <ion-skeleton-text
+        [animated]="true"
+        class="h-11 w-11 rounded-lg md:w-40"
+      ></ion-skeleton-text>
+    </div>
+    <app-card-list-skeleton></app-card-list-skeleton>
+  </div>
+  } @else if (levelDetail()?.classes?.length) {
+  <div
+    [ngClass]="{
+    'rounded-xl border bg-white': !isMobile
+  }"
+    class="mt-4 p-4"
+  >
+    <div
+      [ngClass]="{
+      'border-b': !isMobile,
+      'mb-3': isMobile
+    }"
+      class="flex justify-between md:p-7"
+    >
+      <div class="mt-3 text-2xl font-medium text-gray-900 sm:text-xl">
+        {{ t("resource.class") }}
+      </div>
+      <ion-button
+        *hesRbac="addClassPermissionId"
+        hesBtn
+        hesColor="primary"
+        hesSize="lg"
+        (click)="onOpenClassForm()"
+      >
+        <fa-icon [icon]="faPlus" size="sm"></fa-icon>
+        @if(!isMobile){
+        <span class="ms-3"> {{ t("school_structure.add_class.btn") }} </span>
+        }
+      </ion-button>
+    </div>
+    <div
+      class="my-8 grid grid-cols-1 flex-col items-start gap-3 md:w-full md:grid-cols-2 md:items-center md:gap-6 md:px-6"
+    >
+      @if(!!schoolDetail()){ @for (item of levelDetail()?.classes; track
+      item.displayName; let last = $last) {
+      <app-class-card
+        [classDetail]="item"
+        [levelDetail]="levelDetail()!"
+        [schoolDetail]="schoolDetail()!"
+        (edit)="onOpenClassForm($event)"
+        (delete)="onClassDelete($event)"
+      ></app-class-card>
+      } }
+    </div>
+  </div>
+  } @else {
+  <div class="mt-4 p-4">
+    <app-no-data-card
+      mainImagePath="assets/illustrations/no_data.svg"
+      title="{{ t('school_structure.no_classes.title') }}"
+      [description]="t('school_structure.no_classes_msg.text')"
+      [primaryButton]="noDataBtnConfig()"
+    ></app-no-data-card>
+  </div>
+  }
+</ion-content>

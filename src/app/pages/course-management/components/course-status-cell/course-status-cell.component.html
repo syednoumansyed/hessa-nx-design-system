@@ -1,0 +1,11 @@
+<div *transloco="let t" class="flex flex-wrap gap-3">
+  <div
+    class="flex h-5 min-w-[5rem] items-center justify-center rounded-2xl px-3 py-2 text-center text-xs font-medium leading-none"
+    [ngClass]="{
+      'bg-green-50 text-green-700 ': statusValue === 'ACTIVE',
+      'bg-red-50 text-red-700': statusValue === 'INACTIVE'
+    }"
+  >
+    {{ t("enum." + statusValue) }}
+  </div>
+</div>

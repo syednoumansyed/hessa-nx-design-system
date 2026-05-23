@@ -1,0 +1,16 @@
+<ion-content class="ds-page-content" *transloco="let t;">
+  <app-list-view-container
+    [columns]="columns"
+    class="w-full"
+    [isFilterShow]="true"
+    [showSearchInput]="false"
+    [dataSource]="getCourses"
+    [noDataConfig]="noDataConfig"
+    [inlineFilterConfig]="inlineFilterConfig"
+    [mobileVisibleFieldsLimit]="5"
+    [pageTitle]="t('grade_management.your_courses.title')"
+    [canCopy]="true"
+    [autoSizeStrategy]="{ type: 'fitCellContents' }"
+    [persistColumnSettings]="false"
+  />
+</ion-content>

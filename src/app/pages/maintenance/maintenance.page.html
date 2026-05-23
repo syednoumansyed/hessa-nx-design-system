@@ -1,0 +1,35 @@
+<div
+  class="flex min-h-[100dvh] w-full items-center justify-center bg-[#F7F5EF] px-4 pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)] sm:px-6 lg:px-8"
+>
+  <!-- Centered stack -->
+  <section
+    class="flex w-full max-w-[1200px] flex-col items-center gap-8 text-center"
+    *transloco="let t"
+  >
+    <!-- Welcome + logo -->
+    <header class="flex flex-col items-center gap-3">
+      <h2 class="text-xl font-semibold sm:text-4xl">
+        {{ t('global.welcome_to.text') }}
+      </h2>
+      <img src="/assets/logos/nx-brand-logo.svg" alt="nx" class="h-10" />
+    </header>
+
+    <!-- Mascot -->
+    <img
+      src="/assets/illustrations/mascot-character.svg"
+      alt="Mascot"
+      class="h-56 h-[400px] w-auto select-none"
+      draggable="false"
+    />
+
+    <!-- Message -->
+    <footer class="flex flex-col items-center gap-2">
+      <h1 class="max-w-[45ch] text-xl font-semibold sm:text-3xl lg:text-4xl">
+        {{ t('global.see_you_at_start.title') }}
+      </h1>
+      <p class="max-w-[60ch] text-base text-gray-500 sm:text-lg">
+        {{t('global.see_you_at_start.text')}}
+      </p>
+    </footer>
+  </section>
+</div>

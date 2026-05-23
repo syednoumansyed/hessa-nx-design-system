@@ -1,0 +1,171 @@
+@if (isMobile) {
+  <div
+    class="mobile-chat-container flex flex-col"
+    [style.--admin-banner-height]="isAdminBannerVisible() ? '64px' : '0px'"
+  >
+    <ng-container [ngTemplateOutlet]="tempRef"></ng-container>
+  </div>
+} @else {
+  <div class="flex h-full flex-col">
+    <ng-container [ngTemplateOutlet]="tempRef"></ng-container>
+  </div>
+}
+<ng-template #tempRef>
+  <ion-header class="chat-header shadow-none">
+    <ion-toolbar class="chat-toolbar">
+      <div class="border-b">
+        <app-chat-user-preview
+          [info]="chatHeadInfo()"
+          [includeBackButton]="true"
+        />
+      </div>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content class="chat-content ion-padding relative flex-1">
+    <ion-infinite-scroll
+      threshold="20%"
+      (ionInfinite)="loadMoreData($event)"
+      position="top"
+      [disabled]="disabled()"
+    >
+      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+    <div>
+      @if (this.isLoading()) {
+        <div class="flex flex-col gap-3 p-2">
+          @for (item of numberSkeleton; track $index; let e = $even) {
+            <div
+              class="flex"
+              [ngClass]="{
+                'justify-end': e,
+                'justify-start': !e,
+              }"
+            >
+              <div class="max-w-[85%] sm:max-w-[70%]">
+                <div
+                  class="animate-pulse rounded-ds-lg border-4 border-stroke-black-08 bg-white"
+                  [ngClass]="{
+                    '!rounded-bl': !e,
+                    '!rounded-br': e,
+                  }"
+                  [ngStyle]="{
+                    width: getSkeletonWidth($index) + 'px',
+                    height: getSkeletonHeight($index) + 'px',
+                  }"
+                ></div>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        @for (message of chatData(); track message?.getId(); let i = $index) {
+          @if (message.getType() !== "message") {
+            @if (message.getId()) {
+              @if (shouldShowSystemMessage(message)) {
+                @if (
+                  i === 0 ||
+                  (chatData()[i].getSentAt() * 1000
+                    | isSameDay: chatData()[i - 1].getSentAt() * 1000) === false
+                ) {
+                  <div
+                    class="shadown-sm single-line-xs-mid-emphasis sticky z-10 m-auto flex w-[110px] w-fit items-center justify-center rounded-full border bg-pastels-neutralGray-150 px-ds-lg py-ds-sm text-emphasis-high"
+                    [ngClass]="{
+                      'top-[10px]': isMobile,
+                      'top-[0]': !isMobile,
+                    }"
+                  >
+                    {{ message.getSentAt() * 1000 | duration }}
+                  </div>
+                }
+                <app-chat-message
+                  [message]="message"
+                  [loginUserId]="uid()!"
+                  [isHighlighting]="highlightingMessageId() === message.getId()"
+                  [senderMetadata]="
+                    sendersMetadata().get(message.getSender().getUid() || '')
+                  "
+                  [sendersMetadata]="sendersMetadata()"
+                  [attr.data-message-id]="message.getId()"
+                  (markAsRead)="markAsRead(message)"
+                  (markAsDelivered)="markAsDelivered(message)"
+                  (addEmoji)="onAddEmoji($event, message)"
+                  (deleteEmoji)="onDeleteEmoji($event, message)"
+                  (deleteMessage)="showConfirmationDeleteModal($event)"
+                  (editMessage)="enableEditMode($event)"
+                  (replyMessage)="enableReplyMode($event)"
+                  (scrollToMessage)="scrollToMessage($event)"
+                ></app-chat-message>
+              }
+            } @else {
+              <app-draft-message
+                [data]="message"
+                (actualMessage)="onReviceMessage($event, i)"
+              ></app-draft-message>
+            }
+          }
+        }
+        <!-- Typing Indicator -->
+        @if (isTyping()) {
+          <div
+            class="mt-4 w-fit rounded-ds-lg rounded-bl-none border-4 border-stroke-black-04 bg-white p-2 pt-3"
+          >
+            <ion-spinner name="dots" color="dark" />
+          </div>
+        }
+      }
+    </div>
+  </ion-content>
+  <!-- Notification pause banner for 1:1 chats when the other user has paused notifications -->
+  @if (participant()?.type === "user" && isOtherUserNotificationsPaused()) {
+    <app-notification-pause-banner [displayName]="otherUserDisplayName()" />
+  }
+  @if (
+    participant()?.type === "user" ||
+    (participant()?.type === "group" && isGroupAdmin())
+  ) {
+    <ion-footer class="relative bg-white shadow-none">
+      <div class="relative">
+        @if (isShowChevronButton$ | async) {
+          <div
+            (click)="scrollToBottom(true)"
+            class="absolute bottom-4 right-3 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-2 border-stroke-mid bg-white text-emphasis-high shadow-md md:bottom-4 md:h-10 md:w-10"
+          >
+            @if (unreadMessageCount() > 0) {
+              <div
+                class="absolute -left-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-green-600 text-xs text-white md:h-5 md:w-5"
+              >
+                {{ unreadMessageCount() }}
+              </div>
+            }
+            <app-hes-icon [faIcon]="faChevronDown"></app-hes-icon>
+          </div>
+        }
+      </div>
+      <ion-toolbar class="bg-white">
+        <div class="bg-white px-0 py-ds-lg sm:px-ds-lg">
+          <app-message-composer
+            [isEditing]="isEditing()"
+            [editText]="editText()"
+            [isReplying]="isReplying()"
+            [replyMessage]="replyMessage()"
+            [participantData]="participant()!"
+            (onEditingDone)="onEditingDone($event)"
+            (onReplyDone)="onReplyDone()"
+            (onCancelReply)="onCancelReply()"
+            [lastSenderTag]="lastSenderTag()"
+          ></app-message-composer>
+        </div>
+      </ion-toolbar>
+    </ion-footer>
+  } @else {
+    <ion-footer class="relative bg-white shadow-none" *transloco="let t">
+      <ion-toolbar class="bg-[#E3E3E3] text-center">
+        <div
+          class="content-sm-mid-emphasis px-ds-lg py-ds-xl text-emphasis-high"
+        >
+          {{ t("chats.channels.only_teachers") }}
+        </div>
+      </ion-toolbar>
+    </ion-footer>
+  }
+</ng-template>

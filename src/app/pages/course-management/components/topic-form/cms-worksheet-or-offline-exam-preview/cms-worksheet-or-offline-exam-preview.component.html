@@ -1,0 +1,106 @@
+@if (isMobile) {
+  <ion-header class="ion-no-padding bg-white shadow-none">
+    <div class="flex min-h-3 items-center justify-between p-3" slot="start">
+      <app-hes-icon
+        (click)="onCloseModal()"
+        class="me-2 flex items-center text-[#A5A9B2] rtl:rotate-180"
+        [faIcon]="angleLeft"
+      ></app-hes-icon>
+    </div>
+  </ion-header>
+  <ion-content class="bg-white">
+    <ng-container [ngTemplateOutlet]="tpl"></ng-container>
+  </ion-content>
+} @else {
+  <ng-container [ngTemplateOutlet]="tpl"></ng-container>
+}
+
+<ng-template #tpl>
+  <div *transloco="let t" class="p-4 pt-0 md:pt-4">
+    <div class="flex flex-col gap-6">
+      <div class="flex flex-col rounded-lg lg:border lg:border-gray-200">
+        <div class="flex items-center justify-between px-6 pb-5 md:py-5">
+          <div class="text-2xl font-medium leading-7 text-gray-900">
+            {{ modalTitle }}
+          </div>
+          <app-hes-icon
+            (click)="onCloseModal()"
+            class="flex cursor-pointer items-center text-[#A5A9B2] rtl:rotate-180"
+            [faIcon]="closeIcon"
+          ></app-hes-icon>
+        </div>
+        <div class="flex flex-col gap-6 lg:grid lg:grid-cols-2 lg:gap-0">
+          @for (
+            item of gridData;
+            track $index;
+            let last = $last;
+            let odd = $odd
+          ) {
+            <div
+              [ngClass]="{
+                'h-auto lg:col-span-2': item.type === 'paragraph',
+                'lg:h-[4.5rem]': item.type !== 'paragraph',
+                'lg:border-e': !odd && item.type !== 'paragraph'
+              }"
+              class="flex flex-col items-start justify-between gap-2 lg:flex-row lg:items-center lg:gap-0 lg:border-t lg:border-gray-200"
+            >
+              <div
+                [ngClass]="{
+                  'w-1/4': item.type === 'paragraph',
+                  'w-1/2': item.type !== 'paragraph'
+                }"
+                class="flex h-full items-center justify-start text-base font-semibold text-[#141519] lg:px-6 lg:py-4 lg:text-sm lg:font-normal lg:text-gray-500"
+              >
+                {{ item.title }}
+              </div>
+              <div
+                [ngClass]="{
+                  'lg:w-3/4': item.type === 'paragraph',
+                  'lg:w-1/2': item.type !== 'paragraph'
+                }"
+                class="flex h-full items-center justify-start lg:p-4"
+              >
+                @if (item.type === "badge") {
+                  <app-submission-status
+                    status="PENDING"
+                  ></app-submission-status>
+                } @else if (item.type === "paragraph") {
+                  <p class="text-sm text-[#2E3543] lg:text-[#7F8491]">
+                    {{ item.value }}
+                  </p>
+                } @else if (item.type === "date") {
+                  <app-hes-date-viewer
+                    [date]="item.value || ''"
+                    [format]="'dateTime'"
+                  ></app-hes-date-viewer>
+                } @else {
+                  <div
+                    class="text-sm capitalize text-[#2E3543] lg:font-bold lg:text-[#101828]"
+                  >
+                    {{ item.value }}
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+      @if (worksheet) {
+        <div class="hes-card flex flex-col gap-5 px-6 py-5">
+          <div class="text-2xl font-medium capitalize leading-7 text-gray-900">
+            {{ t("enum.WORKSHEET") }}
+          </div>
+          <div class="flex flex-wrap gap-3">
+            @for (item of worksheet; track $index) {
+              <app-hes-attachment-preview
+                [attachment]="item"
+                [fileName]="item?.key"
+                [removable]="false"
+              ></app-hes-attachment-preview>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</ng-template>

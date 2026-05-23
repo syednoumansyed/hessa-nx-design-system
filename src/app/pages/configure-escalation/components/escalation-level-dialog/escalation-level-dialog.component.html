@@ -1,0 +1,99 @@
+<div *transloco="let t" class="flex flex-col justify-start gap-4">
+  <div class="mb-4 border-b pb-6">
+    <div class="flex items-center">
+      <app-hes-icon
+        class="me-2 mt-1 text-xl text-primary-400"
+        [hesIcon]="{ src: 'assets/icons/school.svg' }"
+      ></app-hes-icon>
+      <div class="text-lg font-semibold text-gray-900">
+        {{ t("global.school.title") }}
+      </div>
+    </div>
+    <div class="mt-4 text-gray-500">
+      {{ selectedSchool()?.name }}
+    </div>
+  </div>
+
+  @if (!(isEdit && updateData.levelNumber === 0)) {
+    <div class="mb-2 pb-2">
+      <div class="flex items-center">
+        <div class="text-xl font-semibold text-gray-900">
+          {{ t("support_ticket.escalation_level_details.title") }}
+        </div>
+      </div>
+      <div class="mt-4 text-lg font-semibold text-gray-700">
+        {{ determineEscalationlevelTxt() }}
+      </div>
+    </div>
+  }
+
+  <div class="mb-2">
+    <div class="flex items-center">
+      <app-hes-icon
+        class="me-2 mt-1 text-xl text-primary-400"
+        [hesIcon]="{ src: 'assets/icons/ticket.svg' }"
+      ></app-hes-icon>
+      <div class="text-lg font-semibold text-gray-900">
+        {{ t("support_ticket.ticket_type.label") }}
+      </div>
+    </div>
+    <div class="mt-4 text-gray-500">
+      {{ t(escalation.supportType.displayName) | uppercase }}
+    </div>
+  </div>
+
+  <form
+    [formGroup]="form"
+    class="flex w-full flex-col items-end justify-start gap-4"
+  >
+    <div class="grid grid-cols-1 gap-8 gap-y-4 self-stretch md:grid-cols-1">
+      @for (control of formConfig(); track $index) {
+        @if (
+          !(
+            control.formControlName === "days" &&
+            isEdit &&
+            updateData.levelNumber === 0
+          )
+        ) {
+          <div class="flex-1">
+            <app-form-control-generator
+              [control]="control"
+            ></app-form-control-generator>
+          </div>
+        }
+      }
+    </div>
+  </form>
+</div>
+
+<ng-template #customselectOption let-item="item">
+  @if (item.value === -1) {
+    {{ item.displayedValue }}
+  } @else {
+    <div class="flex items-start gap-2 lg:items-center">
+      <fa-duotone-icon
+        [icon]="faUserTieHair"
+        primaryColor="#1B84FF"
+        secondaryColor="#1B84FF"
+        secondaryOpacity="0.4"
+        [size]="'lg'"
+      ></fa-duotone-icon>
+      <div
+        class="flex flex-col text-[0.9rem] font-medium capitalize leading-6 text-[#7F8491] lg:flex-row"
+      >
+        <span class="me-2 text-gray-900"> {{ item.displayedValue }}, </span>
+        <span *transloco="let t" class="me-2"
+          >{{ t("global.national_id.title") }}:
+          <span class="text-gray-900">{{ item.nationalId }}</span
+          >,
+        </span>
+        <span *transloco="let t"
+          >{{ t("global.role.title") }}:
+          <span class="text-gray-900">
+            {{ joinRoleNames(item.roles) }}</span
+          ></span
+        >
+      </div>
+    </div>
+  }
+</ng-template>

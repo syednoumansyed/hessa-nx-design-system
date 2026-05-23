@@ -1,0 +1,51 @@
+<div *transloco="let t" class="p-4">
+  <div class="mb-3 flex justify-between border-b pb-4">
+    <div class="text-xl font-semibold text-gray-900">
+      {{ t("grade_management.add_new_entry.title") }}
+    </div>
+    <fa-icon
+      class="mt-1 cursor-pointer text-[#929CB5] hover:text-[#0000008a]"
+      [icon]="faClose"
+      size="xl"
+      (click)="closeModal()"
+    ></fa-icon>
+  </div>
+  <form [formGroup]="form">
+    <app-form-control-generator
+      [control]="entryForm()"
+    ></app-form-control-generator>
+    <div class="mt-6">
+      <div class="flex flex-col gap-2">
+        <ion-button
+          hesBtn
+          hesColor="white"
+          [hesSize]="isMobile ? 'md' : 'xl'"
+          class="w-full md:w-auto"
+          (click)="closeModal()"
+        >
+          {{ t("global.cancel.btn") }}
+        </ion-button>
+        <ion-button
+          [disabled]="
+            form.invalid || isLoading || entryTitle === form.value.title
+          "
+          hesBtn
+          hesColor="primary"
+          [hesSize]="isMobile ? 'md' : 'xl'"
+          class="w-full md:w-auto"
+          (click)="isEdit() ? onUpdateEntry() : onAddNewEntry()"
+        >
+          @if (isLoading) {
+            <ion-spinner class="spinner me-2" name="crescent"></ion-spinner>
+          }
+
+          {{
+            isEdit()
+              ? t("grade_management.update_entry.btn")
+              : t("grade_management.add_entry.btn")
+          }}
+        </ion-button>
+      </div>
+    </div>
+  </form>
+</div>

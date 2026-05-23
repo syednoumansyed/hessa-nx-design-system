@@ -1,0 +1,103 @@
+ion-header.chat-header {
+  --padding-top: 0;
+  --padding-bottom: 0;
+
+  ion-toolbar.chat-toolbar {
+    --background: #fff;
+    --border-color: #eaecf0;
+    --padding-bottom: 0;
+    --padding-top: 0;
+    --padding-end: 0;
+    --padding-start: 0;
+    --min-height: auto;
+  }
+}
+
+ion-footer {
+  --padding-top: 0;
+  --padding-bottom: 0;
+
+  ion-toolbar {
+    --min-height: auto;
+    --padding-top: 0;
+    --padding-bottom: 0;
+  }
+}
+
+// Ensure proper mobile layout
+:host {
+  &.mobile-chat {
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+
+    ion-content.chat-content {
+      flex: 1;
+      --padding-bottom: 0;
+      --padding-top: 0;
+    }
+
+    ion-footer {
+      flex-shrink: 0;
+    }
+  }
+}
+
+// Mobile chat container styling
+.mobile-chat-container {
+  --admin-banner-height: 0px; // Default to 0, dynamically set via style binding
+  height: calc(100dvh - var(--admin-banner-height));
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 1023px) {
+  :host.mobile-chat {
+    height: 100dvh;
+  }
+}
+
+ion-header.chat-header {
+  position: relative;
+  z-index: 10;
+}
+
+ion-footer {
+  position: relative;
+  z-index: 10;
+}
+
+// Android (md mode) only: Remove safe area insets.
+// On Android with StatusBar.setOverlaysWebView({ overlay: true }),
+// Ionic applies non-zero --ion-safe-area-top/bottom values for the status bar.
+// The chat screen doesn't need these on Android since there's no notch/dynamic island.
+// iOS safe area is preserved — this block does NOT match on iOS (.ios mode).
+:host-context(.md) {
+  --ion-safe-area-top: 0px;
+  --ion-safe-area-bottom: 0px;
+
+  ion-header.chat-header {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+
+    ion-toolbar.chat-toolbar {
+      padding-top: 0 !important;
+      margin-top: 0 !important;
+    }
+  }
+
+  ion-footer {
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+
+    ion-toolbar {
+      padding-bottom: 0 !important;
+      margin-bottom: 0 !important;
+    }
+  }
+
+  ion-content.chat-content {
+    --offset-top: 0;
+    --offset-bottom: 0;
+  }
+}

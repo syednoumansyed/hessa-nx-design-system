@@ -1,0 +1,74 @@
+<!-- dark overlay (your Ionic/Angular modal backdrop can supply this) -->
+<div class="flex items-center justify-center p-4" *transloco="let t">
+  <!-- white card -->
+  <div class="w-full max-w-5xl rounded-lg bg-white shadow-lg">
+    <!-- ───── content area ───── -->
+    <div class="p-8 sm:p-10">
+      <!-- title -->
+      <h2 class="mb-8 text-lg font-semibold text-gray-900">
+        {{ t("grade_management.view_recipient.txt", { Type: contentType }) }}
+      </h2>
+
+      <!-- info grid -->
+      <div class="grid grid-cols-1 gap-x-20 gap-y-8 text-base sm:grid-cols-2">
+        <!-- left column -->
+        <div class="space-y-8">
+          <div>
+            <p class="text-base font-semibold text-gray-800">
+              {{ t("grade_management.published_date.title") }}
+            </p>
+            <p class="mt-1 text-base text-gray-700">
+              {{ publishedDate | hesDate }}
+            </p>
+          </div>
+
+          <div>
+            <p class="text-base font-semibold text-gray-800">
+              {{ t("course_management.class.title") }}
+            </p>
+            <p class="mt-1 text-base text-gray-700">
+              {{ allClassesSelected() ? "All Classes, " : "" }}{{ classText() }}
+            </p>
+          </div>
+
+          <div>
+            <p class="text-base font-semibold text-gray-800">
+              {{ t("resource.student") }}
+            </p>
+            @if (allStudentsSelected() || allClassesSelected()) {
+              <p class="mt-1 text-base text-gray-700">
+                {{ t("global.all_students.title") }}
+              </p>
+            }
+          </div>
+        </div>
+
+        <!-- students list (two‑column table) -->
+        @if (students().length > 0 && !allStudentsSelected()) {
+          <div class="mt-2 sm:col-span-2">
+            <div class="overflow-hidden rounded-lg border">
+              <table class="w-full table-fixed text-sm">
+                <tbody class="divide-y">
+                  <tr
+                    *ngFor="let s of students(); let i = index"
+                    class="divide-x divide-gray-300"
+                    [ngClass]="i % 2 ? 'bg-gray-50' : 'bg-white'"
+                  >
+                    <td class="w-1/2 px-4 py-2">{{ s.displayName }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- ───── footer / action bar ───── -->
+    <div class="flex justify-end rounded-b-lg border-t bg-gray-50 px-8 py-6">
+      <ion-button hesBtn color="primary" (click)="edit()">{{
+        t("global.edit.btn")
+      }}</ion-button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,8 @@
+<ng-container>
+  @for (item of items; track item.id) {
+    <app-extend-time-list-item
+      [item]="item"
+      (itemDeleted)="onItemDeleted()"
+    ></app-extend-time-list-item>
+  }
+</ng-container>

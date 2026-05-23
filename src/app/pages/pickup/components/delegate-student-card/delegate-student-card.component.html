@@ -1,0 +1,76 @@
+<div
+  *transloco="let t"
+  [class]="
+    'flex items-center gap-ds-sm rounded-ds-xl border-4 border-solid p-ds-xl ' +
+    cardClass()
+  "
+>
+  <!-- Avatar -->
+  <div class="relative h-[48px] w-[48px] flex-shrink-0">
+    <app-ds-avatar
+      [fullName]="student().displayName"
+      [imageUrl]="student().imageUrl"
+      class="block"
+      size="xl"
+      [ngClass]="{ 'opacity-50': isDisabled() }"
+    />
+  </div>
+
+  <!-- Student Info -->
+  <div class="flex flex-1 flex-col gap-ds-xs">
+    <!-- Status Badge (for non-allowed statuses) -->
+    @if (student().status !== "allowed") {
+      <span [class]="'single-line-caption-mid-emphasis ' + statusClass()">
+        {{ t(statusLabel()) }}
+      </span>
+    }
+
+    <!-- Name -->
+    <span
+      class="content-md-high-emphasis"
+      [ngClass]="{
+        'text-emphasis-high': !isDisabled(),
+        'text-emphasis-mid': isDisabled(),
+      }"
+    >
+      {{ student().displayName }}
+    </span>
+
+    <!-- Level and Class -->
+    <div class="flex items-center gap-ds-md">
+      <span
+        class="single-line-caption-mid-emphasis"
+        [ngClass]="{
+          'text-emphasis-mid': !isDisabled(),
+          'text-emphasis-low': isDisabled(),
+        }"
+      >
+        {{ student().level }}
+      </span>
+
+      <span class="h-[4px] w-[4px] rounded-full bg-emphasis-low"></span>
+
+      <span
+        class="single-line-caption-mid-emphasis"
+        [ngClass]="{
+          'text-emphasis-mid': !isDisabled(),
+          'text-emphasis-low': isDisabled(),
+        }"
+      >
+        {{ student().className }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Checkbox (only for allowed students) -->
+  @if (student().status === "allowed") {
+    <div class="flex items-center p-[4px]">
+      <app-ds-checkbox
+        [defaultValue]="student().isSelected"
+        [disabled]="isDisabled()"
+        size="sm"
+        (checkedChange)="onCheckboxChange($event)"
+      />
+    </div>
+  }
+</div>

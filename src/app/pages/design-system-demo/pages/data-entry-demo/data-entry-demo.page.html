@@ -1,0 +1,71 @@
+<ion-content>
+  <div class="p-4 md:p-6">
+    <app-demo-page-wrapper title="Data Entry">
+      <!-- Time Picker -->
+      <h2 class="heading-h2-high-emphasis mb-4">Time Picker</h2>
+      <form [formGroup]="timeForm" class="flex max-w-[340px] flex-col gap-4">
+        <ds-time-picker-control
+          formControlName="time"
+          [label]="'Start Time'"
+        ></ds-time-picker-control>
+        <ds-time-picker-control
+          formControlName="endTime"
+          [label]="'End Time'"
+        ></ds-time-picker-control>
+        <ds-time-picker-control
+          formControlName="disabledField"
+          [label]="'Disabled Field'"
+        ></ds-time-picker-control>
+        <div class="content-sm-mid-emphasis">
+          Start time: {{ timeForm.value.time | json }} End time: {{
+          timeForm.value.endTime | json }}
+        </div>
+      </form>
+
+      <!-- Date Picker -->
+      <h2 class="heading-h2-high-emphasis mb-4 mt-8">Date Picker</h2>
+      <form
+        [formGroup]="datePickerForm"
+        class="flex max-w-[340px] flex-col gap-4"
+      >
+        <app-ds-form-control-generator
+          [control]="datePickerControl"
+        ></app-ds-form-control-generator>
+        <app-ds-form-control-generator
+          [control]="dateRangePickerControl"
+        ></app-ds-form-control-generator>
+        <div class="content-sm-mid-emphasis">
+          Selected date: {{ datePickerForm.value.selectedDate | json }}
+        </div>
+        <div class="content-sm-mid-emphasis">
+          Date range: {{ datePickerForm.value.dateRange | json }}
+        </div>
+      </form>
+
+      <!-- Attachment -->
+      <h2 class="heading-h2-high-emphasis mb-4 mt-8">Attachment</h2>
+      <div class="mb-4 flex flex-col gap-4">
+        <ds-attachment-form-control
+          [formControl]="attachmentControl"
+          [isMultiple]="true"
+        ></ds-attachment-form-control>
+        <ds-attachment-form-control
+          [formControl]="attachmentControl"
+          [acceptFileTypes]="['IMAGES']"
+        ></ds-attachment-form-control>
+        <ds-attachment-form-control
+          [formControl]="attachmentControl"
+          [acceptFileTypes]="['VIDEOS']"
+        ></ds-attachment-form-control>
+        <ds-attachment-form-control
+          [formControl]="attachmentControl"
+          [acceptFileTypes]="['FILES']"
+        ></ds-attachment-form-control>
+      </div>
+
+      <!-- Option Creator -->
+      <h2 class="heading-h2-high-emphasis mb-4 mt-8">Option Creator</h2>
+      <app-option-creator-demo></app-option-creator-demo>
+    </app-demo-page-wrapper>
+  </div>
+</ion-content>

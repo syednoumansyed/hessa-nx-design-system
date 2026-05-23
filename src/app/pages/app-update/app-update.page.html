@@ -1,0 +1,22 @@
+<ion-content class="ds-page-content">
+  <div class="p-4" *transloco="let t">
+    <div class="mt-5 p-4 text-center">
+      <img src="assets/illustrations/app-update.png" alt="app_update" />
+      <div class="mt-6 text-lg font-black">
+        {{t('global.update_req.title')}}
+      </div>
+      <div class="mt-4">{{t('global.update_req.txt')}}</div>
+    </div>
+
+    <div class="absolute bottom-2 left-0 right-0 p-4">
+      <ion-button
+        hesBtn
+        color="primary"
+        (click)="updateApp()"
+        class="mt-8 w-full"
+      >
+        {{t('global.update_now.btn')}}
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

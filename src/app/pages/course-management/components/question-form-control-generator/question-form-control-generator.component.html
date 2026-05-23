@@ -1,0 +1,211 @@
+<div
+  class="lg:rounded-lg lg:border lg:border-solid lg:bg-white lg:px-6 lg:py-8"
+  *transloco="let t"
+>
+  <fieldset [formGroup]="form">
+    <div
+      class="flex w-full flex-col items-stretch gap-4 self-stretch text-[#242424]"
+    >
+      @if (config().isExam) {
+        <div
+          class="mb-1 rounded border px-[0.875rem] py-[0.625rem] lg:border-none lg:shadow-xs"
+        >
+          <div class="text-base font-semibold leading-5">
+            {{ t("content_management.question.label") }}
+            <span class="font-bold">
+              ({{ config().order }}/{{ config().totalQuestions }})
+            </span>
+          </div>
+        </div>
+      }
+      <div
+        class="rounded border px-[0.875rem] py-[0.625rem] lg:border-none lg:shadow-xs"
+      >
+        <legend class="unicode-text text-sm">
+          {{ config().question }}
+          @if (!config().isExam) {
+            <span class="font-bold">
+              ({{ config().order }}/{{ config().totalQuestions }})
+            </span>
+          }
+        </legend>
+      </div>
+      @if (config().attachment) {
+        <figure>
+          <ion-img
+            [src]="config().attachment?.url"
+            [alt]="config().attachment?.key"
+          />
+        </figure>
+      }
+
+      @switch (config().questionType) {
+        @case ("MCQ") {
+          @if (config().isResultView && !answer()) {
+            <span class="text-xs font-medium text-[#D92D20]">{{
+              t("content_management.question.not.attempted")
+            }}</span>
+          }
+          <ol class="flex flex-col items-start gap-4">
+            @for (option of config().options; track option.value) {
+              <li class="flex w-full items-center gap-4">
+                <label
+                  [ngClass]="{
+                    '!border-solid border-primary bg-primary-50':
+                      option.value === answer() && !config().showCorrectAnswer,
+                    '!border-solid border-success-500 bg-success-50':
+                      option.correctAnswer && config().showCorrectAnswer,
+                    '!border-solid border-error-500 bg-error-50':
+                      option.value === answer() &&
+                      !option.correctAnswer &&
+                      config().showCorrectAnswer,
+                    'pointer-events-none cursor-none':
+                      config().showCorrectAnswer || config().showSubmission,
+                    '!border-solid': isMobile
+                  }"
+                  class="flex w-full cursor-pointer items-center justify-between rounded border px-[0.875rem] py-[0.625rem] lg:border-none lg:shadow-xs"
+                  ><input
+                    type="radio"
+                    [value]="option.value"
+                    class="hidden"
+                    [formControlName]="formControlName()"
+                    (ngModelChange)="onSelectionChange($event)"
+                  />{{ option.displayedValue }}
+                  @if (config().showCorrectAnswer && !isMobile()) {
+                    @if (option.correctAnswer) {
+                      <fa-icon
+                        class="text-success-500"
+                        [icon]="faCheck"
+                      ></fa-icon>
+                    } @else if (
+                      option.value === answer() && !option.correctAnswer
+                    ) {
+                      <fa-icon
+                        class="text-error-500"
+                        [icon]="faXmark"
+                      ></fa-icon>
+                    }
+                  }
+                </label>
+              </li>
+            }
+          </ol>
+        }
+        @case ("TRUE_OR_FALSE") {
+          @if (config().isResultView && !answer()) {
+            <span class="text-xs font-medium text-[#D92D20]">{{
+              t("content_management.question.not.attempted")
+            }}</span>
+          }
+          <ul class="flex flex-col items-start gap-4">
+            @for (option of config().options; track option.value) {
+              <li class="w-full">
+                <label
+                  [ngClass]="{
+                    '!border-solid border-primary bg-primary-50':
+                      option.value === answer() && !config().showCorrectAnswer,
+                    '!border-solid border-success-500 bg-success-50':
+                      option.correctAnswer && config().showCorrectAnswer,
+                    '!border-solid border-error-500 bg-error-50':
+                      option.value === answer() &&
+                      !option.correctAnswer &&
+                      config().showCorrectAnswer,
+                    'pointer-events-none cursor-none':
+                      config().showCorrectAnswer || config().showSubmission,
+                    '!border-solid': isMobile
+                  }"
+                  class="flex w-full cursor-pointer items-center justify-between rounded border px-[0.875rem] py-[0.625rem] lg:border-none lg:shadow-xs"
+                  ><input
+                    type="radio"
+                    [value]="option.value"
+                    class="hidden"
+                    [formControlName]="formControlName()"
+                    (ngModelChange)="onSelectionChange($event)"
+                  />{{ option.displayedValue }}
+                  @if (config().showCorrectAnswer && !isMobile()) {
+                    @if (option.correctAnswer) {
+                      <fa-icon
+                        class="text-success-500"
+                        [icon]="faCheck"
+                      ></fa-icon>
+                    } @else if (
+                      option.value === answer() && !option.correctAnswer
+                    ) {
+                      <fa-icon
+                        class="text-error-500"
+                        [icon]="faXmark"
+                      ></fa-icon>
+                    }
+                  }
+                </label>
+              </li>
+            }
+          </ul>
+        }
+        @case ("ESSAY") {
+          <!-- TODO -->
+          <label
+            for="model-answer"
+            class="text-base font-semibold text-[#141519]"
+            >Model Answer</label
+          >
+          <textarea
+            readonly
+            placeholder="write your answer here....."
+            id="model-answer"
+            [rows]="8"
+            [value]="config().modelEssayAnswer"
+            type="text"
+            class="w-full resize-none rounded-[0.25rem] border border-[#F7F7F7] bg-white px-[0.875rem] py-[0.625rem] text-sm text-[#7F8491] md:rounded-lg lg:shadow-xs"
+          ></textarea>
+
+          @if (config().allowAttachmentAsEssayAnswer) {
+            @if (config().showSubmission || config().showCorrectAnswer) {
+              <label class="text-base font-semibold text-[#141519]"
+                >Attachment</label
+              >
+              <div class="flex flex-wrap gap-3">
+                @for (item of config().submittedAttachments; track item.key) {
+                  <app-hes-attachment-preview
+                    [attachment]="item"
+                    [fileName]="item.key"
+                    [removable]="false"
+                  ></app-hes-attachment-preview>
+                }
+              </div>
+            } @else {
+              <app-hes-attachment-form-control
+                [formControlName]="config().formControlName"
+                [label]="'Upload attachments'"
+                [subLabel]="
+                  'You can upload attachments as Videos, Pictures and Files'
+                "
+                [placeholder]="'Images(.png, .jpg) or Pdf file (.mp4 5MBs)'"
+                [acceptFileTypes]="['IMAGES', 'FILES']"
+                [maxSizeInMB]="5"
+                [isMultiple]="true"
+                [isReplacePrevious]="true"
+                (ngModelChange)="onAttachmentChange($event)"
+              ></app-hes-attachment-form-control>
+            }
+          } @else {
+            <label
+              [for]="config().id"
+              class="text-base font-semibold text-[#141519]"
+              >Answer</label
+            >
+            <ion-textarea
+              (ionInput)="onTextValueChange($event)"
+              [debounce]="1200"
+              [readonly]="config().showSubmission || config().showCorrectAnswer"
+              [id]="config().id"
+              [formControlName]="config().formControlName"
+              placeholder="write your answer here....."
+              class="hes-textarea essay-textarea rounded-[0.25rem] px-[0.875rem] py-[0.625rem] lg:p-0 lg:shadow-xs"
+            ></ion-textarea>
+          }
+        }
+      }
+    </div>
+  </fieldset>
+</div>

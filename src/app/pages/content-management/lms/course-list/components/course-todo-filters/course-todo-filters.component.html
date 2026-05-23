@@ -1,0 +1,16 @@
+<div *transloco="let t" class="flex flex-nowrap gap-ds-md overflow-x-auto">
+  @for (filter of filterData(); track filter.id) {
+    <div
+      class="single-line-caption-mid-emphasis flex-shrink-0 cursor-pointer whitespace-nowrap rounded-full border-2 p-ds-md text-emphasis-high"
+      [ngClass]="{
+        'border-brand-600 bg-brand-100': filter.selected,
+        'border-stroke-black-08 bg-white': !filter.selected,
+        'hover:bg-brand-300': filter.selected,
+        'hover:bg-black-4': !filter.selected
+      }"
+      (click)="onFilterSelected(filter.id)"
+    >
+      {{ filter.label }}
+    </div>
+  }
+</div>

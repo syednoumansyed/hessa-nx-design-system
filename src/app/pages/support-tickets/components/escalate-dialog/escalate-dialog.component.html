@@ -1,0 +1,74 @@
+<ng-container *transloco="let t">
+  <div class="flex flex-col items-stretch gap-8 px-4 py-8 lg:p-14">
+    <div class="flex flex-col items-stretch gap-5">
+      <div class="flex items-center justify-between gap-2">
+        <div class="text-lg font-semibold leading-7 text-gray-900 lg:text-2xl">
+          {{
+            !isResolve
+              ? t("support_ticket.add_comment.title")
+              : t("support_ticket.add_response.title")
+          }}
+        </div>
+        <app-hes-icon
+          (click)="closeModal()"
+          class="cursor-pointer"
+          [faIcon]="faXmark"
+        ></app-hes-icon>
+      </div>
+      <div class="h-[0.0625rem] w-full bg-gray-200"></div>
+      <div class="hes-card p-3 lg:p-6">
+        <ion-textarea
+          [formControl]="commentControl"
+          [placeholder]="t('support_ticket.add_comment.placeholder')"
+          [required]="true"
+          class="hes-textarea"
+        ></ion-textarea>
+      </div>
+      <!-- Attachments input with event binding -->
+      <app-hes-attachment-form-control
+        [formControl]="attachmentControl"
+        [label]="t('global.attachments.title')"
+        [placeholder]="t('global.file_types.txt')"
+        [acceptFileTypes]="['IMAGES', 'FILES']"
+        [maxSizeInMB]="5"
+        [isMultiple]="true"
+        (ngModelChange)="onAttachmentsChange($event)"
+        readonly
+      ></app-hes-attachment-form-control>
+    </div>
+    <div class="flex w-full items-center justify-end">
+      <div
+        class="flex w-full flex-col gap-3 lg:w-[25rem] lg:flex-row lg:items-center"
+      >
+        <ion-button
+          hesSize="lg"
+          class="order-last flex-grow lg:order-first"
+          *transloco="let t"
+          hesColor="white"
+          (click)="closeModal()"
+        >
+          {{ t("global.cancel.btn") }}
+        </ion-button>
+        <ion-button
+          [disabled]="commentControl.invalid"
+          (click)="
+            onSubmit(
+              form.get('commentControl')?.value,
+              form.get('attachment')?.value
+            )
+          "
+          hesSize="lg"
+          class="flex-grow"
+        >
+          {{
+            !isResolve && !deEscalate
+              ? t("support_ticket.escalate.btn")
+              : deEscalate
+                ? t("support_ticket.de_escalate.btn")
+                : t("support_ticket.resolve.btn")
+          }}
+        </ion-button>
+      </div>
+    </div>
+  </div>
+</ng-container>

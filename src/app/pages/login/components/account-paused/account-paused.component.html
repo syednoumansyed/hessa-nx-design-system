@@ -1,0 +1,31 @@
+<div class="flex h-full flex-col overflow-hidden">
+  <!-- Close Button - Fixed at top -->
+  <div class="flex flex-shrink-0 justify-end p-4">
+    <button
+      class="flex items-center justify-center rounded-full text-xl"
+      (click)="goBackToLogin()"
+    >
+      <app-ds-icon [icon]="'faSolidCircleXmark'"></app-ds-icon>
+    </button>
+  </div>
+
+  <!-- Content Container - Centered vertically -->
+  <div class="mt-20 flex flex-1 items-center justify-center px-4 pb-4">
+    <div class="w-full max-w-md text-center">
+      <!-- Mascot Image -->
+      <div class="mb-6">
+        <img [src]="imageSrc" [alt]="title" class="mx-auto h-auto w-64" />
+      </div>
+
+      <!-- Title -->
+      <h1 class="mb-3 text-2xl font-bold text-gray-900">
+        {{ title | transloco }}
+      </h1>
+
+      <!-- Description -->
+      <p class="text-base leading-relaxed text-gray-600">
+        {{ description | transloco }}
+      </p>
+    </div>
+  </div>
+</div>

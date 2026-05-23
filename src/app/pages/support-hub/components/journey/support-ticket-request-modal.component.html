@@ -1,0 +1,90 @@
+<div class="flex h-full w-full flex-col gap-ds-xl">
+  @if (!hasSubmitted()) {
+    <section class="flex flex-col gap-ds-xl">
+      <form class="flex flex-col gap-ds-2xl" [formGroup]="form">
+        <div class="flex flex-col">
+          <app-ds-textarea
+            formControlName="description"
+            [rows]="4"
+            [label]="'support.ticket.issue.describe' | dsTranslate"
+            [required]="true"
+            [placeholder]="descriptionPlaceholder"
+          ></app-ds-textarea>
+          <div class="content-sm-mid-emphasis text-emphasis-mid">
+            {{ "support.describe_issue.placeholder" | dsTranslate }}
+          </div>
+        </div>
+
+        <!-- Custom Fields Section -->
+        @if (customFields().length > 0) {
+          <div class="flex flex-col gap-ds-lg" [formGroup]="customFieldsForm">
+            @for (field of customFields(); track field.id) {
+              <app-ds-input
+                [formControlName]="`field_${field.id}`"
+                [label]="field.labelDisplayName"
+                [placeholder]="field.descriptionDisplayName ?? ''"
+                [required]="field.isRequired"
+              ></app-ds-input>
+            }
+          </div>
+        }
+
+        <div class="flex flex-col">
+          <ds-attachment-form-control
+            formControlName="attachments"
+            [isMultiple]="true"
+            [acceptFileTypes]="['IMAGES', 'FILES']"
+            [maxSizeInMB]="5"
+            [label]="'global.attachments.label' | dsTranslate"
+          ></ds-attachment-form-control>
+          <div class="content-xs-mid-emphasis mt-2 text-emphasis-mid">
+            {{ "support.upload.description" | dsTranslate }}
+          </div>
+        </div>
+
+        @if (allowPrivateRequest()) {
+          <div
+            class="flex items-center gap-ds-lg rounded-ds-xl border border-stroke-mid bg-surface-primary px-ds-lg py-ds-md shadow-sm"
+          >
+            <app-ds-switch
+              class="shrink-0"
+              formControlName="hideInitiatorName"
+              [onColor]="'bg-brand-600'"
+            ></app-ds-switch>
+
+            <div class="gap-ds-2xs flex flex-col">
+              <p class="heading-h5-high-emphasis text-emphasis-high">
+                {{ "support.hide_name.label" | dsTranslate }}
+              </p>
+              <p class="content-sm-mid-emphasis text-emphasis-mid">
+                {{ "support.chat.private.hint" | dsTranslate }}
+              </p>
+            </div>
+          </div>
+        }
+      </form>
+    </section>
+  }
+
+  @if (hasSubmitted()) {
+    <section
+      class="flex w-full flex-1 flex-col items-center justify-center gap-ds-2xl text-center"
+    >
+      <ds-animated-icon
+        icon="success-assessment"
+        size="334px"
+        [autoplay]="true"
+        [loop]="false"
+      />
+
+      <div class="flex flex-col items-center gap-ds-sm text-center">
+        <div class="heading-h4-high-emphasis text-emphasis-high">
+          {{ "support.request_sent.title" | dsTranslate }}
+        </div>
+        <div class="content-md-default text-emphasis-mid">
+          {{ "support.request_sent.description" | dsTranslate }}
+        </div>
+      </div>
+    </section>
+  }
+</div>

@@ -1,0 +1,107 @@
+<ng-container *transloco="let t">
+  <div class="hes-card flex flex-col">
+    <div class="mb-6 flex w-full justify-between">
+      <div class="text-lg font-semibold text-[#101828]">
+        {{ t("attendance.daily_end_time_to_submit_attendance.title") }}
+      </div>
+      <!-- Web: buttons inside card header -->
+      <div class="hidden md:flex">
+        @if (mode() === "edit") {
+          <ion-button (click)="onCancel()" hesBtn class="hes-btn--outline mr-4"
+            >{{ t("global.cancel.btn") }}
+          </ion-button>
+        }
+        @if (
+          (mode() === "create" && timeExtensionForm.dirty) || mode() === "edit"
+        ) {
+          <ion-button
+            *hesRbac="updateGlobalEndtimePermissionId"
+            (click)="onSave()"
+            hesBtn
+            class="hes-btn--primary"
+            [disabled]="timeExtensionForm.invalid"
+            >{{ t("global.save.btn") }}
+          </ion-button>
+        }
+        @if (mode() === "view") {
+          <ion-button
+            *hesRbac="updateGlobalEndtimePermissionId"
+            (click)="onEdit()"
+            hesBtn
+            class="hes-btn--primary"
+            >{{ t("global.edit.btn") }}
+          </ion-button>
+        }
+      </div>
+    </div>
+    @if (mode() === "create" || mode() === "edit") {
+      <form
+        [formGroup]="timeExtensionForm"
+        class="flex w-full flex-col items-end justify-start gap-8"
+      >
+        <div class="w-full">
+          @for (
+            control of timeExtensionConfig();
+            track control.formControlName
+          ) {
+            <div class="flex-1">
+              <app-form-control-generator
+                [control]="control"
+              ></app-form-control-generator>
+            </div>
+          }
+        </div>
+      </form>
+    } @else {
+      <div class="flex flex-col gap-2 text-base">
+        <label class="font-semibold text-[#272525]">
+          {{ t("attendance.end_time.title") }}
+        </label>
+        <div class="font-normal text-[#41434A]">{{ endTime | hesTime }}</div>
+      </div>
+    }
+  </div>
+
+  <!-- Mobile: buttons outside card -->
+  @if (mode() === "view") {
+    <ion-button
+      *hesRbac="updateGlobalEndtimePermissionId"
+      (click)="onEdit()"
+      hesBtn
+      class="hes-btn--primary mt-4 w-full md:hidden"
+      expand="block"
+      >{{ t("global.edit.btn") }}
+    </ion-button>
+  }
+  @if (mode() === "edit") {
+    <div class="mt-4 flex w-full flex-col gap-1 md:hidden">
+      <ion-button
+        *hesRbac="updateGlobalEndtimePermissionId"
+        (click)="onSave()"
+        hesBtn
+        class="hes-btn--primary w-full"
+        expand="block"
+        [disabled]="timeExtensionForm.invalid"
+        >{{ t("global.save.btn") }}
+      </ion-button>
+      <ion-button
+        (click)="onCancel()"
+        hesBtn
+        class="hes-btn--outline w-full"
+        expand="block"
+        >{{ t("global.cancel.btn") }}
+      </ion-button>
+    </div>
+  }
+  @if (mode() === "create" && timeExtensionForm.dirty) {
+    <ion-button
+      *hesRbac="updateGlobalEndtimePermissionId"
+      (click)="onSave()"
+      hesBtn
+      class="hes-btn--primary mt-4 w-full md:hidden"
+      expand="block"
+      [disabled]="timeExtensionForm.invalid"
+      >{{ t("global.save.btn") }}
+    </ion-button>
+  }
+</ng-container>

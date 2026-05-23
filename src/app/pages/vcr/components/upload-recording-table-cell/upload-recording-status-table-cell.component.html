@@ -1,0 +1,15 @@
+<div class="flex h-[22px] w-20 items-center justify-center" *transloco="let t">
+  @if (data.status === "PENDING") {
+    <div
+      class="rounded-xl border bg-[#FFFAEB] px-2 py-1 text-xs font-medium capitalize text-[#B54708]"
+    >
+      {{ t("global.pending.txt") }}
+    </div>
+  } @else {
+    <div
+      class="rounded-xl border bg-[#ECFDF3] px-2 py-1 text-xs font-medium capitalize text-[#027A48]"
+    >
+      {{ t("global.uploaded.txt") }}
+    </div>
+  }
+</div>

@@ -1,0 +1,63 @@
+@if (courseData()) {
+  <div
+    class="flex cursor-pointer flex-col gap-ds-lg rounded-ds-xl border-4 border-b-8 border-stroke-mid bg-white p-ds-2xl"
+    *transloco="let t"
+  >
+    <div>
+      <div class="flex flex-col gap-ds-sm">
+        <div class="h-[40px] w-[40px] rounded-ds-xl bg-brand-100">
+          <img src="{{ courseData().imageUrl }}" />
+        </div>
+
+        <div class="flex items-center justify-between">
+          <div class="heading-h4-high-emphasis text-emphasis-high">
+            {{ courseData().subject.displayName }}
+          </div>
+          <div
+            class="flex h-[24px] w-[24px] items-center justify-center rounded-full bg-brand-500"
+          >
+            <app-ds-icon [icon]="isRtl ? faChevronLeft : faChevronRight" />
+          </div>
+        </div>
+      </div>
+      <span class="single-line-caption-low-emphasis text-emphasis-mid"
+        >{{ courseData().currentWeekNumber }}/{{ courseData().weeksCount }}
+        {{ t("global.topics") }}</span
+      >
+    </div>
+    <div class="flex flex-col gap-ds-sm">
+      <app-ds-progress-bar
+        [progress]="courseData().courseProgressPercentage || 0"
+        [variant]="getProgressVariant()"
+      />
+      <div class="flex items-center gap-ds-md">
+        <app-topic-progress-status
+          [status]="courseData().courseProgressStatus"
+        />
+        @if (courseData()!.todoCount > 0 || courseData()!.missedCount > 0) {
+          <div class="flex items-center gap-ds-xs">
+            <app-ds-icon [icon]="faExclamation" class="text-error-ds-500" />
+            <div class="single-line-xs-mid-emphasis text-error-ds-600">
+              @if (courseData().todoCount && courseData()!.todoCount > 0) {
+                {{ courseData()!.todoCount }}
+                {{ t("content_management.todo.txt") }}
+              }
+              @if (
+                courseData().missedCount &&
+                courseData()!.missedCount > 0 &&
+                courseData().todoCount &&
+                courseData()!.todoCount > 0
+              ) {
+                ,
+              }
+              @if (courseData().missedCount && courseData()!.missedCount > 0) {
+                {{ courseData()!.missedCount }}
+                {{ t("content_management.missed.txt") }}
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}

@@ -1,0 +1,28 @@
+<ng-container *transloco="let t">
+  <ion-content class="ds-page-content">
+    <div class="flex flex-col gap-[42px] p-4">
+      <app-global-end-time></app-global-end-time>
+      <div class="flex items-center justify-between pl-2 text-center">
+        <div class="text-base font-semibold text-[#272525]">
+          {{ t("attendance.extend_time.title") }}
+        </div>
+        <ion-button
+          hesBtn
+          hesSize="sm"
+          hesColor="link"
+          (click)="addException()"
+        >
+          <fa-icon hesBtnIcon slot="start" [icon]="faPlus"></fa-icon>
+          {{ t("attendance.add_exception.btn") }}
+        </ion-button>
+      </div>
+    </div>
+    <div class="px-4 pb-4">
+      <app-extend-time-list
+        [items]="extendedEndTime"
+        (itemDeleted)="onItemDeleted()"
+      >
+      </app-extend-time-list>
+    </div>
+  </ion-content>
+</ng-container>

@@ -1,0 +1,63 @@
+<div
+  class="flex w-[361px] flex-shrink-0 cursor-pointer flex-col gap-ds-lg rounded-ds-2xl border-4 border-stroke-mid bg-surface-primary p-ds-xl"
+  (click)="onCardClick()"
+>
+  <!-- Top row: Chips and Time -->
+  <div class="mb-ds-sm flex items-center justify-between">
+    <div class="flex items-center gap-ds-md">
+      @if (showNewChip()) {
+        <!--        todo : commented temporarily until new design received for it-->
+        <!--        <app-ds-chip-->
+        <!--          variant="default"-->
+        <!--          startIcon="star-journals-new-feed"-->
+        <!--          text="New"-->
+        <!--          size="sm"-->
+        <!--        ></app-ds-chip>-->
+      }
+      <app-ds-chip
+        startIcon="journals-feed"
+        variant="primary"
+        text="Journal"
+        size="sm"
+      ></app-ds-chip>
+    </div>
+    <span class="content-xs-mid-emphasis font-bold text-indigo-400">
+      {{
+        journal().updatedAt || journal().createdAt || journal().journalDate
+          | hesTimeAgo
+      }}
+    </span>
+  </div>
+
+  <!-- Bottom row: Avatar and Name -->
+  <div class="flex items-center justify-between">
+    <div class="flex items-center gap-ds-sm">
+      <div class="flex-shrink-0">
+        <app-ds-avatar
+          [fullName]="journal().displayName"
+          [imageUrl]="journal().avatar || ''"
+          [color]="journal().profileColor"
+        ></app-ds-avatar>
+      </div>
+      <div class="min-w-0 flex-1">
+        <p class="content-sm-high-emphasis truncate">
+          {{ journal().displayName }}
+          @if (journal().type === "WEEKLY") {
+            {{ "journals.weekly.title" | dsTranslate }}
+            {{ "journals.journal.title" | dsTranslate }}
+          } @else {
+            {{ "journals.daily.title" | dsTranslate }}
+            {{ "journals.journal.title" | dsTranslate }}
+          }
+        </p>
+      </div>
+    </div>
+    <div class="flex-shrink-0">
+      <app-ds-icon
+        class="rtl:rotate-180"
+        [icon]="arrowIcon"
+        size="md"
+      ></app-ds-icon>
+    </div>
+  </div>
+</div>

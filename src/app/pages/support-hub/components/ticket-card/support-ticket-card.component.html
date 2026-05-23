@@ -1,0 +1,165 @@
+<div
+  class="relative flex w-full flex-col gap-ds-lg rounded-ds-xl border border-stroke-black-08 p-ds-xl shadow-none transition-colors md:rounded-none"
+  [class.bg-surface-brand-subtle]="selected()"
+  [class.bg-surface-primary]="!selected()"
+  [ngClass]="
+    selected()
+      ? [
+          'ltr:shadow-[inset_4px_0_0_0_var(--stroke-color-brand-strong)]',
+          'rtl:shadow-[inset_-4px_0_0_0_var(--stroke-color-brand-strong)]',
+        ]
+      : []
+  "
+  (click)="onCardClick()"
+>
+  <header class="flex items-center justify-between text-emphasis-mid">
+    <p class="content-xs-mid-emphasis">{{ ticket().ticketNumber }}</p>
+    <p class="content-xs-mid-emphasis">
+      {{ ticket().createdOn | hesTimeAgo }}
+    </p>
+  </header>
+
+  <div class="flex flex-wrap items-start justify-between gap-ds-md">
+    <div class="flex flex-col gap-ds-sm text-emphasis-high">
+      <p class="heading-h5-high-emphasis">{{ ticket().subCategory }}</p>
+      <div class="flex flex-wrap items-center gap-ds-sm">
+        <div
+          class="single-line-caption-mid-emphasis inline-flex items-center gap-ds-xs rounded-ds-2xl border border-stroke-black-08 px-ds-md py-ds-sm"
+          [ngClass]="[statusVm().backgroundClass, statusVm().textClass]"
+        >
+          @if (statusVm().icon) {
+            <app-ds-icon
+              [icon]="statusVm().icon"
+              [cssClass]="statusVm().iconColorClass"
+              size="sm"
+              aria-hidden="true"
+            ></app-ds-icon>
+          }
+          {{ statusVm().label }}
+        </div>
+        @if (categoryVm(); as category) {
+          <div
+            class="single-line-caption-mid-emphasis inline-flex items-center gap-ds-xs rounded-ds-2xl border border-stroke-black-08 px-ds-md py-ds-sm"
+            [ngClass]="[category.backgroundClass, category.textClass]"
+          >
+            @if (category.icon) {
+              <app-ds-icon
+                [icon]="category.icon"
+                [cssClass]="category.iconColorClass"
+                size="sm"
+                aria-hidden="true"
+              ></app-ds-icon>
+            }
+            {{ category.label }}
+          </div>
+        }
+      </div>
+    </div>
+
+    @if (menuVm(); as menu) {
+      <div (click)="$event.stopPropagation()">
+        <ds-responsive-menu
+          [items]="menu.items"
+          [triggerType]="'button'"
+          [triggerClass]="[
+            'flex h-10 w-10 items-center justify-center rounded-ds-full',
+            menu.backgroundClass,
+            menu.iconColorClass,
+          ]"
+          [triggerAriaLabel]="menu.ariaLabel"
+          (menuOpened)="onMenuOpened()"
+          (itemSelected)="onMenuItemSelected($event)"
+        >
+          <app-ds-icon [icon]="menu.icon"></app-ds-icon>
+        </ds-responsive-menu>
+      </div>
+    }
+  </div>
+
+  <div
+    class="rounded-ds-md bg-surface-pastel-background-blue px-ds-lg py-ds-md"
+  >
+    <p
+      class="content-md-default text-emphasis-high"
+      [ngClass]="schoolVm() ? ['line-clamp-1'] : ['line-clamp-2']"
+    >
+      {{ ticket().description }}
+    </p>
+    @if (schoolVm(); as school) {
+      <div
+        class="border-icon-low-emphasis mt-ds-md flex items-center gap-ds-md border-t pt-ds-sm"
+      >
+        <span class="me-2 flex h-8 w-8 items-center justify-center">
+          <app-ds-icon
+            [icon]="'school'"
+            [cssClass]="'text-surface-pastel-foreground-indigo'"
+            size="100%"
+            aria-hidden="true"
+          ></app-ds-icon>
+        </span>
+        <div class="flex flex-1 flex-col gap-ds-sm">
+          <p class="content-xs-mid-emphasis text-emphasis-mid">
+            {{ school.title }}
+          </p>
+          @if (school.subtitle) {
+            <p class="heading-h5-high-emphasis text-emphasis-high">
+              {{ school.subtitle }}
+            </p>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  <footer class="flex items-start justify-between gap-ds-lg text-emphasis-mid">
+    @if (ticket().initiatorDisplayName) {
+      <div class="flex flex-col gap-ds-xs">
+        <p class="content-xs-mid-emphasis">
+          {{ "support_ticket.reassign.by_label" | dsTranslate }}
+        </p>
+        <p class="content-xs-mid-emphasis text-emphasis-high">
+          {{ ticket().initiatorDisplayName }}
+        </p>
+      </div>
+    }
+    @if (footerProfilesVm(); as profiles) {
+      <div class="flex min-w-0 flex-col gap-ds-xs">
+        <p class="content-xs-mid-emphasis">
+          {{ assigneeVm()?.label }}
+        </p>
+        <p class="content-xs-mid-emphasis truncate text-emphasis-high">
+          @for (
+            profile of profiles.visible;
+            track profile.id;
+            let isLast = $last
+          ) {
+            {{ profile.displayName }}
+            @if (!isLast || profiles.remaining > 0) {
+              ,
+            }
+          }
+          @if (profiles.remaining > 0) {
+            +{{ profiles.remaining }}
+          }
+        </p>
+      </div>
+    } @else if (assigneeVm()) {
+      <div class="flex min-w-0 flex-col gap-ds-xs">
+        <p class="content-xs-mid-emphasis">
+          {{ assigneeVm()!.label }}
+        </p>
+        <p class="content-xs-mid-emphasis truncate text-emphasis-high">
+          @for (name of assigneeVm()!.visible; track name; let isLast = $last) {
+            {{ name }}
+            @if (!isLast || assigneeVm()!.remaining > 0) {
+              ,
+            }
+          }
+          @if (assigneeVm()!.remaining > 0) {
+            +{{ assigneeVm()!.remaining }}
+          }
+        </p>
+      </div>
+    }
+  </footer>
+</div>

@@ -1,0 +1,26 @@
+<button
+  [attr.type]="type()"
+  [disabled]="disabled() || loading()"
+  [title]="title()"
+  [class]="buttonClasses()"
+>
+  @if (loading()) {
+    <ion-spinner
+      class="text-content-high h-[{{ iconSizeClass() }}] w-[{{
+        iconSizeClass()
+      }}]"
+    ></ion-spinner>
+  }
+
+  @if (iconStart() && !loading()) {
+    <app-ds-icon [icon]="iconStart()!" [ngClass]="iconSizeClass()" />
+  }
+
+  <span class="content-wrapper whitespace-nowrap empty:hidden">
+    <ng-content></ng-content>
+  </span>
+
+  @if (iconEnd() && !loading()) {
+    <app-ds-icon [icon]="iconEnd()!" [ngClass]="iconSizeClass()" />
+  }
+</button>

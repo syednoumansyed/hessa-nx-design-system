@@ -1,0 +1,52 @@
+@if (list()?.length) {
+  <ng-container *transloco="let t">
+    <div
+      class="hes-card flex flex-col gap-4 rounded-lg bg-white p-6 lg:gap-0 lg:p-0"
+    >
+      <div class="flex items-center gap-2 lg:border-b lg:px-6 lg:py-4">
+        <div
+          class="text-sm font-semibold uppercase leading-7 text-[#AEAFB8] lg:text-lg lg:normal-case lg:text-gray-900"
+        >
+          {{ t("user_management.connected_profiles.title") }}
+        </div>
+        <div
+          class="hes-badge hes-badge--warnning invisible capitalize lg:visible"
+        >
+          {{ list()?.length }} {{ t("global.roles.title") }}
+        </div>
+      </div>
+      @for (profile of list(); track $index) {
+        <div class="flex items-center justify-between lg:px-6 lg:py-4">
+          <div class="flex items-center gap-3">
+            <app-ds-avatar
+              [fullName]="profile.displayName"
+              [color]="profile.profileColor"
+            />
+
+            <div class="text-start lg:flex">
+              <div class="text-sm font-medium leading-tight text-gray-900">
+                {{ profile.displayName }}
+              </div>
+              <div
+                class="text-sm font-normal leading-tight text-gray-500 lg:ms-6"
+              >
+                {{ t("global." + profile?.type?.toLowerCase() + ".txt") }}
+              </div>
+            </div>
+          </div>
+          <ds-button
+            variant="secondary"
+            size="sm"
+            (click)="onClickSwitch(profile)"
+          >
+            {{
+              hasOwnProfile() && currentSelectProfile() !== profile.type
+                ? t("global.switch.btn")
+                : t("global.view_profile.btn")
+            }}
+          </ds-button>
+        </div>
+      }
+    </div>
+  </ng-container>
+}

@@ -1,0 +1,26 @@
+<ul class="flex flex-col gap-ds-lg px-ds-xl py-ds-md">
+  @for (item of items(); track item.labelKey ?? item.label) {
+    <li>
+      <button
+        type="button"
+        class="flex w-full items-center gap-ds-xl rounded-ds-lg py-2 text-left"
+        (click)="onItemClick(item)"
+      >
+        <span
+          class="flex h-10 w-10 items-center justify-center rounded-ds-full"
+          [ngClass]="item.iconBackgroundClass"
+        >
+          <app-ds-icon
+            [icon]="item.icon"
+            [cssClass]="item.iconColorClass"
+            aria-hidden="true"
+            size="xl"
+          ></app-ds-icon>
+        </span>
+        <span class="heading-h5-high-emphasis text-emphasis-high">
+          {{ item.labelKey ? (item.labelKey | transloco) : item.label }}
+        </span>
+      </button>
+    </li>
+  }
+</ul>

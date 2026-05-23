@@ -1,0 +1,15 @@
+<div class="flex h-full flex-col">
+  <div class="flex-1 overflow-y-auto" data-journey-scroll>
+    <div class="flex min-h-full flex-col gap-ds-lg px-ds-xl py-ds-xl">
+      @for (stage of orderedStages(); track stage.id; let index = $index) {
+        <app-support-journey-stage-host
+          [stage]="stage"
+          [showSupportAvatar]="shouldShowSupportAvatar(index)"
+          (editStage)="onStageEdit(stage)"
+          (selectionChange)="onStageSelectionChange($event)"
+        ></app-support-journey-stage-host>
+      }
+    </div>
+  </div>
+  <ng-content select="[journey-footer]"></ng-content>
+</div>

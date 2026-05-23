@@ -1,0 +1,15 @@
+<ng-container *transloco="let t">
+  <app-list-view-container
+    [columns]="columnsDef"
+    class="w-full"
+    [dataSource]="getSubCategoriesList"
+    [primaryActions]="[primaryBtnConfig]"
+    [mobileVisibleFieldsLimit]="5"
+    [pageTitle]="category()?.displayName"
+    [showSearchInput]="true"
+    [isFilterShow]="false"
+    [canCopy]="true"
+    [shouldFetchData]="true"
+    [persistColumnSettings]="false"
+  />
+</ng-container>

@@ -1,0 +1,24 @@
+<div
+  *transloco="let t"
+  class="flex flex-col items-center justify-center gap-ds-lg rounded-ds-2xl border-4 border-stroke-mid bg-neutral-cool-50 p-ds-2xl text-center"
+>
+  <img [src]="cardData()?.imagePath" alt="" />
+  <div>
+    <div class="content-lg-high-emphasis text-emphasis-high">
+      {{ cardData()?.title }}
+    </div>
+    <div class="content-sm-mid-emphasis text-emphasis-mid">
+      {{ cardData()?.description }}
+    </div>
+  </div>
+  <ds-button
+    variant="primary"
+    size="sm"
+    [iconStart]="'saxAddOutline'"
+    (click)="onButtonClick()"
+    *hesRbac="permissionId()"
+    [disabled]="!cardData()?.showButton"
+  >
+    {{ cardData()?.btnText }}
+  </ds-button>
+</div>

@@ -1,0 +1,112 @@
+/* ds-school-structure-nav-item.component.scss
+   =========================================== */
+
+/* geometry */
+$rail-x: 12px; /* rail now sits 6 px left of the square toggle */
+$rail-clr: #d4d4d4;
+
+/* ─── vertical rail on every <li> except last sibling ─── */
+.tree-rail {
+  position: relative;
+
+  &:not(.last-sibling)::before {
+    content: "";
+    position: absolute;
+    left: $rail-x;
+    top: 0;
+    bottom: 0; /* full height – continues through expanded items */
+    width: 1px;
+    border-left: 1px dashed $rail-clr;
+    background: #fff; /* covers 1-px joints */
+    pointer-events: none;
+  }
+
+  /* RTL support */
+  &:not(.last-sibling):dir(rtl)::before {
+    left: auto;
+    right: $rail-x;
+    border-left: none;
+    border-right: 1px dashed $rail-clr;
+  }
+}
+
+/* ─── nested list indent ─── */
+.tree-children {
+  @apply pl-8;
+
+  /* RTL support */
+  &:dir(rtl) {
+    @apply pl-0 pr-8;
+  }
+}
+
+/* ─── row layout ─── */
+.tree-content {
+  @apply flex min-w-0 flex-1 cursor-pointer items-start gap-3;
+  padding: 10px 0; /* vertical spacing */
+  position: relative; /* for z-index context */
+}
+
+/* active highlight with better spacing */
+.active > .tree-content {
+  background: #fff9e8;
+  border-radius: 8px;
+  font-weight: 600;
+  /* Add padding to the highlighted area but compensate with negative margin on toggle */
+  padding-left: 8px;
+  padding-right: 8px;
+  margin-left: -8px;
+  margin-right: -8px;
+
+  /* RTL support */
+  &:dir(rtl) {
+    padding-right: 8px;
+    padding-left: 8px;
+    margin-right: -8px;
+    margin-left: -8px;
+  }
+}
+
+/* Adjust toggle-box position when active to maintain alignment */
+.active > .tree-content > .toggle-box {
+  margin-left: 8px;
+
+  /* RTL support */
+  &:dir(rtl) {
+    margin-left: 0;
+    margin-right: 8px;
+  }
+}
+
+/* util */
+.toggle-box {
+  @apply z-10 grid h-6 w-6 shrink-0 place-items-center rounded-md border border-gray-300 bg-white hover:bg-gray-100;
+}
+
+.badge {
+  @apply grid h-8 w-8 shrink-0 place-items-center rounded-xl text-white;
+}
+
+.tree-label {
+  @apply min-w-0 text-sm font-medium leading-5;
+  word-wrap: break-word;
+  hyphens: auto;
+}
+
+/* Remove global pointer-blocking; apply only to selection span/container */
+.is-disabled {
+  /* legacy selector – keep empty or remove usage */
+}
+
+.select-disabled {
+  @apply pointer-events-none;
+  /* allow its children icon/label to show reduced emphasis */
+  .tree-label {
+    @apply text-emphasis-low;
+  }
+}
+
+/* Ensure toggle remains clickable even for disabled items */
+.toggle-box {
+  /* ...existing code... */
+}

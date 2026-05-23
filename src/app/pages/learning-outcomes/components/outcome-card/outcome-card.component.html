@@ -1,0 +1,45 @@
+<!-- Outcome Card Component -->
+<div
+  class="flex gap-ds-md rounded-ds-xl border border-stroke-black-08 bg-surface-primary p-ds-xl"
+>
+  <!-- Content -->
+  <div class="flex flex-1 flex-col gap-ds-md">
+    <!-- Statement -->
+    <p class="content-md-mid-emphasis text-emphasis-high">
+      {{ outcome.statement }}
+    </p>
+
+    <!-- Tags -->
+    <div class="flex flex-wrap gap-ds-sm">
+      <!-- Educational Path Tags -->
+      @for (path of outcome.educationalPaths; track path) {
+        <span
+          class="Single line-xs-mid-emphasis rounded-ds-sm border border-stroke-black-08 px-ds-sm py-ds-xs"
+          [ngClass]="getEducationalPathClasses(path)"
+        >
+          {{ getEducationalPathTranslationKey(path) | transloco }}
+        </span>
+      }
+
+      <!-- Domain Tags -->
+      @for (domain of outcome.domains; track domain.id) {
+        <span
+          class="Single line-xs-mid-emphasis rounded-ds-sm border border-stroke-black-08 px-ds-sm py-ds-xs text-emphasis-high"
+          [style.background-color]="domain.color"
+        >
+          {{ domain.displayName }}
+        </span>
+      }
+    </div>
+  </div>
+
+  <!-- Menu (only shown when there are menu items) -->
+  @if (hasMenuItems) {
+    <ds-responsive-menu
+      [items]="menuItems"
+      [triggerClass]="
+        'flex h-[28px] w-[28px] items-center justify-center text-icon-high'
+      "
+    ></ds-responsive-menu>
+  }
+</div>

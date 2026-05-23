@@ -1,0 +1,129 @@
+<app-support-ticket-detail-layout
+  #detailLayout
+  [headerConfig]="headerConfig()"
+  [schoolInfo]="schoolInfo()"
+  [showSchoolInfo]="showSchoolInfo()"
+  [summary]="summary()"
+  [detail]="detail()"
+  [contentStages]="detailStages()"
+  [isLoading]="isLoading()"
+  [hasFooter]="!error() && !!resolveButtonVm()"
+  (back)="onBackRequested()"
+  (viewProfile)="onViewProfileRequested()"
+>
+  @if (!isLoading()) {
+    @if (error()) {
+      <div
+        class="rounded-ds-xl border border-error-ds-200 bg-error-ds-50 px-ds-xl py-ds-lg"
+      >
+        <p class="content-md-default text-error-ds-700">{{ error() }}</p>
+      </div>
+    } @else {
+      @let stages = detailStages();
+      @if (!stages.length) {
+        <div class="flex flex-1 items-center justify-center">
+          <p class="content-md-mid-emphasis text-emphasis-mid">
+            Select a ticket from the list to view its details.
+          </p>
+        </div>
+      } @else {
+        <div class="flex justify-center">
+          <div
+            class="w-full max-w-[550px]"
+            [appScrollDateTracking]="layoutRef()?.scrollContainer ?? null"
+            [stages]="detailStages()"
+            #tracker="scrollDateTracking"
+          >
+            <!-- Floating date chip - sticky overlay, no layout space -->
+            @if (tracker.floatingDateEpoch()) {
+              <div
+                class="pointer-events-none sticky top-0 z-20 h-0 overflow-visible transition-opacity duration-500 ease-in-out"
+                [class.opacity-0]="!tracker.isScrolling()"
+                [class.opacity-100]="tracker.isScrolling()"
+              >
+                <div class="flex justify-center">
+                  <div
+                    class="single-line-xs-mid-emphasis flex w-fit items-center justify-center rounded-full border border-stroke-black-08 bg-pastels-neutralGray-150 px-ds-lg py-ds-sm"
+                  >
+                    {{ tracker.floatingDateEpoch() | duration }}
+                  </div>
+                </div>
+              </div>
+            }
+
+            <div class="flex flex-col gap-ds-xl">
+              <div class="flex flex-col gap-ds-md">
+                @for (stage of stages; track stage.id; let i = $index) {
+                  @if (dateSeparatorIndices().has(i)) {
+                    <div
+                      [attr.data-stage-index]="i"
+                      class="single-line-xs-mid-emphasis m-auto flex w-fit items-center justify-center rounded-full border border-stroke-black-08 bg-pastels-neutralGray-150 px-ds-lg py-ds-sm"
+                    >
+                      {{ toEpoch(stage.timestamp) | duration }}
+                    </div>
+                  }
+                  <app-support-ticket-detail-stage-host
+                    [stage]="stage"
+                    [getAttachmentName]="getAttachmentName"
+                    (escalationInfoRequested)="onEscalationInfoRequested()"
+                  ></app-support-ticket-detail-stage-host>
+                }
+              </div>
+
+              @if (showResolutionActions()) {
+                <div
+                  class="mb-ds-xl mt-ds-md flex max-w-[80%] flex-col items-center gap-ds-sm self-end"
+                >
+                  <div
+                    class="content-md-mid-emphasis w-full text-start text-emphasis-mid"
+                  >
+                    {{ "support.resolution.verify_question" | dsTranslate }}
+                  </div>
+                  <div class="flex w-full justify-end gap-ds-sm">
+                    <ds-button
+                      size="lg"
+                      variant="dangerStroke"
+                      [cssClass]="'flex-1'"
+                      [disabled]="isResolvingTicket()"
+                      (click)="onNotResolvedClicked()"
+                    >
+                      {{ "support.status.not_resolved" | dsTranslate }}
+                    </ds-button>
+                    <ds-button
+                      size="lg"
+                      variant="primary"
+                      [cssClass]="'flex-1'"
+                      [loading]="isResolvingTicket()"
+                      [disabled]="isResolvingTicket()"
+                      (click)="onResolvedClicked()"
+                    >
+                      {{ "support.status.resolved" | dsTranslate }}
+                    </ds-button>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    }
+  }
+
+  @if (!error() && resolveButtonVm(); as resolveButton) {
+    <div
+      footer
+      class="fixed bottom-0 left-0 right-0 z-10 border-t border-stroke-black-08 bg-surface-primary p-ds-xl md:static md:inset-auto"
+    >
+      <ds-button
+        variant="primary"
+        size="lg"
+        class="w-full"
+        [iconStart]="resolveButton.icon"
+        [fullWidth]="true"
+        (click)="onResolveTicketRequested()"
+      >
+        {{ resolveButton.label }}
+      </ds-button>
+    </div>
+  }
+</app-support-ticket-detail-layout>

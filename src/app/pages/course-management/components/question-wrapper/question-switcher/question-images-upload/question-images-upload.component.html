@@ -1,0 +1,29 @@
+@if (isViewState$ | async) {
+  @if (imageUrl) {
+    <div
+      class="flex max-h-[500px] w-full items-center justify-center overflow-hidden"
+    >
+      <img
+        [src]="imageUrl"
+        class="h-full max-h-[500px] w-full object-contain"
+        title="question-images"
+      />
+    </div>
+  }
+} @else {
+  <ng-container *transloco="let t">
+    <div
+      (click)="onShowImageUpload()"
+      class="flex h-14 cursor-pointer items-center bg-[#F9FAFB] px-4 font-medium text-[#7F8491] md:bg-transparent"
+    >
+      <fa-icon class="me-2" [icon]="isImageShow() ? faMinus : faPlus"></fa-icon>
+      {{ t("global.image.txt") }}
+    </div>
+    @if (isImageShow()) {
+      <app-form-control-generator
+        class=":min-w-[300px] mx-auto w-[80%] md:w-[300px]"
+        [control]="attachmentConfig()"
+      ></app-form-control-generator>
+    }
+  </ng-container>
+}

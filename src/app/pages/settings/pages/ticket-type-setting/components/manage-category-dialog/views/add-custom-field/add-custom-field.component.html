@@ -1,0 +1,40 @@
+<div
+  *transloco="let t"
+  class="grid flex-1 grid-cols-1 gap-ds-2xl md:grid-cols-2"
+>
+  <!-- Left Column - Form -->
+  <form [formGroup]="form">
+    <app-ds-form-renderer [controls]="formConfig" gap="xl" />
+  </form>
+
+  <!-- Right Column - Preview -->
+  <div
+    class="flex flex-col gap-ds-3xl border-s border-gray-200 bg-white p-ds-xl md:pt-0"
+  >
+    <div class="heading-h4-high-emphasis border-b pb-ds-md text-emphasis-high">
+      {{ t("support.custom_field.preview") }}
+    </div>
+
+    <div class="flex flex-col gap-ds-xs">
+      <!-- Custom label with required indicator -->
+      <label class="single-line-xs-mid-emphasis ps-ds-md">
+        {{
+          (isArabic
+            ? form.controls["arLabel"].value
+            : form.controls["enLabel"].value) ||
+            t("support.custom_field.field_label.placeholder")
+        }}
+        @if (form.controls["isRequired"].value) {
+          <span class="text-error">*</span>
+        }
+      </label>
+      <app-ds-input
+        [hint]="
+          isArabic
+            ? form.controls['arDescription'].value
+            : form.controls['enDescription'].value
+        "
+      />
+    </div>
+  </div>
+</div>

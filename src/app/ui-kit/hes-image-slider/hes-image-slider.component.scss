@@ -1,0 +1,18 @@
+:host.desktop-image-preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+ion-button[shape="circle"] {
+  --border-radius: 50%;
+  width: 54px;
+  height: 54px;
+  --background: #fff;
+  --color: black;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}

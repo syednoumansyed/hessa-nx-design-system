@@ -1,0 +1,200 @@
+<ng-container *transloco="let t">
+  @if (config(); as vm) {
+    <ion-content class="ds-page-content h-screen" scrollY="false">
+      <div
+        class="mx-auto flex h-[85%] max-w-[840px] flex-col gap-ds-3xl p-4 md:w-full"
+      >
+        <div
+          class="relative flex flex-col items-center rounded-ds-2xl bg-blue-400 px-2 py-4"
+        >
+          <div class="flex h-full items-center gap-2">
+            @if (vm.attempt) {
+              <div class="flex h-full items-center">
+                <app-ds-chip
+                  customClasses="bg-surface-primary h-full"
+                  class="h-full"
+                  variant="default"
+                >
+                  <div class="text-emphasis-high">{{ vm.attempt }}</div>
+                </app-ds-chip>
+              </div>
+            }
+            <div class="flex items-center">
+              <app-ds-chip
+                startIconSize="16px"
+                customClasses="bg-surface-primary"
+                variant="default"
+                [startIcon]="vm.typeBadge.icon"
+                [startIconColorClass]="vm.typeBadge.iconColorClass"
+              >
+                <div class="text-emphasis-high">{{ vm.typeBadge.label }}</div>
+              </app-ds-chip>
+            </div>
+          </div>
+          <div
+            class="heading-h2-high-emphasis text-center text-content-high-inverse"
+          >
+            {{ vm.title }}
+          </div>
+          @if (scoreConfig()) {
+            <div
+              class="absolute bottom-[-120px] z-10 flex items-start justify-end ltr:right-[-8px] rtl:left-[-8px]"
+            >
+              <div class="relative">
+                <ds-animated-icon
+                  [icon]="scoreConfig()!.icon"
+                  [loop]="true"
+                  [autoplay]="true"
+                  [size]="'120px'"
+                >
+                </ds-animated-icon>
+                <div
+                  class="absolute inset-0 flex flex-col items-center justify-center text-emphasis-high"
+                  [class]="scoreConfig()!.textColor"
+                >
+                  <span [class]="scoreConfig()!.titleCssClass">{{
+                    t(scoreConfig()!.titleText)
+                  }}</span>
+                  <span [class]="scoreConfig()!.subTxtCssClass">{{
+                    t(scoreConfig()!.subText)
+                  }}</span>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+        <div
+          class="relative flex flex-1 flex-grow flex-col overflow-hidden rounded-[32px] border-4 border-stroke-black-08 bg-surface-primary py-ds-xl"
+        >
+          <div class="max-h-full overflow-y-auto px-ds-xl">
+            <div class="grid grid-cols-2 gap-ds-lg">
+              @if (vm.startDate) {
+                <div class="flex flex-col gap-1">
+                  <div class="single-line-xs-mid-emphasis text-emphasis-mid">
+                    {{ t("global.start_date.label") }}
+                  </div>
+
+                  <div
+                    class="content-sm-mid-emphasis flex flex-col gap-[2px] md:flex-row"
+                  >
+                    <span> {{ vm.startDate | hesDate }}</span>
+                    <span> {{ vm.startDate | hesTime }}</span>
+                  </div>
+                </div>
+              }
+              @if (vm.dueDate) {
+                <div class="flex flex-col gap-1">
+                  <div class="single-line-xs-mid-emphasis text-emphasis-mid">
+                    {{ t("due_date.txt") }}
+                  </div>
+                  <div
+                    class="content-sm-mid-emphasis flex flex-col gap-[2px] md:flex-row"
+                  >
+                    <span>{{ vm.dueDate | hesDate }}</span>
+                    <span>{{ vm.dueDate | hesTime }}</span>
+                  </div>
+                </div>
+              }
+              @if (vm.publishingDate) {
+                <div class="flex flex-col gap-1">
+                  <div class="single-line-xs-mid-emphasis text-emphasis-mid">
+                    {{ t("global.publish_date.title") }}
+                  </div>
+                  <div
+                    class="content-sm-mid-emphasis flex flex-col gap-[2px] md:flex-row"
+                  >
+                    <span>{{ vm.publishingDate | hesDate }}</span>
+                    <span>{{ vm.publishingDate | hesTime }}</span>
+                  </div>
+                </div>
+              }
+              @if (vm.duration) {
+                <div class="flex flex-col gap-1">
+                  <div class="single-line-xs-mid-emphasis text-emphasis-mid">
+                    {{ t("content_management.duration.label") }}
+                  </div>
+                  <div class="content-sm-mid-emphasis">{{ vm.duration }}</div>
+                </div>
+              }
+              @if (vm.status) {
+                <div class="flex flex-col">
+                  <div class="single-line-xs-mid-emphasis text-emphasis-mid">
+                    {{ t("global.status.title") }}
+                  </div>
+                  <div class="mt-1">
+                    <app-ds-chip
+                      [text]="t(vm.status.textKey)"
+                      [variant]="'none'"
+                      [customClasses]="vm.status.className"
+                      [removable]="false"
+                    ></app-ds-chip>
+                  </div>
+                </div>
+              }
+            </div>
+            <div class="mt-3 flex flex-col gap-1">
+              <div class="single-line-xs-mid-emphasis text-emphasis-mid">
+                {{ t("global.description.label") }}
+              </div>
+              <div class="content-sm-default leading-5 text-emphasis-high">
+                {{ vm.description }}
+              </div>
+            </div>
+            @for (attch of vm.attachments; track $index) {
+              <div class="mt-4">
+                <ds-attachment-preview
+                  [attachment]="attch"
+                  [showRemove]="false"
+                  cssClasses="border border-dashed border-stroke-high hover:bg-white cursor-pointer"
+                />
+              </div>
+            }
+          </div>
+        </div>
+        @if (isAttachmentShow()) {
+          <div>
+            <ds-attachment-form-control
+              [formControl]="attachmentControl()!"
+              [acceptFileTypes]="['PPT', 'PDF', 'IMAGES']"
+            />
+          </div>
+        }
+        @if (vm.attachmentByStudent) {
+          <div class="flex flex-col gap-2">
+            @for (attch of vm.attachmentByStudent; track $index) {
+              <ds-attachment-preview
+                [attachment]="attch"
+                [showRemove]="false"
+                cssClasses="border border-dashed border-stroke-high bg-white hover:bg-white cursor-pointer"
+              />
+            }
+          </div>
+        }
+        <div class="flex flex-col gap-3 md:flex-row md:justify-end">
+          @if (vm.secondaryButton) {
+            <ds-button
+              [variant]="'secondary'"
+              [fullWidth]="isMobile"
+              (click)="vm.secondaryButton.action()"
+            >
+              {{ t("global.view.btn") }}
+            </ds-button>
+          }
+          @if (vm.primaryButton) {
+            <ds-button
+              [variant]="'primary'"
+              [fullWidth]="isMobile"
+              (click)="vm.primaryButton.action()"
+              [loading]="primaryBtnLoading()"
+              [disabled]="
+                !!(!!this.attachmentControl()?.invalid && isAttachmentShow())
+              "
+            >
+              {{ t(vm.primaryButton.text) }}
+            </ds-button>
+          }
+        </div>
+      </div>
+    </ion-content>
+  }
+</ng-container>

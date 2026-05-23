@@ -1,0 +1,14 @@
+<ng-container>
+  <div
+    class="flex h-6 w-fit items-center justify-center rounded-2xl px-2 text-xs font-medium"
+    [ngClass]="{
+      'bg-[#FFFAEB] text-[#B54708]': isNew,
+      'bg-[#F0F9FF] text-[#026AA2]': isDraft,
+      'bg-[#ECFDF3] text-[#027A48]': isPublished,
+      'bg-[#F4F3FF] text-[#5925DC]': isAckknowledged,
+      'bg-[#F8F9FC] text-[#363F72]': isViewed
+    }"
+  >
+    {{ statusName }}
+  </div>
+</ng-container>

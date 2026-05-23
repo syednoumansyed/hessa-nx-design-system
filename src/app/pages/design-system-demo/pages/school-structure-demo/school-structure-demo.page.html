@@ -1,0 +1,116 @@
+<ion-content>
+  <div class="p-4 md:p-6">
+    <app-demo-page-wrapper title="School Structure">
+      <form
+        [formGroup]="schoolStructureForm"
+        class="flex max-w-[480px] flex-col gap-6"
+      >
+        <!-- Single Selection -->
+        <div>
+          <h3 class="heading-h3-mid-emphasis mb-2">Single Selection</h3>
+          <app-ds-school-structure-control
+            formControlName="singleStructure"
+            [label]="'School Structure'"
+            [placeholder]="'Select a structure'"
+            [isMultiSelect]="false"
+          ></app-ds-school-structure-control>
+          <div class="content-sm-mid-emphasis mt-2">
+            Value: {{ schoolStructureForm.value.singleStructure | json }}
+          </div>
+        </div>
+
+        <!-- Multi Selection -->
+        <div>
+          <h3 class="heading-h3-mid-emphasis mb-2">Multi Selection</h3>
+          <app-ds-school-structure-control
+            formControlName="multiStructure"
+            [label]="'Multiple Structures'"
+            [placeholder]="'Select structures'"
+            [isMultiSelect]="true"
+          ></app-ds-school-structure-control>
+          <div class="content-sm-mid-emphasis mt-2">
+            Value: {{ schoolStructureForm.value.multiStructure | json }}
+          </div>
+        </div>
+
+        <!-- Depth-limited to School -->
+        <div>
+          <h3 class="heading-h3-mid-emphasis mb-2">Depth: School</h3>
+          <app-ds-school-structure-control
+            formControlName="schoolDepthStructure"
+            [label]="'School-Level Only'"
+            [placeholder]="'Select a school'"
+            [depth]="structureDepth.SCHOOL"
+            [isMultiSelect]="true"
+          ></app-ds-school-structure-control>
+          <div class="content-sm-mid-emphasis mt-2">
+            Value: {{ schoolStructureForm.value.schoolDepthStructure | json }}
+          </div>
+        </div>
+
+        <!-- Allowed selections (schools only) -->
+        <div>
+          <h3 class="heading-h3-mid-emphasis mb-2">Allowed: Schools Only</h3>
+          <app-ds-school-structure-control
+            formControlName="schoolAllowedStructure"
+            [label]="'School-Scoped Selection'"
+            [placeholder]="'Select a school'"
+            [depth]="structureDepth.SCHOOL"
+            [allowedSelections]="schoolOnlySelections"
+            [isMultiSelect]="true"
+          ></app-ds-school-structure-control>
+          <div class="content-sm-mid-emphasis mt-2">
+            Value: {{ schoolStructureForm.value.schoolAllowedStructure | json }}
+          </div>
+        </div>
+
+        <!-- Required Field -->
+        <div>
+          <h3 class="heading-h3-mid-emphasis mb-2">Required Field</h3>
+          <app-ds-school-structure-control
+            formControlName="requiredStructure"
+            [label]="'Required Structure'"
+            [placeholder]="'Please select'"
+            [required]="true"
+            [isMultiSelect]="true"
+          ></app-ds-school-structure-control>
+          @if ( schoolStructureForm.get('requiredStructure')?.invalid &&
+          schoolStructureForm.get('requiredStructure')?.touched ) {
+          <div class="mt-1 text-sm text-red-600">This field is required</div>
+          }
+        </div>
+
+        <!-- Selection Modal -->
+        <div>
+          <h3 class="heading-h3-mid-emphasis mb-2">Selection Modal</h3>
+          <ds-button
+            variant="secondary"
+            (click)="openSchoolStructureSelection()"
+          >
+            Open selection modal
+          </ds-button>
+          <div class="content-sm-mid-emphasis mt-2">
+            Value: {{ selectionModalValue() | json }}
+          </div>
+        </div>
+
+        <!-- School Only Selection Modal -->
+        <div>
+          <h3 class="heading-h3-mid-emphasis mb-2">
+            School Only Selection (Depth: SCHOOL)
+          </h3>
+          <p class="content-sm-low-emphasis mb-2">
+            This modal uses depth=SCHOOL and allowedSelections=['school'] - only
+            schools are selectable.
+          </p>
+          <ds-button variant="secondary" (click)="openSchoolOnlySelection()">
+            Select School Only
+          </ds-button>
+          <div class="content-sm-mid-emphasis mt-2">
+            Value: {{ schoolOnlyModalValue() | json }}
+          </div>
+        </div>
+      </form>
+    </app-demo-page-wrapper>
+  </div>
+</ion-content>

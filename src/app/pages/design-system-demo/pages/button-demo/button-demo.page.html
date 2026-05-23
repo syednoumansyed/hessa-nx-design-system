@@ -1,0 +1,364 @@
+<ion-content>
+  <div class="p-4 md:p-6">
+    <app-demo-page-wrapper title="Buttons">
+      <div class="mt-2 flex flex-wrap gap-4">
+        <div class="flex flex-col flex-wrap items-center gap-4">
+          <div class="text-2xl personnel:text-blue-500 student:text-red-500">
+            Primary
+          </div>
+          <ds-button variant="primary" size="lg" [disabled]="true">
+            Disabled
+          </ds-button>
+          <ds-button variant="primary" size="lg"> Button </ds-button>
+          <ds-button
+            variant="primary"
+            size="lg"
+            iconStart="saxHome2Outline"
+            iconEnd="saxBuildings2Outline"
+            (click)="openToast('warning')"
+          >
+            Warning Toast
+          </ds-button>
+          <ds-button variant="primary" size="md">primary md </ds-button>
+          <ds-button
+            variant="primary"
+            size="md"
+            iconStart="saxHome2Outline"
+            iconEnd="saxBuildings2Outline"
+            (click)="openToast('warning')"
+          >
+            md primary
+          </ds-button>
+          <ds-button
+            variant="primary"
+            size="md"
+            iconStart="saxHome2Outline"
+          ></ds-button>
+          <ds-button variant="primary" size="md" [disabled]="true">
+            Primary md disable
+          </ds-button>
+          <ds-button variant="primary" size="sm"> Primary sm </ds-button>
+          <ds-button
+            variant="primary"
+            size="sm"
+            iconStart="saxHome2Outline"
+            iconEnd="saxBuildings2Outline"
+          >
+            Primary sm
+          </ds-button>
+          <ds-button variant="primary" size="sm" [disabled]="true">
+            Primary sm disable
+          </ds-button>
+        </div>
+        <div class="flex flex-col items-center gap-4">
+          <div class="text-2xl personnel:text-blue-500 student:text-red-500">
+            secondary
+          </div>
+          <ds-button variant="secondary" size="lg" [disabled]="true">
+            Disabled
+          </ds-button>
+          <ds-button variant="secondary" size="lg"> Button </ds-button>
+          <ds-button
+            variant="secondary"
+            size="lg"
+            iconStart="saxHome2Outline"
+            iconEnd="saxBuildings2Outline"
+            (click)="openToast('info')"
+          >
+            Info Toast
+          </ds-button>
+          <ds-button variant="secondary" size="md">md secondary</ds-button>
+          <ds-button
+            variant="secondary"
+            size="md"
+            iconStart="saxHome2Outline"
+            iconEnd="saxBuildings2Outline"
+            (click)="openToast('info')"
+          >
+            md secondary
+          </ds-button>
+          <ds-button
+            variant="secondary"
+            size="md"
+            iconStart="saxHome2Outline"
+          ></ds-button>
+          <ds-button variant="secondary" size="md" [disabled]="true">
+            md secondary disable
+          </ds-button>
+          <ds-button variant="secondary" size="sm"> secondary sm </ds-button>
+          <ds-button
+            variant="secondary"
+            size="sm"
+            iconStart="saxHome2Outline"
+            iconEnd="saxBuildings2Outline"
+          >
+            secondary sm
+          </ds-button>
+          <ds-button variant="secondary" size="sm" [disabled]="true">
+            secondary sm disable
+          </ds-button>
+        </div>
+        <div class="flex flex-col items-center gap-4">
+          <div class="text-2xl personnel:text-blue-500 student:text-red-500">
+            Tertiary
+          </div>
+          <ds-button variant="tertiary" size="lg" [disabled]="true">
+            Disabled
+          </ds-button>
+          <ds-button variant="tertiary" size="lg"> Button </ds-button>
+          <ds-button
+            variant="tertiary"
+            size="lg"
+            iconStart="saxHome2Outline"
+            iconEnd="saxBuildings2Outline"
+            (click)="openToast('error')"
+          >
+            Error Toast
+          </ds-button>
+          <ds-button variant="tertiary" size="md">md Button </ds-button>
+          <ds-button
+            variant="tertiary"
+            size="md"
+            iconStart="saxHome2Outline"
+            iconEnd="saxBuildings2Outline"
+            (click)="openToast('error')"
+          >
+            md tertiary
+          </ds-button>
+          <ds-button
+            variant="tertiary"
+            size="md"
+            iconStart="saxHome2Outline"
+          ></ds-button>
+          <ds-button variant="tertiary" size="md" [disabled]="true">
+            tertiary sm disable
+          </ds-button>
+          <ds-button variant="tertiary" size="sm"> secondary sm </ds-button>
+          <ds-button
+            variant="tertiary"
+            size="sm"
+            iconStart="saxHome2Outline"
+            iconEnd="saxBuildings2Outline"
+          >
+            tertiary sm
+          </ds-button>
+          <ds-button variant="tertiary" size="sm" [disabled]="true">
+            tertiary sm disable
+          </ds-button>
+        </div>
+        <div class="flex flex-col items-center gap-4">
+          <div class="text-2xl personnel:text-blue-500 student:text-red-500">
+            danger Stroke
+          </div>
+          <ds-button variant="dangerStroke" size="lg" [disabled]="true">
+            Disabled
+          </ds-button>
+          <ds-button variant="dangerStroke" size="lg"> Button </ds-button>
+          <ds-button
+            variant="dangerStroke"
+            size="lg"
+            iconStart="saxHome2Outline"
+            iconEnd="saxBuildings2Outline"
+            (click)="openToast('success')"
+          >
+            Success Toast
+          </ds-button>
+          <ds-button variant="dangerStroke" size="md">
+            danger Stroke md
+          </ds-button>
+          <ds-button
+            variant="dangerStroke"
+            size="md"
+            iconStart="saxHome2Outline"
+            iconEnd="saxBuildings2Outline"
+            (click)="openToast('success')"
+          >
+            Success md Toast
+          </ds-button>
+          <ds-button
+            variant="dangerStroke"
+            size="md"
+            iconStart="saxHome2Outline"
+          ></ds-button>
+          <ds-button variant="dangerStroke" size="md" [disabled]="true">
+            danger Stroke md disable
+          </ds-button>
+          <ds-button variant="dangerStroke" size="sm">
+            danger Stroke sm
+          </ds-button>
+          <ds-button
+            variant="dangerStroke"
+            size="sm"
+            iconStart="saxHome2Outline"
+            iconEnd="saxBuildings2Outline"
+          >
+            danger Stroke sm
+          </ds-button>
+          <ds-button variant="dangerStroke" size="sm" [disabled]="true">
+            danger Stroke sm disable
+          </ds-button>
+        </div>
+        <div class="flex flex-col items-center gap-4">
+          <div class="text-2xl personnel:text-blue-500 student:text-red-500">
+            danger Fill
+          </div>
+          <ds-button variant="dangerFill" size="lg" [disabled]="true">
+            Disabled
+          </ds-button>
+          <ds-button variant="dangerFill" size="lg"> Button </ds-button>
+          <ds-button
+            variant="dangerFill"
+            size="lg"
+            iconStart="saxHome2Outline"
+            iconEnd="saxBuildings2Outline"
+            (click)="openToast('success')"
+          >
+            Success Toast
+          </ds-button>
+          <ds-button variant="dangerFill" size="md"> danger Fill md </ds-button>
+          <ds-button
+            variant="dangerFill"
+            size="md"
+            iconStart="saxHome2Outline"
+            iconEnd="saxBuildings2Outline"
+            (click)="openToast('success')"
+          >
+            Success md Toast
+          </ds-button>
+          <ds-button
+            variant="dangerFill"
+            size="md"
+            iconStart="saxHome2Outline"
+          ></ds-button>
+          <ds-button variant="dangerFill" size="md" [disabled]="true">
+            danger Fill md disable
+          </ds-button>
+          <ds-button variant="dangerFill" size="sm"> danger Fill sm </ds-button>
+          <ds-button
+            variant="dangerFill"
+            size="sm"
+            iconStart="saxHome2Outline"
+            iconEnd="saxBuildings2Outline"
+          >
+            danger Fill sm
+          </ds-button>
+          <ds-button variant="dangerFill" size="sm" [disabled]="true">
+            danger Fill sm disable
+          </ds-button>
+        </div>
+        <div class="flex flex-col items-center gap-4">
+          <div class="text-2xl personnel:text-blue-500 student:text-red-500">
+            Ghost
+          </div>
+          <ds-button variant="ghost" size="lg" [disabled]="true">
+            Disabled
+          </ds-button>
+          <ds-button variant="ghost" size="lg"> Button </ds-button>
+          <ds-button
+            variant="ghost"
+            size="lg"
+            iconStart="saxHome2Outline"
+            iconEnd="saxBuildings2Outline"
+            (click)="openToast('success')"
+          >
+            Success Toast
+          </ds-button>
+          <ds-button variant="ghost" size="md"> Ghost md </ds-button>
+          <ds-button
+            variant="ghost"
+            size="md"
+            iconStart="saxHome2Outline"
+            iconEnd="saxBuildings2Outline"
+            (click)="openToast('success')"
+          >
+            Success md Toast
+          </ds-button>
+          <ds-button
+            variant="ghost"
+            size="md"
+            iconStart="saxHome2Outline"
+          ></ds-button>
+          <ds-button variant="ghost" size="md" [disabled]="true">
+            Ghost md disable
+          </ds-button>
+          <ds-button variant="ghost" size="sm"> Ghost sm </ds-button>
+          <ds-button
+            variant="ghost"
+            size="sm"
+            iconStart="saxHome2Outline"
+            iconEnd="saxBuildings2Outline"
+          >
+            Ghost sm
+          </ds-button>
+          <ds-button variant="ghost" size="sm" [disabled]="true">
+            Ghost sm disable
+          </ds-button>
+        </div>
+        <div class="flex flex-col items-center gap-4">
+          <div class="text-2xl personnel:text-blue-500 student:text-red-500">
+            Loading
+          </div>
+          <ds-button
+            variant="primary"
+            size="lg"
+            [loading]="loading()"
+            (click)="onClick()"
+          >
+            loading
+          </ds-button>
+          <ds-button variant="primary" size="md" [loading]="loading()">
+            loading
+          </ds-button>
+          <ds-button variant="primary" size="sm" [loading]="loading()">
+            loading
+          </ds-button>
+          <ds-button variant="secondary" size="lg" [loading]="loading()">
+            loading
+          </ds-button>
+          <ds-button variant="secondary" size="md" [loading]="loading()">
+            loading
+          </ds-button>
+          <ds-button variant="secondary" size="sm" [loading]="loading()">
+            loading
+          </ds-button>
+          <ds-button variant="tertiary" size="lg" [loading]="loading()">
+            loading
+          </ds-button>
+          <ds-button variant="tertiary" size="md" [loading]="loading()">
+            loading
+          </ds-button>
+          <ds-button variant="tertiary" size="sm" [loading]="loading()">
+            loading
+          </ds-button>
+          <ds-button variant="dangerStroke" size="lg" [loading]="loading()">
+            loading
+          </ds-button>
+          <ds-button variant="dangerStroke" size="md" [loading]="loading()">
+            loading
+          </ds-button>
+          <ds-button variant="dangerStroke" size="sm" [loading]="loading()">
+            loading
+          </ds-button>
+          <ds-button variant="dangerFill" size="lg" [loading]="loading()">
+            loading
+          </ds-button>
+          <ds-button variant="dangerFill" size="md" [loading]="loading()">
+            loading
+          </ds-button>
+          <ds-button variant="dangerFill" size="sm" [loading]="loading()">
+            loading
+          </ds-button>
+          <ds-button variant="ghost" size="lg" [loading]="loading()">
+            loading
+          </ds-button>
+          <ds-button variant="ghost" size="md" [loading]="loading()">
+            loading
+          </ds-button>
+          <ds-button variant="ghost" size="sm" [loading]="loading()">
+            loading
+          </ds-button>
+        </div>
+      </div>
+    </app-demo-page-wrapper>
+  </div>
+</ion-content>

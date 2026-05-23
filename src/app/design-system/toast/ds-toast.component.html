@@ -1,0 +1,99 @@
+<div
+  class="relative flex w-full gap-ds-md text-gray-700"
+  [class.items-start]="hasTitle() && hasMessage()"
+  [class.items-center]="
+    (!hasTitle() && hasMessage()) || (hasTitle() && !hasMessage())
+  "
+  role="alert"
+  [attr.aria-live]="'assertive'"
+>
+  @if (showIcon()) {
+    <div class="flex h-6 w-6 shrink-0 items-center justify-start self-center">
+      @switch (toastType()) {
+        @case ("toast-success") {
+          <ng-icon
+            name="saxTickCircleOutline"
+            [color]="'var(--colors-emerald-500)'"
+            class="text-[24px]"
+          ></ng-icon>
+        }
+        @case ("toast-error") {
+          <ng-icon
+            name="saxCloseCircleOutline"
+            [color]="'var(--colors-error-red-500)'"
+            class="text-[24px]"
+          ></ng-icon>
+        }
+        @case ("toast-warning") {
+          <ng-icon
+            name="saxWarning2Outline"
+            [color]="'var(--colors-warn-orange-500)'"
+            class="text-[24px]"
+          ></ng-icon>
+        }
+        @case ("toast-info") {
+          <ng-icon
+            name="saxInfoCircleOutline"
+            [color]="'var(--colors-blue-500)'"
+            class="text-[24px]"
+          ></ng-icon>
+        }
+      }
+    </div>
+  }
+
+  <div
+    class="flex min-w-0 flex-1 flex-col"
+    [class.justify-center]="
+      (!hasTitle() && hasMessage()) || (hasTitle() && !hasMessage())
+    "
+  >
+    @if (hasTitle()) {
+      <p
+        class="content-sm-high-emphasis toast-title text-emphasis-high"
+        [attr.aria-label]="title"
+      >
+        {{ title }}
+      </p>
+    }
+    @if (hasMessage() && options.enableHtml) {
+      <p
+        class="content-sm-default toast-message text-emphasis-mid"
+        [attr.aria-label]="message"
+        [innerHTML]="message"
+      ></p>
+    }
+    @if (hasMessage() && !options.enableHtml) {
+      <p
+        class="content-sm-default toast-message text-emphasis-mid"
+        [attr.aria-label]="message"
+      >
+        {{ message }}
+      </p>
+    }
+    @if (options.progressBar) {
+      <div
+        class="toast-progress mt-ds-sm h-1 rounded-full bg-opacity-30"
+        [style.width]="width + '%'"
+      ></div>
+    }
+  </div>
+
+  @if (options.closeButton) {
+    <button
+      type="button"
+      class="ml-ds-sm flex shrink-0 items-center justify-center text-black-0"
+      (click)="remove()"
+      [class.self-start]="hasTitle() && hasMessage()"
+      [class.self-center]="
+        (!hasTitle() && hasMessage()) || (hasTitle() && !hasMessage())
+      "
+      aria-label="Close"
+    >
+      <ng-icon
+        name="saxCloseCircleBold"
+        class="flex items-center justify-center text-[24px] text-black-0"
+      ></ng-icon>
+    </button>
+  }
+</div>

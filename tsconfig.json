@@ -1,0 +1,53 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "paths": {
+      "@auth/*": ["./src/app/auth/*"],
+      "@ui-kit/*": ["./src/app/ui-kit/*"],
+      "@components/*": ["./src/app/components/*"],
+      "@core/*": ["./src/app/core/*"],
+      "@layout/*": ["src/app/layout/*"],
+      "@pages/*": ["src/app/pages/*"],
+      "@validators/*": ["./src/app/shared/form-validators/*"],
+      "@shared/*": ["./src/app/shared/*"],
+      "@utils/*": ["./src/app/shared/utils/*"],
+      "@ds/*": ["./src/app/design-system/*"],
+      "@ds-layout/*": ["./src/app/ds-layout/*"],
+      "@shared-dto": ["./src/app/shared/dto-transformation/*"]
+    },
+    "types": ["jasmine", "node"],
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "sourceMap": false,
+    "declaration": false,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "target": "es2022",
+    "module": "es2020",
+    "lib": ["ES2022", "dom"],
+    "skipLibCheck": true,
+    "useDefineForClassFields": false
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  },
+  "exclude": [
+    "node_modules/cypress",
+    "cypress/**/*.ts",
+    "cypress",
+    "cypress.config.ts"
+  ]
+}

@@ -1,0 +1,62 @@
+<label
+  class="relative select-none items-center"
+  [ngClass]="{
+    'inline-flex': title(),
+    'cursor-not-allowed': isDisabled(),
+    'cursor-pointer': !isDisabled(),
+  }"
+  (mouseenter)="isHovered.set(true)"
+  (mouseleave)="isHovered.set(false)"
+>
+  <!-- native input (a11y + reactive-forms) -->
+  <input
+    type="radio"
+    class="peer sr-only"
+    [checked]="checked()"
+    [disabled]="isDisabled()"
+    (focus)="isFocused.set(true)"
+    (blur)="isFocused.set(false)"
+    (change)="select()"
+  />
+
+  <!-- outer ring -->
+  <div
+    class="flex items-center justify-center rounded-full border border-b-2 transition-colors duration-150"
+    [ngClass]="{
+      'h-6 w-6': size() === 'lg',
+      'h-5 w-5': size() === 'sm',
+      'border-gray-300 bg-white': !checked() && !isDisabled() && !isHovered(),
+      'border-brand-500 bg-brand-50':
+        isHovered() && !checked() && !isDisabled(),
+      'ring-2 ring-brand-300': isFocused() && !isDisabled(),
+      'border-brand-500 bg-brand-100': checked(),
+      'border-gray-200': isDisabled() && !checked(),
+    }"
+  >
+    <!-- inner dot -->
+    <div
+      class="rounded-full transition-opacity duration-150"
+      [ngClass]="{
+        'opacity-0': !checked(),
+        'bg-brand-500 opacity-100': checked(),
+        'h-3 w-3': size() === 'lg',
+        'h-2 w-2': size() === 'sm',
+      }"
+    ></div>
+  </div>
+
+  <!-- label text -->
+  @if (title()) {
+    <span
+      class="select-none font-semibold"
+      [ngClass]="{
+        'text-content-low': isDisabled(),
+        'text-content-high': !isDisabled(),
+        'ms-3 text-ds-lg': size() === 'lg',
+        'ms-2 text-ds-base': size() === 'sm',
+      }"
+    >
+      {{ title() }}
+    </span>
+  }
+</label>

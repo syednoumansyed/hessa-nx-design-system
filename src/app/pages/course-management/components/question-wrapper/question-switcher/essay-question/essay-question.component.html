@@ -1,0 +1,26 @@
+<div
+  *transloco="let t"
+  class="flex h-auto w-full flex-col items-start justify-start gap-8 px-4 py-8 md:p-0"
+>
+  <div
+    [formGroup]="form"
+    class="flex w-full flex-col items-end justify-start gap-8"
+  >
+    <div
+      class="flex w-full flex-col items-start justify-start gap-10 bg-white md:p-0"
+    >
+      <div class="flex w-full flex-col gap-8 gap-y-10">
+        @for (control of essayFormConfig(); track $index) {
+          <div class="flex-1">
+            <app-form-control-generator
+              [control]="control"
+            ></app-form-control-generator>
+          </div>
+          @if ($index === 0) {
+            <app-question-images-upload></app-question-images-upload>
+          }
+        }
+      </div>
+    </div>
+  </div>
+</div>

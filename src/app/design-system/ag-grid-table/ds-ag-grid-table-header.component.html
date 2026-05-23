@@ -1,0 +1,130 @@
+<div
+  class="flex w-full items-center gap-ds-lg overflow-hidden rounded-t-ds-xl border-2 border-b border-stroke-mid px-[18px] py-3"
+  [ngClass]="
+    selectionEnabled()
+      ? 'border-transparent bg-[var(--surface-contrast-secondry,#312431)]'
+      : 'bg-surface-secondary-light'
+  "
+>
+  @if (actions().length) {
+    <div class="flex items-center gap-ds-sm">
+      @if (selectionLabelIcon()) {
+        <app-ds-icon
+          [icon]="selectionLabelIcon()"
+          size="20px"
+          [class]="
+            'ds-icon-rtl-flip ' +
+            (selectionEnabled()
+              ? 'text-content-high-inverse'
+              : 'text-emphasis-mid')
+          "
+        />
+      }
+      <div
+        class="single-line-sm-mid-emphasis"
+        [ngClass]="
+          selectionEnabled() ? 'text-content-high-inverse' : 'text-emphasis-mid'
+        "
+      >
+        {{ selectionTitle() }}
+      </div>
+    </div>
+  }
+
+  <div class="flex flex-wrap items-center gap-ds-sm">
+    @if (selectionEnabled()) {
+      @if (activeAction()) {
+        <span
+          class="inline-flex"
+          dsTooltip
+          [dsTooltipContent]="actionDisabledReason(activeAction()!)"
+          [dsTooltipEnabled]="!!actionDisabledReason(activeAction()!)"
+        >
+          <ds-button
+            size="sm"
+            variant="tertiary"
+            [disabled]="isActionDisabled(activeAction()!)"
+            [loading]="!!activeAction()?.loading"
+            (click)="onActionClick(activeAction()!)"
+          >
+            @if (activeAction()?.icon) {
+              <app-ds-icon [icon]="activeAction()?.icon" size="16px" />
+            }
+            {{ activeAction()?.label }}
+          </ds-button>
+        </span>
+      } @else {
+        @for (action of actions(); track action.id) {
+          <span
+            class="inline-flex"
+            dsTooltip
+            [dsTooltipContent]="actionDisabledReason(action)"
+            [dsTooltipEnabled]="!!actionDisabledReason(action)"
+          >
+            <ds-button
+              size="sm"
+              variant="tertiary"
+              [disabled]="isActionDisabled(action)"
+              [loading]="!!action.loading"
+              (click)="onActionClick(action)"
+            >
+              @if (action.icon) {
+                <app-ds-icon [icon]="action.icon" size="16px" />
+              }
+              {{ action.label }}
+            </ds-button>
+          </span>
+        }
+      }
+    } @else {
+      @for (action of actions(); track action.id) {
+        <span
+          class="inline-flex"
+          dsTooltip
+          [dsTooltipContent]="actionDisabledReason(action)"
+          [dsTooltipEnabled]="!!actionDisabledReason(action)"
+        >
+          <ds-button
+            size="sm"
+            variant="ghost"
+            [disabled]="isActionDisabled(action)"
+            [cssClass]="
+              action.id === activeActionId()
+                ? 'border-2 border-brand-200 bg-brand-100'
+                : ''
+            "
+            (click)="onActionClick(action)"
+          >
+            @if (action.icon) {
+              <app-ds-icon [icon]="action.icon" size="16px" />
+            }
+            {{ action.label }}
+          </ds-button>
+        </span>
+      }
+    }
+  </div>
+
+  <div class="single-line-sm-high-emphasis ms-auto flex items-center gap-ds-md">
+    @if (!selectionEnabled() && showCustomizeColumns()) {
+      <ds-button
+        type="button"
+        size="sm"
+        variant="ghost"
+        [iconStart]="customizeColumnsIcon"
+        (click)="onCustomizeColumns()"
+      >
+        {{ customizeColumnsLabel() }}
+      </ds-button>
+    }
+    @if (selectionEnabled()) {
+      <button
+        type="button"
+        class="flex h-8 w-8 items-center justify-center rounded-ds-md text-content-high-inverse"
+        (click)="onCloseSelection()"
+      >
+        <app-ds-icon [icon]="closeIcon" />
+      </button>
+    }
+  </div>
+</div>

@@ -1,0 +1,24 @@
+<div
+  (click)="onPlay()"
+  class="relative mb-6 max-w-[190px] cursor-pointer overflow-hidden rounded-lg"
+>
+  <video #videoPlayerRef (pause)="showPlayButton()" (ended)="showPlayButton()">
+    <source [src]="messageUrl()" />
+  </video>
+  @if (isShowPlayButton()) {
+    <div class="absolute inset-0" style="background-color: rgba(0, 0, 0, 0.4)">
+      <div
+        class="bg-black absolute left-[50%] top-[50%] flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-opacity-60 text-white shadow-lg"
+      >
+        <app-hes-icon [faIcon]="faPlayIcon"></app-hes-icon>
+      </div>
+
+      <div
+        class="bg-black absolute bottom-1 left-2 flex items-center gap-1 rounded bg-opacity-60 text-xs text-white"
+      >
+        <app-hes-icon [faIcon]="faVideoIcon"></app-hes-icon>
+        {{ durantion() }}
+      </div>
+    </div>
+  }
+</div>

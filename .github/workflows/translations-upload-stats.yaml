@@ -1,0 +1,77 @@
+name: Upload Translation Keys Stats to Google Sheets
+
+on:
+  workflow_dispatch:
+
+jobs:
+  upload-stats:
+    name: Upload keys stats to Google Sheets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate token
+        id: generate_token
+        uses: tibdex/github-app-token@v1
+        with:
+          app_id: ${{ secrets.GH_ACTIONS_APP_ID }}
+          private_key: ${{ secrets.GH_ACTIONS_PRIVATE_KEY }}
+
+      - name: Checkout frontend repository
+        uses: actions/checkout@v4
+        with:
+          ref: development
+          path: hessa-fe
+
+      - name: Clone backend repository
+        run: |
+          git clone --depth 1 --branch development \
+            https://x-access-token:${{ steps.generate_token.outputs.token }}@github.com/ncle-edu/hessa-be.git \
+            hessa-be
+
+      - name: Clone auth repository
+        run: |
+          git clone --depth 1 --branch development \
+            https://x-access-token:${{ steps.generate_token.outputs.token }}@github.com/ncle-edu/hessa-auth.git \
+            hessa-auth
+
+      - name: Clone socket repository
+        run: |
+          git clone --depth 1 --branch development \
+            https://x-access-token:${{ steps.generate_token.outputs.token }}@github.com/ncle-edu/hessa-socket.git \
+            hessa-socket
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+
+      - name: Install dependencies
+        env:
+          NPM_FONTAWESOME_AUTH_TOKEN: ${{ secrets.NPM_FONTAWESOME_AUTH_TOKEN }}
+        working-directory: hessa-fe
+        run: npm install googleapis glob
+
+      - name: Create service account credentials file
+        working-directory: hessa-fe
+        run: |
+          mkdir -p credentials
+          echo "${{ secrets.I18N_GOOGLE_SERVICE_ACCOUNT_JSON_BASE64 }}" > credentials/google-service-account.json.base64
+          xxd -r -p credentials/google-service-account.json.base64 > credentials/google-service-account.json
+
+      - name: Upload keys stats to Google Sheets
+        env:
+          I18N_GOOGLE_SHEET_ID: ${{ secrets.I18N_GOOGLE_SHEET_ID }}
+          FRONTEND_PATH: ${{ github.workspace }}/hessa-fe
+          BACKEND_PATH: ${{ github.workspace }}/hessa-be
+          AUTH_PATH: ${{ github.workspace }}/hessa-auth
+          SOCKET_PATH: ${{ github.workspace }}/hessa-socket
+        working-directory: hessa-fe
+        run: |
+          npx tsx scripts/translations/upload-keys-stats.ts
+
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -rf hessa-fe/credentials
+          rm -rf hessa-be
+          rm -rf hessa-auth
+          rm -rf hessa-socket

@@ -1,0 +1,22 @@
+<div class="flex items-center justify-center">
+  @if (image()) {
+    <img
+      [src]="image()"
+      [alt]="fullName()"
+      class="block rounded-[12px] object-cover"
+      [ngClass]="sizeClasses()"
+    />
+  } @else {
+    <div
+      class="single-line-lg-mid-emphasis crescent relative inline-flex items-center justify-center rounded-full text-emphasis-high"
+      [ngClass]="[
+        sizeClasses(),
+        backgroundColorClass(),
+        colorClass(),
+        includeBorder() ? 'border border-[#121331]' : ''
+      ]"
+    >
+      {{ getInitial() }}
+    </div>
+  }
+</div>

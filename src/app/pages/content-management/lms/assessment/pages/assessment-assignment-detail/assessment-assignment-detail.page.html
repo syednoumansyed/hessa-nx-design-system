@@ -1,0 +1,7 @@
+@if (detailViewModel()) {
+<app-assessment-detail-base
+  [config]="detailViewModel()!"
+  [attachmentControl]="attachmentControl"
+  [primaryBtnLoading]="primaryBtnLoading()"
+></app-assessment-detail-base>
+}

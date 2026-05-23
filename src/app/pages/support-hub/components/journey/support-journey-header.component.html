@@ -1,0 +1,162 @@
+<div class="safe-area-top flex flex-col md:pt-0">
+  <div class="flex items-center py-ds-md md:gap-ds-md md:px-4">
+    @if (showBackButton()) {
+      <button
+        type="button"
+        class="flex h-10 w-10 items-center justify-center rounded-ds-full border border-transparent text-emphasis-high transition-colors duration-150 rtl:rotate-180"
+        (click)="onBackClick()"
+        [attr.aria-label]="backLabel()"
+      >
+        <app-ds-icon
+          [icon]="backIcon"
+          size="md"
+          aria-hidden="true"
+        ></app-ds-icon>
+      </button>
+    }
+
+    <span
+      class="me-2 flex h-12 w-12 items-center justify-center rounded-ds-full bg-icon-action"
+    >
+      <app-ds-icon
+        [icon]="icon()"
+        cssClass="text-icon-high"
+        size="xl"
+        aria-hidden="true"
+      ></app-ds-icon>
+    </span>
+
+    <div class="gap-ds-2xs flex flex-col">
+      <div class="heading-h4-high-emphasis text-emphasis-high">
+        {{ title() }}
+      </div>
+      @if (subtitle()) {
+        <div class="content-md-mid-emphasis text-emphasis-mid">
+          {{ subtitle() }}
+        </div>
+      }
+    </div>
+
+    @if (showCloseButton() && isSplitView()) {
+      <button
+        type="button"
+        class="ms-auto flex h-10 w-10 items-center justify-center rounded-ds-full border border-transparent text-emphasis-high transition-colors duration-150"
+        (click)="onCloseClick()"
+        [attr.aria-label]="closeLabel()"
+      >
+        <app-ds-icon [icon]="closeIcon" size="md" aria-hidden="true" />
+      </button>
+    }
+  </div>
+
+  @if (allowStudentSelection() && hasStudents()) {
+    <div class="border-t border-stroke-black-08 px-4 py-ds-md">
+      <button
+        type="button"
+        class="py-ds-2xs group flex w-full items-center gap-ds-sm rounded-ds-md px-ds-xs pt-ds-sm text-start transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-brand-default"
+        (click)="onSelectStudents()"
+      >
+        <span class="single-line-sm-mid-emphasis text-emphasis-mid">
+          {{ studentsLabel() }}
+        </span>
+
+        <div class="flex flex-1 flex-wrap items-center gap-ds-sm">
+          @for (student of visibleStudents(); track student.id) {
+            <div class="flex items-center gap-ds-xs">
+              <app-ds-avatar
+                [fullName]="student.fullName"
+                [imageUrl]="student.avatarUrl ?? null"
+                [color]="student.avatarColor"
+                size="sm"
+                [includeBorder]="false"
+              ></app-ds-avatar>
+              <span class="heading-h5-high-emphasis text-emphasis-high">
+                {{ student.fullName }}
+              </span>
+            </div>
+          }
+
+          @if (remainingCount() > 0) {
+            <span class="single-line-sm-mid-emphasis text-emphasis-mid">
+              {{ remainingLabel() }}
+            </span>
+          }
+        </div>
+
+        <app-ds-icon
+          class="ms-auto rtl:rotate-180"
+          [icon]="chevronIcon"
+          size="md"
+          cssClass="text-emphasis-mid"
+          aria-hidden="true"
+        ></app-ds-icon>
+      </button>
+    </div>
+  } @else if (!allowStudentSelection() && hasStudents()) {
+    <div class="border-t border-stroke-black-08 px-4 py-ds-md">
+      <div
+        class="pb-ds-2xs flex w-full items-center gap-ds-sm rounded-ds-md px-ds-xs pt-ds-sm"
+      >
+        <span class="single-line-sm-mid-emphasis text-emphasis-mid">
+          {{ studentsLabel() }}
+        </span>
+
+        <div class="flex flex-1 flex-wrap items-center gap-ds-sm">
+          @for (student of visibleStudents(); track student.id) {
+            <div class="flex items-center gap-ds-xs">
+              <app-ds-avatar
+                [fullName]="student.fullName"
+                [imageUrl]="student.avatarUrl ?? null"
+                [color]="student.avatarColor"
+                size="sm"
+                [includeBorder]="false"
+              ></app-ds-avatar>
+              <span class="heading-h5-high-emphasis text-emphasis-high">
+                {{ student.fullName }}
+              </span>
+            </div>
+          }
+
+          @if (remainingCount() > 0) {
+            <span class="single-line-sm-mid-emphasis text-emphasis-mid">
+              {{ remainingLabel() }}
+            </span>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (allowSchoolSelection()) {
+    <div class="border-t border-stroke-black-08 px-4 py-ds-md">
+      <button
+        type="button"
+        class="py-ds-2xs group flex w-full items-center gap-ds-sm rounded-ds-md px-ds-xs pt-ds-sm text-start transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-brand-default"
+        (click)="onSelectSchool()"
+      >
+        <div class="flex flex-1 flex-wrap items-center gap-ds-sm">
+          @if (hasSchoolSelection()) {
+            <app-support-ticket-school-info
+              [school]="{
+                title: schoolCampusName(),
+                subtitle: schoolName(),
+              }"
+            />
+          } @else {
+            <span class="single-line-sm-mid-emphasis text-emphasis-mid">
+              {{ emptySchoolLabel() }}
+            </span>
+          }
+        </div>
+
+        <app-ds-icon
+          class="ms-auto rtl:rotate-180"
+          [icon]="chevronIcon"
+          size="md"
+          cssClass="text-emphasis-mid"
+          aria-hidden="true"
+        ></app-ds-icon>
+      </button>
+    </div>
+  }
+</div>

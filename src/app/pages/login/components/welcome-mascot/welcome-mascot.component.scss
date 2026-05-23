@@ -1,0 +1,38 @@
+/* Downward-pointing bubble */
+.chat-bubble-down {
+  position: relative;
+  margin-bottom: 20px; /* Add space for the tail */
+}
+
+/* Single rotated rectangle for tail - points DOWN */
+.chat-bubble-down::before {
+  content: "";
+  position: absolute;
+  bottom: -30px; /* Move further down to be visible */
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 50px;
+  height: 50px;
+  border-bottom-right-radius: 16px;
+  background-color: #d1e2ef;
+  border-top: none;
+  border-left: none;
+  z-index: 0;
+  border-bottom: 8px solid #c2d2de;
+  border-right: 8px solid #c2d2de;
+}
+
+/* Cover to hide tail borders inside bubble */
+.chat-bubble-down::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px; /* Narrower to only cover center area */
+  height: 25px;
+  background-color: #d1e2ef;
+  z-index: 1;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+}

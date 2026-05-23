@@ -1,0 +1,27 @@
+<form class="flex w-full max-w-full flex-col gap-ds-xl" [formGroup]="form">
+  <div class="gap-ds-2xs flex flex-col">
+    <app-ds-textarea
+      formControlName="message"
+      [label]="'support.form.resolve.message_label' | dsTranslate"
+      [hintLeft]="'support.form.resolve.hint' | dsTranslate"
+      placeholder=""
+      [required]="true"
+      [rows]="5"
+    ></app-ds-textarea>
+  </div>
+
+  <div>
+    <ds-attachment-form-control
+      class="w-full"
+      formControlName="attachments"
+      [label]="'global.attachments.label' | dsTranslate"
+      [acceptFileTypes]="attachmentAcceptTypes"
+      [maxSizeInMB]="attachmentMaxSizeMb"
+      [isMultiple]="true"
+    ></ds-attachment-form-control>
+
+    <div class="content-xs-mid-emphasis mt-2 text-emphasis-mid">
+      {{ "support.upload.description" | dsTranslate }}
+    </div>
+  </div>
+</form>

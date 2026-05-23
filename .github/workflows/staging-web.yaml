@@ -1,0 +1,170 @@
+name: Web Staging - Tests, Build & Deploy
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - staging
+
+env:
+  AWS_REGION: eu-central-1
+  S3_FE_BUCKET: staging-nx-fe-bucket
+  S3_ADMIN_BUCKET: staging-nx-admin-bucket
+  FE_BASE_URL: https://nx.uat.ncle.dev
+  BE_API_BASE_URL: https://api.uat.ncle.dev/api
+  SOCKET_BASE_URL: https://ws.uat.ncle.dev
+  AUTH_API_BASE_URL: https://auth.uat.ncle.dev/api
+  SMS_RECHARGE_URL: https://cloud.unifonic.com/payment/topup
+  FE_BUILD_DIR: ./www/browser
+  ADMIN_BUILD_DIR: ./admin-panel/www
+  ENVIRONMENT: staging
+  COMET_CHAT_REGION: in
+  NODE_AUTH_TOKEN: ${{ secrets.NPM_GITHUB_AUTH_TOKEN }}
+  NPM_FONTAWESOME_AUTH_TOKEN: ${{ secrets.NPM_FONTAWESOME_AUTH_TOKEN }}
+  SENTRY_AUTH_TOKEN: ${{ secrets.STAGING_SENTRY_AUTH_TOKEN }}
+  ENABLE_SENTRY: true
+  APP_ID: "stg.ncle.hessa.app"
+  APP_NAME: "nx Stg"
+  MICROSOFT_AUTHORITY: https://login.microsoftonline.com/
+  PLAUSIBLE_SCRIPT_URL: ""
+
+jobs:
+  pipeline:
+    name: Web Staging - Tests, Build & Deploy to Staging
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: ${{ env.FE_BASE_URL }}
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@ncle-edu"
+      - name: Setup Environment Variables
+        run: |
+          echo "export const environment = {
+            production: true,
+            APP_ID: '${{ env.APP_ID }}',
+            APP_NAME: '${{ env.APP_NAME }}',
+            SENTRY_DSN: '${{ secrets.STAGING_SENTRY_DSN }}',
+            COMET_APP_ID: '${{ secrets.STAGING_COMET_APP_ID }}',
+            COMET_AUTH_KEY: '${{ secrets.STAGING_COMET_AUTH_KEY }}',
+            MICROSOFT_APPLICATION_CLIENT_ID: '${{ secrets.MICROSOFT_APPLICATION_CLIENT_ID }}',
+            MICROSOFT_AUTHORITY: '${{ env.MICROSOFT_AUTHORITY }}',
+            MICROSOFT_TENANT_ID: '${{ secrets.MICROSOFT_TENANT_ID }}',
+            COMET_REGION: '${{ env.COMET_CHAT_REGION }}',
+            FE_BASE_URL: '${{ env.FE_BASE_URL }}',
+            BE_API_BASE_URL: '${{ env.BE_API_BASE_URL }}',
+            SOCKET_BASE_URL: '${{ env.SOCKET_BASE_URL }}',
+            AUTH_API_BASE_URL: '${{ env.AUTH_API_BASE_URL }}',
+            SMS_RECHARGE_URL: '${{ env.SMS_RECHARGE_URL }}',
+            ENVIRONMENT_NAME: '${{ env.ENVIRONMENT }}',
+            MOCK_ENABLED: false,
+            PLAUSIBLE_SCRIPT_URL: '${{ env.PLAUSIBLE_SCRIPT_URL }}',
+          };" > src/environments/environment.ts
+          cp src/environments/environment.ts admin-panel/src/environments/environment.ts
+          cp src/environments/environment.ts src/environments/environment.${{ env.ENVIRONMENT }}.ts
+          cp src/environments/environment.ts admin-panel/src/environments/environment.${{ env.ENVIRONMENT }}.ts
+      - name: Install dependencies
+        run: npm i
+      # - name: Run Lint
+      #   run: npm run lint
+      # - name: Run Tests
+      #   run: npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessCI
+      # - name: Run Cypress E2E Tests
+      #   uses: cypress-io/github-action@v6
+      #   with:
+      #     install: false
+      #     record: false
+      #     start: npm run start
+      #     browser: chrome
+      # - name: Run Cypress Component Tests
+      #   uses: cypress-io/github-action@v6
+      #   with:
+      #     install: false
+      #     record: false
+      #     component: true
+      #     start: npm run start
+      #     browser: chrome
+      - name: Run Angular Tests
+        run: npm run ng:test:ci
+      - name: Prepare App version
+        if: github.event_name != 'pull_request' && success()
+        run: |
+          LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1) | tr -d '\n')
+          APP_VERSION=$(echo "$LATEST_TAG" | cut -d'+' -f1 | sed 's/^v//')
+          APP_BUILD_NUMBER=$(echo "$LATEST_TAG" | cut -d'+' -f2)
+          APP_VERSION_SUFFIX=$(date '+%y%m%d%H%M')
+          echo "Printing LATEST_TAG=$LATEST_TAG"
+          echo "Printing APP_VERSION=$APP_VERSION"
+          echo "Printing APP_BUILD_NUMBER=$APP_BUILD_NUMBER"
+          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+          echo "APP_VERSION=$APP_VERSION" >> $GITHUB_ENV
+          echo "APP_BUILD_NUMBER=$APP_BUILD_NUMBER" >> $GITHUB_ENV
+          echo "CAPGO_VERSION=$APP_VERSION+$APP_BUILD_NUMBER.$APP_VERSION_SUFFIX" >> $GITHUB_ENV
+      - name: Get Release Notes
+        if: github.event_name != 'pull_request' && success()
+        uses: cardinalby/git-get-release-action@v1
+        id: get_release_notes
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          tag: ${{ env.LATEST_TAG }}
+      - name: Prepare version.json & changelogs file
+        if: github.event_name != 'pull_request' && success()
+        run: |
+          echo "{\"version\": \"${{ env.CAPGO_VERSION }}\"}" > src/assets/json/version.json
+          echo "${{ steps.get_release_notes.outputs.body }}" > CHANGELOGS.md
+          jq --indent 2 '.version="${{ env.CAPGO_VERSION }}"' package.json > temp.json && mv temp.json package.json
+      - name: Build Static Files
+        if: github.event_name != 'pull_request' && success()
+        run: |
+          npm run build:web:staging
+          npm run build:admin:staging
+      - name: Push Source Maps to Sentry
+        if: github.event_name != 'pull_request' && env.ENABLE_SENTRY == 'true' && success()
+        run: npm run sentry:sourcemaps -- --release=${{ env.LATEST_TAG }}
+      # - name: Push latest version to CapGo
+      #   if: github.event_name != 'pull_request' && success()
+      #   run: npm run push:capgo:staging -- --apikey ${{ secrets.CAPGO_TOKEN }}
+      #   env:
+      #     CAPGO_VERSION: ${{ env.CAPGO_VERSION }}
+      #     ENVIRONMENT: ${{ env.ENVIRONMENT }}
+      #     CAPGO_PUBLIC_KEY: ${{ secrets.CAPGO_PUBLIC_KEY }}
+      - name: Save latest version on the backend
+        if: github.event_name != 'pull_request' && success()
+        run: |
+          npm run post-version
+        env:
+          BE_API_BASE_URL: ${{ env.BE_API_BASE_URL }}
+          BACKEND_API_KEY: ${{ secrets.STAGING_BACKEND_API_KEY }}
+          CHANGELOGS: ${{ steps.get_release_notes.outputs.body }}
+          VERSION_NUMBER: ${{ env.APP_VERSION }}
+          BUILD_NUMBER: ${{ env.APP_BUILD_NUMBER }}
+          PLATFORM: web
+          FORCE_UPDATE: ${{ github.event.inputs.forceUpdate }}
+          GITHUB_SHA: ${{ github.sha }}
+      - name: Configure AWS CLI
+        if: github.event_name != 'pull_request' && success()
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.STAGING_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.STAGING_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Upload to S3
+        if: github.event_name != 'pull_request' && success()
+        run: |
+          aws s3 sync ${{ env.FE_BUILD_DIR }} s3://${{ env.S3_FE_BUCKET }}
+          aws s3 sync ${{ env.ADMIN_BUILD_DIR }} s3://${{ env.S3_ADMIN_BUCKET }}
+      - name: Cloudfront Invalidation
+        if: github.event_name != 'pull_request' && success()
+        run: |
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.STAGING_AWS_FE_DISTRIBUTION_ID }} --paths "/*"
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.STAGING_AWS_ADMIN_DISTRIBUTION_ID }} --paths "/*"

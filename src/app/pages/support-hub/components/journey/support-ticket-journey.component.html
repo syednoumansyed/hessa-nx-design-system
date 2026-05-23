@@ -1,0 +1,29 @@
+<div class="flex h-full flex-col bg-surface-primary">
+  <div class="border-b border-stroke-black-08">
+    <app-support-journey-header
+      [icon]="supportIcon"
+      [title]="'global.support.title' | dsTranslate"
+      [showBackButton]="!isSplitView()"
+      [showCloseButton]="true"
+      [students]="students()"
+      [allowStudentSelection]="isGuardianInitiator()"
+      [schoolName]="selectedSchoolName()"
+      [schoolCampusName]="selectedSchoolCampusName()"
+      [allowSchoolSelection]="isUserPersonnel()"
+      (back)="onBack()"
+      (close)="onClose()"
+      (studentsRequested)="onStudentsRequested()"
+      (schoolRequested)="onSchoolRequested()"
+    ></app-support-journey-header>
+  </div>
+  <div class="flex-1 overflow-y-auto">
+    <ion-content>
+      <app-support-journey-shell
+        class="block h-full"
+        [stages]="journeyStages()"
+        (stageEdit)="onStageEdit($event)"
+        (stageSelectionChange)="onStageSelectionChange($event)"
+      ></app-support-journey-shell>
+    </ion-content>
+  </div>
+</div>

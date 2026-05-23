@@ -1,0 +1,32 @@
+<div
+  *transloco="let t;"
+  class="ds-page-content mb-4 flex h-full w-full flex-col gap-4 md:mt-4"
+>
+  <div>
+    @if (isClassInfoLoading()) {
+    <app-card-list-item-skeleton></app-card-list-item-skeleton>
+    } @else {
+    <app-profile-header
+      [fullName]="classDetails()?.displayName ?? ''"
+      [metadata]="classHeaderMetaData()"
+      [headerHesIcon]="{ src: 'assets/icons/company.svg', class: 'text-[3rem]' }"
+      [createdBy]="classDetails()?.createdBy?.displayName ?? ''"
+      [creationDate]="classDetails()?.createdAt"
+      class="rounded-lg"
+    >
+    </app-profile-header>
+    }
+  </div>
+  <app-list-view-container
+    [columns]="columns"
+    class="w-full"
+    [dataSource]="fetchStudentList"
+    [primaryActions]="primaryActions()"
+    [noDataConfig]="noDataConfig"
+    [mobileVisibleFieldsLimit]="5"
+    [pageTitle]="t('global.students.title')"
+    [canCopy]="true"
+    [persistColumnSettings]="true"
+    (rowClicked)="onRowClicked($event)"
+  />
+</div>

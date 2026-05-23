@@ -1,0 +1,31 @@
+<div *transloco="let t">
+  <form [formGroup]="form" class="flex flex-col gap-7">
+    @for (control of formConfig(); track $index) {
+      <app-form-control-generator
+        [ngClass]="{ 'w-52': control.type === 'radio' }"
+        [control]="control"
+      ></app-form-control-generator>
+    }
+    @if (additionalSettingsConfig().length > 0) {
+      <app-select-column
+        [columnsList]="additionalSettingsConfig()"
+        formControlName="additionalSettings"
+        [isMultiple]="true"
+        [label]="t('grade_management.additional_settings.txt')"
+      ></app-select-column>
+    }
+
+    @if (!isCreatedHoursFunction()) {
+      <app-select-column
+        [columnsList]="columnsList()"
+        formControlName="selectedColumns"
+        [isMultiple]="isMultipeSelectedColumn()"
+        [required]="true"
+      ></app-select-column>
+
+      <app-form-control-generator
+        [control]="subjectsConfig()"
+      ></app-form-control-generator>
+    }
+  </form>
+</div>

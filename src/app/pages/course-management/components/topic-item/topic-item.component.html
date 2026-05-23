@@ -1,0 +1,119 @@
+<div
+  class="hes-card relative flex min-h-48 w-[9.5rem] cursor-pointer flex-col items-center justify-center rounded-lg p-2 lg:min-h-56 lg:w-60 lg:p-3"
+  (click)="preview()"
+>
+  @if (isCMS()) {
+    <app-hes-action-sheet
+      class="self-end"
+      [actions]="attachmentActions()"
+      [forceActionSheet]="true"
+      [data]="attachment()"
+    ></app-hes-action-sheet>
+  }
+  <div class="flex w-full flex-col items-center gap-2">
+    @switch (type()) {
+      @case ("image") {
+        <div
+          class="before:bg-gray-400/50 relative inline-block before:absolute before:bottom-0 before:left-0 before:right-0 before:top-0"
+        >
+          <img
+            [src]="previewImage()?.url"
+            alt="Image Preview"
+            class="h-[4.4rem] w-[8.3rem] object-cover lg:h-[5.6rem] lg:w-[10.175rem]"
+          />
+        </div>
+      }
+      @case ("pdf") {
+        <div class="flex">
+          <ion-img
+            [src]="'assets/illustrations/pdf.svg'"
+            class="h-16 w-16 object-cover"
+          ></ion-img>
+        </div>
+      }
+      @case ("ppt") {
+        <div class="flex">
+          <ion-img
+            [src]="'assets/illustrations/ppt.svg'"
+            class="h-16 w-16 object-cover"
+          ></ion-img>
+        </div>
+      }
+      @case ("video") {
+        <div class="flex">
+          <ion-img
+            [src]="'assets/illustrations/video.svg'"
+            class="h-16 w-16 object-cover"
+          ></ion-img>
+        </div>
+      }
+      @case ("exam") {
+        <div class="flex">
+          <ion-img
+            [src]="'assets/illustrations/exam.svg'"
+            class="h-16 w-16 object-cover"
+          ></ion-img>
+        </div>
+      }
+      @case ("assignment") {
+        <div class="flex">
+          <ion-img
+            [src]="'assets/illustrations/assignment.svg'"
+            class="h-16 w-16 object-cover"
+          ></ion-img>
+        </div>
+      }
+    }
+    <div
+      class="text-truncate-2 break-all text-center text-sm font-bold text-gray-900 lg:text-base"
+    >
+      {{ itemName() }}
+    </div>
+
+    @if (isCMS() && !content().isPublished) {
+      <div>
+        <span
+          class="hes-badge bg-[#FFFAEB] p-2 text-[#B54708]"
+          *transloco="let t"
+        >
+          {{ t("content_management.not_published.txt") }}
+        </span>
+      </div>
+    }
+
+    @if (content().isPublished) {
+      <div>
+        {{ content().publishingDate | hesDate }}
+      </div>
+    }
+    @if (content().type === "exam" || content().type === "assignment") {
+      @if (content().type === "exam" && content().isOfflineExam) {
+        <span
+          class="hes-badge bg-[#EEF4FF] p-2 text-[#3538CD]"
+          *transloco="let t"
+        >
+          {{ t("enum.OFFLINE") }}
+        </span>
+      } @else {
+        <div class="flex w-full flex-col items-center justify-center gap-2">
+          @if (!isCMS()) {
+            <app-submission-status
+              [status]="content().status"
+            ></app-submission-status>
+          } @else if (isCMS() && content().isPublished) {
+            <ion-progress-bar
+              [value]="content().submissionPercentage ?? 0"
+            ></ion-progress-bar>
+            <div
+              class="text-center text-sm font-medium leading-6 text-gray-900"
+              *transloco="let t"
+            >
+              {{ content().submissionPercentage || 0 }}%
+              {{ t("global.submitted.txt") }}
+            </div>
+          }
+        </div>
+      }
+    }
+  </div>
+</div>

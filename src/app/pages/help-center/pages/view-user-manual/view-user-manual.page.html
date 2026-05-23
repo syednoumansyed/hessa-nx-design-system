@@ -1,0 +1,90 @@
+<ion-content
+  class="ds-page-content bg-white"
+  [dir]="languageCtrl.value === 'en'?'ltr': 'rtl'"
+>
+  @if(isMobile){
+  <app-hes-input
+    [formControl]="searchCtrl"
+    class="rounded-lg border bg-none md:hidden"
+    [iconPrefix]="iconPrefix"
+    [placeholder]="('global.search.placeholder' | transloco:{}:languageCtrl.value!)"
+    [clearInput]="true"
+  ></app-hes-input>
+  } @if(isLoading() || userManuals() === null){
+  <div class="flex h-[75vh] items-center justify-center">
+    <ion-spinner name="crescent"></ion-spinner>
+  </div>
+  } @else if(!!userManuals()?.length){ @if (isMobile) {
+  <div class="flex-1 bg-white px-ds-xl">
+    @if(userManuals()){
+    <ion-segment [scrollable]="true" class="p-ds-md">
+      @for(userManual of userManuals(); track userManual.id){
+      <ion-segment-button
+        (click)="onSelectUserManual(userManual)"
+        class="max-w-fit rounded-lg px-3 py-2 text-sm font-medium"
+        [ngClass]="{'active': (activeType$ | async)?.typeId === userManual.id}"
+      >
+        <ng-container *transloco="let t">
+          {{userManual.displayName}}
+        </ng-container>
+      </ion-segment-button>
+      }
+    </ion-segment>
+    }
+    <div class="m-4 mx-0 h-full">
+      <app-article-detail
+        [language]="languageCtrl.value"
+        class="block h-full"
+      ></app-article-detail>
+    </div>
+  </div>
+  } @else {
+  <div class="flex h-[75vh] max-h-[75vh] bg-white">
+    <app-article-list
+      [userManuals]="userManuals()"
+      [language]="languageCtrl.value"
+      [isLoading]="isLoading()"
+      [isSearch]="(isSearcing$ | async) || false"
+      class="block min-h-full w-[35%] flex-grow overflow-auto border-e border-[#AEAFB8]"
+    ></app-article-list>
+    <app-article-detail
+      class="base-1 block h-full w-full overflow-auto"
+      (refresh)="afterDeleteArticle($event)"
+    >
+    </app-article-detail>
+  </div>
+  } } @else if(userManuals() !== null && !isLoading()) {
+  <div class="hes-card md:border-none md:shadow-none" *transloco="let t">
+    @if(isAddPermission()){
+    <app-no-data-card
+      mainImagePath="assets/illustrations/no_data.svg"
+      title="{{ t('support_ticket.add_new_article.btn') }} "
+      [description]="t('user_manual.add_first_article.txt')"
+      [primaryButton]="noDataBtnConfig()"
+      [noBgStyle]="true"
+    >
+    </app-no-data-card>
+    }@else{
+    <app-no-data-card
+      mainImagePath="assets/illustrations/not_found.svg"
+      title="{{ t('user_manual.article_not_found.txt') }}! "
+      [noBgStyle]="true"
+    >
+    </app-no-data-card>
+    }
+  </div>
+  }
+</ion-content>
+
+<ng-template #projectedTemplate>
+  <ng-container *transloco="let t;">
+    <app-document-control-panel
+      [languageCtrl]="languageCtrl"
+      [searchCtrl]="searchCtrl"
+      [addNewDocumentPermission]="addNewArticlePermission"
+      [addDocButtonText]="t('user_manual.add_article.btn')"
+      [routerLinkPath]="['documentation/create']"
+    >
+    </app-document-control-panel>
+  </ng-container>
+</ng-template>

@@ -1,0 +1,120 @@
+<ion-content class="ds-page-content" *transloco="let t">
+  <div class="flex flex-col px-0 md:py-4" [ngClass]="{'hes-card':!isMobile}">
+    <span class="text-base font-semibold text-[#101828] md:px-6 md:text-2xl">
+      @if (isCreate()) { {{ t('grade_management.add_report_card.title') }} }
+      @else { @if (isEdit()) { {{ t('grade_management.edit_report_card.title')
+      }} } @else { {{ t('grade_management.view_report_card.title') }} } }
+    </span>
+    <app-hes-stepper
+      mode="horizontal"
+      [selectedIndex]="currentStep()"
+      (selectedIndexChange)="selectedIndexChange($event)"
+      [linear]="true"
+    >
+      <cdk-step
+        [label]="t('global.overview.title')"
+        [completed]="overviewForm.valid"
+      >
+        <app-report-card-overview-form
+          [form]="overviewForm"
+          class="w-full"
+          [reportCard]="reportCardDetail()"
+        ></app-report-card-overview-form>
+      </cdk-step>
+      <cdk-step
+        [label]="t('grade_management.report_card.title')"
+        [completed]="false"
+      >
+        <app-manage-columns-landing
+          [reportCard]="reportCardDetail()"
+          class="w-full"
+        ></app-manage-columns-landing>
+      </cdk-step>
+    </app-hes-stepper>
+    @if(currentStep() === 1 && reportCardDetail()?.columns){
+    <div class="mb-4 mt-0 flex justify-end md:px-6">
+      <ion-button
+        hesBtn
+        [hesColor]="isMobile ? 'primary' :'link'"
+        [hesFill]="isMobile ? 'outline' : null"
+        (click)="onPreviewReportCard()"
+        class="w-full md:w-48"
+      >
+        {{ t("grade_management.report_card_preview.btn") }} @if(!isMobile){
+        <fa-icon [icon]="angleRight" class="ms-1"></fa-icon>
+        }
+      </ion-button>
+    </div>
+    }
+
+    <div
+      class="flex w-full flex-col-reverse gap-2 px-ds-xl md:flex-row md:justify-end"
+    >
+      @if(currentStep() === 0){ @if(isView()){
+      <ion-button
+        *hesRbac="viewReportCardPermission"
+        hesBtn
+        hesColor="primary"
+        hesFill="outline"
+        (click)="onEditClick()"
+        class="w-full md:w-32"
+      >
+        {{ t("global.edit.btn") }}
+      </ion-button>
+      } @if(isEdit() || isCreate()){
+      <ion-button
+        hesBtn
+        hesColor="white"
+        (click)="onCancel()"
+        class="w-full md:w-32"
+      >
+        {{ t("global.cancel.btn") }}
+      </ion-button>
+      } @if(isCreate()){
+      <ion-button
+        *hesRbac="createReportCardPermission"
+        [disabled]="overviewForm.invalid"
+        hesBtn
+        (click)="onSave()"
+        class="w-full md:w-44"
+        [disabled]="overviewForm.invalid || isDisableBtn()"
+      >
+        {{ t("reports.report_card_table.create_report_card_button") }}
+      </ion-button>
+      } @if(isView()){
+      <ion-button hesBtn (click)="onOverViewNext()" class="w-full md:w-32">
+        {{ t("global.next.btn") }}
+      </ion-button>
+      } @if(isEdit()){
+      <ion-button
+        *hesRbac="updateReportCardPermission"
+        [disabled]="overviewForm.invalid"
+        hesBtn
+        (click)="onSave()"
+        class="w-full md:w-32"
+        [disabled]="overviewForm.invalid || isDisableBtn()"
+      >
+        {{ t("global.update.btn") }}
+      </ion-button>
+      } } @else {
+      <ion-button
+        hesBtn
+        hesColor="primary"
+        hesFill="outline"
+        (click)="onPrevious()"
+        class="w-full md:w-32"
+      >
+        {{ t("global.previous.btn") }}
+      </ion-button>
+      @if(isView() && reportCardDetail()?.columns){
+      <ion-button
+        hesBtn
+        (click)="onAllowEditSecondStep()"
+        class="w-full md:w-48"
+      >
+        {{ t("grade_management.edit_report_card.btn") }}
+      </ion-button>
+      } }
+    </div>
+  </div>
+</ion-content>

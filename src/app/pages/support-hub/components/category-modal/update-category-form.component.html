@@ -1,0 +1,101 @@
+<!-- School Info Section -->
+<div class="flex items-center gap-ds-md p-ds-lg">
+  <!-- Icon (campus/school) from DS icon set -->
+  <div class="flex h-8 w-8 items-center justify-center rounded-ds-sm">
+    <app-ds-icon icon="school-duotone" [size]="24" class="text-icon-high" />
+  </div>
+  <div class="gap-ds-2xs flex flex-col">
+    <!-- Campus on top (mid emphasis) -->
+    <p class="text-ds-sm text-emphasis-mid">
+      {{ campusName() }}
+    </p>
+    <!-- School below (high emphasis) -->
+    <p class="single-line-sm-high-emphasis text-emphasis-high">
+      {{ schoolName() }}
+    </p>
+  </div>
+</div>
+
+<!-- Form Fields (Display Only) -->
+<div class="mt-ds-lg flex flex-col gap-ds-2xl">
+  <!-- Category Field (readonly DS select, clickable to navigate) -->
+  <div class="gap-ds-2xs flex flex-col">
+    <label class="px-ds-md text-ds-xs text-emphasis-high">
+      <span class="text-content-error">*</span>
+      {{ "support_ticket.category.title" | dsTranslate }}
+    </label>
+    <app-ds-select
+      [config]="{
+        label: undefined,
+        placeholder: '',
+        isMultiple: false,
+        chips: false,
+        showSearch: false,
+        options: [{ id: 'selected', display: categoryTitle() }],
+      }"
+      [disabled]="true"
+      [formControl]="categoryCtrl"
+      (click)="goToCategory.emit()"
+    ></app-ds-select>
+  </div>
+
+  <!-- Subcategory Field (readonly DS select, clickable to navigate) -->
+  <div class="gap-ds-2xs flex flex-col">
+    <label class="px-ds-md text-ds-xs text-emphasis-high">
+      <span class="text-content-error">*</span
+      >{{ "support.sub_category.title" | dsTranslate }}</label
+    >
+    <app-ds-select
+      [config]="{
+        label: undefined,
+        placeholder: '',
+        isMultiple: false,
+        chips: false,
+        showSearch: false,
+        options: [{ id: 'selected', display: subcategoryTitle() }],
+      }"
+      [disabled]="true"
+      [formControl]="subcategoryCtrl"
+      (click)="goToSubcategory.emit()"
+    ></app-ds-select>
+  </div>
+
+  <!-- Assignees Section -->
+  @if (assigneesPills().length > 0) {
+    <div class="flex flex-col gap-ds-sm">
+      <label class="content-sm-high-emphasis text-emphasis-high">
+        {{ "support.assignee.title" | dsTranslate }}
+      </label>
+      <div class="flex flex-wrap gap-ds-sm">
+        @for (pill of assigneesPills(); track pill.fullName) {
+          <app-user-info-pill [user]="pill" [showCloseButton]="false" />
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Action Buttons -->
+  <div
+    class="flex flex-col gap-ds-md md:flex-row md:items-center md:justify-end"
+  >
+    <ds-button
+      type="button"
+      variant="secondary"
+      [cssClass]="'hidden md:inline-flex md:w-auto'"
+      (click)="handleCancel()"
+    >
+      {{ "global.cancel.btn" | dsTranslate }}
+    </ds-button>
+    <ds-button
+      type="button"
+      variant="primary"
+      [fullWidth]="true"
+      [cssClass]="'md:inline-flex md:w-auto'"
+      [loading]="isSubmitting()"
+      [disabled]="isSubmitting()"
+      (click)="handleSubmit()"
+    >
+      {{ "support.category.update.title" | dsTranslate }}
+    </ds-button>
+  </div>
+</div>

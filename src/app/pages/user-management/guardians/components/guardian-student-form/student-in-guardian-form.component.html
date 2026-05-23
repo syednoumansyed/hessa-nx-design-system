@@ -1,0 +1,27 @@
+<div
+  *transloco="let t"
+  class="md:shadow-[0_1px_2px_0_rgba(0, 0, 0, 0.05)] flex h-auto w-full flex-col items-start justify-start gap-8 bg-white md:rounded-lg md:border md:border-[#F1F1F4] md:p-8"
+>
+  <div
+    class="flex h-auto flex-col items-start justify-start gap-8 self-stretch"
+  >
+    <div class="inline-flex items-center justify-between self-stretch">
+      <div class="text-lg font-semibold leading-7">
+        {{ t("user_management.student_details.title") }}
+      </div>
+      <ion-button hesBtn hesColor="secondary" (click)="removeStudent()">
+        {{ t("user_management.remove_student.btn") }}
+      </ion-button>
+    </div>
+
+    <div class="grid grid-cols-1 gap-8 gap-y-10 self-stretch md:grid-cols-2">
+      @for (control of newStudentFormConfig(); track control.formControlName) {
+        <div class="flex-1 basis-1/2">
+          <app-form-control-generator
+            [control]="control"
+          ></app-form-control-generator>
+        </div>
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,10 @@
+<div class="flex flex-wrap gap-ds-xs">
+  @for (tag of tags(); track $index) {
+    <div
+      class="single-line-xs-mid-emphasis items-center rounded-full px-ds-lg py-ds-sm"
+      [ngClass]="tagColorClasses(tag.color)"
+    >
+      {{ tag.name }}
+    </div>
+  }
+</div>

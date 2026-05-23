@@ -1,0 +1,60 @@
+<ion-content class="ds-page-content">
+  <div class="hes-card flex h-full w-full flex-col p-0">
+    <ng-container *transloco="let t">
+      @if (rowsData().length > 0) {
+      <div class="relative mx-4 my-6 flex gap-4" *transloco="let t">
+        <!-- Left Section -->
+        <div class="flex flex-col">
+          <div class="flex flex-col md:flex-row md:gap-2">
+            <div
+              class="me-2 mt-3 flex text-xl font-semibold text-[#3E414C] md:mt-0"
+            >
+              {{ t('global.attendance.title') }}
+            </div>
+            <div class="mt-5 flex gap-1 md:mt-0">
+              <span
+                class="rounded-3xl bg-blue-100 px-2.5 py-0.5 text-sm font-medium text-blue-600"
+                >{{grade()}}</span
+              >
+              <span
+                class="rounded-3xl bg-pink-100 px-2.5 py-0.5 text-sm font-medium text-pink-600"
+              >
+                {{subject()}}
+              </span>
+            </div>
+          </div>
+
+          <div class="mt-2 text-sm font-medium text-[#101828]">
+            {{ t('global.start_date_time.title') }}:
+            <span class="font-normal text-[#667085]"> {{ startDate() }} </span>
+          </div>
+        </div>
+        <!-- Right Section -->
+        <div class="absolute end-1 top-0 md:top-2">
+          @if (!isUpdate() || (isUpdate() && isEditable())){
+          <ion-button
+            hesBtn
+            hesColor="primary"
+            (click)="submitAttendances()"
+            [disabled]="isButtonDisabled()"
+          >
+            {{!isUpdate() ? t('attendance.submit_attendance.btn') :
+            t('attendance.update_attendance.btn')}}
+          </ion-button>
+          }
+        </div>
+      </div>
+      }
+
+      <app-hes-table
+        [columns]="colDef()"
+        [rowData]="rowsData()"
+        [loading]="isLoading()"
+        [hideColumnsSelection]="true"
+        [hideEntriesSelection]="true"
+        [autoSizeStrategy]="autoSizeStrategy()"
+        [noRowsOverlayComponentParams]="noRowsOverlayComponentParams()"
+      ></app-hes-table>
+    </ng-container>
+  </div>
+</ion-content>

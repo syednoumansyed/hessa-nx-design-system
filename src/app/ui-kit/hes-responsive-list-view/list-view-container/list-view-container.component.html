@@ -1,0 +1,110 @@
+<ng-container *transloco="let t">
+  <div
+    class="relative flex h-full flex-col p-0"
+    [ngClass]="{
+      'hes-card gap-4': !isMobile && !noDataFullScreenMode(),
+      'bg-[#F1F1F4]': isMobile,
+      'justify-center': isMobile && noDataFullScreenMode(),
+    }"
+  >
+    @if (isMobile) {
+      <ng-container *ngTemplateOutlet="viewRef"></ng-container>
+    } @else {
+      <ng-container *ngTemplateOutlet="viewRef"></ng-container>
+    }
+
+    @if (((isMobile && pagination() === null) || !isMobile) && loading()) {
+      <div
+        class="absolute bottom-0 left-0 right-0 top-0 flex items-center justify-center bg-[rgba(255,255,255,0.7)]"
+      >
+        <ion-spinner></ion-spinner>
+      </div>
+    }
+  </div>
+
+  <ng-template #viewRef>
+    @if (!noDataFullScreenMode()) {
+      <app-list-action-bar
+        class="sm:pb-0"
+        [rowData]="rowData()"
+        [columns]="columns()"
+        [searchTextControl]="searchTextControl"
+        [dateControl]="dateControl"
+        [dateRageControl]="dateRangeControl"
+        [inlineFilterConfig]="inlineFilterConfig()"
+        [primaryActions]="primaryActions()"
+        [isFilterShow]="isFilterShow()"
+        [title]="pageTitle()"
+        [countTitle]="pageCountTitle()"
+        [countValue]="
+          pagination() ? pagination()?.totalItems : rowData().length
+        "
+        [showSearchInput]="showSearchInput()"
+        [canCopy]="canCopy()"
+        [pageTitleTemplate]="pageTitleTemplate()"
+      ></app-list-action-bar>
+    }
+    <ng-content></ng-content>
+    <!-- Content Rendering -->
+    @if (rowData().length) {
+      @if (isMobile) {
+        <ion-content class="list-content ion-padding-horizontal">
+          <div class="flex flex-col gap-4">
+            @for (data of rowData(); track data) {
+              <app-data-card-grid
+                [data]="data"
+                [columns]="columns()"
+                [mobileVisibleFieldsLimit]="mobileVisibleFieldsLimit()"
+                [selectable]="!!rowSelection()"
+                [selected]="isRowSelected(data)"
+                (selectionChange)="onMobileSelectionChange($event)"
+              ></app-data-card-grid>
+            }
+          </div>
+          <ion-infinite-scroll
+            (ionInfinite)="fetchData($event)"
+            [disabled]="infiniteScrollDisabled"
+            class="mt-5"
+          >
+            <ion-infinite-scroll-content loadingSpinner="bubbles">
+            </ion-infinite-scroll-content>
+          </ion-infinite-scroll>
+        </ion-content>
+      } @else {
+        <div #agGridWrapper class="h-full">
+          <app-hes-table-wrapper
+            [columns]="(columns$ | async) ?? []"
+            [rowData]="rowData()"
+            [pagination]="pagination()"
+            (filterSortModelChanged)="onTableFilterChange($event)"
+            [hideEntriesSelection]="true"
+            [hideColumnsSelection]="true"
+            [autoSizeStrategy]="tableAutoSizeStrategy()"
+            (dragStop)="onDragStop()"
+            (sortChanged)="onSortChange()"
+            [rowSelection]="rowSelection()"
+            (selectedRowsChange)="selectedRowsChange.emit($event)"
+            (rowClicked)="rowClicked.emit($event)"
+          ></app-hes-table-wrapper>
+        </div>
+      }
+    } @else if (!loading()) {
+      <!-- No Data Card -->
+      <app-no-data-card
+        class="w-full"
+        [ngClass]="{
+          'px-4': isMobile,
+          'bg-white': !isMobile,
+        }"
+        [mainImagePath]="
+          noDataConfig()?.mainImagePath || 'assets/illustrations/no_data.svg'
+        "
+        [noBgStyle]="noDataConfig()?.noBgStyle ?? false"
+        [title]="noDataConfig()?.title || t('global.no_data.txt')"
+        [description]="noDataConfig()?.description"
+        [primaryButton]="noDataConfig()?.primaryButton"
+        [secondaryButton]="noDataConfig()?.secondaryButton"
+      ></app-no-data-card>
+    }
+  </ng-template>
+</ng-container>

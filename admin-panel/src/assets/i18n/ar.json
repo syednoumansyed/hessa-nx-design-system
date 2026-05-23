@@ -1,0 +1,18 @@
+{
+  "global.welcome_to_hessa.title": "مرحبًا بك في حصة",
+  "global.welcome.txt": "شريكك في التعليم!",
+  "global.phone_number.label": "رقم الجوال",
+  "global.enter_registered_mobile_number.txt": "يرجى إدخال رقم الجوال المسجل لتسجيل الدخول",
+  "login.or.txt": "أو",
+  "global.send_otp.btn": "إرسال رمز التحقق",
+  "global.send_otp_to_whatsapp.btn": "إرسال رمز التحقق إلى واتساب",
+  "global.verification_required.title": "مطلوب التحقق",
+  "login.enter_the_code.txt": "أدخل الرمز المرسل إلى",
+  "login.resend.btn": "إعادة الإرسال خلال",
+  "global.cancel.btn": "إلغاء",
+  "login.invalid_number.txt": "الرقم الذي أدخلته غير صالح. يرجى المحاولة مرة أخرى باستخدام رقم صحيح.",
+  "global.multiple_profiles_detected.title": "تم اكتشاف عدة ملفات",
+  "login.associated_profile.txt": "هذا الرقم {{phoneNumber}} مرتبط بعدة حسابات. يرجى اختيار الحساب الذي تريد تسجيل الدخول به من القائمة أدناه.",
+  "admin.access_denied.title": "تم رفض الوصول",
+  "admin.access_denied.description": "غير مصرح لك بدخول لوحة الإدارة."
+}

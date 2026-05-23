@@ -1,0 +1,266 @@
+<!-- layout.component.html - Clean & Organized with Mobile Fixes -->
+
+<ion-split-pane when="lg" contentId="main-content" *transloco="let t">
+  <!-- ============ DESKTOP SIDEBAR (Desktop Only - lg+) ============ -->
+  <!--  <span>{{auth.user() | json}}</span>-->
+  <ds-side-nav
+    [allMenuItems]="allMenuItems()"
+    [username]="auth.user()?.displayName ?? ''"
+    [userType]="auth.user()?.type ?? ''"
+    [appVersion]="layoutService.appVersion()"
+    (menuItemClick)="openSchoolStructure($event)"
+  >
+    <div class="flex flex-col items-center justify-center gap-2 px-4 pt-2">
+      @if (!isSchoolStructureEmpty() && isPersonalUser()) {
+        <app-school-selector class="w-full rounded bg-brand-35">
+          <app-school-scope-selector
+            #schoolScopeDisplayTarget
+            class="w-52"
+            [collapsed]="isSideNavCollapsed()"
+          ></app-school-scope-selector>
+        </app-school-selector>
+        <ds-academic-year-selector class="w-full rounded bg-brand-35">
+          <ds-academic-year-selection
+            [collapsed]="isSideNavCollapsed()"
+          ></ds-academic-year-selection>
+        </ds-academic-year-selector>
+      }
+    </div>
+  </ds-side-nav>
+
+  <!-- ============ MAIN CONTENT SHELL ============ -->
+  <div
+    class="ion-page flex flex-col"
+    id="main-content"
+    [ngClass]="isMobileOrTablet() ? 'bg-brand-35' : ''"
+  >
+    <!-- ============ HEADER ============ -->
+    <div class="border-b border-gray-100 bg-white">
+      <!-- Admin Warning Banner (if applicable) -->
+      @if (auth.isLoggedInAsOtherUser()) {
+        <div
+          class="w-full cursor-pointer bg-[#D92D20] pb-2 pt-[max(0.5rem,env(safe-area-inset-top))] text-center text-sm text-[#FFF4F3]"
+          (click)="auth.restoreOriginalProfileData()"
+        >
+          <fa-icon [icon]="faCircleWarning" class="text-lg"></fa-icon>
+          <span class="pl-2 text-sm">
+            {{ t("global.signed_in_as_another_user.txt") }}
+          </span>
+          <br />
+          <span class="ml-2 text-sm underline">
+            {{ t("global.bac_to_acc.btn") }}
+          </span>
+        </div>
+      }
+    </div>
+    @if (layoutService.isHeaderVisible()) {
+      <!-- Main Header Toolbar -->
+      <ds-header
+        [rootLevelRoutes]="mobileRoutes()"
+        (onMenuToggle)="openProfileMenu()"
+        [username]="auth.user()?.displayName ?? ''"
+        [pageTitle]="pageTitle()"
+        [showNotificationIcon]="showHeaderNotificationIcon()"
+        [showHelpCenterIcon]="!isSchoolStructureEmpty()"
+        [notificationCount]="unreadNotificationCount()"
+        [mobileActionsTemplate]="mobileHeaderActionsTemplate()"
+        [hasBannerAbove]="auth.isLoggedInAsOtherUser()"
+        (notificationIconClick)="openNotifications()"
+      >
+        <div class="hidden flex-col gap-4 px-6 py-2 lg:flex">
+          @if (isBreadcrumbVisible$ | async) {
+            @if (!isMobileOrTablet()) {
+              <div class="flex flex-col items-start gap-2">
+                <!-- Class Level Badges -->
+                <div class="flex w-full items-center justify-start gap-1">
+                  @if (isShowClassLevelBadges()) {
+                    <app-class-level-badges
+                      [className]="currentClassName()!"
+                      [levelName]="currentLevelName()!"
+                    ></app-class-level-badges>
+                  }
+                </div>
+
+                <!-- Breadcrumb & Template Projection -->
+                <div class="flex w-full items-center justify-between">
+                  @if ((breadCrumbRestrictRoutes$ | async) === false) {
+                    <app-hes-breadcrumb>
+                      <ng-container *xngBreadcrumbItem="let breadcrumb">
+                        <ng-container>{{ t(breadcrumb) }}</ng-container>
+                      </ng-container>
+                    </app-hes-breadcrumb>
+                  }
+                  @if (projectedTemplateRef$ | async; as projectedTemplateRef) {
+                    <ng-container
+                      *ngTemplateOutlet="projectedTemplateRef"
+                    ></ng-container>
+                  }
+                </div>
+              </div>
+            }
+          }
+        </div>
+      </ds-header>
+    }
+
+    @if (!isSchoolStructureEmpty()) {
+      <app-selected-school-info [maxDepth]="StructureDepth.SCHOOL" />
+    }
+
+    @if (isMobileOrTablet()) {
+      @if (this.isChildSelectionRequired()) {
+        <app-ds-student-selector
+          class="my-2 w-full bg-brand-35 px-2 py-2"
+          [students]="studentsOptions()"
+          [defaultSelectedId]="
+            selectedStudentId() !== undefined
+              ? selectedStudentId()!.toString()
+              : '0'
+          "
+          (studentSelected)="onStudentChange($event)"
+        />
+      }
+    }
+
+    <!-- ============ MAIN CONTENT AREA ============ -->
+    <ion-content
+      class="route-content ds-page-content flex-1"
+      [class.pb-40]="isMobileOrTablet() && auth.isLoggedInAsOtherUser()"
+      [class.pb-20]="isMobileOrTablet()"
+      [class.banner-open]="auth.isLoggedInAsOtherUser()"
+      [class.ds-table-route]="isFullWidthRoute()"
+      [class.chat-route]="isChatRoute()"
+      [class]="'route-content flex-1 ' + currentBackground()"
+      id="main-content"
+    >
+      <!-- Empty state for users with no school structure (on home page only, not menu) -->
+      @if (isSchoolStructureEmpty() && isHomePage() && !isMenuPage()) {
+        <app-home-empty-state />
+      } @else if (!isChildSelectionRequired() && !isJournalFeedVisible()) {
+        <!-- Student Selector & Router Outlet -->
+        <div
+          id="main-content-wrapper"
+          class="ion-page box-border flex w-full flex-row gap-6"
+          [class.mx-auto]="!isFullWidthRoute()"
+          [ngClass]="
+            isChatRoute()
+              ? 'main-content-wrapper-chat'
+              : isFullWidthRoute()
+                ? 'main-content-wrapper-table'
+                : 'main-content-wrapper'
+          "
+        >
+          <div class="flex w-full flex-col gap-6">
+            <!-- Student Selector (Desktop only) -->
+            <!-- Main Router Outlet -->
+            <div class="w-full max-w-[1200px]">
+              <ion-router-outlet></ion-router-outlet>
+            </div>
+          </div>
+        </div>
+      } @else {
+        <!-- Child Selection Layout (for Guardian users) -->
+        <!-- CHILD-SELECTION SPLIT PANE -->
+        <ion-split-pane
+          [class]="splitPaneClass()"
+          when="lg"
+          contentId="child-pane-content"
+        >
+          <!-- SIDE PANE -->
+          <ion-menu
+            menuId="child-menu"
+            contentId="child-pane-content"
+            class="child-menu"
+          >
+            <ion-content class="child-menu">
+              @if (isChildSelectionRequired()) {
+                <app-ds-student-selector
+                  [students]="studentsOptions()"
+                  [defaultSelectedId]="
+                    selectedStudentId() !== undefined
+                      ? selectedStudentId()!.toString()
+                      : '0'
+                  "
+                  (studentSelected)="onStudentChange($event)"
+                ></app-ds-student-selector>
+              }
+
+              @if (
+                isJournalFeedVisible() && studentStatusService.isStudentActive()
+              ) {
+                <journal-feed-wrapper
+                  [studentId]="selectedStudentId()"
+                ></journal-feed-wrapper>
+              }
+            </ion-content>
+          </ion-menu>
+
+          <!-- MAIN PANE -->
+          <div
+            id="child-pane-content"
+            [ngClass]="
+              !isFullWidthRoute() && !isChatRoute() ? 'max-w-[1200px]' : ''
+            "
+            class="ion-page box-border flex w-full flex-1 flex-row gap-6 sm:px-8"
+          >
+            @if (studentStatusService.isStudentActive() || isMenuPage()) {
+              <ion-router-outlet></ion-router-outlet>
+            } @else {
+              <div
+                class="absolute inset-0 flex items-center justify-center p-4"
+              >
+                @if (
+                  studentStatusService.selectedStudentStatus() ===
+                  UserStatus.INACTIVE
+                ) {
+                  <app-no-data-card
+                    [noBgStyle]="true"
+                    mainImagePath="assets/mascot/inactive.png"
+                    [title]="
+                      t(
+                        'deactivation_deactivated_user.account_deactivated_title.txt'
+                      )
+                    "
+                    [description]="
+                      t('account_status.deactivated.description_block', {
+                        reason:
+                          studentStatusService.suspensionData()?.userSuspension
+                            ?.reason || '',
+                      })
+                    "
+                    style="min-height: auto"
+                  />
+                } @else if (
+                  studentStatusService.selectedStudentStatus() ===
+                  UserStatus.PAUSED
+                ) {
+                  <app-no-data-card
+                    [noBgStyle]="true"
+                    mainImagePath="assets/mascot/suspended.png"
+                    [title]="
+                      t('deactivation_paused_user.account_paused_title.txt')
+                    "
+                    [description]="
+                      t('account_status.suspended.description_block', {
+                        reason:
+                          studentStatusService.suspensionData()?.userSuspension
+                            ?.reason || '',
+                      })
+                    "
+                    style="min-height: auto"
+                  />
+                }
+              </div>
+            }
+          </div>
+        </ion-split-pane>
+      }
+    </ion-content>
+    <!-- ============ BOTTOM NAVIGATION (Mobile/Tablet Only) ============ -->
+    @if (isMobileOrTablet() && layoutService.isBottomBarVisible()) {
+      <ds-bottom-nav-bar
+        [mobileMenuItems]="mobileMenuItems()"
+      ></ds-bottom-nav-bar>
+    }
+  </div>
+</ion-split-pane>

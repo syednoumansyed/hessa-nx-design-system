@@ -1,0 +1,50 @@
+<ion-content class="ds-page-content">
+  <div class="flex h-full min-h-0 flex-col">
+    <app-no-selected-scope-card
+      [requiredScope]="requiredScopes"
+      (onScopeUpdate)="handleDisplayContent($event)"
+    />
+    @if (displayContent()) {
+    <ds-responsive-table
+      class="flex min-h-0 flex-1 flex-col"
+      [config]="config()"
+      (bulkActionClick)="onBulkActionClick($event)"
+    />
+    }
+  </div>
+
+  <!-- Mobile footer: attendance chips + history icon -->
+  <ng-template #mobileFooter let-row>
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="single-line-sm-low-emphasis text-emphasis-mid">
+          {{ 'global.attendance.title' | dsTranslate }}
+        </span>
+        @if (row.statusHistory?.length > 1) {
+        <div
+          class="flex h-5 w-fit items-center justify-center rounded-2xl px-2 py-[0.13rem] text-center text-xs font-medium leading-none"
+          [ngClass]="getAttendanceChipClass(row.statusHistory[1]?.status)"
+        >
+          {{ 'enum.' + row.statusHistory[1]?.status | dsTranslate }}
+        </div>
+        <span class="text-gray-400 rtl:rotate-180">→</span>
+        }
+        <div
+          class="flex h-5 w-fit items-center justify-center rounded-2xl px-2 py-[0.13rem] text-center text-xs font-medium leading-none"
+          [ngClass]="getAttendanceChipClass(row.attendance)"
+        >
+          {{ 'enum.' + row.attendance | dsTranslate }}
+        </div>
+      </div>
+      @if (row.statusHistory?.length > 0) {
+      <button
+        type="button"
+        class="flex items-center justify-center text-gray-400 hover:text-primary-600"
+        (click)="onViewHistory(row); $event.stopPropagation()"
+      >
+        <fa-icon [icon]="faCircleInfo" size="lg"></fa-icon>
+      </button>
+      }
+    </div>
+  </ng-template>
+</ion-content>

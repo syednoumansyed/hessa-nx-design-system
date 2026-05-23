@@ -1,0 +1,46 @@
+<div
+  class="flex h-full max-w-[568px] flex-col items-center justify-between overflow-hidden py-5 text-center"
+  *transloco="let t"
+>
+  <div class="flex flex-col items-center">
+    <!-- Celebration Animation -->
+    <ds-animated-icon
+      icon="success-assessment"
+      [loop]="true"
+      [autoplay]="true"
+      [size]="animatedIconSize"
+    />
+    <!-- Success Message -->
+    <div class="mb-2 p-2">
+      <h2 class="m-0 mb-2 text-3xl font-bold text-emphasis-high">
+        {{ t("global.successful.title") }}
+      </h2>
+      <p class="m-0 text-base text-emphasis-mid">
+        {{ t("login.create_account_success.txt") }}
+      </p>
+    </div>
+  </div>
+
+  <!-- Login Actions -->
+  <div class="absolute bottom-0 flex w-full max-w-[568px] flex-col gap-3 p-4">
+    <ds-button
+      class="w-full"
+      [size]="'lg'"
+      [fullWidth]="true"
+      variant="secondary"
+      (click)="goToLogin()"
+    >
+      {{ "login.back_to_login.btn" | transloco }}
+    </ds-button>
+
+    <ds-button
+      class="w-full"
+      [size]="'lg'"
+      variant="primary"
+      [fullWidth]="true"
+      (click)="login()"
+    >
+      {{ proceedButtonText() }}
+    </ds-button>
+  </div>
+</div>

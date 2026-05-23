@@ -1,0 +1,31 @@
+<ion-content class="ds-page-content" *transloco="let t">
+  <div class="flex h-full min-h-0 flex-col">
+    <app-no-selected-scope-card
+      [requiredScope]="requiredScopes"
+      (onScopeUpdate)="handleDisplayContent($event)"
+    />
+    @if (displayContent()) {
+    <ds-responsive-table
+      class="flex min-h-0 flex-1 flex-col"
+      [config]="config()"
+    />
+    }
+  </div>
+
+  <!-- Mobile card footer template -->
+  <ng-template #mobileFooter let-row>
+    @if (isMobileActionVisible(row)) {
+    <div class="py-3">
+      <ds-button
+        [variant]="'primary'"
+        [size]="'sm'"
+        [fullWidth]="true"
+        [disabled]="isMobileActionDisabled(row)"
+        (click)="onMobileActionClick(row)"
+      >
+        {{ getMobileActionLabel(row) }}
+      </ds-button>
+    </div>
+    }
+  </ng-template>
+</ion-content>

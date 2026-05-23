@@ -1,0 +1,68 @@
+<div
+  class="w-full items-end justify-end rounded-lg border bg-white px-3 py-4 transition-transform duration-300 hover:scale-103 md:flex md:items-center md:justify-between md:gap-1 md:px-6 md:py-9"
+>
+  <div class="flex items-start gap-3 md:items-center md:gap-6">
+    <div
+      class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-primary-25 md:h-[4.5rem] md:w-[4.5rem]"
+    >
+      <app-hes-icon
+        [faIcon]="config.icon.faIcon"
+        [hesIcon]="config.icon.hesIcon"
+      ></app-hes-icon>
+    </div>
+
+    <div
+      class="flex flex-col items-start justify-center gap-[0.62rem] md:flex-grow"
+    >
+      <div class="text-base font-bold">
+        {{ config.title }}
+      </div>
+      <div class="flex justify-between">
+        <div
+          class="flex flex-grow flex-col flex-wrap gap-6 md:flex-row md:gap-6"
+        >
+          @for (info of config.info; track $index) {
+            <div class="flex items-center gap-2">
+              <app-hes-icon
+                [faIcon]="info.faIcon"
+                [hesIcon]="info.hesIcon"
+                class="text-primary-400"
+              ></app-hes-icon>
+              <span class="text-sm">{{ info.label }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- actions section for desktop -->
+  @if (config.actions) {
+    <div class="ms-auto">
+      <div class="hidden items-center justify-end gap-2 md:flex md:flex-wrap">
+        <ng-container [ngTemplateOutlet]="actionsTpl"></ng-container>
+      </div>
+    </div>
+  }
+
+  <!-- actions section for mobile -->
+  @if (config.actions) {
+    <div class="mt-3 flex items-end gap-2 pl-2 md:hidden">
+      <ng-container [ngTemplateOutlet]="actionsTpl"></ng-container>
+    </div>
+  }
+</div>
+
+<ng-template #actionsTpl>
+  @for (action of config.actions; track $index) {
+    <ion-button
+      hesBtn
+      *hesRbac="action.permissionId"
+      class="hes-btn--gray"
+      hesColor="secondary"
+      [hesSize]="isMobile ? 'xs' : 'sm'"
+      (click)="action.onAction(config.data)"
+      >{{ action.label }}</ion-button
+    >
+  }
+</ng-template>

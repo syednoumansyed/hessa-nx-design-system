@@ -1,0 +1,41 @@
+<div class="option-creator-demo">
+  <h1 class="heading-h1-high-emphasis mb-6">Multiple Choice Creator</h1>
+
+  <!-- Example 1: Geography Question (Pre-populated) -->
+  <div class="mb-8">
+    <h2 class="heading-h2-high-emphasis mb-4">
+      1. Geography Question (Multi select)
+    </h2>
+    <div class="rounded-lg p-4">
+      <ds-select-option-creator
+        [questionOptions]="existingQuestionOptions"
+        (optionsChange)="onOptionCreatorChange($event, 'Geography Question')"
+        [type]="'MULTI_SELECT'"
+      />
+    </div>
+  </div>
+
+  <!-- Example 2: Programming Question (Pre-populated) -->
+  <div class="mb-8">
+    <h2 class="heading-h2-high-emphasis mb-4">
+      3. Programming Question (true and false)
+    </h2>
+    <div class="rounded-lg p-4">
+      <ds-select-option-creator
+        (optionsChange)="onOptionCreatorChange($event, 'True and false')"
+        type="TRUE_OR_FALSE"
+      />
+    </div>
+  </div>
+  <div class="mb-8">
+    <h2 class="heading-h2-high-emphasis mb-4">
+      2. Programming Question (Single Select)
+    </h2>
+    <div class="rounded-lg p-4">
+      <ds-select-option-creator
+        (optionsChange)="onOptionCreatorChange($event, 'Programming Question')"
+        [type]="'MCQ'"
+      />
+    </div>
+  </div>
+</div>

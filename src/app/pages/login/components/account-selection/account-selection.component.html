@@ -1,0 +1,12 @@
+<!-- account-selection.component.html -->
+@if (isSelectedRoleNotAvailable()) {
+  <p class="ps-8 text-sm text-emphasis-high">
+    {{
+      "login.no_permissions_for_role.alert"
+        | transloco: { selectedRole: selectedRole() }
+    }}
+  </p>
+}
+<div class="space-y-3 pb-4">
+  <ds-action-list [config]="config()"></ds-action-list>
+</div>

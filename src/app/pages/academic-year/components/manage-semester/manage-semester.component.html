@@ -1,0 +1,47 @@
+<div
+  *transloco="let t"
+  class="flex flex-col gap-ds-xl"
+  [ngClass]="{ 'min-h-[100dvh] px-ds-xl py-ds-2xl': isMobile }"
+>
+  <div class="flex items-center justify-between">
+    <div
+      class="heading-h4-high-emphasis text-emphasis-high"
+      [innerHTML]="title"
+    ></div>
+    @if (!isMobile) {
+      <div (click)="onClose()" class="cursor-pointer">
+        <app-ds-icon [icon]="'saxCloseCircleBold'" size="2xl" />
+      </div>
+    }
+  </div>
+
+  <div [ngClass]="{ 'flex flex-1 flex-col': isMobile }">
+    <form
+      [formGroup]="dateRangeForm"
+      [ngClass]="{ 'flex flex-1 flex-col': isMobile }"
+    >
+      <div class="flex flex-col gap-ds-3xl" [ngClass]="{ 'flex-1': isMobile }">
+        <div>
+          <app-form-control-generator [control]="dateRangeControl()" />
+        </div>
+      </div>
+
+      <div
+        [ngClass]="{
+          'mt-auto': isMobile,
+          'mt-ds-xl flex justify-end': !isMobile,
+          'sticky bottom-0 left-0 z-10 w-full': isMobile
+        }"
+      >
+        <ds-button
+          size="lg"
+          [fullWidth]="isMobile"
+          [disabled]="dateRangeForm.invalid"
+          (click)="onSave()"
+        >
+          {{ t("global.save.btn") }}
+        </ds-button>
+      </div>
+    </form>
+  </div>
+</div>

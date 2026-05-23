@@ -1,0 +1,93 @@
+<div *transloco="let t" class="flex h-full max-h-full flex-col">
+  <!-- Header -->
+  <div
+    class="sticky top-0 z-10 flex flex-col gap-ds-lg border-b border-neutral-cool-100 bg-white px-ds-2xl py-ds-xl"
+  >
+    <div class="flex items-center justify-between">
+      <div class="heading-h3-high-emphasis text-content-high">
+        {{ totalReactionsCount() }} {{ t("chats.reaction.txt") }}
+      </div>
+      <div
+        (click)="onClose()"
+        class="flex h-[32px] w-[32px] cursor-pointer items-center justify-center text-right text-emphasis-high"
+      >
+        <app-ds-icon [icon]="faClose" size="xl"></app-ds-icon>
+      </div>
+    </div>
+
+    <!-- Reaction filter chips -->
+    <div
+      class="no-scrollbar reactions flex items-center gap-ds-md overflow-x-auto"
+    >
+      <!-- All reactions chip -->
+      <div
+        (click)="selectFilter(null)"
+        class="flex cursor-pointer items-center gap-1 rounded-full border px-ds-xl py-ds-md transition-colors"
+        [class.border-brand-500]="selectedFilter() === null"
+        [class.bg-brand-50]="selectedFilter() === null"
+        [class.border-neutral-cool-100]="selectedFilter() !== null"
+      >
+        <ng-icon name="react-button" size="24"></ng-icon>
+      </div>
+
+      @for (reaction of reactions(); track reaction.type) {
+        @if (reaction.count > 0) {
+          <div
+            (click)="selectFilter(reaction.type)"
+            class="flex cursor-pointer items-center gap-1 rounded-full border px-ds-xl py-ds-md transition-colors"
+            [class.border-brand-500]="selectedFilter() === reaction.type"
+            [class.bg-brand-50]="selectedFilter() === reaction.type"
+            [class.border-neutral-cool-100]="selectedFilter() !== reaction.type"
+          >
+            <ng-icon
+              [name]="getReactionConfig(reaction.type)?.svgIcon || ''"
+              size="24"
+            ></ng-icon>
+            <span class="content-sm-mid-emphasis text-emphasis-high">{{
+              reaction.count
+            }}</span>
+          </div>
+        }
+      }
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="min-h-0 flex-1 overflow-y-auto pb-[15%]">
+    @for (group of groupedReactions(); track group.type) {
+      <div>
+        <div class="px-ds-xl py-ds-md">
+          <span class="content-md-high-emphasis text-emphasis-mid">{{
+            group.label
+          }}</span>
+        </div>
+
+        @for (user of group.users; track user.id) {
+          <div class="flex items-center gap-ds-md px-ds-2xl py-ds-lg">
+            <app-ds-avatar
+              [fullName]="getUserDisplayName(user)"
+              size="xl"
+              [includeBorder]="false"
+              [color]="getProfileColor(user.profileColor)"
+              [imageUrl]="user.imageUrl"
+              class="shrink-0"
+            />
+            <div class="min-w-0 flex-1">
+              <div class="heading-h5-high-emphasis truncate text-emphasis-high">
+                {{ getUserDisplayName(user) }}
+              </div>
+              <div
+                class="single-line-caption-mid-emphasis truncate text-emphasis-mid"
+              >
+                {{ getUserType(user.userType) }}
+              </div>
+            </div>
+            <div class="shrink-0">
+              <ng-icon [name]="group.svgIcon" size="32"></ng-icon>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

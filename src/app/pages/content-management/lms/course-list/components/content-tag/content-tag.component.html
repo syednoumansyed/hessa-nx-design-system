@@ -1,0 +1,17 @@
+<div
+  class="flex items-center gap-ds-xs rounded-ds-md border border-stroke-black-08 py-ds-sm pl-ds-sm pr-ds-md"
+  *transloco="let t"
+>
+  @if (isSubject()) {
+    <img src="{{ imagePath() }}" class="h-[20px] w-[20px]" />
+  } @else {
+    <app-ds-icon
+      [icon]="imagePath()"
+      [size]="'20px'"
+      [class]="iconColor()"
+    ></app-ds-icon>
+  }
+  <span class="single-line-caption-mid-emphasis text-emphasis-high">{{
+    title()
+  }}</span>
+</div>

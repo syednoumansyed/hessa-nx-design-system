@@ -1,0 +1,57 @@
+<div
+  [formGroup]="form()!"
+  class="flex flex-col gap-4 md:flex-row"
+  *transloco="let t"
+>
+  <div class="flex flex-grow">
+    <div class="me-2 mt-1 flex justify-center p-[0.625rem]">
+      <span>{{ idx() + 1 }}.</span>
+    </div>
+    <div class="flex-grow">
+      <app-form-control-generator
+        class="flex-grow"
+        [control]="questionConfig()"
+      ></app-form-control-generator>
+      @if (
+        (isViewState$ | async) === true && form()?.controls?.isCorrect?.value
+      ) {
+        <div
+          (click)="onMarkAsCorrect()"
+          class="centered-flex mt-2 h-11 cursor-pointer rounded bg-[#12B76A] px-3 text-sm text-white shadow md:hidden"
+        >
+          {{ t("content_management.mark_correct.txt") }}
+        </div>
+      }
+    </div>
+  </div>
+  <div class="flex flex-row items-stretch justify-end gap-4 md:justify-stretch">
+    @if ((isViewState$ | async) === false || !isMobile) {
+      <div
+        (click)="onMarkAsCorrect()"
+        class="centered-flex h-11 cursor-pointer rounded px-3 text-sm text-[#7F8491] shadow"
+        [ngClass]="{
+          'bg-[#F9FAFB]': !form()?.controls?.isCorrect?.value,
+          'bg-[#12B76A] text-white': form()?.controls?.isCorrect?.value,
+          invisible: !(
+            (isViewState$ | async) === false ||
+            form()?.controls?.isCorrect?.value
+          )
+        }"
+      >
+        {{ t("content_management.mark_correct.txt") }}
+      </div>
+    }
+    @if (
+      (isViewState$ | async) === false &&
+      !isReadonly() &&
+      (isShowRemoveButton$ | async) === true
+    ) {
+      <div
+        (click)="onRemove()"
+        class="centered-flex h-11 w-[2.625rem] cursor-pointer rounded text-[#D92D20] shadow"
+      >
+        <fa-icon [icon]="xMark" size="lg"></fa-icon>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,18 @@
+<div #cropper class="cropper-container touch-none overflow-hidden">
+  <image-cropper
+    [imageBase64]="profilePicture"
+    [maintainAspectRatio]="true"
+    [aspectRatio]="1 / 1"
+    [roundCropper]="false"
+    [cropperMinWidth]="100"
+    [cropperMinHeight]="100"
+    [hideResizeSquares]="false"
+    format="png"
+    [transform]="transform"
+    [imageQuality]="0.92"
+    [resizeToWidth]="600"
+    [resizeToHeight]="600"
+    [canvasRotation]="0"
+    (imageCropped)="onImageCropped($event)"
+  ></image-cropper>
+</div>

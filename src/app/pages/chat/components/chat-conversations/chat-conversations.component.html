@@ -1,0 +1,70 @@
+<div *transloco="let t" class="flex h-full flex-col bg-white">
+  <!-- Fixed Search Box Header -->
+  <div class="bg-white p-ds-xl">
+    <app-search-box
+      (searchChange)="onSearchChange($event)"
+      [includeAddButton]="true"
+      (addButtonClick)="openStartChatAsGuardianModal()"
+      placeholderTxt="{{ t('chat.search_label') }}"
+    />
+  </div>
+
+  <!-- Scrollable Content Area - using ion-content for infinite scroll support -->
+  <ion-content class="flex-1">
+    @if (isLoading()) {
+      <div class="flex h-32 items-center justify-center">
+        <ion-spinner color="primary" name="crescent"></ion-spinner>
+      </div>
+    } @else {
+      @if (conversationsList().length > 0) {
+        <!-- Conversations List -->
+        @for (
+          conversation of conversationsList();
+          track getConversationId(conversation)
+        ) {
+          <app-chat-preview
+            [conversation]="conversation"
+            [currentUserId]="chatUserId()"
+            (click)="selectConversation(conversation)"
+          />
+        }
+        <!-- Infinite Scroll -->
+        <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMore($event)">
+          <ion-infinite-scroll-content
+            loadingSpinner="crescent"
+            loadingText="{{ t('chats.loading_more_data.txt') }}"
+          ></ion-infinite-scroll-content>
+        </ion-infinite-scroll>
+        <!-- Mobile bottom spacing for footer -->
+        <div class="h-20 md:hidden"></div>
+      } @else {
+        <!-- Centered No Data Cards -->
+        <div class="flex min-h-[70vh] items-center justify-center">
+          <!-- Show "Start New Chat" card only when initial load is complete, no search, and no conversations -->
+          @if (
+            hasInitiallyLoaded() &&
+            !searchTerm() &&
+            conversationsList().length === 0
+          ) {
+            <app-no-data-card
+              mainImagePath="assets/illustrations/no_chats_data.svg"
+              title="{{ t('chat.start_new_chat.title') }}"
+              [description]="t('chat.meaningful_chat.txt')"
+              [noBgStyle]="true"
+              [primaryButton]="noDataBtnConfig()"
+            />
+          }
+          <!-- Show "No Search Results" card only when not loading search, has search term, and no results -->
+          @if (!fullLoading() && searchTerm() && noSearchResults()) {
+            <app-no-data-card
+              mainImagePath="assets/icons/no-search-result.svg"
+              title="{{ t('chats.no_search_results.txt') }}"
+              [description]="t('chats.no_search_results_suggestion.txt')"
+              [noBgStyle]="true"
+            />
+          }
+        </div>
+      }
+    }
+  </ion-content>
+</div>

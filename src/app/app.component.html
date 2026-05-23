@@ -1,0 +1,13 @@
+<ion-app>
+  <tui-root>
+    <app-splash-screen-web
+      [ngClass]="{
+        'z-50 h-full': showSplashScreen(),
+        hidden: !showSplashScreen(),
+      }"
+    ></app-splash-screen-web>
+    <ion-router-outlet [swipeGesture]="false"></ion-router-outlet>
+    <ds-app-notification-container></ds-app-notification-container>
+    <ds-modal-sheet-container></ds-modal-sheet-container>
+  </tui-root>
+</ion-app>

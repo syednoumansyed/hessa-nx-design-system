@@ -1,0 +1,12 @@
+<form [formGroup]="form">
+  <div class="flex flex-col flex-wrap justify-between gap-4 md:flex-row">
+    <div class="flex flex-col gap-4 md:flex-row"></div>
+    <div class="flex flex-col gap-4 md:flex-row">
+      @for (control of controlsConfig(); track $index) {
+        <app-form-control-generator
+          [control]="control"
+        ></app-form-control-generator>
+      }
+    </div>
+  </div>
+</form>

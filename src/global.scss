@@ -1,0 +1,634 @@
+@use "ngx-toastr/toastr";
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+@import "@angular/cdk/overlay-prebuilt.css";
+/* Core CSS required for Ionic components to work properly */
+@import "@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+// @import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+@import url("https://unpkg.com/leaflet@1.7.1/dist/leaflet.css");
+
+@import "./styles/tailwind.css";
+
+@font-face {
+  font-family: "Lama Rounded";
+  src: url("./assets/fonts/LamaRounded-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Lama Rounded";
+  src: url("./assets/fonts/LamaRounded-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Lama Rounded";
+  src: url("./assets/fonts/LamaRounded-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Lama Rounded";
+  src: url("./assets/fonts/LamaRounded-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Lama Rounded";
+  src: url("./assets/fonts/LamaRounded-ExtraBold.ttf") format("truetype");
+  font-weight: 800;
+  font-style: normal;
+}
+
+/* Core CSS required for Ionic components to work properly */
+@import "@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+// @import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+/* Optional CSS utils that can be commented out */
+@import "@ionic/angular/css/padding.css";
+
+@import "ag-grid-community/styles/ag-grid.css";
+@import "ag-grid-community/styles/ag-theme-quartz.css";
+
+.toast-container {
+  @apply max-w-2xl;
+  top: env(safe-area-inset-top, 0px) !important;
+}
+
+.toast-info,
+.toast-error,
+.toast-success,
+.toast-warning {
+  background: unset;
+  box-shadow: none;
+}
+
+.toast-container .ngx-toastr {
+  box-shadow: none;
+}
+
+.toast-container .ngx-toastr:hover {
+  box-shadow: none;
+}
+
+ion-textarea.hes-textarea {
+  --background: #f6f7f9;
+  --border-radius: 0.25rem;
+  --padding-end: 1rem;
+  --padding-start: 1rem;
+  --padding-top: 0.75rem;
+  --placeholder-color: #838799;
+
+  &.sc-ion-textarea-md-h {
+    --padding-bottom: 0.75rem;
+  }
+
+  textarea {
+    height: 8rem;
+  }
+}
+
+ion-datetime {
+  --ion-color-primary: var(--h-color-primary-400);
+}
+
+ion-spinner {
+  color: var(--h-color-primary-400);
+
+  &[color="dark"] {
+    color: var(--ion-color-dark);
+  }
+}
+
+ion-popover {
+  &.hes-school-structure-control {
+    --min-width: 24rem;
+    --max-height: 30rem;
+  }
+}
+
+ion-modal {
+  &.hes-school-structure-control-mobile {
+    --height: 80%;
+    --width: 98%;
+  }
+
+  &.modal-full::part(content) {
+    --height: 100%;
+    --width: 100%;
+  }
+
+  &.radius-none {
+    --border-radius: 0;
+  }
+}
+
+// CometChat
+.cc-conversations {
+  border: none !important;
+  direction: ltr !important;
+}
+
+.cc-messages {
+  border: none !important;
+}
+
+.cc-message-header__wrapper {
+  padding: 1.56rem !important;
+  border-bottom: 1px solid #eaecf0 !important;
+}
+
+.list__header {
+  margin-bottom: 0 !important;
+}
+
+.cc__icon {
+  background: #272525 !important;
+}
+
+.cc-message-list {
+  margin-top: 1rem !important;
+}
+
+ion-content,
+ion-header,
+ion-footer,
+ion-toolbar {
+  &.bg-white {
+    --background: #fff;
+  }
+}
+
+[data-appearance="hes-editor"] {
+  &:after {
+    border-color: #f6f7f9;
+  }
+}
+
+ion-segment {
+  --background: #fff;
+  gap: 9px;
+
+  ion-segment-button {
+    background-color: #f9f9f9;
+
+    &.active {
+      background-color: #ecad01;
+      color: #fff;
+    }
+
+    &::part(indicator) {
+      display: none;
+    }
+  }
+}
+
+ion-skeleton-text {
+  animation-duration: 1.5s;
+}
+
+.phone-number-dir {
+  direction: ltr;
+  flex-direction: row-reverse;
+}
+
+swiper-container {
+  --swiper-pagination-bullet-inactive-color: var(
+    --ion-text-color-step-800,
+    #cccccc
+  );
+  --swiper-pagination-color: var(--ion-color-primary, #0054e9);
+  --swiper-pagination-progressbar-bg-color: rgba(
+    var(--ion-text-color-rgb, 0, 0, 0),
+    0.25
+  );
+  --swiper-scrollbar-bg-color: rgba(var(--ion-text-color-rgb, 0, 0, 0), 0.1);
+  --swiper-scrollbar-drag-bg-color: rgba(
+    var(--ion-text-color-rgb, 0, 0, 0),
+    0.5
+  );
+  width: 100%;
+  height: 100%;
+}
+
+swiper-slide {
+  display: flex;
+  position: relative;
+
+  flex-direction: column;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: 100%;
+
+  font-size: 18px;
+
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.swiper-slide {
+  img,
+  ion-img {
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: 100%;
+  }
+}
+
+.t-close {
+  display: none !important;
+}
+
+// margin above and below youtube video in hes editor.
+// so that user can press above or below and write without deleting it
+div[data-youtube-video] {
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+}
+
+.ios-header-padding {
+  padding-top: var(--ion-safe-area-top);
+}
+
+.no-mobile-padding {
+  padding-left: 0;
+  padding-right: 0;
+  padding-top: 0;
+}
+
+:host(.checkbox-disabled) {
+  opacity: 0.6;
+}
+
+tui-mobile-calendar._ios {
+  padding-top: 4rem;
+}
+
+.unicode-text {
+  unicode-bidi: plaintext;
+  text-align: start;
+}
+
+[dir="rtl"] .unicode-text {
+  text-align: right;
+}
+
+[dir="ltr"] .unicode-text {
+  text-align: left;
+}
+
+ion-menu {
+  ion-content {
+    --ion-background-color: var(--colors-brand-35);
+  }
+}
+
+ion-content.page-content {
+  --background: var(--colors-brand-35);
+}
+
+.content-padding {
+  --padding-top: 48px !important;
+  --padding-bottom: 48px !important;
+  --padding-left: 48px !important;
+  --padding-right: 48px !important;
+}
+
+@media (max-width: 1024px) {
+  ion-content {
+    // --padding-bottom: clamp(1.5rem, 5vw, 4.875rem) !important;
+  }
+}
+
+.school-selector-sheet ion-modal {
+  padding-bottom: 32px;
+  --height: auto;
+  min-height: 30vh;
+}
+
+ion-content {
+  --background: var(--colors-brand-35);
+}
+
+/* 1️⃣  Grab the inner scroll container Ionic exposes */
+ion-menu .menu-content::part(scroll) {
+  scrollbar-width: none;
+  /* Firefox / spec */
+  -ms-overflow-style: none;
+  /* old Edge / IE */
+}
+
+/* 2️⃣  Hide WebKit scrollbars */
+ion-menu .menu-content::part(scroll)::-webkit-scrollbar {
+  display: none;
+}
+
+ion-popover.hes-popover {
+  --min-width: 22rem;
+  --offset-y: -110px;
+  --offset-x: 20px;
+  --backdrop-opacity: 0;
+  --background: var(--surface-primary);
+
+  /* RTL support with :dir() pseudo-class */
+  &:dir(rtl) {
+    --offset-x: -20px;
+  }
+}
+
+ion-popover.school-selector-popover {
+  --min-width: 22rem;
+  --backdrop-opacity: 0;
+  --background: var(--surface-primary);
+  --offset-y: 40px;
+  --offset-x: 20px;
+
+  /* RTL support with :dir() pseudo-class */
+  &:dir(rtl) {
+    --offset-x: -20px;
+  }
+}
+
+ion-popover.school-selector-popover::part(content) {
+  border-radius: 15px;
+  border-bottom: 8px solid #e5e6e7;
+  border-top: 4px solid #e5e6e7;
+  border-left: 4px solid #e5e6e7;
+  border-right: 4px solid #e5e6e7;
+  --background: var(--surface-primary);
+}
+
+ion-popover.hes-popover::part(content) {
+  border-radius: 15px;
+  border-bottom: 8px solid #e5e6e7;
+  border-top: 4px solid #e5e6e7;
+  border-left: 4px solid #e5e6e7;
+  border-right: 4px solid #e5e6e7;
+}
+
+.school-structure-popover {
+  --width: 22rem;
+  --min-width: 22rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --offset-y: 40px;
+  --offset-x: 20px;
+  --backdrop-opacity: 0;
+  --background: var(--surface-primary);
+
+  /* RTL support with :dir() pseudo-class */
+  &:dir(rtl) {
+    --offset-x: -20px;
+  }
+
+  &.collpase {
+    --offset-y: 100px; /* set desired collapsed vertical offset */
+    /* optionally adjust horizontal offset if needed */
+    /* --offset-x: 12px; */
+
+    &:dir(rtl) {
+      /* keep RTL horizontal override if you changed --offset-x above */
+      /* --offset-x: -12px; */
+    }
+  }
+}
+.notification-popover {
+  --width: 400px;
+  --min-width: 22rem;
+  --offset-y: 20px;
+  --backdrop-opacity: 0;
+  --background: var(--surface-page);
+}
+
+.notification-popover::part(content) {
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 16px;
+  border-color: var(--colors-neutral-cool-100);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+}
+
+.school-structure-popover::part(content) {
+  border-width: 4px 4px 8px 4px;
+  border-style: solid;
+  border-radius: 16px;
+  border-color: var(--colors-neutral-cool-100);
+}
+
+ion-content.white-bg {
+  --background: var(--surface-primary);
+}
+
+/* ── DS PAGE CONTENT ──────────────────────────────────────────────── */
+/* - This class is supposed to be used in all the pages to create padding and background in ion-content - */
+
+ion-content.ds-page-content {
+  --background: var(--colors-brand-35);
+  --padding-top: 24px !important;
+  --padding-bottom: 24px !important;
+  --padding-left: 24px !important;
+  --padding-right: 24px !important;
+  --overflow: auto;
+
+  /* Smooth scroll & iOS behavior */
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+
+  /* Hide scrollbar on Edge/Firefox */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  /* Hide scrollbar in WebKit browsers */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar from Shadow DOM scroll container */
+  &::part(scroll) {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  &::part(scroll)::-webkit-scrollbar {
+    display: none;
+  }
+
+  &.no-top-padding {
+    --padding-top: 0px !important;
+  }
+
+  &.no-bottom-padding {
+    --padding-bottom: 0px !important;
+  }
+
+  @media (max-width: 768px) {
+    --padding-top: 0px !important;
+  }
+}
+
+.mobile ion-content.ds-page-content,
+.ios ion-content.ds-page-content,
+.android ion-content.ds-page-content {
+  --padding-top: 0px !important;
+}
+
+/* Make ds-page-content transparent when custom background is applied to parent */
+.bg-assessment-image ion-content.ds-page-content {
+  --background: transparent !important;
+}
+
+ion-content.ds-page-content.bottom-bar-spacing {
+  --padding-bottom: calc(108px + var(--ion-safe-area-bottom)) !important;
+}
+
+ion-content.ds-page-content.surface-page {
+  --background: var(--surface-page);
+}
+
+.status-success {
+  color: var(--colors-emerald-600);
+}
+
+.status-error {
+  color: var(--colors-error-red-600);
+}
+
+.safe-area-top {
+  padding-top: calc(
+    env(safe-area-inset-top) + var(--safe-area-top-padding, 0px)
+  );
+}
+
+html,
+body {
+  font-size: 16px; // ensure base font-size to help prevent iOS zoom
+  -webkit-text-size-adjust: 100%; // prevent iOS from auto enlarging text
+}
+
+// Prevent iOS auto zoom on focus (inputs <16px get zoomed). Force at least 16px.
+input,
+textarea,
+select,
+ion-input,
+ion-textarea {
+  font-size: 16px !important;
+}
+
+// Allow opting out when smaller font desired without zoom (will still zoom on iOS if <16)
+.no-ios-zoom-reset {
+  font-size: 14px !important;
+}
+
+/* Ensure modals marked with respect-safe-area class avoid the iOS notch/dynamic island */
+ion-modal.respect-safe-area::part(content) {
+  padding-top: max(var(--ion-safe-area-top), 12px);
+  padding-bottom: max(var(--ion-safe-area-bottom), 12px);
+}
+
+/* Improve the sheet grabber spacing when using breakpoints */
+ion-modal.respect-safe-area::part(handle) {
+  margin-top: calc(var(--ion-safe-area-top) / 2);
+}
+
+/* Mobile-only bottom padding that respects iOS safe area */
+@media (max-width: 768px) {
+  .pb-safe-mobile {
+    padding-bottom: max(var(--ion-safe-area-bottom), 60px);
+  }
+}
+/* Filter panel modal (TUI dialog) */
+tui-dialog[data-appearance="ds-filter"],
+.tui-dialog[data-appearance="ds-filter"] {
+  padding: 0 !important;
+}
+
+tui-dialog[data-appearance="ds-filter"] .t-content,
+.tui-dialog[data-appearance="ds-filter"] .t-content,
+tui-dialog[data-appearance="ds-filter"] .t-dialog__content,
+.tui-dialog[data-appearance="ds-filter"] .t-dialog__content,
+tui-dialog[data-appearance="ds-filter"] .t-content > *,
+.tui-dialog[data-appearance="ds-filter"] .t-content > * {
+  padding: 0 !important;
+}
+
+@media (max-width: 767px) {
+  tui-dialog[data-appearance="ds-filter"] .t-content,
+  .tui-dialog[data-appearance="ds-filter"] .t-content,
+  tui-dialog[data-appearance="ds-filter"] .t-dialog__content,
+  .tui-dialog[data-appearance="ds-filter"] .t-dialog__content {
+    border-top-left-radius: var(--ds-corner-radius-xl) !important;
+    border-top-right-radius: var(--ds-corner-radius-xl) !important;
+  }
+}
+
+/* Fix Taiga UI calendar navigation arrows in RTL mode - swap button positions */
+html[dir="rtl"] {
+  /* Swap the visual order of the entire pagination component */
+  tui-primitive-year-month-pagination {
+    display: flex !important;
+    flex-direction: row-reverse !important;
+  }
+
+  /* Swap order and fix spacing inside the spin button container */
+  tui-primitive-year-month-pagination tui-primitive-spin-button {
+    display: flex !important;
+    flex-direction: row-reverse !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    align-items: center !important;
+  }
+
+  /* Fix spacing: make the calendar title centered with proper spacing */
+  tui-primitive-year-month-pagination .t-calendar-title {
+    flex: 1 !important;
+    text-align: center !important;
+  }
+
+  /* Ensure buttons don't shrink */
+  tui-primitive-year-month-pagination button {
+    flex-shrink: 0 !important;
+  }
+}
+
+/* ── DS QR SCANNER MODAL ──────────────────────────────────────────────── */
+/* Full-screen modal for web QR code scanning */
+ion-modal.ds-qr-scanner-modal {
+  --width: 100%;
+  --height: 100%;
+  --border-radius: 0;
+  --background: transparent;
+
+  &::part(content) {
+    background: transparent;
+  }
+
+  &::part(backdrop) {
+    background: transparent;
+  }
+}

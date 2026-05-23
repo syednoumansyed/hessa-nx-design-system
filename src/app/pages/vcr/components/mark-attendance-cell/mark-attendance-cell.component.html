@@ -1,0 +1,33 @@
+<div class="flex items-center space-x-4" *transloco="let t">
+  @if (status() === StudentAttendanceStatus.PRESENT) {
+    <span
+      class="rounded-full border border-[#027A48] bg-[#ECFDF3] px-4 py-1 text-xs font-light text-[#027A48]"
+    >
+      {{ t("enum.PRESENT") }}
+    </span>
+  } @else {
+    <!-- Present Badge (Outlined) -->
+    <span
+      class="rounded-full border border-[#7F8491] bg-[#F2F4F7] px-4 py-1 text-xs font-medium text-[#7F8491]"
+      (click)="markAttendance(StudentAttendanceStatus.PRESENT)"
+    >
+      {{ t("enum.PRESENT") }}
+    </span>
+  }
+
+  @if (status() === StudentAttendanceStatus.ABSENT) {
+    <!-- Absent Badge (Filled) -->
+    <span
+      class="rounded-full border border-[#B42318] bg-[#FEF3F2] px-4 py-1 text-xs font-light text-[#B42318]"
+    >
+      {{ t("enum.ABSENT") }}
+    </span>
+  } @else {
+    <span
+      class="rounded-full border border-[#7F8491] bg-[#F2F4F7] px-4 py-1 text-xs font-light text-[#7F8491]"
+      (click)="markAttendance(StudentAttendanceStatus.ABSENT)"
+    >
+      {{ t("enum.ABSENT") }}
+    </span>
+  }
+</div>

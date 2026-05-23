@@ -1,0 +1,31 @@
+<div
+  class="no-scrollbar flex overflow-x-auto rounded-ds-lg bg-warn-orange-50 px-ds-md py-ds-sm"
+  #scrollContainer
+>
+  @for (date of dateRange; track date.fullDate) {
+    <div
+      #dateItem
+      (click)="selectDate(date, dateItem)"
+      [ngClass]="{
+        'rounded-ds-lg bg-brand-500 text-emphasis-high':
+          selectedDate === date.fullDate,
+        'text-emphasis-low': selectedDate !== date.fullDate
+      }"
+      class="cursor-pointer p-ds-md"
+    >
+      <div
+        [ngClass]="{
+          'w-[40px]': currentLang === 'en',
+          'w-[60px]': currentLang !== 'en'
+        }"
+        class="flex flex-shrink-0 flex-col items-center gap-ds-sm"
+      >
+        <div class="text-ds-sm font-semibold">{{ date.month }}</div>
+        <div class="text-ds-lg font-extrabold">
+          {{ date.day }}
+        </div>
+        <div class="text-ds-sm font-semibold">{{ date.dayOfWeek }}</div>
+      </div>
+    </div>
+  }
+</div>

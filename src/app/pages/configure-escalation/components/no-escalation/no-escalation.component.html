@@ -1,0 +1,13 @@
+<div
+  *transloco="let t"
+  class="flex h-full flex-col items-center justify-center"
+>
+  <ion-img
+    [src]="mainImagePath"
+    alt="No data"
+    class="max-h-full object-contain"
+  ></ion-img>
+  <div class="mt-2 text-xl font-semibold text-gray-900 md:text-2xl">
+    {{ t("global.no_data.txt") }}
+  </div>
+</div>

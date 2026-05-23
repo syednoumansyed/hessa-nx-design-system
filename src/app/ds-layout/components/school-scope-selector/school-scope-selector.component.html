@@ -1,0 +1,45 @@
+<div class="relative flex flex-col items-stretch">
+  @if (secondaryTitle()) {
+    <div
+      [ngClass]="{ 'cursor-pointer': !isDisabled() }"
+      class="flex h-[2.875rem] items-center gap-2 rounded px-6 lg:p-2"
+    >
+      <app-hes-icon
+        class="flex flex-shrink-0 text-2xl leading-6 text-[#EE8F66]"
+        [hesIcon]="{ src: secondaryIconPath() || 'assets/icons/company.svg' }"
+      ></app-hes-icon>
+      <span
+        class="text-sm font-medium text-emphasis-high lg:flex-grow lg:font-semibold"
+      >
+        {{ secondaryTitle() }}
+      </span>
+    </div>
+  }
+  <div
+    [ngClass]="{ 'cursor-pointer': !isDisabled() }"
+    class="flex h-[2.875rem] items-center gap-2 rounded px-6 lg:p-2"
+  >
+    <app-hes-icon
+      class="flex flex-shrink-0 text-2xl leading-6 text-[#EE8F66]"
+      [hesIcon]="{ src: iconPath() }"
+    ></app-hes-icon>
+    @if (!collapsed()) {
+      <span
+        class="text-sm font-medium text-emphasis-high lg:flex-grow lg:font-semibold"
+      >
+        {{ title() }}
+      </span>
+    }
+  </div>
+  <div
+    class="absolute top-1/2 flex h-5 w-5 -translate-y-1/2 transform items-center justify-center"
+    [ngClass]="currLang === 'en' ? 'right-2' : 'left-2'"
+  >
+    @if (!isDisabled()) {
+      <fa-icon
+        [icon]="currLang === 'en' ? faChevronRight : faChevronLeft"
+        class="text-emphasis-high"
+      ></fa-icon>
+    }
+  </div>
+</div>

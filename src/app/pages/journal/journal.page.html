@@ -1,0 +1,54 @@
+<app-no-selected-scope-card
+  [requiredScope]="requiredScopes"
+  (onScopeUpdate)="handleDisplayContent($event)"
+>
+</app-no-selected-scope-card>
+@if(displayContent()){
+<ng-container *transloco="let t">
+  <div class="flex max-h-11 cursor-pointer items-center">
+    <label
+      class="flex h-11 w-1/2 items-center justify-center text-center text-sm font-medium"
+    >
+      <input
+        [formControl]="frequencyControl"
+        type="radio"
+        name="frequency"
+        value="DAILY"
+        class="peer hidden"
+      />
+      <div
+        class="flex h-full w-full items-center justify-center bg-white text-[#c68142] peer-checked:border-b-2 peer-checked:border-b-[#C68142] peer-checked:bg-[#fffce7]"
+      >
+        {{t('journals.daily.title')}}
+      </div>
+    </label>
+    <label
+      class="flex h-11 w-1/2 items-center justify-center text-center text-sm font-medium"
+    >
+      <input
+        [formControl]="frequencyControl"
+        type="radio"
+        name="frequency"
+        value="WEEKLY"
+        class="peer hidden"
+      />
+      <div
+        class="flex h-full w-full items-center justify-center bg-white text-[#c68142] peer-checked:border-b-2 peer-checked:border-b-[#C68142] peer-checked:bg-[#fffce7]"
+      >
+        {{t('journals.weekly.title')}}
+      </div>
+    </label>
+  </div>
+  <app-list-view-container
+    [columns]="columns"
+    class="w-full"
+    [dataSource]="fetchJournalList"
+    [inlineFilterConfig]="inlineFilterConfig"
+    [noDataConfig]="noDataConfig"
+    [mobileVisibleFieldsLimit]="5"
+    [pageTitle]="t('journals.journal_list.title')"
+    [canCopy]="true"
+    [persistColumnSettings]="true"
+  />
+</ng-container>
+}

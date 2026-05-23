@@ -1,0 +1,40 @@
+<audio
+  #audio
+  class="hidden"
+  [src]="messageUrl()"
+  preload="metadata"
+  (loadedmetadata)="init()"
+  (durationchange)="init()"
+  (canplay)="init()"
+  (timeupdate)="tick()"
+  (ended)="isPlaying = false; playedIndex = 0; currentTime = 0"
+></audio>
+
+<div class="flex w-full items-center gap-2">
+  <button
+    type="button"
+    (click)="toggle()"
+    class="flex h-10 w-10 items-center justify-center rounded-full bg-[#F9F6EF] text-primary-400"
+  >
+    <app-ds-icon [icon]="isPlaying ? faPauseIcon : faPlayIcon" size="lg" />
+  </button>
+
+  <div class="shrink-0 tabular-nums text-gray-700">
+    {{ formatTime(currentTime) }}
+  </div>
+
+  <div
+    #track
+    class="grid h-[18px] flex-1 cursor-pointer select-none place-items-center gap-x-[4px] overflow-hidden"
+    [style.gridTemplateColumns]="'repeat(' + levels.length + ', 1fr)'"
+    (click)="seek($event)"
+  >
+    <div
+      *ngFor="let h of levels; let i = index"
+      class="w-[2px] flex-none rounded-full transition-[height,background-color] duration-75 ease-linear"
+      [style.height.%]="h"
+      [class.bg-primary-400]="i < playedIndex"
+      [class.bg-[#C1CAD0]]="i >= playedIndex"
+    ></div>
+  </div>
+</div>

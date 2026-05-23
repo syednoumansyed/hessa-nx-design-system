@@ -1,0 +1,29 @@
+<ion-content class="ds-page-content" *transloco="let t">
+  <div
+    class="hes-card flex h-full w-full flex-col items-start justify-start p-0"
+  >
+    <app-listing-header
+      [title]="t('global.announcements.title')"
+      [countTitle]="t('global.announcements.title')"
+      [countValue]="announcementsPagination()?.totalItems?.toString() ?? '0'"
+      [primaryBtnTitle]="t('announcements.create_announcement.btn')"
+      [primaryBtnPermissionId]="createAnnouncementPermissions"
+      (onPrimaryBtnClick)="onAddAnnouncement()"
+      [loading]="isLoading()"
+      [showDateFilter]="true"
+      [selectedDate]="selectedDate()"
+      [disableFutureDates]="true"
+      [showPrimaryBtnInFilterRow]="true"
+      (onDateFilterChange)="onDateFilterChange($event)"
+    ></app-listing-header>
+
+    <app-hes-table
+      [columns]="columns"
+      [rowData]="announcementsList()"
+      (filterSortModelChanged)="onTableModelChanged($any($event))"
+      [pagination]="announcementsPagination()"
+      [noRowsOverlayComponentParams]="noRowsOverlayComponentParams()"
+      [loading]="isLoading()"
+    ></app-hes-table>
+  </div>
+</ion-content>

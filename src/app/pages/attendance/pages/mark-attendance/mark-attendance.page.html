@@ -1,0 +1,98 @@
+<ion-content class="ds-page-content" *transloco="let t">
+  <div class="flex h-full min-h-0 flex-col">
+    @if (classAttendance()?.status === ClassAttendanceStatus.SUBMITTED) {
+    <app-hes-alert
+      [type]="'success'"
+      [title]="t('attendance.attendance_marked_class.txt')"
+    />
+    }
+
+    <ds-responsive-table
+      class="flex min-h-0 flex-1 flex-col"
+      [config]="config()"
+    >
+      <ng-template dsHeaderPrefix>
+        @if (layout.isMobile()) {
+        <!-- Mobile: date heading + level/class chips -->
+        <div
+          class="border-black/[0.08] -mx-ds-xl flex flex-col gap-ds-md border-b bg-white px-ds-xl pb-ds-lg pt-ds-lg"
+        >
+          <p class="single-line-sm-high-emphasis text-emphasis-high">
+            {{ classAttendanceDate().day }} {{ classAttendanceDate().month }} {{
+            classAttendanceDate().year }}
+          </p>
+          <div class="flex flex-wrap gap-ds-md">
+            <span
+              class="border-black/[0.08] rounded-full border bg-surface-pastel-background-blueRich px-ds-lg py-px text-sm font-semibold text-emphasis-high"
+            >
+              {{ classAttendance()?.level }}
+            </span>
+            <span
+              class="border-black/[0.08] rounded-full border bg-surface-pastel-background-purpleRich px-ds-lg py-px text-sm font-semibold text-emphasis-high"
+            >
+              {{ classAttendance()?.class }}
+            </span>
+          </div>
+        </div>
+        } @else {
+        <!-- Desktop: inline level · class + date + submit button -->
+        <div class="flex w-full flex-wrap items-center justify-between gap-3">
+          <div class="flex items-baseline gap-3">
+            <h2 class="m-0 text-lg font-semibold leading-none text-gray-900">
+              {{ classAttendance()?.level }} · {{ classAttendance()?.class }}
+            </h2>
+            <span class="text-sm leading-none text-gray-500">
+              {{ classAttendanceDate().day }} {{ classAttendanceDate().month }}
+              {{ classAttendanceDate().year }}
+            </span>
+          </div>
+
+          <ds-button
+            [variant]="'primary'"
+            [size]="'md'"
+            [disabled]="isPrimaryBtnDisabled()"
+            [loading]="isLoading()"
+            (click)="onPrimaryBtnClick()"
+          >
+            {{ classAttendance()?.status === ClassAttendanceStatus.PENDING ?
+            t("attendance.submit_attendance.btn") :
+            t("attendance.update_attendance.btn") }}
+          </ds-button>
+        </div>
+        }
+      </ng-template>
+    </ds-responsive-table>
+
+    <!-- Sticky submit button — mobile only -->
+    @if (layout.isMobile()) {
+    <div
+      class="sticky bottom-0 z-10 border-t border-gray-200 bg-white px-4 pb-[env(safe-area-inset-bottom)] pt-0"
+    >
+      <ds-button
+        [variant]="'primary'"
+        [size]="'md'"
+        [fullWidth]="true"
+        [disabled]="isPrimaryBtnDisabled()"
+        [loading]="isLoading()"
+        (click)="onPrimaryBtnClick()"
+      >
+        {{ classAttendance()?.status === ClassAttendanceStatus.PENDING ?
+        t("attendance.submit_attendance.btn") :
+        t("attendance.update_attendance.btn") }}
+      </ds-button>
+    </div>
+    }
+  </div>
+
+  <!-- Mobile card footer: status dropdown chip -->
+  <ng-template #mobileAttendanceFooter let-student>
+    <button
+      type="button"
+      [class]="getMobileStatusClass(student.id)"
+      (click)="openStatusSheet(student)"
+    >
+      <span>{{ getMobileStatusLabel(student.id) }}</span>
+      <app-ds-icon [icon]="faChevronDown" [size]="'sm'" />
+    </button>
+  </ng-template>
+</ion-content>

@@ -1,0 +1,23 @@
+<div
+  *transloco="let t"
+  class="flex items-center justify-between rounded-ds-lg border border-stroke-mid bg-pastels-indigo-50 p-ds-xl"
+>
+  <div class="flex flex-col gap-ds-md">
+    <div class="single-line-xs-mid-emphasis text-emphasis-mid">
+      {{ bannerData()?.title }}
+    </div>
+    <div class="single-line-sm-high-emphasis text-emphasis-high">
+      {{ bannerData()?.description }}
+    </div>
+  </div>
+  <div>
+    <ds-button
+      variant="primary"
+      size="sm"
+      [iconStart]="'saxAddOutline'"
+      (click)="onButtonClick()"
+    >
+      {{ t("global.setup") }}
+    </ds-button>
+  </div>
+</div>

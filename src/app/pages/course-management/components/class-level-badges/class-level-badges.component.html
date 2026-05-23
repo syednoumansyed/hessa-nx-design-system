@@ -1,0 +1,16 @@
+<div class="flex flex-wrap items-center justify-center gap-1">
+  @if (levelName()) {
+    <div
+      class="hes-badge bg-[#EEF4FF] px-3 py-1 text-sm font-normal text-[#3538CD]"
+    >
+      {{ levelName() }}
+    </div>
+  }
+  @if (className()) {
+    <div
+      class="hes-badge bg-[#F0F9FF] px-3 py-1 text-sm font-normal text-[#026AA2]"
+    >
+      {{ className() }}
+    </div>
+  }
+</div>

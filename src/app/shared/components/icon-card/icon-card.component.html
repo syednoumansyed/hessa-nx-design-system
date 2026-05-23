@@ -1,0 +1,36 @@
+<button
+  type="button"
+  class="flex h-full w-full items-center justify-between gap-ds-md rounded-ds-xl border-4 border-stroke-black-08 bg-surface-primary p-ds-xl text-start"
+  [class.cursor-pointer]="interactive"
+  [class.cursor-default]="!interactive"
+  (click)="onCardClick()"
+>
+  <div class="flex min-w-0 flex-1">
+    <div class="flex min-w-0 flex-1 flex-col gap-ds-sm">
+      <div
+        class="flex h-10 w-10 items-center justify-center rounded-ds-md bg-surface-page"
+      >
+        <app-ds-icon [icon]="icon" size="2xl"></app-ds-icon>
+      </div>
+
+      <div class="content-md-mid-emphasis text-emphasis-high">
+        {{ title }}
+      </div>
+    </div>
+  </div>
+
+  @if (showTrailingChevron) {
+    <div
+      class="flex size-8 shrink-0 items-center justify-center rounded-ds-full bg-pastels-purple-200"
+    >
+      <app-ds-icon
+        [icon]="chevronIcon"
+        size="sm"
+        class="text-emphasis-high"
+        [cssClass]="
+          trailingChevronDirection === 'right' ? 'rtl:rotate-180' : ''
+        "
+      ></app-ds-icon>
+    </div>
+  }
+</button>

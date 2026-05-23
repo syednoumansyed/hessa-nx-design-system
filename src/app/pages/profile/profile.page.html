@@ -1,0 +1,282 @@
+<ion-content class="ds-page-content" *transloco="let t">
+  <div class="flex min-h-full w-full flex-col px-4 pb-ds-lg pt-1 lg:px-0">
+    <div
+      class="mx-auto flex w-full flex-1 flex-col gap-ds-lg lg:max-w-[560px] lg:pt-5"
+    >
+      @if (isViewingStudent()) {
+      <!-- Student profile sub-view (from guardian) -->
+      @if (viewedStudentSection() === 'overview') {
+      <div class="flex flex-1 flex-col gap-ds-lg">
+        <app-profile-contact-header
+          [fullName]="viewedStudentHeaderName()"
+          [phoneNumber]="viewedStudentHeaderPhoneNumber()"
+          [imageUrl]="viewedStudentHeaderImageUrl()"
+          [profileColor]="viewedStudentHeaderProfileColor()"
+          [showEditIcon]="hasProfileImagePermission()"
+          (editIconClick)="initiateProfileUpload(viewedStudent()!.id)"
+        ></app-profile-contact-header>
+
+        <div class="grid grid-cols-2 gap-ds-lg">
+          <app-icon-card
+            [title]="personalCardTitle()"
+            [icon]="personalCardIcon"
+            (cardClick)="openStudentSection('personnel')"
+          ></app-icon-card>
+
+          <app-icon-card
+            [title]="identificationCardTitle()"
+            [icon]="identificationCardIcon"
+            (cardClick)="openStudentSection('identification')"
+          ></app-icon-card>
+
+          <app-icon-card
+            class="col-span-2"
+            [title]="t('profile.academic_details.txt')"
+            [icon]="academicCardIcon"
+            (cardClick)="openStudentSection('supplementary')"
+          ></app-icon-card>
+        </div>
+
+        <!-- Guardian(s) section -->
+        @if (viewedStudentGuardians().length > 0) {
+        <div class="flex flex-col gap-ds-sm">
+          <h3 class="content-sm-mid-emphasis ps-1 text-emphasis-mid">
+            {{ t("profile.guardians.txt") }}
+          </h3>
+          @for (guardian of viewedStudentGuardians(); track
+          guardian.displayName) {
+          <div
+            class="flex items-center gap-ds-sm rounded-ds-xl border-4 border-stroke-black-08 bg-surface-primary p-ds-xl"
+          >
+            <app-ds-avatar
+              [fullName]="guardian.displayName"
+              [color]="guardian.profileColor"
+              size="md"
+            ></app-ds-avatar>
+            <div class="flex flex-col">
+              <span class="content-md-high-emphasis text-emphasis-high"
+                >{{ guardian.displayName }}</span
+              >
+              @if (guardian.guardianRelationship) {
+              <span class="content-sm-default text-emphasis-mid"
+                >{{ t("enum." + guardian.guardianRelationship) }}</span
+              >
+              }
+            </div>
+          </div>
+          }
+        </div>
+        } @if (viewedStudentLastActiveDate(); as lastActive) {
+        <div class="content-sm-default mt-auto text-center text-emphasis-mid">
+          {{ t("global.last_active.txt") }}:
+          <span class="content-sm-mid-emphasis">
+            {{ lastActive | hesDateTime }}
+          </span>
+        </div>
+        }
+      </div>
+      } @else {
+      <div class="flex flex-col gap-ds-lg pt-ds-lg">
+        <app-profile-section-details
+          [items]="viewedStudentActiveSectionItems()"
+        ></app-profile-section-details>
+      </div>
+      } } @else if (selectedSection() === 'overview') { @if (userType() ===
+      UserType.GUARDIAN) {
+      <!-- Guardian overview: single details card + students list -->
+      <div class="flex flex-1 flex-col gap-ds-lg">
+        <app-profile-contact-header
+          [fullName]="headerName()"
+          [phoneNumber]="headerPhoneNumber()"
+          [imageUrl]="headerImageUrl()"
+          [profileColor]="headerProfileColor()"
+        ></app-profile-contact-header>
+
+        <!-- All guardian details in one card -->
+        <div
+          class="flex flex-col gap-ds-2xl overflow-hidden rounded-ds-xl border-2 border-stroke-black-08 bg-surface-primary px-ds-xl py-ds-xl"
+        >
+          @for (item of guardianOverviewDetails(); track item.label) {
+          <div class="flex items-start justify-between gap-ds-md">
+            <div class="single-line-sm-low-emphasis text-emphasis-mid">
+              {{ item.label }}
+            </div>
+            <div class="flex min-w-0 flex-1 flex-col gap-1 text-end">
+              <div
+                class="single-line-sm-mid-emphasis break-words text-emphasis-high"
+              >
+                <!-- prettier-ignore -->
+                @if (item.type === 'enum') { {{ item.value | enumLang }} }
+                @else if (item.type === 'phoneNumber') {
+                <bdi>{{ item.value }}</bdi> } @else { {{ item.value }} }
+              </div>
+              @if (item.actionLabel && item.onAction) {
+              <button
+                type="button"
+                class="content-md-high-emphasis w-fit self-end text-content-action"
+                (click)="item.onAction()"
+              >
+                {{ item.actionLabel }}
+              </button>
+              }
+            </div>
+          </div>
+          }
+        </div>
+
+        <!-- Students list -->
+        @if (guardianStudentsList().length > 0) {
+        <div class="flex flex-col gap-ds-sm">
+          <h3 class="content-sm-mid-emphasis ps-1 text-emphasis-mid">
+            {{ t("profile.students.txt") }}
+          </h3>
+          <div class="flex flex-col gap-ds-md">
+            @for (student of guardianStudentsList(); track student.id) {
+            <div
+              class="flex cursor-pointer items-center gap-ds-2xl rounded-ds-xl border-4 border-stroke-black-08 bg-surface-primary px-ds-2xl py-ds-xl"
+              (click)="onStudentSelected(student.id)"
+            >
+              <div class="flex min-w-0 flex-1 items-center gap-ds-lg">
+                <app-ds-avatar
+                  [fullName]="student.displayName"
+                  [imageUrl]="student.imageUrl"
+                  [color]="student.profileColor"
+                  size="lg"
+                ></app-ds-avatar>
+                <div class="flex min-w-0 flex-1 flex-col">
+                  <span
+                    class="content-md-high-emphasis truncate text-emphasis-high"
+                    >{{ student.displayName }}</span
+                  >
+                  @if (student.relationship) {
+                  <span class="content-sm-default text-emphasis-mid"
+                    >{{ t("enum." + student.relationship) }}</span
+                  >
+                  } @if (student.isPasswordSetup === false) {
+                  <span
+                    class="single-line-caption-mid-emphasis mt-ds-sm w-fit rounded-full border border-stroke-black-08 bg-surface-danger-subtle px-ds-md py-ds-sm text-content-error"
+                    >{{ t("profile.password_not_setup.label") }}</span
+                  >
+                  }
+                </div>
+              </div>
+              <div
+                class="flex size-6 shrink-0 items-center justify-center rounded-full bg-pastels-purple-200"
+              >
+                <app-ds-icon
+                  [icon]="chevronRight"
+                  size="xs"
+                  class="text-emphasis-high"
+                ></app-ds-icon>
+              </div>
+            </div>
+            }
+          </div>
+        </div>
+        } @if (lastActiveDate(); as lastActive) {
+        <div class="content-sm-default mt-auto text-center text-emphasis-mid">
+          {{ t("global.last_active.txt") }}:
+          <span class="content-sm-mid-emphasis">
+            {{ lastActive | hesDateTime }}
+          </span>
+        </div>
+        }
+      </div>
+      } @else {
+      <!-- Personnel / Student overview: card grid -->
+      <div class="flex flex-1 flex-col gap-ds-lg">
+        <app-profile-contact-header
+          [fullName]="headerName()"
+          [phoneNumber]="headerPhoneNumber()"
+          [imageUrl]="headerImageUrl()"
+          [profileColor]="headerProfileColor()"
+          [showEditIcon]="(userType() === UserType.STUDENT && hasProfileImagePermission())"
+          (editIconClick)="initiateProfileUpload(profile()!.id!)"
+        ></app-profile-contact-header>
+
+        <div class="grid grid-cols-2 gap-ds-lg">
+          <app-icon-card
+            [title]="personalCardTitle()"
+            [icon]="personalCardIcon"
+            (cardClick)="openSection('personnel')"
+          ></app-icon-card>
+
+          <app-icon-card
+            [title]="identificationCardTitle()"
+            [icon]="identificationCardIcon"
+            (cardClick)="openSection('identification')"
+          ></app-icon-card>
+
+          @if (userType() === UserType.PERSONNEL) {
+          <app-icon-card
+            [title]="supplementaryCardTitle()"
+            [icon]="supplementaryCardIcon()"
+            [trailingChevronDirection]="layoutService.isDesktop() ? 'right' : 'down'"
+            (cardClick)="openAssociatedOrganisations()"
+          ></app-icon-card>
+          } @else {
+          <app-icon-card
+            class="col-span-2"
+            [title]="supplementaryCardTitle()"
+            [icon]="supplementaryCardIcon()"
+            (cardClick)="openSection('supplementary')"
+          ></app-icon-card>
+          } @if (showSubjectsCard()) {
+          <app-icon-card
+            [title]="subjectsCardTitle()"
+            [icon]="subjectsCardIcon"
+            [trailingChevronDirection]="layoutService.isDesktop() ? 'right' : 'down'"
+            (cardClick)="openAssociatedSubjects()"
+          ></app-icon-card>
+          }
+        </div>
+
+        <!-- Guardian(s) section for student's own profile -->
+        @if (userType() === UserType.STUDENT && studentGuardiansList().length >
+        0) {
+        <div class="flex flex-col gap-ds-sm">
+          <h3 class="content-sm-mid-emphasis ps-1 text-emphasis-mid">
+            {{ t("profile.guardians.txt") }}
+          </h3>
+          @for (guardian of studentGuardiansList(); track guardian.displayName)
+          {
+          <div
+            class="flex items-center gap-ds-sm rounded-ds-xl border-4 border-stroke-black-08 bg-surface-primary p-ds-xl"
+          >
+            <app-ds-avatar
+              [fullName]="guardian.displayName"
+              [color]="guardian.profileColor"
+              size="md"
+            ></app-ds-avatar>
+            <div class="flex flex-col">
+              <span class="content-md-high-emphasis text-emphasis-high"
+                >{{ guardian.displayName }}</span
+              >
+              @if (guardian.guardianRelationship) {
+              <span class="content-sm-default text-emphasis-mid"
+                >{{ t("enum." + guardian.guardianRelationship) }}</span
+              >
+              }
+            </div>
+          </div>
+          }
+        </div>
+        } @if (lastActiveDate(); as lastActive) {
+        <div class="content-sm-default mt-auto text-center text-emphasis-mid">
+          {{ t("global.last_active.txt") }}:
+          <span class="content-sm-mid-emphasis">
+            {{ lastActive | hesDateTime }}
+          </span>
+        </div>
+        }
+      </div>
+      } } @else {
+      <div class="flex flex-col gap-ds-lg pt-ds-lg">
+        <app-profile-section-details
+          [items]="activeSectionItems()"
+        ></app-profile-section-details>
+      </div>
+      }
+    </div>
+  </div>
+</ion-content>

@@ -1,0 +1,53 @@
+<div class="flex flex-col gap-ds-md">
+  @if (label) {
+    <label class="single-line-xs-mid-emphasis ps-ds-md">
+      {{ label }}
+      @if (required) {
+        <span class="text-error">*</span>
+      }
+    </label>
+  }
+  @for (s of students; track s.id) {
+    <button
+      type="button"
+      class="flex w-full items-center gap-ds-sm rounded-ds-xl border-4 border-stroke-black-08 bg-surface-primary p-ds-xl"
+      (click)="toggle(s.id)"
+    >
+      <!-- Avatar -->
+      <div class="size-12 shrink-0">
+        <app-ds-avatar
+          [fullName]="s.displayName"
+          [imageUrl]="s.avatarUrl ?? null"
+          size="xl"
+          class="[&>div]:!size-12 [&>div]:!rounded-lg [&>img]:!rounded-lg"
+        ></app-ds-avatar>
+      </div>
+
+      <!-- Student Info -->
+      <div class="flex min-w-0 flex-1 flex-col items-start gap-ds-xs">
+        <span
+          class="truncate text-ds-base font-extrabold leading-5 text-emphasis-high"
+        >
+          {{ s.displayName }}
+        </span>
+        @if (s.schoolName) {
+          <span
+            class="truncate text-ds-xs font-semibold leading-3 text-emphasis-mid"
+          >
+            {{ s.schoolName }}
+          </span>
+        }
+      </div>
+
+      <!-- Checkbox -->
+      <div class="shrink-0 rounded-3xl p-1">
+        <app-ds-checkbox
+          [ngModel]="isSelected()(s.id)"
+          (click)="$event.stopPropagation()"
+          (checkedChange)="toggle(s.id)"
+          size="sm"
+        ></app-ds-checkbox>
+      </div>
+    </button>
+  }
+</div>

@@ -1,0 +1,72 @@
+<div
+  *transloco="let t"
+  class="flex flex-col gap-ds-3xl rounded-ds-2xl border-4 border-stroke-mid bg-neutral-cool-50 bg-white p-ds-xl"
+>
+  @for (item of semesterList(); track item.id) {
+    <div
+      class="flex items-center justify-between gap-ds-sm"
+      [ngClass]="{
+        'cursor-pointer': type() === 'semester'
+      }"
+      (click)="onItemClick(item.id)"
+    >
+      <div class="flex flex-col gap-ds-sm">
+        @if (item.isCurrent) {
+          <div class="flex">
+            <span
+              class="single-line-caption-mid-emphasis rounded-full bg-pastels-purple-50 px-ds-lg py-ds-sm text-center text-emphasis-high"
+              >{{ t("global.current.txt") }}</span
+            >
+          </div>
+        }
+        <div class="heading-h4-high-emphasis text-emphasis-high">
+          <span>{{ item.title }}</span>
+          @if (type() === "semester") {
+            <sup class="text-sm">{{
+              academicYearUtils.getOrdinalSuffix(item.title)
+            }}</sup>
+            {{ t("global.semester.title") }}
+          }
+        </div>
+        <div class="flex items-center gap-ds-xs">
+          <app-ds-icon [icon]="faCalendar" />
+          <span class="single-line-caption-mid-emphasis text-emphasis-mid">
+            {{ item.dateFrom | hesDate }}
+            @if (item.dateTo) {
+              - {{ item.dateTo | hesDate }}
+            }
+          </span>
+        </div>
+      </div>
+      @if ((type() === "holiday" && !isViewOnly()) || type() === "semester") {
+        <div
+          class="flex h-[24px] w-[24px] items-center justify-center rounded-full bg-pastels-purple-250"
+        >
+          @if (type() === "semester") {
+            <app-ds-icon [icon]="isRtl ? faChevronLeft : faChevronRight" />
+          } @else {
+            <app-hes-action-sheet
+              [actions]="holidayActions()"
+              [forceActionSheet]="true"
+              [data]="item.id"
+            />
+          }
+        </div>
+      }
+    </div>
+  }
+  @if (!hideBtn()) {
+    <div class="flex justify-center">
+      <ds-button
+        variant="ghost"
+        size="sm"
+        [iconEnd]="'saxAddOutline'"
+        (click)="onAddSemester()"
+        *hesRbac="addSemesterPermission"
+        [disabled]="isViewOnly()"
+      >
+        {{ t("academic_enrolment.add_semester.btn") }}
+      </ds-button>
+    </div>
+  }
+</div>

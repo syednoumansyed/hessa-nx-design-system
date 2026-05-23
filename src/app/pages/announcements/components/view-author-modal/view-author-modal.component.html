@@ -1,0 +1,168 @@
+<ng-container *transloco="let t">
+  @if (authorInfo()) {
+    <div class="hes-card flex flex-col p-0">
+      <div class="flex w-full items-center justify-between px-6 py-5">
+        <div class="text-lg font-semibold leading-5 text-gray-900">
+          {{ t("announcements.originated.by.title") }}
+        </div>
+
+        <div>
+          @if (!isLoggedInAsOtherUser() && !isSameUser()) {
+            <ion-button
+              *hesRbac="LOGIN_AS_PERMISSION"
+              hesBtn
+              hesColor="gray"
+              (click)="showLoginDialog()"
+              >{{ t("global.login_user.btn") }}
+            </ion-button>
+          }
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center justify-start">
+        <div class="flex flex-grow items-center gap-3 px-6 py-4">
+          <app-ds-avatar
+            [fullName]="authorInfo()?.fullName ?? ''"
+            [color]="authorInfo()?.profileColor"
+          />
+          <div class="text-gray-000 text-sm font-medium">
+            {{ authorInfo()?.fullName }}
+          </div>
+          <div
+            (click)="goToInitiatorProfile()"
+            class="flex h-4 w-4 cursor-pointer items-center justify-center"
+          >
+            <app-hes-icon
+              class="h-4 w-4"
+              [hesIcon]="viewProfileIcon"
+            ></app-hes-icon>
+          </div>
+          <!--  -->
+        </div>
+        <div class="flex flex-grow items-center gap-3 px-6 py-4">
+          <div class="flex flex-col gap-2">
+            <div *transloco="let t" class="text-sm text-gray-500">
+              {{ t("global.role.title") }}
+            </div>
+            <div class="flex items-center gap-2">
+              <app-hes-icon
+                class="flex h-6 w-6 items-center justify-center"
+                [faIcon]="userIcon"
+              ></app-hes-icon>
+              <div class="text-sm font-medium text-gray-900">
+                {{ authorInfo()?.role }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="h-[0.0625rem] w-full bg-gray-200 lg:hidden"></div>
+        <div
+          *transloco="let t"
+          class="flex flex-grow items-center gap-3 px-6 py-4"
+        >
+          <div class="flex flex-col gap-2">
+            <div class="text-sm text-gray-500">
+              {{ t("global.national_id.title") }}
+            </div>
+            <div class="text-sm font-medium text-gray-900">
+              {{ authorInfo()?.nationalId }}
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-grow items-center gap-3 px-6 py-4">
+          <div class="flex flex-col gap-2">
+            <div *transloco="let t" class="text-sm text-gray-500">
+              {{ t("global.phone_number.title") }}
+            </div>
+            <div class="phone-number-dir text-sm font-medium text-gray-900">
+              {{ authorInfo()?.countryCode + " " + authorInfo()?.phoneNumber }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      @if (
+        schools().length > 0 || companies().length > 0 || campuses().length > 0
+      ) {
+        <div class="w-full px-6 py-5">
+          <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            <!-- Company Section -->
+            @if (companies().length > 0) {
+              <div class="px-6 py-2">
+                <div
+                  class="mb-3 font-semibold leading-5 text-gray-500 underline"
+                >
+                  {{ t("global.company.title") }}
+                </div>
+                <div class="grid gap-2">
+                  @for (
+                    company of companies();
+                    track company.id;
+                    let index = $index
+                  ) {
+                    <div
+                      class="cursor-pointer rounded px-2 py-1 text-gray-900"
+                      [ngClass]="company.hasAccess ? 'hover:text-blue-500' : ''"
+                      (click)="changeSelection('company', index)"
+                    >
+                      {{ company?.name }}
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+            <!-- Campus Section -->
+            @if (campuses().length > 0) {
+              <div class="px-6 py-2">
+                <div
+                  class="mb-3 font-semibold leading-5 text-gray-500 underline"
+                >
+                  {{ t("global.campus.title") }}
+                </div>
+                <div class="grid gap-2">
+                  @for (
+                    campus of campuses();
+                    track campus.id;
+                    let index = $index
+                  ) {
+                    <div
+                      class="cursor-pointer rounded px-2 py-1 text-gray-900"
+                      [ngClass]="campus.hasAccess ? 'hover:text-blue-500' : ''"
+                      (click)="changeSelection('campus', index)"
+                    >
+                      {{ campus?.name }}
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+            <!-- School Section -->
+            @if (schools().length > 0) {
+              <div class="px-6 py-2">
+                <div
+                  class="mb-3 font-semibold leading-5 text-gray-500 underline"
+                >
+                  {{ t("global.school.title") }}
+                </div>
+                <div class="grid gap-2">
+                  @for (
+                    school of schools();
+                    track school.id;
+                    let index = $index
+                  ) {
+                    <div
+                      class="cursor-pointer rounded px-2 py-1 text-gray-900"
+                      [ngClass]="school.hasAccess ? 'hover:text-blue-500' : ''"
+                      (click)="changeSelection('school', index)"
+                    >
+                      {{ school?.name }}
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+</ng-container>

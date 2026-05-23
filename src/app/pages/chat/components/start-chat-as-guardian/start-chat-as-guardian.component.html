@@ -1,0 +1,103 @@
+<div *transloco="let t" class="flex flex-col gap-ds-xl p-ds-xl">
+  <div class="flex-shrink-0">
+    <app-search-box
+      (searchChange)="onSearchChange($event)"
+      placeholderTxt="{{ t('chat.search_label') }}"
+    />
+  </div>
+  @if (!isMobile) {
+    @if (!isGuardianUser()) {
+      <div class="max-h-[60vh] overflow-y-auto overscroll-contain">
+        @for (personnel of personnelsList(); track personnel.id) {
+          <app-chat-user-preview
+            [info]="personnel"
+            class="cursor-pointer"
+            (click)="onTeacherClick(personnel)"
+          />
+        }
+        @if (noSearchResults()) {
+          <app-no-data-card
+            mainImagePath="assets/icons/no-search-result.svg"
+            title="{{ t('global.no_data.txt') }}"
+            [noBgStyle]="true"
+          />
+        }
+      </div>
+    } @else {
+      @if (shouldShowStudentSelector()) {
+        <div class="grid grid-cols-2 gap-4">
+          <div class="flex-shrink-0">
+            <app-ds-student-selector
+              class="w-full"
+              [students]="studentsOptions()"
+              (studentSelected)="onStudentChange($event)"
+              [enableAllOption]="true"
+            />
+          </div>
+          <div class="max-h-[60vh] overflow-y-auto overscroll-contain">
+            @for (personnel of personnelsList(); track personnel.id) {
+              <app-chat-user-preview
+                [info]="personnel"
+                class="cursor-pointer"
+                (click)="onTeacherClick(personnel)"
+              />
+            }
+            @if (noSearchResults()) {
+              <app-no-data-card
+                mainImagePath="assets/icons/no-search-result.svg"
+                title="{{ t('global.no_data.txt') }}"
+                [noBgStyle]="true"
+              />
+            }
+          </div>
+        </div>
+      } @else {
+        <div class="max-h-[60vh] overflow-y-auto overscroll-contain">
+          @for (personnel of personnelsList(); track personnel.id) {
+            <app-chat-user-preview
+              [info]="personnel"
+              class="cursor-pointer"
+              (click)="onTeacherClick(personnel)"
+            />
+          }
+          @if (noSearchResults()) {
+            <app-no-data-card
+              mainImagePath="assets/icons/no-search-result.svg"
+              title="{{ t('global.no_data.txt') }}"
+              [noBgStyle]="true"
+            />
+          }
+        </div>
+      }
+    }
+  } @else {
+    <div class="flex flex-col gap-ds-xl">
+      @if (isGuardianUser() && shouldShowStudentSelector()) {
+        <div class="flex-shrink-0">
+          <app-ds-student-selector
+            class="w-full"
+            [students]="studentsOptions()"
+            (studentSelected)="onStudentChange($event)"
+            [enableAllOption]="true"
+          />
+        </div>
+      }
+      <div class="max-h-[60vh] overflow-y-auto overscroll-contain">
+        @for (personnel of personnelsList(); track personnel.id) {
+          <app-chat-user-preview
+            [info]="personnel"
+            class="cursor-pointer"
+            (click)="onTeacherClick(personnel)"
+          />
+        }
+        @if (noSearchResults()) {
+          <app-no-data-card
+            mainImagePath="assets/icons/no-search-result.svg"
+            title="{{ t('global.no_data.txt') }}"
+            [noBgStyle]="true"
+          />
+        }
+      </div>
+    </div>
+  }
+</div>

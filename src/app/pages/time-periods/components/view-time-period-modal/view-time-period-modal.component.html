@@ -1,0 +1,108 @@
+<div
+  *transloco="let t"
+  class="Modal flex flex-col justify-start gap-4 rounded-xl bg-white p-7 shadow"
+>
+  <div class="flex justify-between">
+    <div class="text-xl font-semibold text-gray-900">
+      {{
+        t("time_period.period_preview.title", {
+          levelName: timePeriodDetail()?.level?.displayName
+        })
+      }}
+    </div>
+    <fa-icon
+      class="mt-1 cursor-pointer text-[#929CB5] hover:text-[#0000008a]"
+      [icon]="faClose"
+      size="xl"
+      (click)="closeModal()"
+    ></fa-icon>
+  </div>
+  <div class="mb-3 border-b pb-5 text-base text-gray-600">
+    {{ days }}
+  </div>
+
+  <div
+    class="hes-card flex h-full w-full flex-col items-start justify-start p-4"
+  >
+    <div class="grid w-full grid-cols-2 gap-6">
+      <div>
+        <p class="text-lg font-bold">{{ t("global.company.label") }}</p>
+        <p class="text-lg text-gray-600">
+          {{ timePeriodDetail()?.company?.displayName }}
+        </p>
+      </div>
+      <div>
+        <p class="text-lg font-bold">
+          {{ t("global.campus.label") }}
+        </p>
+        <p class="text-lg text-gray-600">
+          {{ timePeriodDetail()?.campus?.displayName }}
+        </p>
+      </div>
+      <div>
+        <p class="text-lg font-bold">
+          {{ t("global.school.label") }}
+        </p>
+        <p class="text-lg text-gray-600">
+          {{ timePeriodDetail()?.school?.displayName }}
+        </p>
+      </div>
+      <div>
+        <p class="text-lg font-bold">
+          {{ t("global.level.label") }}
+        </p>
+        <p class="text-lg text-gray-600">
+          {{ timePeriodDetail()?.level?.displayName }}
+        </p>
+      </div>
+      <div>
+        <p class="text-lg font-bold">
+          {{ t("global.class.label") }}
+        </p>
+        <p class="text-lg text-gray-600">
+          {{ timePeriodDetail()?.class?.displayName }}
+        </p>
+      </div>
+      <div>
+        <p class="text-lg font-bold">
+          {{ t("global.academic_year.title") }}
+        </p>
+        <p class="text-lg text-gray-600">
+          {{ timePeriodDetail()?.academicYear?.name }}
+        </p>
+      </div>
+    </div>
+  </div>
+  <div
+    class="hes-card flex h-full w-full flex-col items-start justify-start p-4"
+  >
+    <div class="grid w-full gap-4">
+      @for (period of timePeriodDetail()?.periods; track period.id) {
+        <div
+          [ngClass]="{
+            'bg-[#FFFDEF]': period.durationType === 'BREAK'
+          }"
+          class="flex px-1 py-2"
+        >
+          <p
+            class="flex min-w-32 items-center justify-start text-lg font-semibold"
+          >
+            {{ period.durationType | enumLang }}
+            @if (period.durationType === "PERIOD") {
+              {{ period.periodNumber }}
+            }
+          </p>
+          <p class="text-lg text-gray-600">
+            {{
+              period.startTime
+                | timeRangeWithDuration
+                  : period.endTime
+                  : period.duration
+                  : currentLang
+            }}
+          </p>
+        </div>
+      }
+    </div>
+  </div>
+</div>

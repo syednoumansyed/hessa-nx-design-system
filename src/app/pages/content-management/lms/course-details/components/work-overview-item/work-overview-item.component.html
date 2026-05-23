@@ -1,0 +1,32 @@
+<div class="relative flex gap-ds-lg">
+  <div>
+    <app-ds-icon
+      [icon]="config().icon"
+      [class]="config().iconColor"
+      size="32px"
+    ></app-ds-icon>
+  </div>
+  <div class="flex flex-grow flex-col">
+    <div class="single-line-sm-mid-emphasis mb-1 text-emphasis-high">
+      {{ config().title | dsTranslate }}
+    </div>
+    <div class="single-line-caption-mid-emphasis mb-[2px] text-emphasis-mid">
+      {{ config().supportText | dsTranslate }}
+    </div>
+    <div>
+      <app-ds-progress-bar
+        [progress]="config().progressBar.value"
+        [showPercentage]="false"
+        [variant]="config().progressBar.variant ?? 'neon-green'"
+        [size]="'sm'"
+      ></app-ds-progress-bar>
+    </div>
+  </div>
+  <div class="absolute top-0 ltr:right-0 rtl:left-0">
+    <app-ds-chip
+      [variant]="'none'"
+      customClasses="bg-[var(--surface-pastel-background-coral-rich)] border-[var(--surface-pastel-background-coral-rich)]"
+      >{{ config().chip.text }}</app-ds-chip
+    >
+  </div>
+</div>

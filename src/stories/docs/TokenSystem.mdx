@@ -1,0 +1,126 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Design System/Token System" />
+
+# Responsive Token System
+
+The Hessa Design System employs a dynamic, CSS variable-based token system where spacing, corner radii, gaps, and typography automatically scale depending on the screen size. Breakpoints are defined at the `:root` level and adapt seamlessly using CSS media queries.
+
+---
+
+## 📱 Breakpoint Thresholds
+
+The system has two distinct scaling tracks for viewport adaptability:
+
+1. **Layout Tokens** (Spacing, Gaps, and Corner Radii):
+   * **Mobile (Default):** $< 768\text{px}$
+   * **Tablet (`md`):** $\ge 768\text{px}$
+   * **Desktop (`xl`):** $\ge 1280\text{px}$
+
+2. **Typography Tokens** (Font Sizes and Line Heights):
+   * **Mobile (Default):** $< 768\text{px}$
+   * **Tablet (`md`):** $\ge 768\text{px}$ to $1023\text{px}$
+   * **Desktop (`lg`):** $\ge 1024\text{px}$
+
+> [!WARNING]
+> **Breakpoint Mismatch:** Spacing and layout tokens use a desktop breakpoint of **$1280\text{px}$**, while typography tokens transition to desktop scale at **$1024\text{px}$**. Ensure custom styles reference the correct media queries to prevent alignment glitches at intermediate screens.
+
+---
+
+## 📏 Layout & Spacing Tokens
+
+Layout tokens use dynamic CSS custom properties that adapt to viewport width.
+
+### Spacing Tokens (`--ds-spacing-*`)
+
+| Token Name | Mobile Value | Tablet ($\ge 768\text{px}$) | Desktop ($\ge 1280\text{px}$) | CSS Variable |
+| :--- | :--- | :--- | :--- | :--- |
+| **`xs`** | `2px` | `2px` | `4px` | `var(--ds-spacing-xs)` |
+| **`sm`** | `4px` | `6px` | `8px` | `var(--ds-spacing-sm)` |
+| **`md`** | `8px` | `10px` | `12px` | `var(--ds-spacing-md)` |
+| **`lg`** | `12px` | `16px` | `18px` | `var(--ds-spacing-lg)` |
+| **`xl`** | `16px` | `20px` | `24px` | `var(--ds-spacing-xl)` |
+| **`2xl`** | `20px` | `24px` | `32px` | `var(--ds-spacing-2xl)` |
+
+### Gap Tokens (`--ds-gaps-*`)
+
+| Token Name | Mobile Value | Tablet ($\ge 768\text{px}$) | Desktop ($\ge 1280\text{px}$) | CSS Variable |
+| :--- | :--- | :--- | :--- | :--- |
+| **`xs`** | `2px` | `4px` | `4px` | `var(--ds-gaps-xs)` |
+| **`sm`** | `4px` | `6px` | `8px` | `var(--ds-gaps-sm)` |
+| **`md`** | `8px` | `10px` | `12px` | `var(--ds-gaps-md)` |
+| **`lg`** | `12px` | `14px` | `16px` | `var(--ds-gaps-lg)` |
+| **`xl`** | `16px` | `18px` | `20px` | `var(--ds-gaps-xl)` |
+| **`2xl`** | `20px` | `24px` | `28px` | `var(--ds-gaps-2xl)` |
+| **`3xl`** | `24px` | `28px` | `32px` | `var(--ds-gaps-3xl)` |
+
+### Corner Radius Tokens (`--ds-corner-radius-*`)
+
+| Token Name | Mobile Value | Tablet ($\ge 768\text{px}$) | Desktop ($\ge 1280\text{px}$) | CSS Variable |
+| :--- | :--- | :--- | :--- | :--- |
+| **`xs`** | `2px` | `2px` | `4px` | `var(--ds-corner-radius-xs)` |
+| **`sm`** | `4px` | `4px` | `8px` | `var(--ds-corner-radius-sm)` |
+| **`md`** | `8px` | `8px` | `12px` | `var(--ds-corner-radius-md)` |
+| **`lg`** | `12px` | `12px` | `16px` | `var(--ds-corner-radius-lg)` |
+| **`xl`** | `16px` | `16px` | `24px` | `var(--ds-corner-radius-xl)` |
+| **`2xl`** | `24px` | `24px` | `32px` | `var(--ds-corner-radius-2xl)` |
+
+---
+
+## 🔠 Typography Tokens
+
+Typography scales up sizes and adjusts line-heights dynamically to maximize readability.
+
+### Font Sizes (`--font-size-*`)
+
+| Token Name | Mobile Value | Tablet ($\ge 768\text{px}$) | Desktop ($\ge 1024\text{px}$) | CSS Variable |
+| :--- | :--- | :--- | :--- | :--- |
+| **`xs`** | `12px` (`text-xs`) | `12px` | `12px` | `var(--font-size-xs)` |
+| **`sm`** | `12px` (`text-xs`) | `14px` (`text-sm`) | `14px` | `var(--font-size-sm)` |
+| **`base`** | `14px` (`text-sm`) | `16px` (`text-base`) | `16px` | `var(--font-size-base)` |
+| **`lg`** | `16px` (`text-base`)| `18px` (`text-lg`) | `20px` (`text-xl`) | `var(--font-size-lg)` |
+| **`xl`** | `18px` (`text-lg`) | `20px` (`text-xl`) | `24px` (`text-2xl`) | `var(--font-size-xl)` |
+| **`2xl`** | `20px` (`text-xl`) | `24px` (`text-2xl`) | `30px` (`text-3xl`) | `var(--font-size-2xl)` |
+| **`3xl`** | `30px` (`text-3xl`)| `36px` (`text-4xl`) | `48px` (`text-5xl`) | `var(--font-size-3xl)` |
+| **`4xl`** | `36px` (`text-4xl`)| `60px` (`text-6xl`) | `96px` (`text-8xl`) | `var(--font-size-4xl)` |
+
+### Line Heights (`--font-line-height-*`)
+
+| Token Name | Mobile Value | Tablet ($\ge 768\text{px}$) | Desktop ($\ge 1024\text{px}$) | CSS Variable |
+| :--- | :--- | :--- | :--- | :--- |
+| **`xs`** | `16px` | `16px` | `18px` | `var(--font-line-height-xs)` |
+| **`sm`** | `20px` | `20px` | `20px` | `var(--font-line-height-sm)` |
+| **`base`** | `20px` | `20px` | `20px` | `var(--font-line-height-base)` |
+| **`lg`** | `24px` | `28px` | `28px` | `var(--font-line-height-lg)` |
+| **`xl`** | `24px` | `28px` | `28px` | `var(--font-line-height-xl)` |
+| **`2xl`** | `28px` | `28px` | `28px` | `var(--font-line-height-2xl)` |
+| **`3xl`** | `36px` | `40px` | `44px` | `var(--font-line-height-3xl)` |
+| **`4xl`** | `44px` | `48px` | `56px` | `var(--font-line-height-4xl)` |
+| **`xs-tight`** | `14px` | `14px` | `16px` | `var(--font-line-height-xs-tight)` |
+| **`single`** | `1` | `1` | `1` | `var(--font-line-height-single)` |
+
+---
+
+## 🎨 Global Font Families
+
+The application implements a clean font structure supporting LTR (English) and RTL (Arabic) styles.
+
+* **LTR (English):** Defaults to `Nunito`, loaded dynamically.
+* **RTL (Arabic):** Uses the custom `Lama Rounded` font loaded from local assets.
+
+Font family configurations are set in the stylesheet using standard selectors based on the language attribute `lang="ar"` on the `<html>` node.
+
+```scss
+html {
+  --ion-font-family: "Nunito", sans-serif;
+  --hes-text-font: "Nunito", sans-serif;
+
+  &[lang="ar"] {
+    --ion-font-family: "Lama Rounded", sans-serif;
+    --hes-text-font: "Lama Rounded", sans-serif;
+  }
+}
+```
+
+> [!NOTE]
+> **No Theme Configuration for Color Mode:** There are no token changes or classes for light or dark mode. Only the typography and layout adapt based on device type, viewport sizes, and language directionality.

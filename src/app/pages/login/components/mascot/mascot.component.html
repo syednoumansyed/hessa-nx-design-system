@@ -1,0 +1,45 @@
+<!-- Side-by-side: mascot image (left) and speech bubble (right) -->
+<div [ngClass]="getContainerClasses()">
+  <img
+    [src]="mascotImagePath()"
+    alt="mascot"
+    class="me-2 h-28 w-auto shrink-0 select-none"
+    draggable="false"
+    (error)="onImageError($event)"
+  />
+
+  @if (mascotConfig()?.message) {
+    <div class="relative inline-block w-fit min-w-[14ch] max-w-full">
+      <!-- Main bubble with tail using before/after -->
+      <div
+        class="relative overflow-visible rounded-[20px] border-x-4 border-b-8 border-t-4 px-5 py-5"
+        [ngClass]="
+          mascotConfig()?.situation === MascotSituation.ERROR
+            ? 'chat-bubble-err border-pastels-magenta-50 bg-pastels-errorRed-250'
+            : 'chat-bubble border-[#C2D2DE] bg-[#D1E2EF]'
+        "
+        role="status"
+        aria-live="polite"
+      >
+        <div
+          class="relative z-10 text-[17px] font-bold leading-tight text-emphasis-high"
+        >
+          {{
+            mascotConfig()?.message | transloco: mascotConfig()?.messageParams
+          }}
+        </div>
+
+        @if (mascotConfig()?.subMessage) {
+          <div
+            class="relative z-10 mt-1 text-[14px] font-medium leading-snug text-emphasis-mid"
+          >
+            {{
+              mascotConfig()?.subMessage
+                | transloco: mascotConfig()?.subMessageParams
+            }}
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

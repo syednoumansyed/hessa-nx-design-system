@@ -1,0 +1,69 @@
+<div
+  *transloco="let t"
+  class="Modal flex flex-col gap-4 rounded-xl bg-white p-7 shadow"
+>
+  <!-- header -->
+  <div class="mb-3 flex justify-between border-b pb-4">
+    <h2 class="text-xl font-semibold text-gray-900">
+      {{ t("grade_management.report_card_preview.title") }}
+    </h2>
+    <fa-icon
+      class="mt-1 cursor-pointer text-[#929CB5] hover:text-[#0000008a]"
+      [icon]="faClose"
+      size="xl"
+      (click)="close()"
+    ></fa-icon>
+  </div>
+
+  <!-- wrapper supplies scroll when needed -->
+  <div class="overflow-x-auto shadow-sm ring-1 ring-gray-300">
+    <table class="<!-- 👈 switch at lg --> w-max table-auto text-sm lg:w-full">
+      <!-- HEADERS -->
+      <thead>
+        <tr>
+          @for (header of tableData.headers; track header) {
+            <th
+              class="max-w-[12rem] whitespace-normal break-words px-4 pt-3 first:max-w-[14rem] first:text-left"
+            >
+              {{ header }}
+            </th>
+          }
+        </tr>
+
+        <tr class="text-center text-[10px] tracking-wider text-gray-500">
+          @for (mark of tableData.marksHeaders; track mark) {
+            <th class="max-w-[8rem] whitespace-normal break-words px-3 py-1">
+              {{ mark }}
+            </th>
+          }
+        </tr>
+
+        <tr class="text-center text-[10px] uppercase tracking-wider">
+          @for (sub of tableData.subHeaders; track sub) {
+            <th
+              class="max-w-[8rem] whitespace-normal break-words px-3 py-1"
+              [ngClass]="sub ? 'bg-[#333333] text-gray-200' : 'bg-white'"
+            >
+              {{ sub }}
+            </th>
+          }
+        </tr>
+      </thead>
+
+      <!-- BODY -->
+      <tbody>
+        @for (row of tableData.rows; track row) {
+          <tr class="bg-[#434343] text-center text-gray-100">
+            @for (cell of row; track cell; let idx = $index) {
+              <td
+                class="max-w-[12rem] whitespace-normal break-words px-4 py-2 first:max-w-[14rem] first:bg-white first:text-left first:font-medium first:text-gray-900 last:max-w-[10rem] last:bg-[#333333] last:font-semibold last:text-white"
+              >
+                {{ cell }}
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

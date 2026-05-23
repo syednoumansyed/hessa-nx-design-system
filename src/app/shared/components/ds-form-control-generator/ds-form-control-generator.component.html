@@ -1,0 +1,532 @@
+@if (control()) {
+  <ng-container *transloco="let t" [formGroup]="form">
+    @switch (control().type) {
+      @case ("textarea") {
+        @if (textareaControl()?.subLabel) {
+          <div class="mb-3 text-sm font-thin text-[#838799]">
+            {{ textareaControl()!.subLabel }}
+          </div>
+        }
+        <app-ds-textarea
+          class="block"
+          [formControlName]="textareaControl()!.formControlName"
+          [label]="textareaControl()!.label ?? ''"
+          [required]="resolvedRequired()"
+          [placeholder]="textareaControl()!.placeholder ?? ''"
+          [hintRight]="textareaControl()!.helperText ?? null"
+          [disabled]="textareaControl()!.readonly ?? false"
+          [rows]="4"
+          [maxLength]="textareaControl()!.maxLength"
+          [showCharacterCount]="textareaControl()!.showCharacterCount ?? false"
+        />
+        @if (ErrorText()?.length) {
+          <div class="mt-1 text-xs font-normal text-error">
+            {{ ErrorText() }}
+          </div>
+        }
+      }
+      @case ("input") {
+        <app-ds-input
+          class="block"
+          [label]="inputControl()!.label ?? ''"
+          [placeholder]="inputControl()!.placeholder ?? ''"
+          [formControlName]="inputControl()!.formControlName"
+          [inputMode]="inputControl()!.inputType ?? 'text'"
+          [dsType]="
+            inputControl()!.inputType === 'number'
+              ? 'number'
+              : inputControl()!.inputType === 'email'
+                ? 'email'
+                : inputControl()!.inputType === 'tel'
+                  ? 'tel'
+                  : 'text'
+          "
+          [readOnly]="inputControl()!.readonly ?? false"
+          [disabled]="inputControl()!.disabled ?? false"
+          [hint]="inputControl()!.helperText ?? ''"
+          [errorMessage]="ErrorText() ?? ''"
+          [maxLength]="inputControl()!.maxLength"
+          [showCharacterCount]="inputControl()!.showCharacterCount ?? false"
+        />
+      }
+      @case ("searchable-select") {
+        @if (dsSelectConfig()) {
+          <app-ds-select
+            class="block"
+            [formControlName]="searchableSelectControl()!.formControlName"
+            [config]="dsSelectConfig()!"
+          />
+        }
+        @if (searchableSelectControl()!.helperText) {
+          <div
+            class="mt-1 text-xs"
+            [ngStyle]="{
+              color: searchableSelectControl()!.helperTextColor ?? '#838799',
+            }"
+          >
+            {{ searchableSelectControl()!.helperText }}
+          </div>
+        }
+        @if (ErrorText()?.length) {
+          <div class="mt-1 text-xs font-normal text-error">
+            {{ ErrorText() }}
+          </div>
+        }
+      }
+      @case ("radio") {
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-sm font-semibold text-content-high">
+              {{ radioControl()!.label }}
+              @if (resolvedRequired()) {
+                <span class="text-error">*</span>
+              }
+            </span>
+          </div>
+          <app-ds-radio-group
+            [formControlName]="radioControl()!.formControlName"
+            [required]="resolvedRequired()"
+            [ngClass]="[
+              'grid gap-4',
+              'grid-cols-' + (radioControl()?.noOfChild?.() ?? noOfChild()),
+            ]"
+          >
+            @for (item of radioControl()!.selectValues; track item.value) {
+              <app-ds-radio
+                class="w-full"
+                [title]="item.displayedValue"
+                [value]="item.value"
+                [disabled]="radioControl()!.readonly ?? false"
+              />
+            }
+          </app-ds-radio-group>
+          @if (ErrorText()?.length) {
+            <div class="text-xs font-normal text-error">
+              {{ ErrorText() }}
+            </div>
+          }
+        </div>
+      }
+      @case ("checkbox") {
+        <!-- Single checkbox (one value) - renders without group wrapper -->
+        @if (checkboxControl()!.selectValues.length === 1) {
+          <div class="flex flex-col gap-2">
+            <app-ds-checkbox
+              [formControlName]="checkboxControl()!.formControlName"
+              [title]="checkboxControl()!.selectValues[0].displayedValue"
+              [disabled]="checkboxControl()!.readonly ?? false"
+              [size]="checkboxControl()!.size ?? 'lg'"
+              [required]="resolvedRequired()"
+              [labelIcon]="
+                checkboxControl()!.selectValues[0].icon?.name ?? null
+              "
+              [labelIconPlacement]="
+                checkboxControl()!.selectValues[0].icon?.placement ?? 'end'
+              "
+              [helperText]="
+                checkboxControl()!.selectValues[0].helperText ??
+                checkboxControl()!.helperText ??
+                null
+              "
+            />
+            @if (ErrorText()?.length) {
+              <div class="text-xs font-normal text-error">
+                {{ ErrorText() }}
+              </div>
+            }
+          </div>
+        } @else {
+          <!-- Multiple checkboxes - renders with group wrapper -->
+          <div class="flex flex-col gap-ds-md">
+            @if (checkboxControl()!.label) {
+              <div class="flex items-center justify-between gap-2">
+                <span class="single-line-md-mid-emphasis">
+                  {{ checkboxControl()!.label }}
+                  @if (resolvedRequired()) {
+                    <span class="text-error">*</span>
+                  }
+                </span>
+              </div>
+            }
+            <app-ds-checkbox-group
+              [formControlName]="checkboxControl()!.formControlName"
+              [required]="resolvedRequired()"
+              [ngClass]="[
+                'grid gap-3',
+                'grid-cols-' +
+                  (checkboxControl()?.noOfChild?.() ?? noOfChild()),
+              ]"
+            >
+              @if (
+                checkboxControl()!.allowSelectAll &&
+                checkboxControl()!.selectValues.length > 1
+              ) {
+                <app-ds-checkbox
+                  [title]="t('global.select_all.txt')"
+                  [value]="'SELECT_ALL'"
+                  [disabled]="checkboxControl()!.readonly ?? false"
+                  [size]="checkboxControl()!.size ?? 'lg'"
+                />
+              }
+              @for (item of checkboxControl()!.selectValues; track item.value) {
+                <app-ds-checkbox
+                  class="capitalize"
+                  [title]="item.displayedValue"
+                  [value]="item.value"
+                  [disabled]="checkboxControl()!.readonly ?? false"
+                  [size]="checkboxControl()!.size ?? 'lg'"
+                  [labelIcon]="item.icon?.name ?? null"
+                  [labelIconPlacement]="item.icon?.placement ?? 'end'"
+                  [helperText]="item.helperText ?? null"
+                />
+              }
+            </app-ds-checkbox-group>
+            @if (checkboxControl()!.helperText) {
+              <div
+                class="text-base"
+                [ngStyle]="{
+                  color: checkboxControl()!.helperTextColor ?? '#838799',
+                }"
+              >
+                {{ checkboxControl()!.helperText }}
+              </div>
+            }
+            @if (ErrorText()?.length) {
+              <div class="text-xs font-normal text-error">
+                {{ ErrorText() }}
+              </div>
+            }
+          </div>
+        }
+      }
+      @case ("switch") {
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center justify-between gap-4">
+            <span class="text-sm font-semibold text-content-high">
+              {{ switchControl()!.label }}
+              @if (resolvedRequired()) {
+                <span class="text-error">*</span>
+              }
+            </span>
+          </div>
+          <app-ds-switch
+            class="w-fit"
+            [formControlName]="switchControl()!.formControlName"
+            [option1]="switchControl()!.switchOptions?.option1 ?? 'Option 1'"
+            [option2]="switchControl()!.switchOptions?.option2 ?? 'Option 2'"
+            [type]="switchControl()!.switchOptions?.type ?? 'boolean'"
+            [selectedOption]="
+              switchControl()!.switchOptions?.selectedOption ??
+              switchControl()!.switchOptions?.option1 ??
+              'option1'
+            "
+          />
+          @if (switchControl()!.helperText) {
+            <div
+              class="text-xs"
+              [ngStyle]="{
+                color: switchControl()!.helperTextColor ?? '#838799',
+              }"
+            >
+              {{ switchControl()!.helperText }}
+            </div>
+          }
+          @if (ErrorText()?.length) {
+            <div class="text-xs font-normal text-error">
+              {{ ErrorText() }}
+            </div>
+          }
+        </div>
+      }
+      @case ("chip-selector") {
+        <div class="flex flex-col gap-ds-md">
+          @if (chipSelectorControl()!.label) {
+            <div class="flex items-center justify-between gap-2">
+              <span class="single-line-xs-mid-emphasis ps-ds-md">
+                {{ chipSelectorControl()!.label }}
+                @if (resolvedRequired()) {
+                  <span class="text-error">*</span>
+                }
+              </span>
+            </div>
+          }
+          <app-ds-chip-selector
+            [formControlName]="chipSelectorControl()!.formControlName"
+            [options]="chipSelectorOptions()"
+            [multiple]="chipSelectorControl()!.isMultiple ?? false"
+            [disabled]="chipSelectorControl()!.readonly ?? false"
+            [displayType]="chipSelectorControl()!.displayType ?? 'pill'"
+          />
+          @if (chipSelectorControl()!.helperText) {
+            <div
+              class="text-xs"
+              [ngStyle]="{
+                color: chipSelectorControl()!.helperTextColor ?? '#838799',
+              }"
+            >
+              {{ chipSelectorControl()!.helperText }}
+            </div>
+          }
+          @if (ErrorText()?.length) {
+            <div class="text-xs font-normal text-error">
+              {{ ErrorText() }}
+            </div>
+          }
+        </div>
+      }
+      @case ("school-structure") {
+        <div class="flex flex-col gap-3">
+          @if (schoolStructureControl()!.label) {
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-sm font-semibold text-content-high">
+                {{ schoolStructureControl()!.label }}
+                @if (resolvedRequired()) {
+                  <span class="text-error">*</span>
+                }
+              </span>
+            </div>
+          }
+          <app-ds-school-structure-control
+            [formControlName]="schoolStructureControl()!.formControlName"
+            [placeholder]="schoolStructureControl()!.placeholder"
+            [isMultiSelect]="schoolStructureControl()!.isMultiple ?? false"
+            [depth]="schoolStructureControl()!.depth ?? 3"
+            [allowedSelections]="
+              schoolStructureControl()!.allowedSelections ?? null
+            "
+          />
+          @if (ErrorText()?.length) {
+            <div class="text-xs font-normal text-error">{{ ErrorText() }}</div>
+          }
+        </div>
+      }
+      @case ("time-picker") {
+        <div class="flex flex-col gap-2">
+          @if (constTimePickerControl()!.label) {
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-sm font-semibold text-content-high">
+                {{ constTimePickerControl()!.label }}
+                @if (resolvedRequired()) {
+                  <span class="text-error">*</span>
+                }
+              </span>
+            </div>
+          }
+          <app-ds-time-picker-control
+            [formControlName]="constTimePickerControl()!.formControlName"
+          ></app-ds-time-picker-control>
+          @if (ErrorText()?.length) {
+            <div class="text-xs font-normal text-error">{{ ErrorText() }}</div>
+          }
+        </div>
+      }
+      @case ("file") {
+        <app-hes-attachment-form-control
+          [formControlName]="fileControl()!.formControlName"
+          [label]="fileControl()!.label"
+          [subLabel]="fileControl()!.subLabel"
+          [placeholder]="fileControl()!.placeholder"
+          [acceptFileTypes]="fileControl()!.acceptFileTypes"
+          [maxSizeInMB]="fileControl()!.maxSizeInMB ?? 5"
+          [isMultiple]="fileControl()!.isMultiple ?? false"
+          [isreadonly]="fileControl()!.readonly ?? false"
+        />
+        @if (ErrorText()?.length) {
+          <div class="mt-1 text-xs font-normal text-error">
+            {{ ErrorText() }}
+          </div>
+        }
+      }
+      @case ("editor") {
+        @defer {
+          <app-hes-editor
+            [formControlName]="editorControl()!.formControlName"
+            [placeholder]="editorControl()!.placeholder"
+            [label]="editorControl()!.label"
+            [uploadImageUrl]="editorControl()!.uploadImageUrl"
+            [allowImgUpload]="
+              editorControl()!.editorConfig?.allowImgUpload ?? true
+            "
+            [allowYoutubeExtension]="
+              editorControl()!.editorConfig?.allowYoutubeExtension ?? false
+            "
+            [previewOnly]="editorControl()!.editorConfig?.previewOnly ?? false"
+            [preview]="editorControl()!.editorConfig?.preview ?? false"
+            [required]="resolvedRequired()"
+            [maxLength]="editorControl()!.maxLength"
+          />
+        }
+        @if (ErrorText()?.length) {
+          <div class="mt-1 text-xs font-normal text-error">
+            {{ ErrorText() }}
+          </div>
+        }
+      }
+      @case ("date") {
+        <label class="hes-label" [tuiLabel]="dateLabel">
+          <tui-input-date
+            [formControlName]="dateControl()!.formControlName"
+            [tuiTextfieldLabelOutside]="true"
+            [min]="dateControl()!.datePickerConfig?.min ?? null"
+            [max]="dateControl()!.datePickerConfig?.max ?? null"
+          >
+            {{ dateControl()!.placeholder }}
+            <input tuiTextfield />
+          </tui-input-date>
+        </label>
+        <ng-template #dateLabel>
+          {{ dateControl()!.label }}
+          <span class="text-[#e62e2e]" *ngIf="resolvedRequired()">*</span>
+        </ng-template>
+        @if (ErrorText()?.length) {
+          <div class="mt-1 text-xs font-normal text-error">
+            {{ ErrorText() }}
+          </div>
+        }
+      }
+
+      @case ("date-range") {
+        <label class="hes-label hes-date-range" [tuiLabel]="dateRangeLabel">
+          <tui-input-date-range
+            [formControlName]="dateRangeControl()!.formControlName"
+            [tuiTextfieldLabelOutside]="true"
+            [min]="dateRangeControl()!.datePickerConfig?.min ?? null"
+            [max]="dateRangeControl()!.datePickerConfig?.max ?? null"
+            [minLength]="
+              dateRangeControl()!.datePickerConfig?.minLength ?? null
+            "
+            [maxLength]="
+              dateRangeControl()!.datePickerConfig?.maxLength ?? null
+            "
+            [tuiTextfieldCleaner]="
+              dateRangeControl()!.datePickerConfig?.showClearBtn ?? false
+            "
+          >
+            {{ dateRangeControl()!.placeholder }}
+            <input tuiTextfield />
+          </tui-input-date-range>
+        </label>
+        <ng-template #dateRangeLabel>
+          {{ dateRangeControl()!.label }}
+          <span class="text-[#e62e2e]" *ngIf="resolvedRequired()">*</span>
+        </ng-template>
+        @if (dateRangeControl()!.helperText) {
+          <div
+            class="mt-1 text-xs"
+            [ngStyle]="{
+              color: dateRangeControl()!.helperTextColor ?? '#838799',
+            }"
+          >
+            {{ dateRangeControl()!.helperText }}
+          </div>
+        }
+        @if (ErrorText()?.length) {
+          <div class="mt-1 text-xs font-normal text-error">
+            {{ ErrorText() }}
+          </div>
+        }
+      }
+
+      @case ("searchable-checkbox-select") {
+        <div class="flex flex-col gap-3">
+          @if (searchableCheckboxSelectControl()!.label) {
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-sm font-semibold text-content-high">
+                {{ searchableCheckboxSelectControl()!.label }}
+                @if (resolvedRequired()) {
+                  <span class="text-error">*</span>
+                }
+              </span>
+            </div>
+          }
+
+          <!-- Search Input -->
+          <app-ds-input
+            class="block"
+            [formControl]="searchControl"
+            [placeholder]="'Search...'"
+            [dsType]="'text'"
+          />
+
+          <!-- Checkbox Group -->
+          <app-ds-checkbox-group
+            [formControlName]="
+              searchableCheckboxSelectControl()!.formControlName
+            "
+            [ngClass]="['grid gap-3', 'grid-cols-1']"
+          >
+            @if (
+              searchableCheckboxSelectControl()!.allowSelectAll &&
+              (filteredSearchableCheckboxOptions().length ?? 0) > 1
+            ) {
+              <app-ds-checkbox
+                [title]="t('global.select_all.txt')"
+                [value]="'SELECT_ALL'"
+              />
+            }
+            @for (
+              item of filteredSearchableCheckboxOptions();
+              track item.value
+            ) {
+              <app-ds-checkbox
+                class="capitalize"
+                [title]="item.displayedValue"
+                [value]="item.value"
+              />
+            }
+          </app-ds-checkbox-group>
+
+          @if (ErrorText()?.length) {
+            <div class="text-xs font-normal text-error">{{ ErrorText() }}</div>
+          }
+        </div>
+      }
+      @case ("icon-chooser") {
+        <div class="flex flex-col gap-2">
+          <app-ds-icon-chooser
+            [formControlName]="iconChooserControl()!.formControlName"
+            [label]="iconChooserControl()!.label ?? ''"
+            [required]="resolvedRequired()"
+          />
+          @if (iconChooserControl()!.helperText) {
+            <div
+              class="text-xs"
+              [ngStyle]="{
+                color: iconChooserControl()!.helperTextColor ?? '#838799',
+              }"
+            >
+              {{ iconChooserControl()!.helperText }}
+            </div>
+          }
+          @if (ErrorText()?.length) {
+            <div class="text-xs font-normal text-error">{{ ErrorText() }}</div>
+          }
+        </div>
+      }
+      @case ("picker-select") {
+        @if (pickerSelectConfig()) {
+          <app-ds-picker-select
+            class="block"
+            [formControlName]="pickerSelectControl()!.formControlName"
+            [config]="pickerSelectConfig()!"
+          />
+        }
+        @if (pickerSelectControl()!.helperText) {
+          <div
+            class="mt-1 ps-ds-md text-xs"
+            [ngStyle]="{
+              color: pickerSelectControl()!.helperTextColor ?? '#838799',
+            }"
+          >
+            {{ pickerSelectControl()!.helperText }}
+          </div>
+        }
+        @if (ErrorText()?.length) {
+          <div class="mt-1 ps-ds-md text-xs font-normal text-error">
+            {{ ErrorText() }}
+          </div>
+        }
+      }
+    }
+  </ng-container>
+}

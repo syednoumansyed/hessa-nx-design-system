@@ -1,0 +1,16 @@
+<div class="mb-4 border-b">
+  <nav class="no-scrollbar flex space-x-4 overflow-x-auto whitespace-nowrap">
+    @for (tab of tabsData; track tab.id) {
+      <button
+        (click)="onTabChange(tab.id)"
+        [ngClass]="{
+          'border-b-2 border-primary text-gray-800': activeTab === tab.id,
+          'text-gray-500 hover:text-gray-700': activeTab !== tab.id
+        }"
+        class="flex-shrink-0 whitespace-nowrap px-1 py-2 text-sm font-medium focus:outline-none md:text-base"
+      >
+        {{ tab.label }}{{ "(" + tab.count + ")" }}
+      </button>
+    }
+  </nav>
+</div>

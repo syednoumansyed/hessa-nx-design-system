@@ -1,0 +1,30 @@
+ol {
+  list-style: none; /* Remove default list styling */
+  counter-reset: list-counter; /* Initialize the counter */
+}
+
+ol li {
+  counter-increment: list-counter; /* Increment the counter for each list item */
+}
+
+ol li::before {
+  content: counter(list-counter, upper-alpha) ". "; /* Display the counter as a lowercase letter followed by a period */
+
+  display: flex;
+  padding: 0.625rem 0.875rem;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1 0 0;
+  align-self: stretch;
+  color: #242424;
+  font-family: Nunito;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.25rem; /* 125% */
+  letter-spacing: -0.01563rem;
+}
+
+ion-textarea.essay-textarea.hes-textarea {
+  --background: white;
+}

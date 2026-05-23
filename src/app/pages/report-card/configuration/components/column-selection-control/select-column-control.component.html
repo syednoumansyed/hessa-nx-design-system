@@ -1,0 +1,49 @@
+<ng-container *transloco="let t">
+  <div class="mb-2 text-base font-semibold">
+    {{ label() || t("global.select_column.dropdown") }}
+    @if (isRequired()) {
+      <span class="text-[#e62e2e]">*</span>
+    }
+  </div>
+  @if (columnsList().length) {
+    <div class="rounded border border-[#EAECF0]">
+      <!-- Loop through columnsList -->
+      @for (col of columnsList(); track $index; let last = $last) {
+        <div
+          (click)="toggleSelection(col.value)"
+          class="flex h-16 cursor-pointer items-center justify-between border-b border-[#EAECF0]"
+          [ngClass]="{
+            'bg-[#FFFCE7]': isSelected(col.value),
+            'border-none': last
+          }"
+        >
+          <!-- Label -->
+          <span class="ms-4 text-sm">{{ col.displayedValue }}</span>
+          <!-- Checkmark if selected -->
+
+          <span
+            class="me-4 font-bold"
+            [ngClass]="
+              isSelected(col.value) ? 'text-primary' : 'text-[#BCBCBC]'
+            "
+          >
+            <!-- &#10003; -->
+            @if (isMultiple()) {
+              <fa-icon [icon]="multipleSelectIcon" size="lg"></fa-icon>
+            } @else if (isSelected(col.value)) {
+              <fa-icon [icon]="selectSignalSelectIcon" size="lg"></fa-icon>
+            } @else {
+              <fa-icon [icon]="signalSelectIcon" size="lg"></fa-icon>
+            }
+          </span>
+        </div>
+      }
+    </div>
+  } @else if (showEmptyPlaceholder()) {
+    <div
+      class="flex h-32 flex-col items-center justify-center rounded-lg border border-gray-200 bg-[#ffffff] text-sm text-slate-500 md:h-60"
+    >
+      {{ t("grade_management.no_column_available.txt") }}
+    </div>
+  }
+</ng-container>

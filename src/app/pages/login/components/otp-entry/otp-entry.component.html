@@ -1,0 +1,92 @@
+<!-- otp-entry.component.html -->
+<div class="flex h-full flex-col">
+  <!-- OTP Input Section -->
+  <div class="mb-8 flex flex-1 flex-col items-center justify-center pt-8">
+    <!-- OTP Digits using ds-input components -->
+    <form [formGroup]="otpForm" class="mb-6">
+      <div class="flex gap-6 md:gap-8" dir="ltr">
+        <app-ds-input
+          formControlName="digit1"
+          class="block w-[56px]"
+          [dsType]="'tel'"
+          [inputMode]="'numeric'"
+          placeholder=""
+          inputClasses="text-center"
+          (valueChanged)="onDigitInput($event, 0)"
+          [autocomplete]="'one-time-code'"
+        >
+        </app-ds-input>
+
+        <app-ds-input
+          formControlName="digit2"
+          class="block w-[56px]"
+          [dsType]="'tel'"
+          [maxLength]="1"
+          [inputMode]="'numeric'"
+          inputClasses="text-center"
+          placeholder=""
+          (valueChanged)="onDigitInput($event, 1)"
+        >
+        </app-ds-input>
+
+        <app-ds-input
+          formControlName="digit3"
+          class="block w-[56px]"
+          [dsType]="'tel'"
+          [maxLength]="1"
+          inputClasses="text-center"
+          [inputMode]="'numeric'"
+          placeholder=""
+          (valueChanged)="onDigitInput($event, 2)"
+        >
+        </app-ds-input>
+
+        <app-ds-input
+          formControlName="digit4"
+          class="block w-[56px]"
+          [dsType]="'tel'"
+          [maxLength]="1"
+          [inputMode]="'numeric'"
+          inputClasses="text-center"
+          placeholder=""
+          (valueChanged)="onDigitInput($event, 3)"
+        >
+        </app-ds-input>
+      </div>
+    </form>
+    <!-- Status Messages -->
+    <div
+      class="flex min-h-[80px] flex-col items-center justify-center text-center"
+      *transloco="let t"
+    >
+      <!-- Resend Section -->
+      <div class="flex flex-col items-center gap-2">
+        <p class="text-sm text-gray-600">
+          {{ "login.code_not_received.txt" | transloco }}
+        </p>
+
+        @if (!canResend() && this.otpSendCount() < 3) {
+          <p class="text-sm text-gray-500">
+            <span class="font-semibold text-black-0"
+              >{{ t("login.resend_code_time.txt") }} {{ remainingTime() }}</span
+            >
+          </p>
+        } @else {
+          @if (otpSendCount() < 3) {
+            <button
+              class="rounded-lg bg-transparent px-4 py-2 text-sm font-extrabold text-brand-700 disabled:cursor-not-allowed disabled:text-gray-400"
+              (click)="resendOtp()"
+              [disabled]="isResending()"
+            >
+              {{ "login.resend_code.btn" | transloco }}
+            </button>
+          } @else {
+            <div class="text-base text-indigo-600">
+              {{ "global.contact_school-admin.note.txt" | transloco }}
+            </div>
+          }
+        }
+      </div>
+    </div>
+  </div>
+</div>

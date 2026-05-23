@@ -1,0 +1,578 @@
+.ag-theme-quartz.ds-ag-grid-table {
+  border-radius: 0 !important;
+
+  // Use app font family instead of AG Grid default (IBM Plex Sans)
+  --ag-font-family: var(--ion-font-family);
+
+  --ag-cell-horizontal-padding: 0.5rem;
+  // Comfortable row height for two-line cells (title + subtitle).
+  // Default ag-theme-quartz is 42px which is too tight for 2-line content on iPad Safari.
+  --ag-row-height: 48px;
+  --ag-row-border-style: solid;
+  --ag-row-border-width: 1px;
+  --ag-row-border-color: var(--stroke-color-mid-emphasis);
+
+  // Let AG Grid handle autoHeight and scrolling naturally
+  // Override overflow:hidden on intermediate containers to allow sticky scrollbar to work
+
+  .ag-root-wrapper,
+  .ag-root {
+    border: 0 !important;
+    border-radius: 0 !important;
+    // Allow sticky positioning to pass through to scroll container
+    overflow: visible !important;
+    // Fill available height so grid stretches with few rows
+    min-height: 100%;
+  }
+
+  // Inset shadow creates side + bottom borders that extend through the empty area below rows.
+  // In the row area, cell/container backgrounds cover the shadow (children render on top).
+  // In the empty area (no cells), the shadow is visible, making it look like one continuous table.
+  .ag-root {
+    box-shadow:
+      inset 2px 0 0 0 var(--stroke-color-mid-emphasis),
+      inset -2px 0 0 0 var(--stroke-color-mid-emphasis),
+      inset 0 -2px 0 0 var(--stroke-color-mid-emphasis);
+  }
+
+  .ag-root-wrapper-body {
+    overflow: visible !important;
+    // Grow to fill parent so scrollbar can be pushed to bottom via margin-top: auto
+    flex: 1 1 auto;
+  }
+
+  .ag-header,
+  .ag-header-viewport,
+  .ag-body,
+  .ag-body-viewport {
+    border-radius: 0 !important;
+  }
+
+  // AG Grid horizontal scrollbar - sticky at bottom, native-like thin style
+  // margin-top: auto pushes scrollbar to bottom when grid has few rows
+  .ag-body-horizontal-scroll {
+    position: sticky !important;
+    bottom: 0 !important;
+    z-index: 10;
+    margin-top: auto !important;
+    pointer-events: auto !important;
+    background: transparent !important;
+  }
+
+  // Hide scrollbar track background on pinned column spacers
+  .ag-horizontal-left-spacer,
+  .ag-horizontal-right-spacer {
+    background: transparent !important;
+    overflow: hidden !important;
+  }
+
+  .ag-body-horizontal-scroll-viewport {
+    scrollbar-width: auto;
+    scrollbar-color: #7c3ff1 #f6f3fb;
+    pointer-events: auto !important;
+    overflow-x: scroll !important;
+    overflow-y: hidden !important;
+
+    &::-webkit-scrollbar {
+      height: 14px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f6f3fb;
+      border-radius: 7px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #7c3ff1;
+      border-radius: 7px;
+      border: 2px solid #f6f3fb;
+    }
+  }
+
+  // Ensure AG Grid's fake scrollbar container has height so it creates overflow
+  .ag-body-horizontal-scroll-container {
+    min-height: 1px !important;
+  }
+
+  // Prevent scrollbar from being clipped at the viewport edge when zoomed out
+  .ag-body-horizontal-scroll {
+    margin-bottom: 4px !important;
+  }
+
+  // Purple scrollbar for all AG Grid scrollable areas (pinned columns, body viewport)
+  .ag-body-viewport,
+  .ag-pinned-left-cols-container,
+  .ag-pinned-right-cols-container,
+  .ag-center-cols-viewport {
+    scrollbar-width: thin;
+    scrollbar-color: #7c3ff1 transparent;
+
+    &::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #7c3ff1;
+      border-radius: 4px;
+    }
+  }
+
+  ion-checkbox.hes-checkbox,
+  ion-checkbox.hes-checkbox.hes-checkbox--sm,
+  ion-checkbox.hes-checkbox.hes-checkbox--md {
+    --border-radius: 0px;
+  }
+
+  // Fill parent height so horizontal scroll gestures work in the empty area below rows
+  .ag-center-cols-viewport {
+    min-height: 100%;
+  }
+
+  .ag-center-cols-container {
+    min-width: max-content;
+  }
+
+  // Ensure the grid takes full height of its container
+  &.ag-theme-quartz {
+    flex: 1 1 auto;
+    min-height: 100%;
+  }
+
+  // Loading overlay - semi-transparent backdrop over existing rows
+  .ag-overlay-loading-wrapper {
+    background-color: transparent;
+    pointer-events: auto !important;
+  }
+
+  // No rows overlay styling - match table border structure
+  // Bottom border is on the scroll container (.has-empty-overlay) to encompass all content
+  .ag-overlay-no-rows-wrapper {
+    border-inline-start: 2px solid var(--stroke-color-mid-emphasis);
+    border-inline-end: 2px solid var(--stroke-color-mid-emphasis);
+    border-top: none; // Header already has bottom border
+    background-color: var(--surface-primary);
+    padding-bottom: var(--ds-spacing-xl, 16px);
+  }
+
+  .ag-cell {
+    display: flex;
+    align-items: center;
+    border-top: 0 !important;
+    border-bottom: 0 !important;
+    // Override AG Grid's subpixel-antialiased to match header's antialiased rendering
+    -webkit-font-smoothing: antialiased;
+    // Typography: Single line/sm/high-emphasis
+    font-size: var(--font-size-sm);
+    line-height: var(--font-line-height-single);
+    font-weight: var(--font-weight-semibold);
+    color: var(--content-high-emphasis);
+    // Explicit background ensures borders render properly during scroll transforms
+    background-color: var(--surface-primary);
+  }
+
+  // Cell wrapper - flex container to vertically center multi-line cell renderers
+  // (e.g., title+subtitle cells) within the row height.
+  .ag-cell-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  // Remove cell focus/selection highlight border
+  .ag-cell:focus,
+  .ag-cell-focus,
+  .ag-cell.ag-cell-focus {
+    outline: none !important;
+    border-color: var(--stroke-color-mid-emphasis) !important;
+  }
+
+  .ag-cell-range-selected,
+  .ag-cell-range-single-cell {
+    background-color: transparent !important;
+    border-color: var(--stroke-color-mid-emphasis) !important;
+  }
+
+  // Row selection: light yellow highlight matching brand color
+  .ag-row-selected,
+  .ag-row-selected::before {
+    background-color: transparent !important;
+  }
+
+  .ag-row-selected .ag-cell {
+    background-color: var(--surface-brand-subtle) !important;
+  }
+
+  // Row hover highlight — applies to all containers (center, pinned-left, pinned-right)
+  .ag-row-hover,
+  .ag-row-hover::before,
+  .ag-row:hover,
+  .ag-row:hover::before {
+    background-color: transparent !important;
+  }
+
+  .ag-row-hover .ag-cell,
+  .ag-row:hover .ag-cell {
+    background-color: var(--surface-hover, rgba(19, 21, 23, 0.04)) !important;
+  }
+
+  // Hover takes priority over selected state
+  .ag-row-selected.ag-row-hover .ag-cell,
+  .ag-row-selected.ag-row:hover .ag-cell {
+    background-color: var(--surface-hover, rgba(19, 21, 23, 0.04)) !important;
+  }
+
+  // Ensure center viewport cells maintain borders during scroll
+  .ag-center-cols-container .ag-row {
+    background-color: transparent;
+  }
+
+  .ag-center-cols-container .ag-row .ag-cell {
+    background-color: var(--surface-primary);
+    // Force border rendering with higher specificity
+    border-inline-end: 1px solid var(--stroke-color-mid-emphasis) !important;
+    // Override AG Grid's transparent border-inline-start with none
+    border-inline-start: none !important;
+  }
+
+  // Maintain borders on hover/selected states in center viewport
+  .ag-center-cols-container .ag-row-hover .ag-cell,
+  .ag-center-cols-container .ag-row:hover .ag-cell {
+    background-color: var(--surface-hover, rgba(19, 21, 23, 0.04)) !important;
+    border-inline-end: 1px solid var(--stroke-color-mid-emphasis) !important;
+    border-inline-start: none !important;
+  }
+
+  .ag-center-cols-container .ag-row-selected .ag-cell {
+    border-inline-end: 1px solid var(--stroke-color-mid-emphasis) !important;
+    border-inline-start: none !important;
+  }
+
+  // Hide column resize handle
+  .ag-header-cell-resize {
+    display: none !important;
+  }
+
+  .ag-header,
+  .ag-header-row,
+  .ag-header-viewport,
+  .ag-header-container,
+  .ag-pinned-left-header,
+  .ag-pinned-right-header {
+    background-color: var(--surface-primary);
+  }
+
+  // Header sticky to top for vertical scrolling
+  .ag-header {
+    position: sticky;
+    top: 0;
+    z-index: 4;
+  }
+
+  // When bulk action bar is active, offset AG Grid header below it
+  .ds-bulk-action-active & .ag-header {
+    top: var(--ds-bulk-action-bar-height, 0px);
+  }
+
+  // Show top border on header only when scrolled (sticky)
+  .is-scrolled & .ag-header {
+    border-top: 2px solid var(--stroke-color-mid-emphasis);
+  }
+
+  .ag-header-viewport,
+  .ag-header-container,
+  .ag-header-row {
+    z-index: 4;
+  }
+
+  // Note: Don't set overflow on header-viewport - it breaks horizontal scroll sync
+
+  .ag-header-cell {
+    display: flex;
+    align-items: center;
+  }
+
+  // Make header component wrapper fill the entire cell
+  .ag-header-cell-comp-wrapper {
+    width: 100%;
+    height: 100%;
+  }
+
+  // Custom header cell - fill entire area for click/hover
+  .ds-ag-grid-header-cell {
+    width: 100%;
+    height: 100%;
+  }
+
+  .ag-header-cell,
+  .ag-header-cell-label {
+    color: var(--content-high-emphasis);
+    font-size: var(--font-size-base);
+    line-height: var(--font-line-height-single);
+    font-weight: var(--font-weight-extrabold);
+  }
+
+  // Header sort icon - show on cell hover
+  .ag-header-cell .ds-ag-grid-sort-icon {
+    opacity: 0;
+    transition: opacity 150ms ease;
+  }
+
+  .ag-header-cell:hover .ds-ag-grid-sort-icon {
+    opacity: 0.5;
+  }
+
+  // When actively sorted, always show at full opacity
+  .ag-header-cell .ds-ag-grid-sort-icon.is-sorted {
+    opacity: 1;
+  }
+
+  // Drag handle visibility via CSS custom property
+  // The real drag handle element lives inside DsAgGridTitleSubtitleHeaderComponent
+  // and reads --ds-drag-handle-opacity to show/hide on hover
+  .ag-header-cell:not([col-id^="__ds_"]) {
+    cursor: default;
+  }
+
+  .ag-header-cell:not([col-id^="__ds_"]):hover {
+    --ds-drag-handle-opacity: 1;
+  }
+
+  // Keep handle visible while actively dragging and change cursor
+  .ag-header-cell:not([col-id^="__ds_"]).ag-header-cell-moving {
+    --ds-drag-handle-opacity: 1;
+    cursor: grabbing !important;
+  }
+
+  // Change cursor to grabbing on the entire header while moving
+  .ag-header-cell.ag-header-cell-moving {
+    cursor: grabbing !important;
+  }
+
+  .ag-header,
+  .ag-header-row,
+  .ag-pinned-left-header,
+  .ag-pinned-right-header {
+    border-bottom: 1px solid var(--stroke-color-mid-emphasis);
+  }
+
+  // Row border is applied via .ag-cell border-bottom above
+  // This ensures borders are visible even with cell backgrounds
+
+  // Ensure pinned header rows also get the border
+  .ag-pinned-left-header .ag-header-row,
+  .ag-pinned-right-header .ag-header-row {
+    border-bottom: 1px solid var(--stroke-color-mid-emphasis);
+  }
+
+  .ag-header-cell,
+  .ag-cell {
+    border-inline-end: 1px solid var(--stroke-color-mid-emphasis);
+  }
+
+  // First column - 2px start border (start of table)
+  .ag-header-cell:first-child,
+  .ag-cell:first-child {
+    border-inline-start: 2px solid var(--stroke-color-mid-emphasis);
+  }
+
+  // Last column - 2px end border (end of table)
+  .ag-header-cell:last-child,
+  .ag-cell:last-child {
+    border-inline-end: 2px solid var(--stroke-color-mid-emphasis);
+  }
+
+  // First cell in center viewport (after pinned start) - no start border
+  // to avoid double border with pinned column's 4px end border
+  .ag-header-viewport .ag-header-cell:first-child {
+    border-inline-start: none !important;
+  }
+
+  // Ensure header cells in viewport have consistent end borders
+  .ag-header-viewport .ag-header-cell {
+    border-inline-end: 1px solid var(--stroke-color-mid-emphasis) !important;
+  }
+
+  // Pinned left header - sticky horizontally (start) only
+  // Vertical sticky is handled by parent .ag-header
+  .ag-pinned-left-header {
+    position: sticky !important;
+    inset-inline-start: 0;
+    z-index: 6; // Above both header viewport (4) and pinned body (2)
+    background-color: var(--surface-primary);
+  }
+
+  // Pinned left body - sticky horizontally only
+  .ag-pinned-left-cols-container {
+    position: sticky !important;
+    inset-inline-start: 0;
+    z-index: 2;
+    background-color: var(--surface-primary);
+    margin-top: 0;
+  }
+
+  // Ensure rows inside pinned containers have proper positioning
+  .ag-pinned-left-cols-container .ag-row:first-child {
+    margin-top: 0;
+  }
+
+  // Pinned left cells need background to cover scrolling content
+  .ag-pinned-left-header .ag-header-cell,
+  .ag-pinned-left-cols-container .ag-cell,
+  .ag-pinned-left-cols-container .ag-row {
+    background-color: var(--surface-primary);
+  }
+
+  // ── Pinned column border rules ─────────────────────────────────────────
+  // Use class-based targeting instead of :first-child/:last-child because
+  // AG Grid may reorder DOM elements during dynamic column changes and
+  // the same containers swap roles between LTR (.ag-pinned-left = start)
+  // and RTL (.ag-pinned-left = end). Classes are set on column definitions
+  // and are direction-agnostic.
+
+  // Reset: remove :first-child/:last-child border overrides from ALL pinned cells
+  .ag-pinned-left-header .ag-header-cell,
+  .ag-pinned-left-cols-container .ag-cell,
+  .ag-pinned-right-header .ag-header-cell,
+  .ag-pinned-right-cols-container .ag-cell {
+    border-inline-start: none;
+  }
+
+  // Also reset :last-child end border to default 1px in pinned containers
+  .ag-pinned-left-header .ag-header-cell:last-child,
+  .ag-pinned-left-cols-container .ag-cell:last-child,
+  .ag-pinned-right-header .ag-header-cell:last-child,
+  .ag-pinned-right-cols-container .ag-cell:last-child {
+    border-inline-end: 1px solid var(--stroke-color-mid-emphasis);
+  }
+
+  // Pinned-start section (Name column side)
+  // First column: 2px start border (table edge)
+  .ag-header-cell.ds-ag-pinned-start-first,
+  .ag-cell.ds-ag-pinned-start-first {
+    border-inline-start: 2px solid var(--stroke-color-mid-emphasis) !important;
+  }
+  // Last column: 4px end border (separator from scrollable columns)
+  .ag-header-cell.ds-ag-pinned-start-last,
+  .ag-cell.ds-ag-pinned-start-last {
+    border-inline-end: 4px solid var(--stroke-color-mid-emphasis) !important;
+  }
+
+  // Pinned-end section (Actions column side)
+  // First column: 4px start border (separator from scrollable columns)
+  .ag-header-cell.ds-ag-pinned-end-first,
+  .ag-cell.ds-ag-pinned-end-first {
+    border-inline-start: 4px solid var(--stroke-color-mid-emphasis) !important;
+  }
+  // Last column: 2px end border (table edge)
+  .ag-header-cell.ds-ag-pinned-end-last,
+  .ag-cell.ds-ag-pinned-end-last {
+    border-inline-end: 2px solid var(--stroke-color-mid-emphasis) !important;
+  }
+
+  // Pinned right header - sticky horizontally (end) only
+  // Vertical sticky is handled by parent .ag-header
+  .ag-pinned-right-header {
+    position: sticky !important;
+    inset-inline-end: 0;
+    z-index: 6;
+    background-color: var(--surface-primary);
+  }
+
+  // Pinned right body - sticky horizontally only
+  .ag-pinned-right-cols-container {
+    position: sticky !important;
+    inset-inline-end: 0;
+    z-index: 2;
+    background-color: var(--surface-primary);
+  }
+
+  // Pinned right cells need background to cover scrolling content
+  .ag-pinned-right-header .ag-header-cell,
+  .ag-pinned-right-cols-container .ag-cell,
+  .ag-pinned-right-cols-container .ag-row {
+    background-color: var(--surface-primary);
+  }
+
+  // Cell cursors:
+  // - Text cursor + text selection only on actual text content
+  // - Targets: .line-clamp-2 (default), .ds-ag-cell-text (duration/phone)
+  // - Badges are excluded (no text cursor on chips)
+  .ag-cell:not([col-id="__ds_selection__"]):not([col-id="__ds_actions__"]) {
+    .line-clamp-2,
+    .ds-ag-cell-text {
+      cursor: text;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+  }
+
+  // Title text turns content/action color on row hover (all tables)
+  .ag-row-hover ds-ag-grid-title-subtitle-cell .single-line-sm-mid-emphasis {
+    color: var(--content-action);
+  }
+
+  // Row clickable: pointer cursor on cells
+  &.ds-row-clickable {
+    .ag-cell:not([col-id="__ds_selection__"]):not([col-id="__ds_actions__"]) {
+      cursor: pointer;
+    }
+  }
+
+  .ds-ag-center-column {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .ds-ag-center-header {
+    text-align: center;
+  }
+
+  // Actions column - make entire cell clickable (not just the icon)
+  // Scoped to only the actions column to avoid affecting other cells (e.g., checkbox column)
+  .ag-cell[col-id="__ds_actions__"] .ag-cell-wrapper,
+  ds-ag-grid-actions-cell,
+  ds-ag-grid-actions-cell ds-responsive-menu,
+  ds-ag-grid-actions-cell ds-responsive-menu ds-menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+// When the external empty-state card is visible, collapse the AG Grid body
+// vertically but keep it in the layout flow so column-width calculations still work.
+// Using visibility:hidden + height:0 instead of display:none preserves widths.
+.has-empty-overlay .ds-ag-grid-table {
+  .ag-body {
+    visibility: hidden !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .ag-body-horizontal-scroll,
+  .ag-floating-top,
+  .ag-floating-bottom,
+  .ag-sticky-top,
+  .ag-sticky-bottom {
+    display: none !important;
+  }
+}
+
+// ============================================================================
+// RTL Icon Flip Utilities
+// ============================================================================
+// Used for directional icons (arrows, chevrons) that should mirror in RTL mode
+// Apply .ds-icon-rtl-flip to icons that need to flip horizontally in RTL
+
+[dir="rtl"] .ds-icon-rtl-flip {
+  transform: scaleX(-1);
+}

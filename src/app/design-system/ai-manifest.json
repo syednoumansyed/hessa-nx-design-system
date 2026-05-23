@@ -1,0 +1,541 @@
+{
+  "version": "1.0.0",
+  "generatedAt": "2026-05-15",
+  "description": "Machine-readable manifest of all Hessa Design System components for AI-assisted development.",
+  "components": [
+    {
+      "name": "DsButtonComponent",
+      "selector": "ds-button",
+      "category": "action",
+      "intent": "Primary call-to-action, form submission, and navigation trigger",
+      "storybookPath": "1. P0 Components/Button",
+      "sourceFile": "src/app/design-system/button/button.component.ts",
+      "variants": ["primary", "secondary", "tertiary", "ghost", "dangerStroke", "dangerFill", "link"],
+      "sizes": ["sm", "md", "lg"],
+      "keyInputs": ["variant", "size", "loading", "disabled", "fullWidth", "iconStart", "iconEnd", "type", "title", "cssClass"],
+      "outputs": [],
+      "contentProjection": true,
+      "notes": "Button label must be provided via ng-content. The title input is a secondary/accessibility hint only. No (click) output — consume native (click) on the host element.",
+      "deviceDependent": false,
+      "mobileBehavior": null,
+      "studentTheme": true,
+      "studentThemeNotes": "All sizes add border-b bottom border for 3D press effect (sm/md: border-b-[4px], lg: border-b-[6px]). Active state compensates padding to prevent layout shift.",
+      "rtlSupported": true,
+      "rtlNotes": "Icon direction mirrors automatically via DsIconComponent",
+      "usageCount": 654,
+      "do": [
+        "Use variant=primary for the single main CTA per view",
+        "Provide label text via ng-content",
+        "Use fullWidth=true for mobile stacked layouts",
+        "Use size=md for toolbar/compact contexts",
+        "Use variant=link for inline text actions"
+      ],
+      "dont": [
+        "Never place more than one primary button per view",
+        "Do not pass label text as the title input",
+        "Do not use for toggle states — use DsChipComponent or DsSwitchComponent instead",
+        "Do not bind (click) output — it does not exist; use native (click) on the host"
+      ],
+      "alternatives": [
+        "DsChipComponent for filter/selection toggles",
+        "variant=link for inline text actions",
+        "DsSwitchComponent for on/off binary state"
+      ]
+    },
+    {
+      "name": "DsInputComponent",
+      "selector": "app-ds-input",
+      "category": "input",
+      "intent": "Single-line text field with label, hint, error, prefix, and icon support. Fully integrated with Angular reactive forms.",
+      "storybookPath": "1. P0 Components/Input",
+      "sourceFile": "src/app/design-system/input/input.component.ts",
+      "variants": [],
+      "sizes": [],
+      "keyInputs": [
+        "label", "placeholder", "hint", "errorMessage", "disabled", "readOnly", "loading",
+        "iconStart", "iconEnd", "dsType", "inputMode", "prefix", "showPrefix",
+        "maxLength", "showCharacterCount", "required", "suppressFormError",
+        "inputValue", "outerContainerClass", "inputClasses", "autocomplete"
+      ],
+      "outputs": ["valueChanged", "focusEvent", "blurEvent", "iconEndClick"],
+      "contentProjection": false,
+      "notes": "Implements ControlValueAccessor — works with FormControl/FormGroup. Detects required validator automatically from FormControl. Student theme adds border-[4px] border-b-[8px]. Use inputValue for non-form standalone usage.",
+      "deviceDependent": false,
+      "mobileBehavior": "iOS focus handled separately to avoid keyboard jump",
+      "studentTheme": true,
+      "rtlSupported": true,
+      "do": [
+        "Wire to FormControl via [formControl] or formControlName",
+        "Set errorMessage when showing validation errors outside form",
+        "Use iconEnd with (iconEndClick) to build password-visibility toggles",
+        "Use inputMode=numeric for digit-only fields on mobile"
+      ],
+      "dont": [
+        "Do not duplicate errorMessage and form validator — they are both shown",
+        "Do not set disabled=true alongside formControl; use formControl.disable() instead"
+      ],
+      "alternatives": [
+        "DsTextareaComponent for multi-line text",
+        "SearchBoxComponent for search with debounce",
+        "DsSelectComponent for option selection"
+      ]
+    },
+    {
+      "name": "DsSelectComponent",
+      "selector": "app-ds-select",
+      "category": "input",
+      "intent": "Dropdown/modal select for single or multi-option selection, with optional search, chips, and async loading.",
+      "storybookPath": "1. P0 Components/Select",
+      "sourceFile": "src/app/design-system/select/select.component.ts",
+      "variants": [],
+      "sizes": [],
+      "keyInputs": ["config (required)", "disabled"],
+      "configShape": {
+        "label": "string",
+        "placeholder": "string",
+        "options": "{ id, display, disabled? }[]",
+        "isMultiple": "boolean",
+        "showSearch": "boolean",
+        "chips": "boolean (show chips for multi-select)",
+        "required": "boolean",
+        "disabled": "boolean",
+        "noItemFoundText": "string",
+        "loadOptions": "() => Observable (for async/paginated)",
+        "value": "ObjId | ObjId[]"
+      },
+      "outputs": ["closed", "chipRemoved"],
+      "contentProjection": false,
+      "notes": "On mobile (isMobile=true) the dropdown opens as an IonModal instead of a CDK overlay. Uses DsSelectContextService internally. Multi-select shows chips beneath the input; cap to 2 visible chips with +N badge.",
+      "deviceDependent": true,
+      "mobileBehavior": "Opens as full IonModal bottom sheet instead of CDK overlay",
+      "studentTheme": false,
+      "rtlSupported": true,
+      "do": [
+        "Pass the full config object as [config]",
+        "Use loadOptions for server-side paginated options",
+        "Use isMultiple=true + chips=true for tag-style multi-select"
+      ],
+      "dont": [
+        "Do not mutate config.options in-place — pass a new array reference to trigger re-render",
+        "Do not use for boolean toggles — use DsSwitchComponent"
+      ],
+      "alternatives": [
+        "DsSwitchComponent for boolean toggle",
+        "DsChipComponent / DsChipSelectorComponent for inline chip selection"
+      ]
+    },
+    {
+      "name": "DsCheckboxComponent",
+      "selector": "app-ds-checkbox",
+      "category": "input",
+      "intent": "Single checkbox with label, helper text, determinate/indeterminate state, and form integration.",
+      "storybookPath": "1. P0 Components/Checkbox",
+      "sourceFile": "src/app/design-system/checkbox/checkbox.component.ts",
+      "variants": ["determinate", "indeterminate"],
+      "sizes": ["sm", "lg"],
+      "keyInputs": [
+        "title", "variantInput", "size", "defaultValue", "required", "disabled",
+        "value", "labelIcon", "labelIconPlacement", "helperText"
+      ],
+      "outputs": ["checkedChange"],
+      "contentProjection": false,
+      "notes": "Implements ControlValueAccessor and NG_VALIDATORS. Student theme adds border-[4px] border-b-[8px] matching input stroke. Use variantInput=indeterminate for select-all parent checkboxes.",
+      "deviceDependent": false,
+      "mobileBehavior": null,
+      "studentTheme": true,
+      "rtlSupported": true,
+      "do": [
+        "Use DsCheckboxGroupComponent when rendering a list of related checkboxes",
+        "Set variantInput=indeterminate when partially selected (parent of a list)",
+        "Bind to FormControl for form integration"
+      ],
+      "dont": [
+        "Do not use for mutually exclusive options — use radio buttons instead"
+      ],
+      "alternatives": [
+        "DsRadioGroupComponent for mutually exclusive options",
+        "DsSwitchComponent for a single boolean toggle"
+      ]
+    },
+    {
+      "name": "DsModalComponent",
+      "selector": "ds-modal",
+      "category": "layout",
+      "intent": "Scrollable modal body with optional typed header and footer. Used as inner content inside an IonModal.",
+      "storybookPath": "1. P0 Components/Modal",
+      "sourceFile": "src/app/design-system/modal/modal.component.ts",
+      "variants": [],
+      "sizes": ["sm", "md", "lg"],
+      "keyInputs": [
+        "headerConfig", "headerComponent", "headerComponentProps", "footerConfig",
+        "modalSize", "dismissFn", "headerClass", "contentClass", "footerClass",
+        "respectTopSafeArea", "scrollableContent"
+      ],
+      "headerConfigShape": {
+        "title": "string",
+        "subtitle": "string",
+        "showBackButton": "boolean",
+        "showCloseButton": "boolean (default true)"
+      },
+      "footerConfigShape": {
+        "primaryButton": "{ label, disabled? }",
+        "secondaryButton": "{ label, disabled? }",
+        "buttonSize": "sm | md (default md)",
+        "fullWidthButtons": "boolean",
+        "stackButtons": "boolean"
+      },
+      "outputs": ["backClick", "closeClick", "primaryClick", "secondaryClick"],
+      "contentProjection": true,
+      "notes": "ds-modal is the inner layout wrapper; it must be placed inside an IonModal. Use scrollableContent=true for long-form content to enable scroll within safe area. Use headerComponent to inject a custom header component dynamically.",
+      "deviceDependent": false,
+      "mobileBehavior": "IonModal on mobile uses sheet breakpoints; ds-modal handles safe area insets via respectTopSafeArea",
+      "studentTheme": false,
+      "rtlSupported": true,
+      "do": [
+        "Always provide dismissFn so footer close/cancel buttons work",
+        "Use scrollableContent=true for forms or long content",
+        "Use headerConfig for simple title+close pattern",
+        "Use headerComponent for complex custom headers"
+      ],
+      "dont": [
+        "Do not nest ds-modal inside ds-modal",
+        "Do not manually scroll the outer IonModal — set scrollY=false on IonModal and let ds-modal handle scrolling"
+      ],
+      "alternatives": [
+        "DsSidebarComponent for persistent side-panel layout (same API)"
+      ]
+    },
+    {
+      "name": "DsChipComponent",
+      "selector": "app-ds-chip",
+      "category": "action",
+      "intent": "Compact label/badge element used for filters, tags, status indicators, and removable selections.",
+      "storybookPath": "1. P0 Components/Chip",
+      "sourceFile": "src/app/design-system/chip/chip.component.ts",
+      "variants": ["default", "primary", "none"],
+      "displayTypes": ["pill", "card"],
+      "keyInputs": ["variant", "displayType", "text", "startIcon", "startIconSize", "startIconColorClass", "removable", "static", "customClasses"],
+      "outputs": ["remove"],
+      "contentProjection": false,
+      "notes": "When static=true, hover effects are disabled (useful for read-only tags). When removable=true, shows an X button and emits (remove). The variant can also be an arbitrary string for custom color classes via customClasses.",
+      "deviceDependent": false,
+      "mobileBehavior": null,
+      "studentTheme": false,
+      "rtlSupported": true,
+      "do": [
+        "Use displayType=card for larger chip cards with more padding",
+        "Use removable=true + (remove) for tag deletion",
+        "Use variant=primary for selected filter state"
+      ],
+      "dont": [
+        "Do not use chips as primary CTAs — use DsButtonComponent",
+        "Do not place interactive chips inside disabled containers without also setting static=true"
+      ],
+      "alternatives": [
+        "DsButtonComponent variant=secondary for larger toggle buttons",
+        "DsChipSelectorComponent for a managed list of selectable chips"
+      ]
+    },
+    {
+      "name": "DsTabsComponent",
+      "selector": "app-ds-tabs",
+      "category": "display",
+      "intent": "Horizontal tab bar for switching between views, with overflow scroll, navigation arrows, badge counts, and RTL support.",
+      "storybookPath": "1. P0 Components/Tabs",
+      "sourceFile": "src/app/design-system/tabs/tabs.component.ts",
+      "variants": ["primary", "secondary"],
+      "keyInputs": ["tabs", "activeTabId", "scrollable", "showNavigationArrows", "variant"],
+      "tabItemShape": {
+        "id": "any",
+        "label": "string",
+        "badge": "number | string (optional)",
+        "disabled": "boolean (optional)"
+      },
+      "outputs": ["tabChange"],
+      "contentProjection": false,
+      "notes": "Requires DS_TRANSLATION_TOKEN to be provided in the module/component injector for label translation via DsTranslatePipe. scrollable=auto (default) auto-detects overflow. Emits the tab id (not the Tab object) on tabChange.",
+      "deviceDependent": true,
+      "mobileBehavior": "Navigation arrows hidden on mobile; swipe gesture supported via DsTabsWithSwipeComponent",
+      "studentTheme": false,
+      "rtlSupported": true,
+      "rtlNotes": "Scroll direction and arrow icons are RTL-aware",
+      "do": [
+        "Provide DS_TRANSLATION_TOKEN in the host component/module",
+        "Use activeTabId to control the active tab from the parent",
+        "Use DsTabsWithSwipeComponent on mobile for swipe navigation"
+      ],
+      "dont": [
+        "Do not forget DS_TRANSLATION_TOKEN — labels will not render correctly without it",
+        "Do not use tabs for navigation between routes — use router links"
+      ],
+      "alternatives": [
+        "DsSegmentedControlComponent for 2-3 options in a compact pill style"
+      ]
+    },
+    {
+      "name": "AvatarComponent",
+      "selector": "app-ds-avatar",
+      "category": "display",
+      "intent": "User avatar displaying a profile image or generated initials with color coding.",
+      "storybookPath": "1. P0 Components/Avatar",
+      "sourceFile": "src/app/design-system/avatar/avatar.component.ts",
+      "variants": [],
+      "sizes": ["xs", "sm", "md", "lg", "xl", "2xl", "3xl", "4xl"],
+      "keyInputs": ["fullName (required)", "imageUrl", "size", "color", "includeBorder"],
+      "outputs": [],
+      "contentProjection": false,
+      "notes": "fullName is required. If imageUrl is provided and valid, the image is displayed; otherwise the first character of fullName is shown as an initial. Color maps to UserProfileColors enum values.",
+      "deviceDependent": false,
+      "mobileBehavior": null,
+      "studentTheme": false,
+      "rtlSupported": true,
+      "do": [
+        "Always provide fullName even when imageUrl is set (fallback for broken images)",
+        "Use size=md as the default",
+        "Use size=2xl or larger for profile/settings pages"
+      ],
+      "dont": [
+        "Do not pass null as fullName — the component will display an empty circle"
+      ],
+      "alternatives": []
+    },
+    {
+      "name": "DsIconComponent",
+      "selector": "app-ds-icon",
+      "category": "display",
+      "intent": "Unified icon renderer supporting FontAwesome icon definitions, ng-icons string names, and SVG asset paths.",
+      "storybookPath": "1. P0 Components/Icon",
+      "sourceFile": "src/app/design-system/icon/icon.component.ts",
+      "variants": [],
+      "sizes": ["2xs", "xs", "sm", "lg", "xl", "2xl"],
+      "keyInputs": ["icon", "size", "cssClass", "fixedWidth"],
+      "outputs": [],
+      "contentProjection": false,
+      "notes": "Accepts three icon types: (1) FontAwesome IconDefinition objects imported from @fortawesome packages, (2) string names for ng-icons, (3) string paths ending in .svg for Ionic IonIcon SVG assets. Type is auto-detected.",
+      "deviceDependent": false,
+      "mobileBehavior": null,
+      "studentTheme": false,
+      "rtlSupported": true,
+      "do": [
+        "Import FA icons as objects: import { faUser } from '@fortawesome/pro-regular-svg-icons'",
+        "Pass numeric pixel values for custom sizes: [size]=\"20\"",
+        "Use cssClass for color: cssClass=\"text-brand\""
+      ],
+      "dont": [
+        "Do not pass FA icon names as strings — pass the imported icon definition object",
+        "Do not mix icon libraries in the same icon slot"
+      ],
+      "alternatives": []
+    },
+    {
+      "name": "DsProgressBarComponent",
+      "selector": "app-ds-progress-bar",
+      "category": "display",
+      "intent": "Animated horizontal progress bar with color variants and optional percentage label.",
+      "storybookPath": "2. P1 Components/Progress Bar",
+      "sourceFile": "src/app/design-system/progress-bar/progress-bar.component.ts",
+      "variants": ["green", "red", "blue", "yellow", "indigo", "orange", "neon-green"],
+      "sizes": ["sm", "lg"],
+      "keyInputs": ["progress", "variant", "size", "showPercentage"],
+      "outputs": [],
+      "contentProjection": false,
+      "notes": "Progress value is clamped to 0-100. The bar animates smoothly using requestAnimationFrame with an ease-out cubic curve over 800ms. RTL-aware fill direction.",
+      "deviceDependent": false,
+      "mobileBehavior": null,
+      "studentTheme": false,
+      "rtlSupported": true,
+      "do": [
+        "Pass progress as a number 0-100",
+        "Use variant=green for positive/completion metrics",
+        "Use variant=red for error or critical states"
+      ],
+      "dont": [
+        "Do not pass values outside 0-100 — they are clamped automatically"
+      ],
+      "alternatives": []
+    },
+    {
+      "name": "DsSwitchComponent",
+      "selector": "app-ds-switch",
+      "category": "input",
+      "intent": "Toggle switch for boolean on/off state or two-way labeled option selection.",
+      "storybookPath": "1. P0 Components/Switch",
+      "sourceFile": "src/app/design-system/switch/switch.component.ts",
+      "variants": ["boolean", "two-way"],
+      "keyInputs": ["type", "option1", "option2", "selectedOption", "onColor", "offColor"],
+      "outputs": ["selectedOptionChange"],
+      "contentProjection": false,
+      "notes": "Implements ControlValueAccessor. type=boolean is a simple on/off toggle. type=two-way shows two labeled options side by side. Use onColor/offColor with CSS variable or hex values.",
+      "deviceDependent": false,
+      "mobileBehavior": null,
+      "studentTheme": false,
+      "rtlSupported": true,
+      "do": [
+        "Use type=boolean (default) for simple on/off toggles",
+        "Bind to FormControl for reactive forms",
+        "Use type=two-way for labeled binary choices like Active/Inactive"
+      ],
+      "dont": [
+        "Do not use for multi-option selection — use DsSelectComponent or DsRadioGroupComponent"
+      ],
+      "alternatives": [
+        "DsCheckboxComponent for checkbox-style boolean",
+        "DsSegmentedControlComponent for 2-3 equal-weight options"
+      ]
+    },
+    {
+      "name": "DsTextareaComponent",
+      "selector": "app-ds-textarea",
+      "category": "input",
+      "intent": "Multi-line text input with label, hints, character count, and form integration.",
+      "storybookPath": "1. P0 Components/Text Area",
+      "sourceFile": "src/app/design-system/text-area/text-area.component.ts",
+      "keyInputs": [
+        "label", "placeholder", "required", "hintRight", "hintLeft",
+        "showCharacterCount", "rows", "maxLength", "disabled"
+      ],
+      "outputs": [],
+      "contentProjection": false,
+      "notes": "Implements ControlValueAccessor and NG_VALIDATORS. rows and maxLength use legacy @Input decorator (not signal input). Student theme adds border-[4px] border-b-[8px] matching DsInputComponent.",
+      "deviceDependent": false,
+      "mobileBehavior": null,
+      "studentTheme": true,
+      "rtlSupported": true,
+      "do": [
+        "Set rows to control visible height",
+        "Enable showCharacterCount=true when maxLength is set",
+        "Use hintLeft for helper text and hintRight for character count label"
+      ],
+      "dont": [
+        "Do not use for single-line text — use DsInputComponent"
+      ],
+      "alternatives": [
+        "DsInputComponent for single-line text"
+      ]
+    },
+    {
+      "name": "DsSidebarComponent",
+      "selector": "ds-sidebar",
+      "category": "layout",
+      "intent": "Persistent side-panel layout with optional typed header and footer. Shares the same API as DsModalComponent.",
+      "storybookPath": "2. P1 Components/Sidebar",
+      "sourceFile": "src/app/design-system/sidebar/sidebar.component.ts",
+      "keyInputs": [
+        "headerConfig", "headerComponent", "headerComponentProps", "footerConfig",
+        "dismissFn", "contentClass", "scrollableContent"
+      ],
+      "outputs": ["backClick", "closeClick", "primaryClick", "secondaryClick"],
+      "contentProjection": true,
+      "notes": "Structurally identical to DsModalComponent. scrollableContent defaults to true (unlike modal which defaults to false). fullWidthButtons defaults to true in footer. Used inside Ionic split-pane or custom side-panel containers.",
+      "deviceDependent": false,
+      "mobileBehavior": "On mobile, sidebars are typically shown as a modal/sheet instead",
+      "studentTheme": false,
+      "rtlSupported": true,
+      "do": [
+        "Use scrollableContent=true (default) for sidebars with forms",
+        "Provide dismissFn for the close/cancel button to work"
+      ],
+      "dont": [
+        "Do not use as a floating popover — use DsMenuComponent for that"
+      ],
+      "alternatives": [
+        "DsModalComponent for the same layout inside a modal dialog"
+      ]
+    },
+    {
+      "name": "DsAccordionComponent",
+      "selector": "ds-accordion",
+      "category": "layout",
+      "intent": "Collapsible section with title, subtitle, tags, optional icon, and context menu.",
+      "storybookPath": "2. P1 Components/Accordion",
+      "sourceFile": "src/app/design-system/accordion/accordion.component.ts",
+      "keyInputs": [
+        "title", "subtitle", "tags", "iconPosition", "showIcon", "showMenu",
+        "menuItems", "expanded", "disabled", "headerClass", "contentClass", "containerClass"
+      ],
+      "outputs": ["expandedChange", "menuItemSelected"],
+      "contentProjection": true,
+      "notes": "Content is projected via ng-content. Action buttons can be projected via #accordionActions template. The expanded input is one-way — internal state is managed by isExpanded signal. Call toggle(), expand(), or collapse() programmatically.",
+      "deviceDependent": false,
+      "mobileBehavior": null,
+      "studentTheme": false,
+      "rtlSupported": true,
+      "do": [
+        "Use DsAccordionGroupComponent to manage a list of accordions",
+        "Use menuItems to add a context menu to the accordion header",
+        "Use tags[] for status chips in the header"
+      ],
+      "dont": [
+        "Do not two-way bind expanded — the input is one-way; listen to (expandedChange) instead"
+      ],
+      "alternatives": [
+        "DsExpandableComponent for simpler expand/collapse without header structure"
+      ]
+    },
+    {
+      "name": "SearchBoxComponent",
+      "selector": "app-search-box",
+      "category": "input",
+      "intent": "Search input with 300ms debounce, optional add button, cancel button, and bottom-bar visibility management.",
+      "storybookPath": "2. P1 Components/Search Box",
+      "sourceFile": "src/app/design-system/search-box/search-box.component.ts",
+      "keyInputs": [
+        "value", "placeholderTxt", "includeAddButton", "includeCancelButton",
+        "manageBottomBarVisibility", "autoFocus", "autoFocusDelay"
+      ],
+      "outputs": ["searchChange", "addButtonClick", "cancelButtonClick"],
+      "contentProjection": false,
+      "notes": "Emits searchChange after 300ms debounce and distinctUntilChanged. When manageBottomBarVisibility=true (default), the mobile bottom navigation bar is hidden on focus. For use inside modals, set autoFocusDelay=300-400.",
+      "deviceDependent": true,
+      "mobileBehavior": "Hides bottom navigation bar on focus via LayoutService",
+      "studentTheme": false,
+      "rtlSupported": true,
+      "do": [
+        "Bind [value] to keep the search box in sync with external state",
+        "Set autoFocusDelay=350 when placing inside a modal"
+      ],
+      "dont": [
+        "Do not use inside a form as a form control — it is uncontrolled and emits via (searchChange)"
+      ],
+      "alternatives": [
+        "DsInputComponent with iconStart=faSearch for a minimal search field without debounce"
+      ]
+    },
+    {
+      "name": "DsIconContainerComponent",
+      "selector": "ds-icon-container",
+      "category": "display",
+      "intent": "Composite display element that combines an icon with an optional chip badge, context menu, label, and activity indicator.",
+      "storybookPath": "2. P1 Components/Icon Container",
+      "sourceFile": "src/app/design-system/icon-container/icon-container.component.ts",
+      "keyInputs": ["config (required)"],
+      "configShape": {
+        "icon": "DsIcon (required)",
+        "iconColorClass": "string (Tailwind color class)",
+        "chip": "{ text, variant, customClasses, startIcon, removable }",
+        "menu": "{ items: PopupItem[], position: top|bottom|left|right }",
+        "label": "string",
+        "hasIndicator": "boolean (activity dot, mutually exclusive with menu)",
+        "isGrayed": "boolean (overrides iconColorClass with text-icon-low)"
+      },
+      "outputs": [],
+      "contentProjection": false,
+      "notes": "Use createIconContainerConfig() helper for type-safe config construction. hasIndicator and menu are mutually exclusive — hasIndicator takes priority. isGrayed sets the icon to text-icon-low regardless of iconColorClass.",
+      "deviceDependent": false,
+      "mobileBehavior": null,
+      "studentTheme": false,
+      "rtlSupported": true,
+      "do": [
+        "Use createIconContainerConfig() for type safety",
+        "Use hasIndicator=true for notification/unread dots",
+        "Use chip.text for count badges"
+      ],
+      "dont": [
+        "Do not set both hasIndicator=true and menu.items — menu will be hidden"
+      ],
+      "alternatives": [
+        "DsIconComponent alone when no chip/menu/label is needed"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+<div class="flex flex-col items-center space-y-4" *transloco="let t">
+  @switch (status) {
+    @case ("PENDING") {
+      <div
+        class="self-start rounded-full bg-[#FFFAEB] px-4 py-1 text-xs font-normal text-[#B54708]"
+      >
+        {{ t("enum.PENDING") }}
+      </div>
+    }
+    @case ("SUBMITTED") {
+      <div
+        class="self-start rounded-full bg-[#ECFDF3] px-4 py-1 text-xs font-normal text-[#027A48]"
+      >
+        {{ t("enum.SUBMITTED") }}
+      </div>
+    }
+    @default {
+      <div class="hes-badge self-start px-3 py-1 text-xs font-normal">
+        {{ status | titlecase }}
+      </div>
+    }
+  }
+</div>

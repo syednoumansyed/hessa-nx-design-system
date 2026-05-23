@@ -1,0 +1,103 @@
+<ng-container *transloco="let t">
+  <ds-carousal
+    [slides]="slides()"
+    [(activeIndex)]="activeSlideIndex"
+    (slideChange)="onWeekChange($event)"
+    [isContentLoading]="weekDetailLoading()"
+    [skeletonTemplate]="skeletonTemplate"
+  >
+    @if (weeklyDetailVm(); as vm) {
+      <div class="mb-20 mt-ds-lg">
+        <div>
+          <div class="heading-h4-high-emphasis mb-ds-lg text-emphasis-high">
+            {{ vm.title }}
+          </div>
+          <div class="single-line-sm-high-emphasis mb-2 text-emphasis-high">
+            {{ t("global.description.label") }}
+          </div>
+          @if (vm.description) {
+            <ds-expandable [maxHeight]="120">
+              <app-hes-editor
+                [ngModel]="vm.description"
+                [allowYoutubeExtension]="true"
+                [previewOnly]="true"
+                [preview]="true"
+              />
+            </ds-expandable>
+          } @else {
+            <div class="Content-md-default mt-4 text-emphasis-mid">
+              {{ t("description_here.txt") }}
+            </div>
+          }
+        </div>
+        <div class="mt-6">
+          <app-ds-tabs
+            [tabs]="vm.tabsList"
+            [activeTabId]="activeTab()"
+            (tabChange)="onTabChange($event)"
+          ></app-ds-tabs>
+
+          @if (isAllTabActive()) {
+            <div>
+              <div class="my-2 mt-4 flex flex-wrap gap-2">
+                @for (filter of vm.all.filterConfig; track $index) {
+                  <app-ds-chip
+                    [class.ring-brand-500]="activeFilter() === filter.value"
+                    [variant]="
+                      activeFilter() === filter.value ? 'primary' : 'default'
+                    "
+                    [customClasses]="'border-2 border-b-4'"
+                    (click)="onFilterChange(filter.value)"
+                    class="cursor-pointer outline-none transition-all duration-200"
+                  >
+                    {{ t(filter.label) }}
+                  </app-ds-chip>
+                  <input
+                    type="radio"
+                    [value]="filter.value"
+                    [checked]="activeFilter() === filter.value"
+                    (change)="onFilterChange(filter.value)"
+                    class="sr-only"
+                  />
+                }
+              </div>
+              <div>
+                <app-course-detail-weekly-items
+                  [weekDetail]="selectedWeekDetail()"
+                  [activeFilter]="activeFilter()"
+                  (userEventEmit)="onUserEventTrigger($event)"
+                />
+              </div>
+            </div>
+          } @else {
+            @if (vm.todosLoading) {
+              <div class="mt-ds-lg">
+                <app-course-detail-skeleton [showIconOnly]="true" />
+              </div>
+            } @else {
+              <div class="mt-4">
+                <app-todo-weekly-items [todoItems]="vm.todos" />
+              </div>
+            }
+          }
+        </div>
+      </div>
+    }
+    <ng-template #skeletonTemplate>
+      <div class="mt-ds-lg">
+        <app-course-detail-skeleton />
+      </div>
+    </ng-template>
+  </ds-carousal>
+  @if (showJumpToCurrentWeek()) {
+    <div class="fixed bottom-4 left-1/2 -translate-x-1/2 transform">
+      <ds-button
+        [variant]="'secondary'"
+        size="sm"
+        (click)="jumpToCurrentWeek()"
+      >
+        {{ t("jump_to_current_week.txt") }}
+      </ds-button>
+    </div>
+  }
+</ng-container>

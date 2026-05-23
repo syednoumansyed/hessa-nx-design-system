@@ -1,0 +1,6 @@
+<div *transloco="let t; read: 'enum'">
+  {{ timeSpent | convertSecondsToHrsMinSec }}
+  @if (!timeSpent) {
+    <div>-</div>
+  }
+</div>

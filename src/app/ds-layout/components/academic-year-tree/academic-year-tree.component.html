@@ -1,0 +1,65 @@
+<!-- academic-year-tree.component.html -->
+<ul class="p-4">
+  @for (
+    year of academicYears();
+    track year.id;
+    let yearIdx = $index;
+    let isLastYear = $last
+  ) {
+    <!-- YEAR ROW -->
+    <li class="relative mb-3">
+      <!-- Vertical line connecting to next sibling (continuous behind button) -->
+      @if (!isLastYear) {
+        <div
+          class="absolute bottom-[-12px] top-0 w-px border-dashed border-gray-300 ltr:left-[11px] ltr:border-l rtl:right-[11px] rtl:border-r"
+        ></div>
+      }
+
+      <div class="relative flex items-center gap-2">
+        <!-- CHEVRON with white background to cover the line -->
+        <button
+          class="relative z-10 flex h-5 w-5 items-center justify-center rounded border border-gray-300 bg-surface-primary hover:bg-gray-50"
+          (click)="year.semesters.length && toggle(year.id)"
+          [class.invisible]="!year.semesters.length"
+        >
+          @if (year.semesters.length) {
+            <ng-icon
+              name="chevron-right"
+              [class.rotate-90]="isExpanded(year.id)"
+              [class.rtl:rotate-180]="!isExpanded(year.id)"
+              class="text-sm text-gray-600 transition-transform duration-200"
+            ></ng-icon>
+          }
+        </button>
+
+        <!-- YEAR ICON + LABEL -->
+        <div class="relative z-10 flex items-center gap-2 bg-white">
+          <ng-icon
+            name="academic-year"
+            class="text-xl text-brand-600"
+          ></ng-icon>
+          <span class="text-sm font-medium text-emphasis-mid">{{
+            year.name
+          }}</span>
+        </div>
+      </div>
+
+      <!-- SEMESTERS (if expanded) - Simple indented list, no connecting lines -->
+      @if (year.semesters.length && isExpanded(year.id)) {
+        <ul class="my-2 ms-[52px]">
+          @for (sem of year.semesters; track sem.id) {
+            <li
+              class="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-2 transition-colors hover:bg-brand-35"
+              [class.bg-surface-brand-subtle]="isSemesterSelected(sem.id)"
+              [class.hover:bg-brand-35]="!isSemesterSelected(sem.id)"
+              (click)="select(sem, year)"
+            >
+              <ng-icon name="semester" class="text-lg text-brand-600"></ng-icon>
+              <span class="text-sm text-gray-600">{{ sem.name }}</span>
+            </li>
+          }
+        </ul>
+      }
+    </li>
+  }
+</ul>

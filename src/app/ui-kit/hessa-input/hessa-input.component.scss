@@ -1,0 +1,221 @@
+:host.ng-touched.ng-dirty {
+  &.ng-invalid {
+    ion-item.hes-item {
+      &.hes-item--solid {
+        --background: rgba(255, 230, 230, 0.6);
+
+        &::part(native) {
+          border: 1px solid #e62e2e;
+          border-radius: 0.25rem;
+        }
+      }
+      &.hes-item--outline {
+        &::part(native) {
+          border: 1px solid #e62e2e;
+          border-radius: 0.25rem;
+        }
+      }
+    }
+  }
+  &.ng-valid {
+    ion-item.hes-item {
+      &.hes-item--solid {
+        --background: rgba(230, 255, 243, 0.6);
+        &::part(native) {
+          border: 1px solid #069952;
+          border-radius: 0.25rem;
+        }
+      }
+      &.hes-item--outline {
+        &::part(native) {
+          border: 1px solid #069952;
+          border-radius: 0.25rem;
+        }
+      }
+    }
+  }
+}
+
+.hes-input {
+  ion-item.hes-item {
+    &.hes-item--solid {
+      --background: #f6f7f9;
+
+      &::part(native) {
+        border: 1px solid transparent;
+        border-radius: 0.25rem;
+      }
+    }
+    &.hes-item--outline {
+      --background: transparent;
+      &::part(native) {
+        border: 1px solid #9ea2b3;
+        border-radius: 0.25rem;
+      }
+    }
+    &.hes-rtl.hes-tel {
+      &::part(native) {
+        direction: ltr;
+      }
+    }
+
+    .sc-ion-input-md-h {
+      --highlight-color: #3e414c;
+      --highlight-color-focused: #3e414c;
+      --highlight-color-invalid: #3e414c;
+      --highlight-color-valid: #3e414c;
+      --highlight-height-focused: 0;
+    }
+    .sc-ion-input-md {
+      color: #141519;
+      caret-color: #6b6f80;
+      font-weight: 400;
+      --tw-ring-color: transparent;
+    }
+
+    --background-hover-opacity: 0;
+    --background-focused-opacity: 0;
+    --background-selected-opacity: 0;
+
+    --padding-top: var(--h-spacing-3);
+    --padding-bottom: var(--h-spacing-3);
+    --padding-start: var(--h-spacing-4);
+    --padding-end: var(--h-spacing-4);
+
+    --border-radius: 0;
+    --border-width: 0;
+    --border-color: none;
+    --border-style: none;
+    --min-height: 1.25rem;
+    --inner-padding-end: 0;
+
+    &:hover,
+    &:focus,
+    &:active {
+      &::part(native) {
+        border: 1px solid var(--h-color-primary);
+        border-radius: 0.25rem;
+      }
+    }
+
+    &.hes-rtl {
+      [slot="helper"],
+      [slot="error"] {
+        transform: translateX(calc(1 * var(--h-spacing-4)));
+      }
+    }
+
+    [slot="helper"],
+    [slot="error"] {
+      // padding-inline-end: 16px;
+      padding-top: var(--h-spacing-1);
+      width: 100%;
+      transform: translateX(calc(-1 * var(--h-spacing-4)));
+      color: #6b6f80;
+
+      /* Web Font/Tertiary Text/Body Micro - 12 - Regular (Line Height 16) */
+      font-size: 0.75rem;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 1rem; /* 133.333% */
+      letter-spacing: -0.01563rem;
+      .helper-link {
+        transform: translateX(var(--h-spacing-4));
+        color: #6b6f80;
+        text-align: right;
+
+        /* Web Font/Link/Small - 14 (Line Height 18) */
+        font-size: 0.875rem;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 1.125rem; /* 128.571% */
+        letter-spacing: -0.01563rem;
+        text-decoration-line: underline;
+      }
+    }
+
+    ion-input.hes-input {
+      --placeholder-color: #838799;
+      --placeholder-font-style: normal;
+      --placeholder-font-weight: 400;
+      --placeholder-opacity: 1;
+      min-height: 1.25rem;
+    }
+
+    fa-icon {
+      margin-inline-end: var(--h-spacing-2);
+      width: 1.25rem;
+      height: 1.25rem;
+      &[slot="end"] {
+        margin-inline-start: var(--h-spacing-2);
+        margin-inline-end: 0;
+      }
+    }
+  }
+
+  .country-flag[slot="start"] {
+    margin-inline-end: var(--h-spacing-2);
+    margin-inline-start: 0;
+  }
+
+  ion-label {
+    color: #141519;
+    /* Web Font/Table Header/Heading 6 - SemiBold - 16 (Line Height 20) */
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 1.25rem; /* 125% */
+    letter-spacing: -0.01563rem;
+    span {
+      color: #e62e2e;
+    }
+
+    &.disabled {
+      color: #6b6f80;
+      span {
+        color: inherit;
+      }
+    }
+  }
+
+  .count {
+    color: #6b6f80;
+    /* Web Font/Tertiary Text/Body Micro - 12 - Regular (Line Height 16) */
+    font-size: 0.75rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1rem; /* 133.333% */
+    letter-spacing: -0.01563rem;
+    text-align: right;
+  }
+
+  .error {
+    color: #e62e2e;
+  }
+}
+
+:host(.border) {
+  .hes-input {
+    ion-item.hes-item {
+      &.hes-item--solid {
+        &::part(native) {
+          border: 1px solid var(--h-color-gray-300);
+          border-radius: 0.25rem;
+        }
+      }
+      &:hover,
+      &:focus,
+      &:active {
+        &::part(native) {
+          border: 1px solid var(--h-color-primary);
+        }
+      }
+    }
+  }
+}
+
+:host(.bg-none) {
+  ion-item.hes-item {
+    --background: none !important;
+  }
+}

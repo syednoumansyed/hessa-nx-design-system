@@ -1,0 +1,45 @@
+<div
+  *transloco="let t; read: translocoScope()"
+  class="lg:hes-card flex w-full flex-wrap items-start justify-start gap-4 bg-white p-4 md:p-10 lg:h-full lg:gap-8"
+>
+  @for (listing of list(); track listing.titleI18nKey) {
+    <ng-container *hesRbacSome="listing.permissions">
+      <ng-container *hesRbac="listing.permission">
+        <div
+          *hesRbac="listing.permission"
+          class="flex w-36 cursor-pointer flex-col items-center gap-2 rounded-lg border p-10 text-center hover:bg-[#FFFCE7] md:min-h-[210px] md:w-[12.5rem] md:gap-6 md:px-10 md:py-8"
+          [routerLink]="listing.path"
+        >
+          <div
+            class="flex h-12 w-12 items-center justify-center rounded-lg bg-[#FFFCE7] md:h-16 md:w-16"
+          >
+            @if (listing.iconName) {
+              <ng-icon
+                [name]="listing.iconName"
+                [class]="listing.iconClass ?? 'text-4xl text-primary'"
+              ></ng-icon>
+            } @else if (listing.faIcon) {
+              <app-hes-icon
+                [faIcon]="listing.faIcon"
+                [iconClass]="
+                  listing.iconClass ??
+                  'h-6 w-6 md:w-10 md:h-10 flex justify-center items-center text-primary text-4xl'
+                "
+              ></app-hes-icon>
+            } @else if (listing.svg) {
+              <ng-icon
+                [name]="listing.svg"
+                [class]="listing.iconClass ?? 'text-4xl text-primary'"
+              ></ng-icon>
+            }
+          </div>
+
+          <span
+            class="-mx-8 text-base font-medium text-gray-900 md:text-xl lg:font-semibold"
+            >{{ t(listing.titleI18nKey) }}</span
+          >
+        </div>
+      </ng-container>
+    </ng-container>
+  }
+</div>

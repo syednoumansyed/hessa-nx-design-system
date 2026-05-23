@@ -1,0 +1,43 @@
+<ion-list *transloco="let t" class="cursor-pointer">
+  <ion-item lines="none" (click)="openCamera()">
+    <div class="flex w-full gap-3 border-b py-4">
+      <div
+        class="flex h-11 w-12 items-center justify-center rounded-full bg-slate-100"
+      >
+        <app-hes-icon [faIcon]="camraIcon"></app-hes-icon>
+      </div>
+      <div>
+        <div class="text-sm">{{ t("chats.camera.title") }}</div>
+        <div class="text-xs">{{ t("chats.take_picture_share.txt") }}</div>
+      </div>
+    </div>
+  </ion-item>
+  <ion-item lines="none" (click)="onPickMedia()">
+    <div class="flex w-full gap-3 border-b py-2">
+      <div
+        class="flex h-11 w-12 items-center justify-center rounded-full bg-slate-100"
+      >
+        <app-hes-icon [faIcon]="mediaIcon"></app-hes-icon>
+      </div>
+      <div>
+        <div class="text-sm">{{ t("chats.media.title") }}</div>
+        <div class="text-xs">
+          {{ t("chats_share_photos_videos.txt") }}
+        </div>
+      </div>
+    </div>
+  </ion-item>
+  <ion-item (click)="onPickDoc()" lines="none" class="mb-4 md:mb-0">
+    <div class="flex w-full gap-3 py-2">
+      <div
+        class="flex h-11 w-12 items-center justify-center rounded-full bg-slate-100"
+      >
+        <app-hes-icon [faIcon]="fileDoc"></app-hes-icon>
+      </div>
+      <div>
+        <div class="text-sm">{{ t("chats.documents.title") }}</div>
+        <div class="text-xs">{{ t("chats.share_pdf_files.txt") }}</div>
+      </div>
+    </div>
+  </ion-item>
+</ion-list>

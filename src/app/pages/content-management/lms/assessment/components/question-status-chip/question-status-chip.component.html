@@ -1,0 +1,17 @@
+<button [ngClass]="statusClass()" [attr.data-status]="status()">
+  @if (sideIcon()) {
+    <div class="absolute -top-[3px] ltr:-right-[3px] rtl:-left-[3px]">
+      <app-ds-icon
+        [icon]="sideIcon()!.icon"
+        [cssClass]="sideIcon()!.cssClass"
+        size="xs"
+      />
+    </div>
+  }
+  @if (display().icon) {
+    <app-ds-icon [icon]="display().icon!" size="xs" />
+  }
+  @if (display().text) {
+    <div>{{ display()!.text }}</div>
+  }
+</button>

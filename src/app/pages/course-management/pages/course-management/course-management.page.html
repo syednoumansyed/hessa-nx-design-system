@@ -1,0 +1,29 @@
+<ion-content class="ds-page-content" *transloco="let t;">
+  <app-no-selected-scope-card
+    [requiredScope]="requiredScopes"
+    (onScopeUpdate)="handleDisplayContent($event)"
+  >
+  </app-no-selected-scope-card>
+  @if(displayContent()){
+  <div
+    class="hes-card flex h-full w-full flex-col items-start justify-start p-0"
+  >
+    <app-listing-header
+      [title]="t('global.courses.title')"
+      [primaryBtnTitle]="t('course_management.add_course.btn')"
+      [primaryBtnPermissionId]="courseCreatePermission"
+      (onPrimaryBtnClick)="onAddCourse()"
+      [loading]="isLoading()"
+    ></app-listing-header>
+    <app-hes-table
+      [columns]="columns()"
+      [rowData]="coursesTableData()"
+      [pagination]="paginate()"
+      (filterSortModelChanged)="onTableMetaDataChange($event)"
+      [noRowsOverlayComponentParams]="noRowsOverlayComponentParams()"
+      (rowClicked)="onRowClicked($event)"
+      [loading]="isLoading()"
+    ></app-hes-table>
+  </div>
+  }
+</ion-content>

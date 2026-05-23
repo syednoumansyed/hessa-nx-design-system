@@ -1,0 +1,119 @@
+<div class="flex items-center justify-center gap-2">
+  @for (video of videoAttachments(); track $index) {
+    <div
+      (click)="openVideoDialog(video.url)"
+      class="relative h-14 w-12 cursor-pointer"
+    >
+      <ion-img
+        [src]="'assets/illustrations/video.svg'"
+        class="h-12 w-12 object-cover"
+      ></ion-img>
+    </div>
+  }
+  @for (attachment of pdfAttachments(); track index; let index = $index) {
+    <div (click)="onViewPdf(index)" class="relative h-14 w-12">
+      <ion-img
+        [src]="'assets/illustrations/pdf.svg'"
+        class="h-14 w-12 object-cover [&::part(image)]:rounded"
+      ></ion-img>
+      <div
+        class="absolute bottom-0 flex h-2 w-full items-center justify-start rounded-[0.125rem] bg-white px-[0.12rem]"
+      >
+        <app-hes-icon
+          class="flex flex-shrink-0 text-[0.4rem]"
+          [hesIcon]="{ src: 'assets/icons/folder-outline.svg' }"
+        ></app-hes-icon>
+        <span
+          class="max-w-[1.6rem] overflow-hidden truncate text-[0.25rem] leading-[0.5rem]"
+          >{{ attachment.key }}</span
+        >
+        <app-hes-icon
+          class="ms-auto flex flex-shrink-0 text-[0.4rem]"
+          [hesIcon]="{ src: 'assets/icons/preview.svg' }"
+        ></app-hes-icon>
+      </div>
+    </div>
+  }
+  @for (attachment of pptAttachments(); track index; let index = $index) {
+    <div (click)="onViewPpt(attachment)" class="relative h-14 w-12">
+      <ion-img
+        [src]="'assets/illustrations/ppt.svg'"
+        class="h-14 w-12 object-cover [&::part(image)]:rounded"
+      ></ion-img>
+      <div
+        class="absolute bottom-0 flex h-2 w-full items-center justify-start rounded-[0.125rem] bg-white px-[0.12rem]"
+      >
+        <app-hes-icon
+          class="flex flex-shrink-0 text-[0.4rem]"
+          [hesIcon]="{ src: 'assets/icons/folder-outline.svg' }"
+        ></app-hes-icon>
+        <span
+          class="max-w-[1.6rem] overflow-hidden truncate text-[0.25rem] leading-[0.5rem]"
+          >{{ attachment.key }}</span
+        >
+        <app-hes-icon
+          class="ms-auto flex flex-shrink-0 text-[0.4rem]"
+          [hesIcon]="{ src: 'assets/icons/preview.svg' }"
+        ></app-hes-icon>
+      </div>
+    </div>
+  }
+  @if (
+    !nonImages().length ||
+    imagesAttachment().length === 1 ||
+    imagesAttachment().length === 2
+  ) {
+    @for (
+      attachment of imagesAttachment().slice(0, 2);
+      track index;
+      let index = $index
+    ) {
+      <div (click)="onViewImg(index)" class="relative h-14 w-12">
+        <ion-img
+          [src]="attachment.url"
+          class="h-14 w-12 object-cover [&::part(image)]:rounded"
+        ></ion-img>
+        <div
+          class="absolute bottom-0 flex h-2 w-full items-center justify-start rounded-[0.125rem] bg-white px-[0.12rem]"
+        >
+          <app-hes-icon
+            class="flex flex-shrink-0 text-[0.4rem]"
+            [hesIcon]="{ src: 'assets/icons/folder-outline.svg' }"
+          ></app-hes-icon>
+          <span
+            class="max-w-[1.6rem] overflow-hidden truncate text-[0.25rem] leading-[0.5rem]"
+            >{{ attachment.key }}</span
+          >
+          <app-hes-icon
+            class="ms-auto flex flex-shrink-0 text-[0.4rem]"
+            [hesIcon]="{ src: 'assets/icons/preview.svg' }"
+          ></app-hes-icon>
+        </div>
+      </div>
+    }
+  }
+
+  @if (imagesAttachment().length > 2) {
+    <div
+      (click)="onViewImg(!pdfAttachments().length ? 2 : 0)"
+      class="relative h-14 w-12"
+    >
+      <ion-img
+        [src]="imagesAttachment()[!pdfAttachments().length ? 2 : 0].url"
+        class="h-14 w-12 object-cover [&::part(image)]:rounded"
+      ></ion-img>
+      <div
+        class="absolute bottom-0 left-0 right-0 top-0 rounded bg-[#212121] opacity-60"
+      ></div>
+      <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+        <span class="text-sm text-white"
+          >+{{
+            !pdfAttachments().length
+              ? imagesAttachment().length - 2
+              : imagesAttachment().length
+          }}</span
+        >
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,35 @@
+<div class="flex flex-col gap-ds-md" *transloco="let t">
+  <div class="flex flex-col gap-ds-sm">
+    <span class="heading-h4-high-emphasis text-emphasis-high">
+      {{ t("chats.channel.txt") }}
+    </span>
+    <span class="single-line-sm-mid-emphasis text-emphasis-mid">{{
+      t("chats.channel_contacts.txt")
+    }}</span>
+  </div>
+  <div
+    class="flex cursor-pointer flex-col gap-ds-xl rounded-ds-xl bg-white px-ds-xl py-ds-lg"
+    (click)="onChannelSelected()"
+  >
+    @if (isGroupProcessing()) {
+      <div
+        class="absolute inset-0 z-[999] flex items-center justify-center bg-white bg-opacity-70"
+      >
+        <ion-spinner name="crescent" class="text-primary-base text-ds-xl" />
+      </div>
+    }
+    <div class="flex items-center gap-ds-md">
+      <app-channel-icon [color]="randomColor()" />
+
+      <div
+        class="single-line-md-mid-emphasis overflow-hidden text-ellipsis whitespace-nowrap text-emphasis-high"
+      >
+        {{ groupName() }}
+      </div>
+
+      <div class="ml-auto flex h-[24px] w-[24px] items-center justify-center">
+        <app-ds-icon [icon]="isRtl ? faChevronLeft : faChevronRight" />
+      </div>
+    </div>
+  </div>
+</div>

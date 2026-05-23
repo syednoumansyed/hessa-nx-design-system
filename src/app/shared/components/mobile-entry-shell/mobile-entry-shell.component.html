@@ -1,0 +1,58 @@
+<div
+  class="safe-area-top flex min-h-[100dvh] flex-col items-center bg-brand-35 sm:min-h-screen md:py-[56px]"
+  *transloco="let t"
+>
+  <div class="flex h-full w-full max-w-[568px] flex-col">
+    <!-- Main content -->
+    <main class="flex-1 overflow-y-auto pb-[72px]">
+      <div class="mx-auto w-full max-w-xl">
+        <!-- Mascot + speech bubble -->
+        <div class="mt-6 block w-full px-8">
+          <div class="flex w-full items-start gap-3">
+            <img
+              [src]="mascotImage"
+              alt="mascot"
+              class="me-2 h-28 w-auto shrink-0 select-none"
+              draggable="false"
+            />
+            <div class="relative inline-block w-fit min-w-[14ch] max-w-full">
+              <div
+                class="chat-bubble relative overflow-visible rounded-[20px] border-x-4 border-b-8 border-t-4 border-[#C2D2DE] bg-[#D1E2EF] px-5 py-5"
+                role="status"
+                aria-live="polite"
+              >
+                <div
+                  class="heading-h4-high-emphasis relative z-10 text-emphasis-high"
+                >
+                  {{ speechBubbleMessage }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Projected content (e.g. phone input) -->
+        <section class="mt-4 px-4">
+          <ng-content></ng-content>
+        </section>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer
+      class="fixed bottom-0 left-1/2 z-50 w-full max-w-[568px] -translate-x-1/2 bg-[#FBF7EE]/90 px-8 py-4 pb-[max(env(safe-area-inset-bottom,0px),1rem)] backdrop-blur"
+      style="bottom: env(keyboard-inset-height, 0px)"
+    >
+      <ds-button
+        class="w-full"
+        [size]="'lg'"
+        [fullWidth]="true"
+        [disabled]="continueDisabled"
+        [loading]="continueLoading"
+        (click)="continueClick.emit()"
+      >
+        {{ t("login.continue.btn") }}
+      </ds-button>
+    </footer>
+  </div>
+</div>

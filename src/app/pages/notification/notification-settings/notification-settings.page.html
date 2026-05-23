@@ -1,0 +1,115 @@
+<ion-content
+  *transloco="let t"
+  class="ds-page-content bottom-bar-spacing surface-page"
+>
+  <div class="flex justify-center pb-ds-xs md:py-0">
+    <div class="w-full max-w-2xl">
+      <section>
+        <header class="flex flex-col px-ds-xl py-ds-lg md:pt-0">
+          <div class="content-sm-defaulttext-emphasis-mid">
+            {{ t("notification.settings_supporting.txt") }}
+          </div>
+        </header>
+
+        <div class="flex flex-col px-ds-xl pb-ds-xl">
+          @if (isLoading()) {
+          <div class="flex justify-center py-ds-2xl">
+            <tui-loader size="m"></tui-loader>
+          </div>
+          } @else if (settings().length > 0) {
+          <div class="flex flex-col gap-ds-md">
+            @for ( setting of settings(); track trackByResourceId($index,
+            setting); let last = $last ) {
+            <article
+              class="flex flex-col rounded-ds-xl border-2 border-[var(--stroke-color-black-08)] bg-surface-primary"
+            >
+              <!-- Header row with icon, title, and toggle -->
+              <div class="flex items-center justify-between px-ds-xl py-ds-lg">
+                <div class="flex items-center">
+                  <span
+                    class="-ms-2 flex h-12 w-12 items-center justify-center rounded-full bg-cover bg-center"
+                  >
+                    <ds-animated-icon [icon]="setting.icon" [size]="'lg'" />
+                  </span>
+                  <div class="flex flex-col ps-ds-md">
+                    <span class="content-md-high-emphasis text-emphasis-high">
+                      {{ t(setting.labelKey) }}
+                    </span>
+                  </div>
+                </div>
+
+                <app-ds-switch
+                  [(ngModel)]="setting.enabled"
+                  (ngModelChange)="onToggle(setting, $event)"
+                  [onColor]="switchOnColor"
+                  [class.opacity-60]="setting.isSaving"
+                  [class.pointer-events-none]="setting.isSaving"
+                ></app-ds-switch>
+              </div>
+
+              <!-- Pause notification section (Chat only, when enabled) -->
+              @if (isChatSetting(setting) && setting.enabled) {
+              <div class="px-ds-xl pb-ds-lg">
+                <div class="mb-ds-md">
+                  <span class="content-sm-default text-emphasis-mid">
+                    {{ t("notification.pause_daily.label") }}
+                  </span>
+                </div>
+
+                <div class="flex gap-ds-md">
+                  <div class="flex-1">
+                    <ds-time-picker-control
+                      [label]="''"
+                      [placeholder]="t('notification.snooze_start_time.placeholder')"
+                      [minuteStep]="1"
+                      [ngModel]="getSnoozeStartTime12h(setting)"
+                      (ngModelChange)="onSnoozeStartTimeChange(setting, $event)"
+                      [disabled]="setting.isSaving"
+                    ></ds-time-picker-control>
+                  </div>
+                  <div class="flex-1">
+                    <ds-time-picker-control
+                      [label]="''"
+                      [placeholder]="t('notification.snooze_end_time.placeholder')"
+                      [minuteStep]="1"
+                      [ngModel]="getSnoozeEndTime12h(setting)"
+                      (ngModelChange)="onSnoozeEndTimeChange(setting, $event)"
+                      [disabled]="setting.isSaving"
+                    ></ds-time-picker-control>
+                  </div>
+                </div>
+
+                @if (hasSnoozeTimes(setting)) {
+                <div class="mt-ds-xl flex flex-col gap-ds-xl">
+                  <p class="content-sm-mid-emphasis text-content-information">
+                    {{ t("notification.snooze_message.txt", { snoozeStartTime:
+                    setting.snoozeStartTime! | hesTime, snoozeEndTime:
+                    setting.snoozeEndTime! | hesTime }) }}
+                  </p>
+                  <button
+                    type="button"
+                    class="content-sm-high-emphasis self-start text-content-action"
+                    (click)="onResumeNotifications(setting)"
+                    [disabled]="setting.isSaving"
+                  >
+                    {{ t("notification.resume.btn") }}
+                  </button>
+                </div>
+                }
+              </div>
+              }
+            </article>
+            }
+          </div>
+          } @else {
+          <div class="flex flex-col items-center py-ds-2xl text-center">
+            <p class="content-md-default text-emphasis-mid">
+              {{ t("notifications.settings.empty") }}
+            </p>
+          </div>
+          }
+        </div>
+      </section>
+    </div>
+  </div>
+</ion-content>

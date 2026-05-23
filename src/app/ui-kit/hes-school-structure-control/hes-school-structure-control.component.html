@@ -1,0 +1,96 @@
+<ng-container *transloco="let t">
+  @if (displayTargetRef()) {
+    <div id="{{ triggerId }}">
+      <ng-content></ng-content>
+    </div>
+  } @else {
+    <div class="cursor-pointer">
+      <div
+        class="mb-2 text-base font-semibold capitalize leading-tight text-neutral-900"
+      >
+        {{ label() }}
+        @if (required()) {
+          <span class="text-[#e62e2e]">*</span>
+        }
+      </div>
+
+      <div
+        id="{{ triggerId }}"
+        class="flex h-12 w-full cursor-pointer items-center justify-between gap-2 rounded bg-[#F6F7F9] px-3.5 py-2.5 text-sm text-slate-500"
+      >
+        {{ placeholder() }}
+        <app-hes-icon [faIcon]="faAngleDown"></app-hes-icon>
+      </div>
+      <div class="mt-2 flex flex-wrap gap-2">
+        @for (item of selectedValue(); track $index) {
+          @if ($index < 3 || selectedValue().length === 4) {
+            <div
+              (click)="onDeselect(item)"
+              class="flex h-6 max-w-[102px] items-center justify-between rounded-full bg-[#f2f4f7] px-3 text-[#344054]"
+            >
+              <p class="truncate text-xs font-medium">{{ item.name }}</p>
+              <app-hes-icon
+                class="ml-0.5 cursor-pointer"
+                [faIcon]="faXmark"
+              ></app-hes-icon>
+            </div>
+          }
+        }
+        @if (selectedValue().length > 3 && !(selectedValue().length === 4)) {
+          <div
+            (click)="onShowAllSelect()"
+            class="flex h-6 max-w-[102px] items-center justify-between rounded-full bg-[#f2f4f7] px-3 text-[#344054]"
+          >
+            <p class="truncate text-xs font-medium">
+              +{{ selectedValue().length - 3 }}
+            </p>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  @if (!isDisabled()) {
+    @if (!isMobile) {
+      <ion-popover
+        [isOpen]="isOpen()"
+        [trigger]="triggerId"
+        [size]="poverOverSize()"
+        [arrow]="false"
+        class="hes-school-structure-control"
+        side="bottom"
+        alignment="start"
+        (didDismiss)="onDismiss()"
+      >
+        <ng-template>
+          <ion-content>
+            <app-hes-school-structure-list
+              [data]="data()"
+            ></app-hes-school-structure-list>
+          </ion-content>
+        </ng-template>
+      </ion-popover>
+    } @else {
+      <ion-modal
+        [isOpen]="isOpen()"
+        [trigger]="triggerId"
+        class="hes-school-structure-control-mobile"
+        #modal
+        (didDismiss)="onDismiss()"
+      >
+        <ng-template>
+          <ion-content>
+            <app-hes-school-structure-list
+              [data]="data()"
+            ></app-hes-school-structure-list>
+          </ion-content>
+          <ion-footer class="ion-padding" (click)="modal.dismiss()">
+            <ion-button hesBtn hesColor="primary" expand="block">
+              {{ t("global.ok.btn") }}
+            </ion-button>
+          </ion-footer>
+        </ng-template>
+      </ion-modal>
+    }
+  }
+</ng-container>

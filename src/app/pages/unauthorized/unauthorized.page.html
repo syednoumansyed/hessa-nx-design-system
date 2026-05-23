@@ -1,0 +1,20 @@
+<ion-content class="ds-page-content">
+  <div *transloco="let t" class="lg:hes-card h-full bg-white">
+    <div class="lg:hes-card flex h-full items-center justify-center bg-white">
+      <div
+        class="flex w-full flex-col items-center justify-center gap-4 px-4 pb-8 pt-8"
+      >
+        <ion-img
+          [src]="'assets/illustrations/unauthorized.png'"
+          alt="nx logo"
+          class="h-[18rem]"
+        ></ion-img>
+        <div
+          class="mt-4 self-stretch text-center text-xl font-semibold text-[#485F66] md:text-[1.3125rem]"
+        >
+          {{ t("global.unauthorized_access.txt") }}
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

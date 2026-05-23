@@ -1,0 +1,88 @@
+<li
+  class="tree-rail tree-container"
+  [ngClass]="{
+    'first-level': firstLevel(),
+    'first-sibling': isFirstSibling(),
+    'last-sibling': isLastSibling(),
+    active: isSelected(),
+  }"
+>
+  <div class="tree-content">
+    @if (hasChildren()) {
+      <button
+        type="button"
+        class="toggle-box"
+        (click)="toggleChildren($event)"
+        [attr.aria-expanded]="showChildren()"
+        aria-label="Toggle children"
+      >
+        <app-ds-icon
+          class="toggle-icon rtl:rotate-180"
+          [icon]="toggleIcon()"
+          [size]="'sm'"
+          [cssClass]="toggleIconClass"
+        />
+      </button>
+    } @else {
+      <div class="h-6 w-6 shrink-0"></div>
+    }
+
+    <div
+      class="flex h-full min-h-6 flex-1 items-center"
+      [ngClass]="{
+        'cursor-pointer': !disabled() && !readOnly() && item().hasAccess,
+        'select-disabled cursor-not-allowed opacity-50':
+          disabled() || !item().hasAccess,
+        'cursor-default': readOnly() && !disabled(),
+      }"
+      (click)="handleClick()"
+    >
+      <img
+        class="node-icon"
+        [ngClass]="iconClass()"
+        [src]="item().hesIcon.src || defaultIcon"
+        [attr.alt]="item().name"
+        loading="lazy"
+      />
+      <span
+        class="tree-label ms-2"
+        [ngClass]="isSelected() ? '!font-bold text-emphasis-high' : ''"
+      >
+        {{ item().name }}
+      </span>
+    </div>
+
+    @if (showCheckIndicator()) {
+      <app-ds-icon
+        class="ms-auto self-center"
+        [icon]="checkIcon"
+        [size]="'md'"
+        [cssClass]="'text-[var(--surface-brand-strong)]'"
+      ></app-ds-icon>
+    }
+  </div>
+
+  @if (hasChildren() && showChildren()) {
+    <ul class="tree-children relative">
+      @for (
+        child of item().children;
+        track child.id + "-" + child.type;
+        let first = $first;
+        let last = $last
+      ) {
+        <app-ds-school-structure-node
+          [item]="child"
+          [helper]="helper()"
+          [firstLevel]="false"
+          [isFirstSibling]="first"
+          [isLastSibling]="last"
+          [disabled]="disabled()"
+          [readOnly]="readOnly()"
+          [depth]="depth() + 1"
+          (nodeSelected)="nodeSelected.emit($event)"
+          (nodeToggled)="nodeToggled.emit($event)"
+        ></app-ds-school-structure-node>
+      }
+    </ul>
+  }
+</li>

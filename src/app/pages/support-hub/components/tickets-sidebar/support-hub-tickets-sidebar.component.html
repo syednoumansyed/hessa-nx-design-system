@@ -1,0 +1,100 @@
+@if (isCompact()) {
+  <ion-content>
+    <ng-container *ngTemplateOutlet="asidebarTemplate"></ng-container>
+  </ion-content>
+} @else {
+  <ng-container *ngTemplateOutlet="asidebarTemplate"></ng-container>
+}
+
+<ng-template #asidebarTemplate>
+  <aside
+    class="flex h-full w-full flex-col overflow-hidden border-stroke-black-08 md:border-e"
+    [class.overflow-hidden]="isLoading()"
+  >
+    @let emptyState = showEmptyState();
+
+    <div
+      #ticketsScroller
+      class="flex h-full min-h-0 flex-1 flex-col px-ds-2xl pb-ds-2xl pt-ds-xl md:px-0 md:pb-0 md:pt-0"
+      [class.overflow-y-auto]="!isLoading()"
+      [class.overflow-hidden]="isLoading()"
+      [class.md\:overflow-y-auto]="!isLoading()"
+      [class.md\:overflow-hidden]="isLoading()"
+      infiniteScroll
+      [infiniteScrollDistance]="2"
+      [infiniteScrollThrottle]="300"
+      [scrollWindow]="false"
+      [infiniteScrollDisabled]="emptyState || isLoading()"
+      (scrolled)="onScroll()"
+    >
+      @if (!hideHeaderForEmptyDesktop()) {
+        <div class="md:sticky md:top-0 md:z-10 md:mb-0">
+          <app-support-hub-header
+            (actionSelected)="onHeaderActionSelected($event)"
+            (searchChanged)="onHeaderSearchChanged($event)"
+            (filtersChanged)="onHeaderFiltersChanged($event)"
+            (journeyStartRequested)="onHeaderJourneyStartRequested($event)"
+            [showInitiated]="currentFilters().showInitiated"
+            [searchText]="currentFilters().searchText ?? ''"
+            [filters]="currentFilters()"
+            [hasInitiatedTickets]="hasInitiatedTickets()"
+            [hasAssignedTickets]="hasAssignedTickets()"
+          ></app-support-hub-header>
+        </div>
+      }
+
+      @if (emptyState) {
+        @if (!isCompact()) {
+          <div
+            class="py-ds-3xl flex flex-1 items-center justify-center px-ds-2xl"
+          >
+            <app-no-data-card
+              class="!h-auto w-full max-w-[28rem]"
+              [noBgStyle]="true"
+              [mainImagePath]="managerEmptyStateImagePath"
+              [title]="managerEmptyStateTitle"
+              [description]="managerEmptyStateDescription()"
+              [filteredBy]="filteredByChips()"
+              [clearFiltersButton]="clearFiltersButton()"
+            />
+          </div>
+        } @else {
+          <div class="pb-ds-3xl pt-ds-3xl flex flex-1 justify-center px-ds-2xl">
+            <app-no-data-card
+              class="!h-auto w-full"
+              [noBgStyle]="true"
+              [mainImagePath]="initiatorEmptyStateImagePath"
+              [title]="initiatorEmptyStateTitle"
+              [description]="initiatorEmptyStateDescription"
+              [primaryButton]="
+                currentFilters().showInitiated
+                  ? initiatorEmptyStatePrimaryButton
+                  : undefined
+              "
+              [filteredBy]="filteredByChips()"
+              [clearFiltersButton]="clearFiltersButton()"
+            />
+          </div>
+        }
+      } @else {
+        <app-support-hub-list
+          [heading]="ticketsHeading()"
+          [tickets]="filteredTickets()"
+          [showSearch]="false"
+          [showFilters]="false"
+          [loading]="isLoading()"
+          [showClosedSplitter]="showClosedSplitter()"
+          [selectedTicketId]="selectedTicketId()"
+          (ticketSelected)="onTicketSelected($event)"
+          (ticketMenuItemSelected)="onTicketMenuItemSelected($event)"
+        ></app-support-hub-list>
+
+        @if (isLoadingMore()) {
+          <div class="flex justify-center py-ds-xl">
+            <ion-spinner name="crescent"></ion-spinner>
+          </div>
+        }
+      }
+    </div>
+  </aside>
+</ng-template>

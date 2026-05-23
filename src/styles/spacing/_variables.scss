@@ -1,0 +1,97 @@
+/* Mobile First (Default) */
+:root {
+  /* number */
+  --resolution-card-max-width-3-col: 300px;
+  --resolution-card-max-width-4-col: 300px;
+  --resolution-card-min-width-3-col: 300px;
+  --resolution-card-min-width-4-col: 300px;
+  --resolution-content-section: 360px;
+  --resolution-modal: 361px;
+  --resolution-breakpoint: 393px;
+  --resolution-height: 852px;
+  --ds-corner-radius-xs: 2px;
+  --ds-corner-radius-sm: 4px;
+  --ds-corner-radius-md: 8px;
+  --ds-corner-radius-lg: 12px;
+  --ds-corner-radius-xl: 16px;
+  --ds-corner-radius-2xl: 24px;
+  --ds-gaps-xs: 2px;
+  --ds-gaps-sm: 4px;
+  --ds-gaps-md: 8px;
+  --ds-gaps-lg: 12px;
+  --ds-gaps-xl: 16px;
+  --ds-gaps-2xl: 20px;
+  --ds-gaps-3xl: 24px;
+  --ds-spacing-xs: 2px;
+  --ds-spacing-sm: 4px;
+  --ds-spacing-md: 8px;
+  --ds-spacing-lg: 12px;
+  --ds-spacing-xl: 16px;
+  --ds-spacing-2xl: 20px;
+}
+
+/* Tablet (md) */
+@media (min-width: 768px) {
+  :root {
+    --resolution-card-min-width-4-col: 320px;
+    --resolution-card-min-width-3-col: 360px;
+    --resolution-card-max-width-4-col: 400px;
+    --resolution-card-max-width-3-col: 420px;
+    --resolution-content-section: 560px;
+    --resolution-modal: 600px;
+    --resolution-breakpoint: 800px;
+    --resolution-height: 1194px;
+    --ds-corner-radius-xs: 2px;
+    --ds-corner-radius-sm: 4px;
+    --ds-corner-radius-md: 8px;
+    --ds-corner-radius-lg: 12px;
+    --ds-corner-radius-xl: 16px;
+    --ds-corner-radius-2xl: 24px;
+    --ds-gaps-xs: 4px;
+    --ds-gaps-sm: 6px;
+    --ds-gaps-md: 10px;
+    --ds-gaps-lg: 14px;
+    --ds-gaps-xl: 18px;
+    --ds-gaps-2xl: 24px;
+    --ds-gaps-3xl: 28px;
+    --ds-spacing-xs: 2px;
+    --ds-spacing-sm: 6px;
+    --ds-spacing-md: 10px;
+    --ds-spacing-lg: 16px;
+    --ds-spacing-xl: 20px;
+    --ds-spacing-2xl: 24px;
+  }
+}
+
+/* Desktop (xl) */
+@media (min-width: 1280px) {
+  :root {
+    --resolution-card-min-width-4-col: 280px;
+    --resolution-card-max-width-4-col: 320px;
+    --resolution-card-min-width-3-col: 320px;
+    --resolution-card-max-width-3-col: 380px;
+    --resolution-modal: 800px;
+    --resolution-height: 1024px;
+    --resolution-content-section: 1200px;
+    --resolution-breakpoint: 1440px;
+    --ds-corner-radius-xs: 4px;
+    --ds-corner-radius-sm: 8px;
+    --ds-corner-radius-md: 12px;
+    --ds-corner-radius-lg: 16px;
+    --ds-corner-radius-xl: 24px;
+    --ds-corner-radius-2xl: 32px;
+    --ds-gaps-xs: 4px;
+    --ds-gaps-sm: 8px;
+    --ds-gaps-md: 12px;
+    --ds-gaps-lg: 16px;
+    --ds-gaps-xl: 20px;
+    --ds-gaps-2xl: 28px;
+    --ds-gaps-3xl: 32px;
+    --ds-spacing-xs: 4px;
+    --ds-spacing-sm: 8px;
+    --ds-spacing-md: 12px;
+    --ds-spacing-lg: 18px;
+    --ds-spacing-xl: 24px;
+    --ds-spacing-2xl: 32px;
+  }
+}

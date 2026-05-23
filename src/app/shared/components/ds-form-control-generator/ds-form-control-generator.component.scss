@@ -1,0 +1,185 @@
+:host {
+  display: block;
+}
+
+.text-error {
+  color: var(--error, #e62e2e);
+}
+
+// Match date-picker label padding to ds-select / ds-input labels
+label.hes-label {
+  .t-label {
+    padding-inline-start: var(--ds-spacing-md);
+  }
+}
+
+// Remove default browser focus styles for native date inputs
+[type="date"]:focus {
+  border-color: transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+// Date picker styling (ViewEncapsulation.None means styles leak globally)
+tui-input-date,
+tui-input-date-range {
+  // Remove box-shadow and outline from all elements
+  *,
+  *::before,
+  *::after {
+    box-shadow: none !important;
+    outline: none !important;
+  }
+
+  // Remove borders from all inner elements EXCEPT the wrapper
+  *:not([tuiWrapper]),
+  *:not([tuiWrapper])::before,
+  *:not([tuiWrapper])::after {
+    border: none !important;
+  }
+
+  // Target ALL Taiga UI inner classes - remove their borders
+  .t-focused,
+  ._focused,
+  .t-textfield,
+  .t-wrapper,
+  .t-content,
+  .t-input,
+  tui-primitive-textfield,
+  .t-textfield__wrapper,
+  tui-textfield {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+  }
+
+  // Remove blue focus outline from inputs
+  input:focus,
+  input:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  // Target buttons and icons
+  button:focus,
+  button:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  // Hide pseudo-elements that may have borders
+  .tui-autofill::before,
+  .tui-autofill::after,
+  tui-primitive-textfield::before,
+  tui-primitive-textfield::after {
+    display: none !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  // IMPORTANT: Set wrapper border LAST to override everything above
+  // Default state - grey border
+  [tuiWrapper] {
+    background: #ffffff !important;
+    border-radius: 16px !important;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    border: 4px solid #e5e6e7 !important;
+    border-bottom: 8px solid #e5e6e7 !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+
+  // Inner padding — applied to content, filler and icons separately
+  // so Taiga's internal icon layout isn't disrupted
+  input,
+  label.t-placeholder,
+  .t-placeholder,
+  .t-filler {
+    padding-inline-start: var(--ds-spacing-lg, 12px) !important;
+  }
+
+  .t-icons {
+    margin-inline-end: 0.5rem !important;
+  }
+
+  // Focus state - darker border
+  [tuiWrapper]:focus-within {
+    outline: none !important;
+    box-shadow: none !important;
+    border: 4px solid #3f464d !important;
+    border-bottom: 8px solid #3f464d !important;
+  }
+}
+
+// RTL Support for Taiga UI date components
+html[dir="rtl"] {
+  tui-input-date,
+  tui-input-date-range {
+    // Keep the overall component LTR so icon stays on left
+    direction: ltr !important;
+
+    // The wrapper should maintain LTR direction
+    [tuiWrapper] {
+      direction: ltr !important;
+    }
+
+    // Icons container - keep on left side, close to border
+    .t-icons {
+      position: absolute !important;
+      left: 0.5rem !important;
+      right: auto !important;
+      direction: ltr !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    // Input and placeholder - RTL text alignment on right side
+    input {
+      direction: rtl !important;
+      text-align: right !important;
+      padding-right: var(--ds-spacing-lg, 12px) !important;
+      padding-left: 2.5rem !important;
+
+      // Native input placeholder (format hint like yyyy.mm.dd)
+      &::placeholder {
+        direction: rtl !important;
+        text-align: right !important;
+      }
+    }
+
+    // Placeholder label styling (main placeholder text)
+    // Note: padding-right comes from the global padding-inline-start rule above,
+    // which resolves to padding-right when direction: rtl is set on this element.
+    label.t-placeholder,
+    .t-placeholder {
+      direction: rtl !important;
+      text-align: right !important;
+      padding-left: 2.5rem !important;
+    }
+
+    // Format placeholder / filler text (yyyy.mm.dd hint when editing)
+    .t-filler,
+    .t-template,
+    [class*="filler"],
+    [class*="template"] {
+      direction: rtl !important;
+      text-align: right !important;
+      padding-left: 2.5rem !important;
+    }
+
+    // Content area
+    .t-content {
+      direction: rtl !important;
+    }
+
+    // Text content wrapper
+    .t-text,
+    .t-value {
+      direction: rtl !important;
+      text-align: right !important;
+    }
+  }
+}

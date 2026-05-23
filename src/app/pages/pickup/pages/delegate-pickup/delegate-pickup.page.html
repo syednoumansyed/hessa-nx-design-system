@@ -1,0 +1,66 @@
+<ion-content class="ds-page-content" *transloco="let t">
+  <div class="flex h-full flex-col">
+    <!-- Content -->
+    <div class="px-ds-xl">
+      @if (isLoading()) {
+      <!-- Loading State -->
+      <div class="flex h-64 items-center justify-center">
+        <ion-spinner class="h-10 w-10"></ion-spinner>
+      </div>
+      } @else if (isEmpty()) {
+      <!-- Empty State -->
+      <div class="flex w-full flex-1 items-center justify-center">
+        <div class="flex flex-col items-center gap-ds-xl py-20">
+          <div
+            class="flex h-[246px] w-[246px] items-center justify-center rounded-ds-lg bg-pastels-neutralGray-50"
+          >
+            <img
+              src="assets/illustrations/delegate-state.png"
+              alt="No delegates illustration"
+            />
+          </div>
+          <div class="flex flex-col items-center gap-ds-sm text-center">
+            <p class="heading-h4-high-emphasis text-emphasis-high">
+              {{ t("dismissal.no_delegates_yet.title") }}
+            </p>
+            <p class="content-md-mid-emphasis text-emphasis-mid">
+              {{ t("dismissal.no_delegates.txt") }}
+            </p>
+          </div>
+        </div>
+      </div>
+      } @else {
+      <!-- Delegate List -->
+      <div class="flex flex-col gap-ds-lg pb-20 pt-ds-xl">
+        @for (delegate of delegates(); track delegate.id) {
+        <app-delegate-card
+          [delegate]="delegate"
+          (onShowQr)="openQrCodeSheet($event)"
+          (onToggleStatus)="handleToggleStatus($event)"
+          (onEdit)="navigateToEditDelegate($event)"
+          (onDelete)="handleDeleteDelegate($event)"
+        />
+        }
+      </div>
+      }
+    </div>
+
+    @if (!isLoading()){
+    <!-- Footer with Add Button -->
+    <div
+      class="pb-safe-lg fixed bottom-0 left-0 right-0 z-50 w-full bg-brand-35 px-ds-xl py-ds-lg"
+    >
+      <ds-button
+        [variant]="'primary'"
+        [size]="'lg'"
+        [fullWidth]="true"
+        [disabled]="isSubmitting()"
+        [loading]="isSubmitting()"
+        (click)="navigateToAddDelegate()"
+      >
+        {{ t("global.add_delegate.txt") }}
+      </ds-button>
+    </div>
+    }
+  </div>
+</ion-content>

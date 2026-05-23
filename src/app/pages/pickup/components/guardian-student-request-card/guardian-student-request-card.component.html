@@ -1,0 +1,188 @@
+<div
+  *transloco="let t"
+  [ngClass]="{
+    'bg-pastels-yellow-150':
+      pickupInfo.attendanceStatus === attendanceStatus.ON_LEAVE,
+    'bg-pastels-cyan-50':
+      pickupInfo.pickupRequest?.status === pickupRequestStatus.REQUESTED,
+    'bg-pastels-brown-50':
+      pickupInfo.pickupRequest?.status === pickupRequestStatus.IN_PROCESS,
+    'bg-pastels-purple-50':
+      pickupInfo.pickupRequest?.status === pickupRequestStatus.LEFT_SCHOOL,
+    'bg-pastels-green-50':
+      pickupInfo.pickupRequest?.status === pickupRequestStatus.PICKED,
+    'bg-pastels-errorRed-50':
+      pickupInfo.pickupRequest?.status === pickupRequestStatus.DENIED ||
+      pickupInfo.attendanceStatus === attendanceStatus.ABSENT,
+    'bg-white':
+      !pickupInfo.pickupRequest?.status &&
+      isTodaysDateSelected &&
+      pickupInfo.attendanceStatus !== attendanceStatus.ABSENT &&
+      pickupInfo.attendanceStatus !== attendanceStatus.ON_LEAVE,
+    'bg-pastels-neutralGray-50':
+      !pickupInfo.pickupRequest?.status &&
+      !isTodaysDateSelected &&
+      pickupInfo.attendanceStatus !== attendanceStatus.ABSENT &&
+      pickupInfo.attendanceStatus !== attendanceStatus.ON_LEAVE,
+    'gap-ds-xl':
+      !pickupInfo.pickupRequest?.status ||
+      pickupInfo.pickupRequest?.status === pickupRequestStatus.REQUESTED ||
+      pickupInfo.pickupRequest?.status === pickupRequestStatus.IN_PROCESS ||
+      pickupInfo.pickupRequest?.status === pickupRequestStatus.LEFT_SCHOOL ||
+      pickupInfo.pickupRequest?.status === pickupRequestStatus.DENIED,
+  }"
+  class="flex flex-col rounded-ds-xl border-4 border-stroke-black-04 p-ds-lg"
+>
+  <div class="flex items-start gap-ds-sm">
+    <div
+      class="relative h-[40px] w-[40px] flex-shrink-0 cursor-pointer"
+      (click)="initiateProfileUpload()"
+    >
+      <app-ds-avatar
+        [fullName]="pickupInfo.displayName"
+        [imageUrl]="pickupInfo.imageUrl"
+        class="block"
+        size="xl"
+      />
+      @if (pickupInfo.isAvatar) {
+        <app-ds-icon
+          icon="add-with-border"
+          class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 transform"
+          size="2xl"
+        ></app-ds-icon>
+      }
+    </div>
+
+    <div class="flex flex-1 flex-col gap-ds-lg">
+      <div class="flex flex-col gap-ds-sm">
+        <div class="flex items-center justify-between">
+          <div class="heading-h5-high-emphasis text-emphasis-high">
+            {{ pickupInfo.displayName }}
+          </div>
+          <div
+            class="cursor-pointer"
+            (click)="onTimelineClicked(pickupInfo.pickupRequest?.id ?? null)"
+          >
+            <app-pickup-status
+              [requestStatus]="pickupInfo.pickupRequest?.status ?? null"
+              [attendanceStatus]="pickupInfo.attendanceStatus"
+              [isTodaysDateSelected]="isTodaysDateSelected"
+            />
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <div class="flex flex-wrap gap-ds-md">
+            <p class="single-line-caption-mid-emphasis text-emphasis-high">
+              {{ pickupInfo.schoolStructure.level.displayName }}
+            </p>
+            @if (pickupInfo.schoolStructure.class.displayName !== null) {
+              <p class="single-line-caption-mid-emphasis text-emphasis-mid">
+                {{ t("global.class.label") }}
+                <span class="text-emphasis-high">
+                  {{ pickupInfo.schoolStructure.class.displayName }}
+                </span>
+              </p>
+            }
+          </div>
+          <div>
+            @if (pickupInfo.pickupRequest?.status) {
+              <div
+                class="mt-1 whitespace-nowrap text-xs text-gray-600 md:text-sm"
+              >
+                <span class="me-1">
+                  {{ pickupInfo.pickupRequest?.createdAt || "" | hesTime }}
+                </span>
+                <app-hes-icon [faIcon]="faClock"></app-hes-icon>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-ds-sm">
+        <div class="content-sm-mid-emphasis text-emphasis-high">
+          {{ pickupInfo.schoolStructure.school.displayName }}
+        </div>
+        @if (pickupInfo.endTime) {
+          <div class="single-line-caption-mid-emphasis text-emphasis-mid">
+            {{ t("dismissal.leave_time") }}
+            <span class="text-emphasis-high">{{
+              pickupInfo.endTime || "" | hesTime
+            }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+  @if (
+    isTodaysDateSelected &&
+    !isHistory &&
+    pickupInfo.attendanceStatus !== attendanceStatus.ABSENT &&
+    pickupInfo.attendanceStatus !== attendanceStatus.ON_LEAVE
+  ) {
+    <div class="flex flex-col gap-ds-md">
+      @if (
+        pickupInfo.pickupRequest?.status === pickupRequestStatus.IN_PROCESS ||
+        pickupInfo.pickupRequest?.status === pickupRequestStatus.LEFT_SCHOOL
+      ) {
+        <ds-button
+          [fullWidth]="true"
+          [size]="'sm'"
+          (click)="handleBtnClicked(pickupRequestStatus.PICKED)"
+        >
+          {{ t("dismissal.picked.btn") }}
+        </ds-button>
+      }
+
+      @if (!pickupInfo.pickupRequest?.status) {
+        <ds-button
+          [fullWidth]="true"
+          [size]="'sm'"
+          (click)="handleBtnClicked(pickupRequestStatus.REQUESTED)"
+          [disabled]="!pickupInfo.insidePickupRadius"
+        >
+          {{ t("dismissal.request_pickup.btn") }}
+        </ds-button>
+      }
+
+      @if (pickupInfo.pickupRequest?.status === pickupRequestStatus.DENIED) {
+        <div class="flex gap-ds-md">
+          <div class="flex-1">
+            <ds-button
+              [fullWidth]="true"
+              [variant]="'secondary'"
+              [size]="'sm'"
+              (click)="handleBtnClicked(pickupRequestStatus.DENIED)"
+            >
+              {{ t("dismissal.check_reason.btn") }}
+            </ds-button>
+          </div>
+          <div class="flex-1">
+            <ds-button
+              [fullWidth]="true"
+              [size]="'sm'"
+              (click)="handleBtnClicked(pickupRequestStatus.REQUESTED)"
+              [disabled]="!pickupInfo.insidePickupRadius"
+            >
+              {{ t("dismissal.request_pickup.btn") }}
+            </ds-button>
+          </div>
+        </div>
+      }
+      @if (
+        !pickupInfo.insidePickupRadius &&
+        pickupInfo.pickupRequest?.status !== pickupRequestStatus.PICKED
+      ) {
+        <div
+          class="flex w-full items-center gap-ds-sm rounded-ds-2xl bg-pastels-indigo-250 p-ds-xs"
+        >
+          <app-ds-icon icon="exclaimation-octagon" size="2xl"></app-ds-icon>
+          <p class="content-xs-mid-emphasis">
+            {{ t("dismissal.pickup_note.txt") }}
+          </p>
+        </div>
+      }
+    </div>
+  }
+</div>

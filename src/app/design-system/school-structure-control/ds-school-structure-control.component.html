@@ -1,0 +1,90 @@
+<ng-container *transloco="let t">
+  @if (displayTargetRef()) {
+    <div
+      id="{{ triggerId }}"
+      class="w-full"
+      cdkOverlayOrigin
+      #customOverlayTrigger="cdkOverlayOrigin"
+      (click)="onTriggerClick($event)"
+    >
+      <ng-content></ng-content>
+    </div>
+  } @else {
+    <div class="flex flex-col gap-2">
+      <app-ds-input
+        id="{{ triggerId }}"
+        [formControl]="displayControl"
+        [label]="label() ?? ''"
+        [placeholder]="placeholder() ?? ''"
+        [readOnly]="true"
+        [disabled]="isDisabled()"
+        [iconEnd]="isOpen() ? faAngleUp : faAngleDown"
+        cdkOverlayOrigin
+        #defaultOverlayTrigger="cdkOverlayOrigin"
+        (click)="onTriggerClick($event)"
+        (iconEndClick)="onTriggerClick($event)"
+      ></app-ds-input>
+
+      @if (selectedValue().length) {
+        <div class="flex flex-wrap gap-2">
+          @for (item of limitedSelected(); track item.id) {
+            <app-ds-chip
+              variant="primary"
+              [text]="item.name"
+              [removable]="true"
+              (remove)="onDeselect(item)"
+            />
+          }
+          @if (overflowCount() > 0) {
+            <app-ds-chip
+              variant="default"
+              [text]="'+' + overflowCount()"
+              [removable]="false"
+            />
+          }
+        </div>
+      }
+    </div>
+  }
+
+  @if (!isDisabled()) {
+    @if (!isMobile) {
+      @if (overlayOrigin()) {
+        <ng-template
+          cdkConnectedOverlay
+          [cdkConnectedOverlayOrigin]="overlayOrigin()!"
+          [cdkConnectedOverlayOpen]="isOpen()"
+          [cdkConnectedOverlayHasBackdrop]="true"
+          [cdkConnectedOverlayBackdropClass]="
+            'cdk-overlay-transparent-backdrop'
+          "
+          [cdkConnectedOverlayScrollStrategy]="overlayScrollStrategy"
+          [cdkConnectedOverlayPositions]="overlayPositions"
+          [cdkConnectedOverlayPush]="true"
+          [cdkConnectedOverlayViewportMargin]="16"
+          (overlayOutsideClick)="onDismiss()"
+          (backdropClick)="onDismiss()"
+        >
+          <div
+            class="flex w-full flex-col overflow-hidden rounded-ds-md border border-neutral-cool-700 bg-white shadow-lg"
+            [style.width.px]="popoverWidth() ?? null"
+            [style.minWidth.px]="popoverWidth() ?? null"
+            [style.maxHeight.px]="popoverMaxHeight() ?? null"
+          >
+            <div
+              class="flex flex-col gap-4 overflow-y-auto p-4 rtl:gap-4 rtl:pl-4 rtl:pr-4"
+            >
+              <div class="h-full flex-1">
+                <app-ds-school-structure-tree
+                  [nodes]="data()"
+                  [helper]="helperRef"
+                  (nodeSelected)="onNodeSelected($event)"
+                ></app-ds-school-structure-tree>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      }
+    }
+  }
+</ng-container>

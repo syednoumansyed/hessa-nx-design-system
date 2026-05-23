@@ -1,0 +1,22 @@
+<div *transloco="let t" class="flex flex-col justify-start gap-4">
+  <div class="w-full max-w-full overflow-x-auto">
+    <form
+      [formGroup]="courseForm"
+      class="flex w-full flex-col items-end justify-start gap-8"
+    >
+      <div
+        class="grid gap-8 gap-y-10 self-stretch {{
+          isArabic() && isMobileDevice() ? 'grid-cols-1' : 'grid-cols-2'
+        }}"
+      >
+        @for (control of courseFormConfig(); track control.formControlName) {
+          <div class="flex-1">
+            <app-form-control-generator
+              [control]="control"
+            ></app-form-control-generator>
+          </div>
+        }
+      </div>
+    </form>
+  </div>
+</div>

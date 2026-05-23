@@ -1,0 +1,65 @@
+<div
+  *transloco="let t"
+  class="flex items-center justify-between gap-ds-md rounded-ds-md bg-pastels-neutralGray-50 p-ds-lg"
+>
+  <div class="flex flex-1 flex-col gap-ds-xs">
+    <!-- Field Label and Required Badge -->
+    <div class="flex items-center gap-ds-lg">
+      <span class="single-line-md-high-emphasis text-emphasis-high">{{
+        field.labelDisplayName
+      }}</span>
+      @if (field.isRequired) {
+        <span
+          class="rounded-full border border-stroke-black-08 bg-white px-ds-sm text-gray-700"
+        >
+          {{ t("global.required.label") }}
+        </span>
+      }
+    </div>
+
+    <!-- Description -->
+    @if (field.descriptionDisplayName) {
+      <p class="text-sm text-gray-500">{{ field.descriptionDisplayName }}</p>
+    }
+
+    <!-- Draft Label or Category Tags -->
+    @if (field.isDraft) {
+      <div class="mt-ds-xs">
+        <span
+          class="rounded-full border border-stroke-black-08 bg-pastels-neutralGray-150 px-ds-sm text-gray-700"
+        >
+          {{ t("global.draft.label") }}
+        </span>
+      </div>
+    } @else if (field.linkedCategories.length) {
+      <div class="mt-ds-xs flex flex-wrap gap-ds-sm">
+        @for (category of field.linkedCategories; track category.id) {
+          <span
+            class="rounded-full border border-stroke-black-08 bg-pastels-emerald-200 px-ds-sm text-gray-700"
+          >
+            {{ category.displayName }}
+          </span>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Action Button -->
+  @if (mode === "select") {
+    <ds-button
+      [variant]="isSelected ? 'secondary' : 'primary'"
+      size="sm"
+      [iconStart]="isSelected ? faCheck : undefined"
+      (click)="onActionClick()"
+    >
+      {{ isSelected ? t("global.selected.label") : t("global.select.btn") }}
+    </ds-button>
+  } @else {
+    <ds-button
+      variant="ghost"
+      size="lg"
+      [iconStart]="faXmark"
+      (click)="onActionClick()"
+    />
+  }
+</div>

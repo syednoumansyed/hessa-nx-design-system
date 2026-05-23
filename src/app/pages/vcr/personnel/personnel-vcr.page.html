@@ -1,0 +1,30 @@
+<ion-content class="ds-page-content">
+  <app-no-selected-scope-card
+    [requiredScope]="requiredScopes"
+    (onScopeUpdate)="handleDisplayContent($event)"
+  >
+  </app-no-selected-scope-card>
+  @if(displayContent()){
+  <div
+    class="hes-card flex h-full w-full flex-col items-start justify-start p-0"
+  >
+    <app-vcr-list-filter
+      (filterChange)="onFilterChange($event)"
+      class="flex w-full"
+    ></app-vcr-list-filter>
+    <ng-container *transloco="let t">
+      <app-hes-table
+        [columns]="columnsDef()"
+        [rowData]="vcrRowData()"
+        [loading]="isLoading()"
+        [pagination]="paginate()"
+        [hideColumnsSelection]="true"
+        [hideEntriesSelection]="true"
+        [autoSizeStrategy]="computeGridStragies()"
+        [noRowsOverlayComponentParams]="noRowsOverlayComponentParams()"
+        (filterSortModelChanged)="onTableMetaDataChange($event)"
+      ></app-hes-table>
+    </ng-container>
+  </div>
+  }
+</ion-content>

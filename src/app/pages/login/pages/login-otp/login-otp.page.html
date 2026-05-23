@@ -1,0 +1,100 @@
+<div *transloco="let t;" class="p-4">
+  <div class="flex items-center justify-evenly overflow-hidden">
+    <div
+      class="max-md:px-5 w-full items-stretch gap-6 rounded-lg bg-white px-2 py-2 font-semibold md:flex md:w-[35rem] md:max-w-[35rem] md:flex-col md:px-16 md:py-12 md:shadow-[0_0_80px_0_rgba(0,0,0,0.05)]"
+    >
+      <div class="flex flex-col items-stretch gap-6">
+        <div class="flex flex-col items-stretch gap-16">
+          <header
+            class="flex flex-col items-center justify-center gap-4 whitespace-nowrap text-center text-3xl leading-7 text-gray-800"
+          >
+            <div>{{t('global.welcome_to_hessa.title')}}</div>
+            <div
+              class="whitespace-nowrap text-center text-xl leading-4 tracking-tight text-gray-500"
+            >
+              {{t('global.welcome.txt')}}
+            </div>
+          </header>
+
+          <app-hes-input
+            [type]="'tel'"
+            [label]="t('global.phone_number.label')"
+            [placeholder]="'XXX XXXXXXX'"
+            [required]="true"
+            fill="solid"
+            [helperText]="t('global.enter_registered_mobile_number.txt')"
+            [formControl]="phoneNumberControl"
+            [errorText]="phoneNumberErr() ?? undefined"
+            [autofocus]="true"
+            [maxLength]="9"
+            (keydown.enter)="phoneNumberControl.valid && login()"
+          ></app-hes-input>
+        </div>
+        @if (isPhoneNumberEmpty()) {
+        <div class="flex items-center gap-3">
+          <div
+            class="h-0 w-[199.36px] flex-grow border-b-[0] border-l-[0] border-r-[0] border-t-[0.5px] border-solid border-[#9ea8b3]"
+          ></div>
+          <div
+            *transloco="let t"
+            class="w-3.5 text-center text-sm font-normal text-zinc-600"
+          >
+            {{t('login.or.txt')}}
+          </div>
+          <div
+            class="h-0 w-[199.36px] flex-grow border-b-[0] border-l-[0] border-r-[0] border-t-[0.5px] border-solid border-[#9ea8b3]"
+          ></div>
+        </div>
+
+        <ion-button
+          hesBtn
+          [hesSize]="isMobile ? 'md' : 'lg'"
+          (click)="goToStudentLogin()"
+        >
+          <span class="text-sm">
+            {{ t('login.login_with_ational_id.btn')}}
+          </span>
+        </ion-button>
+        } @else {
+        <div class="flex flex-col gap-4">
+          <ion-button
+            hesBtn
+            [hesSize]="isMobile ? 'md' : 'lg'"
+            (click)="login()"
+            [disabled]="phoneNumberControl.invalid || isSendingOTP()"
+            >{{t('global.send_otp.btn')}}</ion-button
+          >
+          <div class="flex items-center justify-center gap-3">
+            <div
+              class="h-0 w-[199.36px] border-b-[0] border-l-[0] border-r-[0] border-t-[0.5px] border-solid border-[#9ea8b3]"
+            ></div>
+            <div
+              *transloco="let t"
+              class="w-3.5 text-center text-sm font-normal text-zinc-600"
+            >
+              {{t('login.or.txt')}}
+            </div>
+            <div
+              class="h-0 w-[199.36px] border-b-[0] border-l-[0] border-r-[0] border-t-[0.5px] border-solid border-[#9ea8b3]"
+            ></div>
+          </div>
+          <ion-button
+            hesBtn
+            [hesSize]="isMobile ? 'md' : 'lg'"
+            hesColor="secondary"
+            disabled
+          >
+            <fa-icon
+              hesBtnIcon
+              slot="start"
+              [icon]="faWhatsapp"
+              size="lg"
+            ></fa-icon>
+            {{t('global.send_otp_to_whatsapp.btn')}}</ion-button
+          >
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

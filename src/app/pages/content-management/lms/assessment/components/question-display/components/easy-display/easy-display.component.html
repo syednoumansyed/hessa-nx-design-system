@@ -1,0 +1,12 @@
+<div *transloco="let t" class="flex flex-col gap-ds-lg" [formGroup]="form()">
+  <app-ds-textarea
+    formControlName="answerText"
+    [placeholder]="t('global.enter_text_here.txt')"
+  />
+  @if (allowAttachment()) {
+    <ds-attachment-form-control
+      formControlName="attachments"
+      [placeholder]="t('global.enter_text_here.txt')"
+    />
+  }
+</div>

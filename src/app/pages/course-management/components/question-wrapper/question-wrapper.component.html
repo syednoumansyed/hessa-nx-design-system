@@ -1,0 +1,118 @@
+@if (isMobile) {
+  <ion-content class="bg-white">
+    <div class="pt-4" *transloco="let t">
+      <app-hes-tab-group>
+        <app-hes-tab [tabTitle]="mainTabTitle() ?? ''">
+          <ng-container *ngTemplateOutlet="bodyTempRef()!"></ng-container>
+          <ng-container *ngTemplateOutlet="ctaTempRef()!"></ng-container>
+        </app-hes-tab>
+        @if (isQuestionListShow()) {
+          <app-hes-tab tabTitle="{{ t('content_management.questions.label') }}">
+            <app-question-list></app-question-list>
+          </app-hes-tab>
+        }
+      </app-hes-tab-group>
+    </div>
+    <ion-modal
+      [isOpen]="isModalOpen()"
+      class="modal-full"
+      (ionModalDidDismiss)="closeQuestionSwitcherModal()"
+    >
+      <ng-template>
+        <app-question-switcher
+          class="h-full"
+          [title]="title()"
+          [titlePlaceholder]="titlePlaceholder()"
+          [closeFn]="closeQuestionSwitcherModal"
+        ></app-question-switcher>
+      </ng-template>
+    </ion-modal>
+  </ion-content>
+} @else {
+  <div class="flex h-full bg-white" *transloco="let t">
+    @if (isQuestionListShow()) {
+      <div class="min-h-full w-[30%] flex-grow border-e border-[#D9D9D9]">
+        <div
+          class="flex h-20 items-center justify-between border-b border-[#D9D9D9] px-8"
+        >
+          <h5 class="text-lg font-semibold">
+            {{ t("content_management.questions.label") }}
+          </h5>
+          <ion-button
+            hesBtn
+            class="h-[2rem] w-[2rem]"
+            (click)="onAddNewQuestion()"
+            [disabled]="(canModifyQuestions$ | async) === false"
+          >
+            <fa-icon [icon]="faPlus"></fa-icon>
+          </ion-button>
+        </div>
+        <div class="max-h-full overflow-y-auto pb-40">
+          <app-question-list></app-question-list>
+        </div>
+      </div>
+    }
+    <div
+      class="detail-section h-full"
+      [ngClass]="isQuestionListShow() ? 'w-[70%]' : 'w-[100%]'"
+    >
+      <div
+        class="flex h-20 max-w-full cursor-pointer items-center justify-between border-b border-[#D9D9D9] px-8"
+      >
+        <h5
+          (click)="onSelectParent()"
+          class="truncate text-2xl font-light"
+          [class]="isParentEdit() ? 'text-[#344054]' : 'text-[#B1B4C0]'"
+        >
+          {{ title() || titlePlaceholder() }}
+        </h5>
+        <div>
+          @if (isParentSelected$ | async) {
+            <ng-container *ngTemplateOutlet="ctaTempRef()!"></ng-container>
+          } @else {
+            @if (canModifyQuestions$ | async) {
+              <div class="flex">
+                @switch (actionType$ | async) {
+                  @case ("view") {
+                    <ion-button
+                      (click)="onEditState()"
+                      hesBtn
+                      class="hes-btn--outline mx-4"
+                      >{{ t("global.edit.btn") }}</ion-button
+                    >
+                  }
+                  @default {
+                    <ion-button
+                      (click)="onCancel()"
+                      hesBtn
+                      class="hes-btn--outline mx-4"
+                      >{{ t("global.cancel.btn") }}</ion-button
+                    >
+                    <ion-button
+                      (click)="onSave()"
+                      hesBtn
+                      [disabled]="form.invalid || (showLoader$ | async)"
+                      >{{ t("global.save.btn") }}</ion-button
+                    >
+                  }
+                }
+              </div>
+            }
+          }
+        </div>
+      </div>
+      <div class="max-h-full overflow-y-auto md:pb-40">
+        @if (!isMobile) {
+          @if (isParentSelected$ | async) {
+            <ng-container *ngTemplateOutlet="bodyTempRef()!"></ng-container>
+          } @else {
+            <app-question-switcher
+              [title]="title()"
+              [titlePlaceholder]="titlePlaceholder()"
+            ></app-question-switcher>
+          }
+        }
+      </div>
+    </div>
+  </div>
+}

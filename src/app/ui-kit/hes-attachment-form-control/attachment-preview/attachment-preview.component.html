@@ -1,0 +1,66 @@
+<div
+  (click)="extendImage()"
+  class="relative h-[100px] w-[85px] cursor-pointer rounded-md"
+>
+  @switch (type()) {
+    @case ("image") {
+      <img
+        [src]="previewImage()"
+        alt="Image Preview"
+        class="h-[100px] w-[85px] rounded-md object-cover"
+      />
+    }
+    @case ("pdf") {
+      <div class="flex">
+        <ion-img
+          [src]="'assets/illustrations/pdf.svg'"
+          class="h-full w-full object-cover [&::part(image)]:rounded"
+        ></ion-img>
+      </div>
+    }
+    @case ("ppt") {
+      <div class="flex">
+        <ion-img
+          [src]="'assets/illustrations/ppt.svg'"
+          class="h-full w-full object-cover [&::part(image)]:rounded"
+        ></ion-img>
+      </div>
+    }
+
+    @case ("video") {
+      <div class="flex">
+        <ion-img
+          [src]="'assets/illustrations/video.svg'"
+          class="h-16 w-16 object-cover"
+        ></ion-img>
+      </div>
+    }
+    <!-- TODO add video illustration when ready from design -->
+    @default {
+      <div class="flex h-full w-full items-center justify-center bg-yellow-50">
+        <app-hes-icon [faIcon]="faFileLarge"></app-hes-icon>
+      </div>
+    }
+  }
+
+  <div
+    class="absolute bottom-0 left-0 right-0 flex h-6 max-w-[100%] items-center justify-between gap-1 truncate rounded-tl-sm rounded-tr-sm bg-stone-50 px-1 py-2 text-xs font-normal text-neutral-900"
+  >
+    <app-hes-icon [faIcon]="faFolder"></app-hes-icon>
+    <div class="truncate text-[8px]">{{ fileNameDisplay() }}</div>
+    <div class="flex cursor-pointer items-center justify-center">
+      <app-hes-icon
+        class="mt-0.5 text-[16px]"
+        [hesIcon]="{ src: 'assets/icons/preview.svg' }"
+      ></app-hes-icon>
+    </div>
+  </div>
+  @if (removable()) {
+    <div
+      (click)="onRemove($event)"
+      class="absolute -right-2 -top-2 flex h-4 w-4 cursor-pointer flex-col items-center justify-center rounded-3xl bg-[#F9F9F9]"
+    >
+      <app-hes-icon [faIcon]="faXmark"></app-hes-icon>
+    </div>
+  }
+</div>

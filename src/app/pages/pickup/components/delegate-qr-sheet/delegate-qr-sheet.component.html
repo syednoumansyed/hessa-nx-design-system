@@ -1,0 +1,117 @@
+<div *transloco="let t" class="flex flex-col gap-ds-xl p-ds-xl">
+  <!-- Content -->
+  <div class="flex flex-col items-center gap-ds-3xl">
+    <!-- Delegate Profile Section -->
+    <div
+      class="flex flex-col items-center gap-ds-md px-ds-xl pb-ds-md pt-ds-2xl"
+    >
+      <!-- Profile Image -->
+      <div
+        class="flex h-[120px] w-[120px] items-center justify-center overflow-hidden rounded-full bg-pastels-neutralGray-50"
+      >
+        @if (delegate.url) {
+          <img
+            [src]="delegate.url"
+            [alt]="delegate.displayName"
+            class="h-full w-full object-cover"
+          />
+        } @else {
+          <app-ds-icon
+            icon="user"
+            size="2xl"
+            class="text-emphasis-mid"
+          ></app-ds-icon>
+        }
+      </div>
+
+      <!-- Name and Iqama -->
+      <div
+        class="flex flex-col items-center gap-ds-sm px-ds-md pt-ds-md text-center"
+      >
+        <h2 class="heading-h3-high-emphasis text-emphasis-high">
+          {{ delegate.displayName }}
+        </h2>
+        <span class="content-md-mid-emphasis text-emphasis-mid">
+          {{ t("dismissal.national_id_iqama.txt") }} : {{ delegate.nationalId }}
+        </span>
+      </div>
+    </div>
+
+    <!-- QR Code Section -->
+    <div
+      class="flex w-full flex-col items-center gap-ds-3xl rounded-ds-xl border border-dashed border-stroke-black-08 bg-pastels-neutralGray-150 px-ds-xl py-10"
+    >
+      <!-- QR Code -->
+      <div class="flex h-[245px] w-[240px] items-center justify-center">
+        @if (isLoading()) {
+          <div class="flex items-center justify-center">
+            <ion-spinner class="h-10 w-10"></ion-spinner>
+          </div>
+        } @else if (qrCode()) {
+          <img
+            [src]="qrCode()"
+            alt="Delegate QR Code"
+            class="h-full w-full object-contain mix-blend-darken"
+          />
+        } @else {
+          <div class="flex flex-col items-center gap-ds-sm text-emphasis-mid">
+            <app-ds-icon icon="qr-code" size="xl"></app-ds-icon>
+            <span class="single-line-caption-mid-emphasis">
+              {{ t("general.qr_code_invalid.title") }}
+            </span>
+          </div>
+        }
+      </div>
+
+      <!-- Valid Till and Student Chips -->
+      <div class="flex w-full flex-col items-center justify-center gap-ds-md">
+        <span class="content-lg-mid-emphasis text-center text-emphasis-mid">
+          {{ t("global.valid_till.txt") }}:
+          {{ delegate.expiryDate | hesDate }}
+        </span>
+
+        <!-- Student Chips -->
+        <div class="flex flex-wrap items-center justify-center gap-ds-sm">
+          @for (
+            student of delegate.students;
+            track student.id;
+            let i = $index
+          ) {
+            <span
+              class="inline-flex items-center rounded-full border border-stroke-black-08 px-ds-lg py-ds-sm"
+              [ngClass]="getStudentChipColor(i)"
+            >
+              <span class="single-line-sm-mid-emphasis text-emphasis-high">
+                {{ student.displayName }}
+              </span>
+            </span>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="flex w-full items-center gap-5">
+    <ds-button
+      [variant]="'secondary'"
+      [size]="'lg'"
+      class="flex-1"
+      [fullWidth]="true"
+      [iconStart]="downloadIcon"
+      (click)="downloadQrCode()"
+    >
+      {{ t("global.download.btn") }}
+    </ds-button>
+    <ds-button
+      [variant]="'primary'"
+      [size]="'lg'"
+      class="flex-1"
+      [fullWidth]="true"
+      [iconStart]="shareIcon"
+      (click)="shareQrCode()"
+    >
+      {{ t("global.share.txt") }}
+    </ds-button>
+  </div>
+</div>

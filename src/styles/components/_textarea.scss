@@ -1,0 +1,5 @@
+ion-textarea {
+  &.view-state.textarea-disabled {
+    opacity: 1 !important;
+  }
+}

@@ -1,0 +1,35 @@
+<!-- ───── Trigger ───── -->
+<div
+  id="{{ targetId }}"
+  class="cursor-pointer"
+  (click)="onTriggerClick($event)"
+>
+  @if (displayTargetRef()) {
+    <ng-content></ng-content>
+  } @else {
+    <app-hes-icon
+      class="flex flex-shrink-0 p-2 text-2xl text-[#7E7D77]"
+      [hesIcon]="{ src: iconPath() }"
+    ></app-hes-icon>
+  }
+</div>
+
+<!-- ───── Pop-over (desktop only) ───── -->
+@if (!isDisabled() && !isMobileOrTablet()) {
+  <ion-popover
+    #popover
+    class="school-selector-popover"
+    [side]="side"
+    [alignment]="alignment"
+    [trigger]="targetId"
+    (didDismiss)="onPopoverDismiss()"
+  >
+    <ng-template>
+      <ion-content class="white-bg" *transloco="let t">
+        <app-school-structure-tree
+          [scopeSelection]="true"
+        ></app-school-structure-tree>
+      </ion-content>
+    </ng-template>
+  </ion-popover>
+}

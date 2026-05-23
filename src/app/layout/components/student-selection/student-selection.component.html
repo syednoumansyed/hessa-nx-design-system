@@ -1,0 +1,11 @@
+<div>
+  <app-hes-searchable-select
+    class="w-full"
+    [data]="studentsOptions()"
+    [searchable]="false"
+    [fill]="'outline'"
+    [condensed]="!isMobile"
+    (onSelectionChange)="onStudentChange($event)"
+    [selectedValue]="selectedStudent()?.id"
+  ></app-hes-searchable-select>
+</div>

@@ -1,0 +1,99 @@
+<div
+  class="overflow-hidden rounded-ds-xl border-2 border-stroke-black-08 bg-white transition-all duration-200 ease-in-out"
+  [class.opacity-60]="disabled()"
+  [class.pointer-events-none]="disabled()"
+  [ngClass]="containerClass()"
+>
+  <!-- Header -->
+  <div
+    class="flex cursor-pointer select-none items-start gap-ds-xl bg-pastels-neutralGray-50 p-ds-xl transition-colors duration-200 ease-in-out hover:bg-pastels-neutralGray-100"
+    [ngClass]="[
+      headerClass(),
+      isExpanded() ? 'border-b border-stroke-black-08' : '',
+    ]"
+    (click)="toggle()"
+    [attr.aria-expanded]="isExpanded()"
+    role="button"
+  >
+    <!-- Icon (Start Position) -->
+    @if (showIcon() && iconPosition() === "start") {
+      <div
+        class="flex h-[28px] w-[28px] items-center justify-center text-emphasis-high transition-transform duration-300 ease-in-out"
+        [class.rotate-180]="isExpanded()"
+      >
+        <app-ds-icon [icon]="chevronDownIcon" size="xl" />
+      </div>
+    }
+
+    <!-- Content: Title, Subtitle, Tags -->
+    <div class="flex min-w-0 flex-1 flex-col gap-ds-xs">
+      @if (title()) {
+        <span class="heading-h3-mid-emphasis text-emphasis-high">{{
+          title()
+        }}</span>
+      }
+      @if (subtitle()) {
+        <span class="content-md-mid-emphasis text-emphasis-mid">{{
+          subtitle()
+        }}</span>
+      }
+      @if (tags().length > 0) {
+        <div class="flex flex-wrap items-center gap-ds-sm">
+          @for (tag of tags(); track tag.text) {
+            <app-ds-chip
+              [text]="tag.text"
+              [variant]="tag.variant || 'default'"
+              [customClasses]="tag.customClasses || ''"
+              [static]="true"
+            />
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Actions slot -->
+    @if (actionsTemplate) {
+      <div
+        class="flex items-center gap-ds-sm"
+        (click)="$event.stopPropagation()"
+      >
+        <ng-container *ngTemplateOutlet="actionsTemplate"></ng-container>
+      </div>
+    }
+
+    <!-- Icon (End Position) -->
+    @if (showIcon() && iconPosition() === "end") {
+      <div
+        class="flex h-[28px] w-[28px] items-center justify-center text-emphasis-mid transition-transform duration-300 ease-in-out"
+        [class.rotate-180]="isExpanded()"
+      >
+        <app-ds-icon [icon]="chevronDownIcon" size="lg" />
+      </div>
+    }
+
+    <!-- Menu -->
+    @if (showMenu() && menuItems().length > 0) {
+      <div (click)="$event.stopPropagation()">
+        <ds-responsive-menu
+          [items]="menuItems()"
+          [triggerClass]="
+            'flex h-[28px] w-[28px] items-center justify-center text-icon-high'
+          "
+          (itemSelected)="onMenuItemSelected($event)"
+        />
+      </div>
+    }
+  </div>
+
+  <!-- Content -->
+  <div
+    class="grid transition-[grid-template-rows] duration-300 ease-in-out"
+    [class.grid-rows-[0fr]]="!isExpanded()"
+    [class.grid-rows-[1fr]]="isExpanded()"
+    [ngClass]="contentClass()"
+  >
+    <div class="overflow-hidden">
+      <ng-content></ng-content>
+    </div>
+  </div>
+</div>

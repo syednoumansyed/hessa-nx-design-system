@@ -1,0 +1,34 @@
+<div class="flex flex-col items-center justify-start gap-5">
+  <div
+    [ngClass]="{
+      'border-[#ECFDF3] bg-[#D1FADF]': type() === 'success',
+      'border-[#FEF3F2] bg-[#FEE4E2]': type() === 'error',
+      'border-[#FFFAEB] bg-[#FEF0C7]': type() === 'warning',
+      'border-pastels-blue-50 bg-pastels-blue-200': type() === 'question',
+    }"
+    class="flex h-16 w-16 items-center justify-center rounded-full border-[0.5rem] p-3"
+  >
+    <app-ds-icon
+      [icon]="iconType"
+      size="xl"
+      [ngClass]="{
+        'text-[#039855]': type() === 'success',
+        'text-[#D92D20]': type() === 'error',
+        'text-[#DC6803]': type() === 'warning',
+        'text-pastels-blue-400': type() === 'question',
+      }"
+    />
+  </div>
+  <div class="flex flex-col items-start justify-start gap-2 self-stretch">
+    <div
+      class="heading-h3-high-emphasis self-stretch text-center text-emphasis-high empty:hidden"
+    >
+      {{ title() }}
+    </div>
+    <div
+      class="self-stretch text-center text-sm font-normal text-gray-500 empty:hidden"
+    >
+      {{ message() }}
+    </div>
+  </div>
+</div>

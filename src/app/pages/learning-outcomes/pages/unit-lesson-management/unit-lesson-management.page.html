@@ -1,0 +1,110 @@
+<ion-content class="no-scrollbar" *transloco="let t">
+  <div class="flex min-h-full flex-col">
+    <!-- Main Content Area -->
+    <div
+      class="flex flex-1 flex-col gap-ds-xl px-ds-xl pt-ds-2xl"
+      [ngClass]="isMobile() ? 'pb-ds-2xl' : 'pb-0'"
+    >
+      <!-- Header -->
+      <div class="flex flex-col gap-ds-md">
+        <div class="heading-h2-high-emphasis text-emphasis-high">
+          {{ selectedSubject()?.displayName ?? t("global.subject.title") }}
+        </div>
+        <span class="content-md-mid-emphasis text-emphasis-mid">
+          {{ t("learning_outcome.subject_description.txt") }}
+        </span>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="flex gap-ds-md">
+        @for (stat of statsCards(); track stat.label) {
+        <div
+          class="flex flex-1 flex-col items-center justify-center gap-ds-xs rounded-ds-xl border-2 border-stroke-black-08 bg-pastels-indigo-50 px-ds-xl py-ds-md"
+        >
+          <span class="heading-h3-high-emphasis text-emphasis-high">
+            {{ stat.value }}
+          </span>
+          <span class="heading-h5-mid-emphasis text-emphasis-mid">
+            {{ stat.label }}
+          </span>
+        </div>
+        }
+      </div>
+
+      <!-- Units Accordion -->
+      @if (isLoadingUnits() || units().length === 0) {
+      <app-lo-empty-state
+        [isLoading]="isLoadingUnits()"
+        [title]="t('learning_outcome.no_units_available.title')"
+        [description]="t('learning_outcome.no_units_created.title')"
+      />
+      } @else {
+      <ds-accordion-group>
+        @for (unit of units(); track unit.id) {
+        <ds-accordion
+          [title]="unit.displayName"
+          [tags]="getUnitTags(unit)"
+          iconPosition="start"
+          [expanded]="$first"
+          [menuItems]="getUnitMenuItems(unit)"
+        >
+          @if (canViewLessons) { @if (unit.lessons.length === 0) {
+          <!-- No Lessons Empty State -->
+          <div class="flex flex-col items-center gap-ds-md p-ds-xl text-center">
+            <img
+              src="assets/icons/ds-no-data.svg"
+              alt=""
+              class="h-[210px] w-[210px] object-contain"
+            />
+            <div class="heading-h4-high-emphasis text-emphasis-high">
+              {{ t("learning_outcome.no_lesson_added.title") }}
+            </div>
+            <div class="content-md-mid-emphasis text-emphasis-mid">
+              {{ t("learning_outcome.no_lesson_added.msg") }}
+            </div>
+          </div>
+          } @else {
+          <!-- Lessons inside unit -->
+          <div class="flex flex-col">
+            @for (lesson of unit.lessons; track lesson.id) {
+            <app-lesson-card
+              [lesson]="toLessonCardData(lesson)"
+              (viewOutcomes)="goToLessonOutcomes($event)"
+              (editLesson)="onEditLesson($event, unit.id, unit.displayName)"
+              (deleteLesson)="onDeleteLesson($event, unit.id)"
+            />
+            }
+          </div>
+          } }
+          <!-- Add Lesson Button -->
+          <div
+            *hesRbac="createLessonPermissionId"
+            class="border border-stroke-black-08 px-ds-lg py-ds-xl"
+          >
+            <ds-button
+              variant="secondary"
+              size="lg"
+              [fullWidth]="true"
+              (click)="onAddLesson(unit.id, unit.displayName)"
+            >
+              {{ t("learning_outcome.add_lesson.btn") }}
+            </ds-button>
+          </div>
+        </ds-accordion>
+        }
+      </ds-accordion-group>
+      }
+    </div>
+
+    <!-- Sticky Footer with Add Unit Button -->
+    <div
+      *hesRbac="createUnitPermissionId"
+      class="sticky bottom-0 bg-brand-35 p-ds-xl"
+      [ngClass]="isMobile() ? 'border-t border-stroke-black-08' : 'flex justify-end'"
+    >
+      <ds-button [fullWidth]="isMobile()" (click)="onAddUnit()">
+        {{ t("learning_outcome.add_unit.btn") }}
+      </ds-button>
+    </div>
+  </div>
+</ion-content>

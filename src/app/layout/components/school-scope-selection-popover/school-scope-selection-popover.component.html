@@ -1,0 +1,74 @@
+<div id="{{ targetId }}" class="cursor-pointer">
+  @if (displayTargetRef()) {
+    <ng-content></ng-content>
+  } @else {
+    <app-hes-icon
+      class="flex flex-shrink-0 p-2 text-2xl text-[#7E7D77]"
+      [hesIcon]="{ src: iconPath() }"
+    ></app-hes-icon>
+  }
+</div>
+
+@if (!isDisabled()) {
+  <ion-popover
+    #popover
+    [isOpen]="isOpen()"
+    (didDismiss)="OnPopoverDismiss()"
+    [trigger]="targetId"
+    alignment="end"
+    class="hes-popover hes-school-scope-selection-popover"
+  >
+    <ng-template>
+      <ion-content *transloco="let t">
+        <div class="flex max-h-[70vh] flex-col items-start gap-4 p-4">
+          <div class="flex w-full items-center justify-around">
+            <div
+              class="overflow-hidden text-ellipsis whitespace-nowrap text-sm font-bold md:text-base"
+            >
+              {{ t("global.select_company_campus_school.btn") }}
+            </div>
+            <div
+              [ngClass]="{
+                hidden: !showClearBtn(),
+                flex: showClearBtn()
+              }"
+              class="flex items-center"
+            >
+              <ion-button
+                hesBtn
+                hesColor="link"
+                hesSize="xs"
+                class="!font-normal capitalize !leading-6 text-[#383C57]"
+                (click)="onClear()"
+              >
+                <span *transloco="let t">{{ t("global.clear.btn") }}</span>
+              </ion-button>
+            </div>
+          </div>
+          <ion-checkbox
+            appHesCheckbox
+            (ionChange)="isStructureDefaultSet($event)"
+            [checked]="isStructureSelectionSaved"
+            >{{ t("global.set_current.txt") }}</ion-checkbox
+          >
+          <div class="flex w-full flex-col gap-6 border border-[#F1F0F0] p-2">
+            <!-- TODO: Add Search functionality -->
+            <!-- <app-hes-input [fill]="'outline'"></app-hes-input> -->
+            <div
+              class="flex h-full max-h-[80%] flex-col items-stretch justify-start gap-1 overflow-y-auto"
+            >
+              @for (item of filteredSchoolStructure(); track item.id) {
+                <app-school-structure-nav-item
+                  [item]="item"
+                  [firstLevel]="true"
+                  [expand]="true"
+                  [isNavItem]="false"
+                ></app-school-structure-nav-item>
+              }
+            </div>
+          </div>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-popover>
+}

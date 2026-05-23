@@ -1,0 +1,82 @@
+<div class="flex flex-col items-stretch justify-start gap-1">
+  <div
+    (click)="handleClick()"
+    [routerLink]="isNavItem && item.hasAccess ? item.path : undefined"
+    (isActiveChange)="this.onRouterLinkActive($event)"
+    [ngClass]="{
+      'w-64': firstLevel && !isMobile && !expand,
+      'item w-full': !firstLevel,
+      'w-full !justify-center !p-0': isCollapsed,
+      'bg-[#F6F4F1] md:bg-[#353C63]/50': isNavItem,
+      'bg-[#F4F4F8]': !isNavItem && !isScopeSelected(),
+      'bg-primary': isScopeSelected()
+    }"
+    class="flex h-10 items-center justify-between rounded px-4 py-2"
+    [routerLinkActive]="isMobile ? '!bg-primary-400' : '!bg-[#353C63]'"
+  >
+    <div
+      #rla="routerLinkActive"
+      routerLinkActive="!opacity-100"
+      class="flex items-center gap-2"
+      [ngClass]="{
+        'opacity-50': isNavItem
+      }"
+    >
+      <app-hes-icon
+        routerLinkActive="!text-white"
+        [ngClass]="{
+          'text-[#292D32] md:text-white': isNavItem,
+          'text-[#242424]': !isNavItem,
+          'text-[#9d9d9d]': !isNavItem && !item.hasAccess,
+          'text-white': isScopeSelected() && !isNavItem
+        }"
+        class="flex"
+        [hesIcon]="item.hesIcon"
+      ></app-hes-icon>
+      @if (!isCollapsed) {
+        <span
+          routerLinkActive="!text-white"
+          [ngClass]="{
+            'text-[#292D32] md:text-white': isNavItem,
+            'text-[#242424]': !isNavItem,
+            'text-[#9d9d9d]': !isNavItem && !item.hasAccess,
+            'text-white': isScopeSelected() && !isNavItem
+          }"
+          class="text-sm font-medium"
+        >
+          {{ item.name }} {{ showChildren() }}
+        </span>
+      }
+    </div>
+    @if (item.children.length && !isCollapsed) {
+      <app-hes-icon
+        routerLinkActive="!opacity-100 !text-white"
+        [ngClass]="{
+          'text-[#292D32] opacity-50 md:text-white': isNavItem,
+          'text-[#242424]': !isNavItem,
+          'text-white': isScopeSelected() && !isNavItem
+        }"
+        class="h-6 w-6"
+        [hesIcon]="showChildren() ? collapseIcon() : expandIcon()"
+      ></app-hes-icon>
+    }
+  </div>
+  @if (item.children.length && showChildren()) {
+    <div
+      [ngClass]="{
+        'only-child': item.children.length === 1
+      }"
+      class="list flex w-full flex-col items-stretch justify-start gap-1 ps-2 last:mb-0"
+    >
+      @for (child of item.children; track item.id) {
+        <app-school-structure-nav-item
+          [item]="child"
+          [isCollapsed]="isCollapsed"
+          [isNavItem]="isNavItem"
+          [onClickItem]="onClickItem"
+        >
+        </app-school-structure-nav-item>
+      }
+    </div>
+  }
+</div>

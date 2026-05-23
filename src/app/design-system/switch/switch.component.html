@@ -1,0 +1,64 @@
+<!-- ─────────────────────────  TWO-WAY SWITCH  ───────────────────────── -->
+@if (type() === "two-way") {
+  <div
+    class="relative h-8 w-16 select-none rounded-full shadow-inner transition-colors duration-300 ease-in-out"
+    [ngClass]="selected === option1() ? 'bg-brand-400' : 'bg-emerald-300'"
+  >
+    <!-- knob -->
+    <div
+      class="absolute left-1 top-1 z-10 h-6 w-6 cursor-pointer rounded-full bg-white shadow transition-transform duration-300 ease-in-out"
+      [ngClass]="
+        selected === option1() ? 'translate-x-0' : 'translate-x-[2rem]'
+      "
+      (click)="setOption()"
+    ></div>
+
+    <!-- labels -->
+    <div
+      class="absolute inset-0 z-0 flex text-sm font-semibold text-emphasis-high"
+    >
+      <div
+        class="flex flex-1 items-center justify-center overflow-hidden transition-opacity duration-300 ease-in-out"
+      >
+        <span>{{ option1() }}</span>
+      </div>
+      <div
+        class="flex flex-1 items-center justify-center overflow-hidden transition-opacity duration-300 ease-in-out"
+      >
+        <span>{{ option2() }}</span>
+      </div>
+    </div>
+
+    <!-- hit-areas -->
+    <button
+      class="absolute inset-y-0 left-0 z-20 w-1/2"
+      type="button"
+      (click)="setOption()"
+    ></button>
+    <button
+      class="absolute inset-y-0 right-0 z-20 w-1/2"
+      type="button"
+      (click)="setOption()"
+    ></button>
+  </div>
+} @else {
+  <!-- ─────────────────────────  BOOLEAN SWITCH  ───────────────────────── -->
+  <div
+    class="relative h-8 w-14 select-none rounded-full shadow-inner transition-colors duration-300 ease-in-out"
+    [ngClass]="resolveTrackColorClass()"
+    [style.backgroundColor]="resolveTrackColorStyle()"
+  >
+    <!-- knob -->
+    <div
+      class="absolute left-1 top-1 h-6 w-6 cursor-pointer rounded-full bg-white shadow transition-transform duration-300 ease-in-out"
+      [ngClass]="selected ? 'translate-x-[1.5rem]' : 'translate-x-0'"
+      (click)="setOption()"
+    ></div>
+
+    <button
+      class="absolute inset-0 z-20"
+      type="button"
+      (click)="setOption()"
+    ></button>
+  </div>
+}

@@ -1,0 +1,74 @@
+<ng-container *transloco="let t; read: 'content_management'">
+  <div class="flex flex-col items-stretch gap-8 px-4 py-8 lg:p-14">
+    <div class="flex flex-col items-stretch gap-5">
+      <div class="flex items-center justify-between gap-2">
+        <div
+          *transloco="let t"
+          class="text-lg font-semibold leading-7 text-gray-900 lg:text-2xl"
+        >
+          {{
+            config.header
+              ? config.header
+              : !isVideoMediaType()
+                ? t("global.add_attachment.title")
+                : t("content_management.add_video.title")
+          }}
+        </div>
+        <app-hes-icon
+          (click)="cancel()"
+          class="cursor-pointer"
+          [faIcon]="faXmark"
+        ></app-hes-icon>
+      </div>
+      <div class="h-[0.0625rem] w-full bg-gray-200"></div>
+      <div class="text-base text-[#41434A]">
+        {{
+          config.subHeader
+            ? config.subHeader
+            : !isVideoMediaType()
+              ? t("upload_attachments_from_below.txt")
+              : t("upload_video_from_below.txt")
+        }}
+      </div>
+      <form [formGroup]="form">
+        <div class="grid grid-cols-1 gap-8 gap-y-4 self-stretch">
+          @for (control of formConfig(); track $index) {
+            <div class="flex-1">
+              <app-form-control-generator
+                [control]="control"
+              ></app-form-control-generator>
+            </div>
+          }
+        </div>
+      </form>
+      <ion-progress-bar
+        [ngClass]="{ hidden: !isUploading() }"
+        type="indeterminate"
+        class="hes-progress"
+      ></ion-progress-bar>
+    </div>
+    <div class="flex w-full flex-1 items-center justify-between">
+      <div class="flex w-full flex-col gap-3 lg:flex-row lg:items-center">
+        <ion-button
+          hesSize="lg"
+          class="order-last flex-grow lg:order-first"
+          *transloco="let t"
+          hesColor="white"
+          (click)="cancel()"
+        >
+          {{ t("global.cancel.btn") }}
+        </ion-button>
+        <ion-button
+          (click)="addAttachment()"
+          *transloco="let t"
+          hesSize="lg"
+          class="flex-grow"
+          [disabled]="form.invalid || isUploading()"
+          >{{
+            config.isEditMode ? t("global.update.btn") : t("global.upload.btn")
+          }}
+        </ion-button>
+      </div>
+    </div>
+  </div>
+</ng-container>

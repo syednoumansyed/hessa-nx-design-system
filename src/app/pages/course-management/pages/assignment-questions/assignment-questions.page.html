@@ -1,0 +1,43 @@
+<ion-content
+  class="ds-page-content"
+  *transloco="let t; read:'content_management'"
+>
+  <div class="flex flex-col items-start justify-center gap-6 bg-white lg:p-6">
+    <div class="flex w-full items-center justify-between">
+      <h1 class="text-xl font-medium capitalize leading-7 text-gray-900">
+        {{assignmentDetails()?.title}}
+      </h1>
+      @if(assignmentDetails()?.submissionData?.submissionStats){
+      <div class="flex">
+        <h1 class="me-1 text-xl font-medium text-gray-900">
+          {{t('correct_answers.title')}}
+        </h1>
+        <h1 class="flex items-end text-lg font-medium text-green-500">
+          {{assignmentDetails()?.submissionData?.submissionStats.correctAnswers}}/{{assignmentDetails()?.submissionData?.submissionStats.totalQuestions}}
+        </h1>
+      </div>
+      }
+    </div>
+    <form
+      [formGroup]="assignmentQuestionForm"
+      (ngSubmit)="submitAssignment()"
+      class="flex w-full flex-col items-center justify-center gap-8 lg:mx-auto lg:w-auto"
+    >
+      @for (question of assignmentQuestions(); track question.id) {
+      <app-question-form-control-generator
+        class="w-full lg:w-[50.5rem]"
+        [config]="question"
+        (answerChanged)="onValueChange($event)"
+      ></app-question-form-control-generator>
+      } @if (!isSubmissionDisabled()) {
+      <ion-button
+        [disabled]="!assignmentQuestionForm.valid || isSubmitting()"
+        hesBtn
+        type="submit"
+        size="large"
+        class="w-full lg:w-auto lg:self-end"
+        >{{t('submit_assignment.label')}}</ion-button
+      >}
+    </form>
+  </div>
+</ion-content>

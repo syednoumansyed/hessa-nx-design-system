@@ -1,0 +1,91 @@
+<div class="inline-flex w-full flex-col" [ngClass]="rootContainerClasses()">
+  @if (label()) {
+    <label [for]="id()" class="single-line-xs-mid-emphasis ps-ds-md">
+      {{ label() }}
+      @if (isRequired()) {
+        <span class="text-error">*</span>
+      }
+    </label>
+  }
+  <!-- Inner container for content alignment -->
+  <div
+    id="inner-container"
+    class="relative flex h-full w-full items-center rounded-2xl p-ds-lg"
+    [ngClass]="outerContainerClasses()"
+    (click)="input?.focus()"
+    [dir]="inputMode() === 'tel' ? 'ltr' : ''"
+  >
+    @if (iconStart()) {
+      <div
+        class="absolute me-2 flex items-center border-e border-stroke-mid pe-2"
+      >
+        <app-ds-icon
+          [icon]="iconStart()!"
+          class="!flex !h-7 !w-7 items-center justify-center text-[18px]"
+        ></app-ds-icon>
+      </div>
+    }
+
+    <div [ngClass]="inputWrapperClasses()">
+      @if (prefix() && showPrefix()) {
+        <span class="prefix-wrapper shrink-0 leading-none text-content-mid">
+          {{ prefix() }}
+        </span>
+      }
+
+      <input
+        [id]="id()"
+        [type]="type()"
+        [disabled]="effectiveDisabled()"
+        [readOnly]="readOnly()"
+        [placeholder]="placeholder()"
+        [value]="value()"
+        (input)="onInput($event)"
+        (blur)="handleBlur($event)"
+        [ngClass]="inputFinalCss()"
+        [attr.aria-label]="label() ? null : placeholder() || 'Input field'"
+        title="{{ label() ? null : placeholder() || 'Input field' }}"
+        [attr.inputmode]="inputMode()"
+        [attr.maxlength]="maxLength() ?? null"
+        (focus)="handleFocus($event)"
+        [attr.autocomplete]="autocomplete()"
+        #input
+      />
+    </div>
+
+    @if (loading()) {
+      <div class="flex items-center justify-center pe-2">
+        <ion-spinner
+          class="h-4 w-4 text-content-low"
+          aria-label="Loading"
+        ></ion-spinner>
+      </div>
+    } @else if (iconEnd()) {
+      <app-ds-icon
+        (click)="onIconEndClick($event)"
+        [icon]="iconEnd()!"
+        class="absolute end-0 me-2 ms-2 shrink-0 cursor-pointer text-emphasis-mid"
+      ></app-ds-icon>
+    }
+  </div>
+
+  <!-- Footer row: error/hint on start, character count on end -->
+  <div class="flex items-start justify-between gap-ds-xl">
+    <div class="flex-1">
+      @if (errorMessage()) {
+        <span class="content-xs-mid-emphasis block ps-ds-md text-error">{{
+          errorMessage()
+        }}</span>
+      } @else if (hint() && !hasError()) {
+        <span class="content-xs-mid-emphasis block ps-ds-md text-content-mid">{{
+          hint()
+        }}</span>
+      }
+    </div>
+    @if (characterCount()) {
+      <span class="content-xs-mid-emphasis shrink-0 pe-ds-md text-content-mid">
+        {{ characterCount() }}
+      </span>
+    }
+  </div>
+</div>

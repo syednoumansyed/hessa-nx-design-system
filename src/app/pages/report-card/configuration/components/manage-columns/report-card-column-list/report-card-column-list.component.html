@@ -1,0 +1,26 @@
+<div
+  class="rounded-md border border-[#EAECF0]"
+  cdkDropList
+  [cdkDropListDisabled]="!isEdit()"
+  (cdkDropListDropped)="drop($event)"
+>
+  @for (col of sortedBySequence(); track $index) {
+    <div
+      cdkDrag
+      [cdkDragDisabled]="!isEdit()"
+      class="block rounded-md border-b border-[#EAECF0] bg-white"
+      [ngClass]="{ 'cursor-move': isEdit() }"
+    >
+      <app-report-card-column-list-item
+        [selectedColumn]="col"
+        [reportCard]="reportCard()"
+      ></app-report-card-column-list-item>
+
+      <ng-template cdkDragPlaceholder>
+        <div
+          class="h-16 rounded-md border border-dashed border-gray-300 bg-white"
+        ></div>
+      </ng-template>
+    </div>
+  }
+</div>

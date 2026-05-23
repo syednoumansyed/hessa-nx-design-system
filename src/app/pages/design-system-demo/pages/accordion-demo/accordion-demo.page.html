@@ -1,0 +1,454 @@
+<ion-content>
+  <div class="p-4 md:p-6">
+    <app-demo-page-wrapper title="Accordion">
+      <div class="flex flex-col gap-ds-2xl">
+        <!-- Section 1: Basic Accordion -->
+        <section class="flex flex-col gap-ds-md">
+          <h2 class="heading-h2-high-emphasis">Basic Accordion</h2>
+          <p class="content-md-mid-emphasis text-emphasis-mid">
+            Simple accordion with title and content.
+          </p>
+          <ds-accordion title="Basic Accordion" [expanded]="true">
+            <div class="flex flex-col gap-ds-md p-ds-xl">
+              <p class="content-md-mid-emphasis text-emphasis-mid">
+                This is the basic accordion content. It can contain any HTML
+                elements, components, or text content.
+              </p>
+              <p class="content-md-mid-emphasis text-emphasis-mid">
+                Accordions are useful for organizing large amounts of content
+                into collapsible sections, reducing visual clutter while keeping
+                information accessible.
+              </p>
+              <p class="content-md-mid-emphasis text-emphasis-mid">
+                Click the header area to toggle the expanded and collapsed
+                states. The transition is animated for a smooth user experience.
+              </p>
+            </div>
+          </ds-accordion>
+        </section>
+
+        <!-- Section 2: With Subtitle -->
+        <section class="flex flex-col gap-ds-md">
+          <h2 class="heading-h2-high-emphasis">With Subtitle</h2>
+          <p class="content-md-mid-emphasis text-emphasis-mid">
+            Accordion with title and subtitle text below it.
+          </p>
+          <ds-accordion
+            title="Unit 1: Introduction to Biology"
+            subtitle="This unit covers the basics of biology and life sciences."
+          >
+            <div class="flex flex-col gap-ds-md p-ds-xl">
+              <p class="content-md-mid-emphasis text-emphasis-mid">
+                The subtitle appears directly below the title in a smaller,
+                muted style. It provides additional context without cluttering
+                the header.
+              </p>
+              <p class="content-md-mid-emphasis text-emphasis-mid">
+                Use subtitles to give users a preview of what the accordion
+                section contains before they expand it.
+              </p>
+              <p class="content-md-mid-emphasis text-emphasis-mid">
+                Both the title and subtitle are fully visible in the collapsed
+                state, so users can scan content quickly.
+              </p>
+            </div>
+          </ds-accordion>
+        </section>
+
+        <!-- Section 3: With Tags -->
+        <section class="flex flex-col gap-ds-md">
+          <h2 class="heading-h2-high-emphasis">With Tags</h2>
+          <p class="content-md-mid-emphasis text-emphasis-mid">
+            Accordion headers can display chip tags with different variants.
+          </p>
+          <div class="flex flex-col gap-ds-md">
+            <ds-accordion title="Default Tag" [tags]="defaultTags">
+              <div class="flex flex-col gap-ds-md p-ds-xl">
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  A single default-variant tag is shown below the title. Tags
+                  are rendered as chip components and are useful for displaying
+                  metadata like counts or statuses.
+                </p>
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  Default tags use the neutral chip styling, making them
+                  unobtrusive while still conveying information.
+                </p>
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  In practice, this pattern is commonly used to show how many
+                  lessons or items are nested inside a section.
+                </p>
+              </div>
+            </ds-accordion>
+
+            <ds-accordion title="Multiple Tags" [tags]="multipleTags">
+              <div class="flex flex-col gap-ds-md p-ds-xl">
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  Multiple tags can be displayed side by side in the header.
+                  Each tag can have its own variant for visual distinction.
+                </p>
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  Here we combine a default tag ("3 Units") with a primary tag
+                  ("Active") to show both a count and a status.
+                </p>
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  Tags wrap naturally on smaller screens, maintaining
+                  readability across all device sizes.
+                </p>
+              </div>
+            </ds-accordion>
+
+            <ds-accordion title="Custom Styled Tags" [tags]="customTags">
+              <div class="flex flex-col gap-ds-md p-ds-xl">
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  Tags support a "custom" variant that lets you apply arbitrary
+                  CSS classes for unique styling needs.
+                </p>
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  The "Draft" tag above uses custom amber colors to indicate a
+                  work-in-progress state that doesn't fit the standard variants.
+                </p>
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  You can mix custom-styled tags with default tags in the same
+                  accordion header.
+                </p>
+              </div>
+            </ds-accordion>
+          </div>
+        </section>
+
+        <!-- Section 4: Icon Position -->
+        <section class="flex flex-col gap-ds-md">
+          <h2 class="heading-h2-high-emphasis">Icon Position</h2>
+          <p class="content-md-mid-emphasis text-emphasis-mid">
+            The chevron icon can be placed at the start or end of the header.
+          </p>
+          <div class="flex flex-col gap-ds-md">
+            <ds-accordion
+              title="Icon at Start (Default)"
+              iconPosition="start"
+              [tags]="defaultTags"
+            >
+              <div class="flex flex-col gap-ds-md p-ds-xl">
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  The expand/collapse chevron icon is positioned on the left
+                  side of the header. This is the default position.
+                </p>
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  Start-positioned icons work well when the accordion is the
+                  primary navigation element, drawing the eye to the toggle
+                  control first.
+                </p>
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  The icon rotates 180 degrees when the accordion is expanded,
+                  providing clear visual feedback of the current state.
+                </p>
+              </div>
+            </ds-accordion>
+
+            <ds-accordion
+              title="Icon at End"
+              iconPosition="end"
+              [tags]="defaultTags"
+            >
+              <div class="flex flex-col gap-ds-md p-ds-xl">
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  The chevron icon is positioned on the right side of the
+                  header, after the title and tags.
+                </p>
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  End-positioned icons are a common pattern in settings pages
+                  and navigation menus where the title is the primary focus.
+                </p>
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  Note the slightly different icon size compared to the start
+                  position, optimized for each placement.
+                </p>
+              </div>
+            </ds-accordion>
+
+            <ds-accordion
+              title="No Icon"
+              [showIcon]="false"
+              [tags]="defaultTags"
+            >
+              <div class="flex flex-col gap-ds-md p-ds-xl">
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  The chevron icon is hidden entirely using the
+                  <code>showIcon</code> input set to false.
+                </p>
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  Without an icon, the entire header area still acts as a click
+                  target to toggle the accordion.
+                </p>
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  This variant is useful when the accordion behavior is
+                  secondary or when space is limited.
+                </p>
+              </div>
+            </ds-accordion>
+          </div>
+        </section>
+
+        <!-- Section 5: With Menu -->
+        <section class="flex flex-col gap-ds-md">
+          <h2 class="heading-h2-high-emphasis">With Menu Items</h2>
+          <p class="content-md-mid-emphasis text-emphasis-mid">
+            Accordions can have a 3-dot menu with action items (edit, delete,
+            etc.).
+          </p>
+          <ds-accordion
+            title="Unit 1: Mathematics"
+            subtitle="Algebra and Geometry"
+            [tags]="defaultTags"
+            iconPosition="start"
+            [menuItems]="basicMenuItems"
+          >
+            <div class="flex flex-col gap-ds-md p-ds-xl">
+              <p class="content-md-mid-emphasis text-emphasis-mid">
+                Click the three-dot menu icon on the right side of the header to
+                see the available actions: Edit, Duplicate, and Delete.
+              </p>
+              <p class="content-md-mid-emphasis text-emphasis-mid">
+                Menu items use the responsive menu component, which adapts to
+                mobile by showing a bottom sheet instead of a dropdown.
+              </p>
+              <p class="content-md-mid-emphasis text-emphasis-mid">
+                Each menu item can have an icon, title, and state (e.g. "danger"
+                for destructive actions like delete).
+              </p>
+            </div>
+          </ds-accordion>
+        </section>
+
+        <!-- Section 6: With Custom Actions Template -->
+        <section class="flex flex-col gap-ds-md">
+          <h2 class="heading-h2-high-emphasis">Custom Actions Template</h2>
+          <p class="content-md-mid-emphasis text-emphasis-mid">
+            Use a template reference to place custom action buttons in the
+            header.
+          </p>
+          <ds-accordion
+            title="Unit with Custom Actions"
+            [tags]="multipleTags"
+            iconPosition="start"
+          >
+            <ng-template #accordionActions>
+              <ds-button
+                variant="secondary"
+                size="sm"
+                (click)="
+                  toast.info('Add Lesson clicked', 'Custom Action')
+                "
+              >
+                Add Lesson
+              </ds-button>
+            </ng-template>
+            <div class="flex flex-col gap-ds-md p-ds-xl">
+              <p class="content-md-mid-emphasis text-emphasis-mid">
+                The "Add Lesson" button in the header is injected via a custom
+                <code>#accordionActions</code> template reference.
+              </p>
+              <p class="content-md-mid-emphasis text-emphasis-mid">
+                Custom actions are rendered in the header area and their click
+                events do not propagate to the accordion toggle, so clicking the
+                button won't expand or collapse the section.
+              </p>
+              <p class="content-md-mid-emphasis text-emphasis-mid">
+                This pattern is useful when you need inline actions that are
+                more prominent than a menu dropdown.
+              </p>
+            </div>
+          </ds-accordion>
+        </section>
+
+        <!-- Section 7: Disabled State -->
+        <section class="flex flex-col gap-ds-md">
+          <h2 class="heading-h2-high-emphasis">Disabled State</h2>
+          <p class="content-md-mid-emphasis text-emphasis-mid">
+            A disabled accordion cannot be expanded or collapsed.
+          </p>
+          <ds-accordion
+            title="Disabled Accordion"
+            subtitle="This accordion cannot be toggled"
+            [tags]="defaultTags"
+            [disabled]="true"
+          >
+            <div class="flex flex-col gap-ds-md p-ds-xl">
+              <p class="content-md-mid-emphasis text-emphasis-mid">
+                You should not be able to see this content because the accordion
+                is disabled and collapsed by default.
+              </p>
+            </div>
+          </ds-accordion>
+        </section>
+
+        <!-- Section 8: Accordion Group (Single Expand) -->
+        <section class="flex flex-col gap-ds-md">
+          <h2 class="heading-h2-high-emphasis">
+            Accordion Group (Single Expand)
+          </h2>
+          <p class="content-md-mid-emphasis text-emphasis-mid">
+            Only one accordion can be open at a time. Opening one collapses the
+            others.
+          </p>
+          <ds-accordion-group #singleGroup>
+            <ds-accordion
+              title="Section A"
+              [tags]="[{ text: '3 Items' }]"
+              iconPosition="start"
+              [expanded]="true"
+            >
+              <div class="flex flex-col gap-ds-md p-ds-xl">
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  This is Section A, which starts expanded. Try clicking Section
+                  B or C below to see this one automatically collapse.
+                </p>
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  Single-expand mode is the default behavior of the accordion
+                  group. It ensures only one section is visible at a time.
+                </p>
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  This pattern works well for FAQs, settings panels, or any
+                  content where focused attention on one section is preferred.
+                </p>
+              </div>
+            </ds-accordion>
+
+            <ds-accordion
+              title="Section B"
+              [tags]="[{ text: '5 Items' }]"
+              iconPosition="start"
+            >
+              <div class="flex flex-col gap-ds-md p-ds-xl">
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  Section B is now open. Notice that Section A has automatically
+                  collapsed when you clicked here.
+                </p>
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  The accordion group component manages the state of its
+                  children, listening for expand events and collapsing siblings.
+                </p>
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  This behavior is handled entirely by the
+                  <code>ds-accordion-group</code> wrapper — no manual state
+                  management is needed.
+                </p>
+              </div>
+            </ds-accordion>
+
+            <ds-accordion
+              title="Section C"
+              [tags]="[{ text: '2 Items' }]"
+              iconPosition="start"
+            >
+              <div class="flex flex-col gap-ds-md p-ds-xl">
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  Section C content. Only one section is visible at any given
+                  time in single-expand mode.
+                </p>
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  You can still collapse the currently open section by clicking
+                  its header again, leaving all sections collapsed.
+                </p>
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  The group also provides <code>collapseAll()</code> to
+                  programmatically close everything at once.
+                </p>
+              </div>
+            </ds-accordion>
+          </ds-accordion-group>
+        </section>
+
+        <!-- Section 9: Accordion Group (Multiple Expand) -->
+        <section class="flex flex-col gap-ds-md">
+          <h2 class="heading-h2-high-emphasis">
+            Accordion Group (Multiple Expand)
+          </h2>
+          <p class="content-md-mid-emphasis text-emphasis-mid">
+            Multiple accordions can be open simultaneously. Use the buttons to
+            expand/collapse all.
+          </p>
+          <div class="flex gap-ds-md">
+            <ds-button variant="secondary" size="sm" (click)="expandAll()">
+              Expand All
+            </ds-button>
+            <ds-button variant="tertiary" size="sm" (click)="collapseAll()">
+              Collapse All
+            </ds-button>
+          </div>
+          <ds-accordion-group #multiGroup [allowMultiple]="true">
+            <ds-accordion
+              title="Chapter 1: Getting Started"
+              subtitle="Introduction and setup"
+              [tags]="[{ text: '4 Lessons' }]"
+              iconPosition="start"
+              [menuItems]="basicMenuItems"
+            >
+              <div class="flex flex-col gap-ds-md p-ds-xl">
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  Chapter 1 covers the initial setup and configuration steps
+                  needed to get started with the project.
+                </p>
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  With <code>allowMultiple</code> set to true, this section
+                  stays open even when you expand Chapter 2 or 3.
+                </p>
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  Use the "Expand All" and "Collapse All" buttons above to
+                  control all accordions at once via the group's API.
+                </p>
+              </div>
+            </ds-accordion>
+
+            <ds-accordion
+              title="Chapter 2: Core Concepts"
+              subtitle="Fundamentals and theory"
+              [tags]="[{ text: '6 Lessons' }, { text: 'In Progress', variant: 'primary' }]"
+              iconPosition="start"
+              [menuItems]="basicMenuItems"
+            >
+              <div class="flex flex-col gap-ds-md p-ds-xl">
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  Chapter 2 dives into the fundamental concepts and theoretical
+                  foundations that underpin the entire curriculum.
+                </p>
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  This section combines a subtitle, multiple tags, and menu
+                  items — showing how all features work together.
+                </p>
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  Open this alongside Chapter 1 to see the multi-expand behavior
+                  in action.
+                </p>
+              </div>
+            </ds-accordion>
+
+            <ds-accordion
+              title="Chapter 3: Advanced Topics"
+              subtitle="Deep dive into advanced concepts"
+              [tags]="[{ text: '8 Lessons' }]"
+              iconPosition="start"
+              [menuItems]="basicMenuItems"
+            >
+              <div class="flex flex-col gap-ds-md p-ds-xl">
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  Chapter 3 explores advanced topics for learners who have
+                  completed the foundational content.
+                </p>
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  All three chapters can be open simultaneously, making it easy
+                  to compare or reference content across sections.
+                </p>
+                <p class="content-md-mid-emphasis text-emphasis-mid">
+                  The <code>expandAll()</code> method only works when
+                  <code>allowMultiple</code> is true, preventing accidental
+                  multi-expand in single mode.
+                </p>
+              </div>
+            </ds-accordion>
+          </ds-accordion-group>
+        </section>
+      </div>
+    </app-demo-page-wrapper>
+  </div>
+</ion-content>

@@ -1,0 +1,98 @@
+<div class="ds-attachment-form-control">
+  @if (label()) {
+    <div class="mb-2 text-lg font-semibold text-gray-900">
+      {{ label() }}
+    </div>
+  }
+  @if (subLabel()) {
+    <div class="mb-4 text-sm text-gray-500">
+      {{ subLabel() }}
+    </div>
+  }
+
+  <div
+    class="flex items-center rounded-ds-xl border border-dashed border-stroke-high bg-white p-ds-xl"
+    [class.bg-blue-50]="isDragOver()"
+  >
+    <label [ngClass]="attachments.length > 0 ? 'w-0' : 'w-full'">
+      <div
+        #container
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragEnd()"
+        (drop)="onDrop($event)"
+        (dragend)="onDragEnd()"
+        class="w-full cursor-pointer"
+        [class.bg-blue-50]="isDragOver()"
+      >
+        <input
+          #fileInput
+          type="file"
+          class="hidden"
+          [accept]="acceptFileTypesComputed()"
+          (change)="onFileChange($event); resetInput(fileInput)"
+          [multiple]="isMultiple()"
+          [disabled]="isDisabled"
+        />
+
+        @if (attachments.length === 0) {
+          <!-- Upload Area -->
+          <div class="flex items-center">
+            <div
+              class="flex h-12 w-12 items-center justify-center rounded-ds-full border-[8px] border-[#F9FAFB] bg-[#F2F4F7]"
+            >
+              <app-ds-icon [icon]="uploadIcon" />
+            </div>
+            <div class="flex flex-col gap-1">
+              <div>
+                <span class="content-sm-high-emphasis text-content-action">
+                  {{ "global.click_to_upload.btn" | dsTranslate }}
+                </span>
+                <span class="content-sm-default text-emphasis-high">
+                  {{ "global.drag_drop.txt" | dsTranslate }}
+                </span>
+              </div>
+              <div class="content-xs-default text-emphasis-mid">
+                {{ uploadPlaceholder() }}
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </label>
+    <!-- File Previews -->
+    @if (attachments.length > 0) {
+      <div class="flex w-full flex-col gap-ds-md">
+        @if (isMultiple()) {
+          <!-- Multiple Files Layout -->
+          @for (attachment of attachments; track $index) {
+            <ds-attachment-preview
+              [attachment]="attachment"
+              [showRemove]="isShowRemoveButton()"
+              (remove)="removeAttachment($index)"
+            />
+          }
+
+          @if (!isreadonly() && isMultiple()) {
+            <div class="flex items-center justify-center">
+              <ds-button variant="ghost" size="sm" (click)="fileInput.click()">
+                Add More
+              </ds-button>
+            </div>
+          }
+        } @else {
+          <!-- Single File Layout -->
+          <ds-attachment-preview
+            [attachment]="attachments[0]"
+            [showRemove]="isShowRemoveButton()"
+            (remove)="removeAttachment(0)"
+          />
+        }
+      </div>
+    }
+  </div>
+  @if (hint()) {
+    <div class="content-xs-mid-emphasis mt-2 text-emphasis-mid">
+      {{ hint() }}
+    </div>
+  }
+</div>

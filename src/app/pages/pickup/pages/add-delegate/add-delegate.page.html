@@ -1,0 +1,42 @@
+<ion-content class="ds-page-content" *transloco="let t">
+  <div class="flex flex-col gap-ds-3xl p-ds-xl">
+    <!-- Avatar Upload -->
+    <app-delegate-avatar-upload
+      [imageUrl]="delegate()?.url ?? null"
+      (onImageSelected)="onImageSelected($event)"
+    ></app-delegate-avatar-upload>
+
+    <!-- Form -->
+    <form [formGroup]="form" class="flex flex-col gap-ds-xl">
+      @for (control of formControls(); track control.formControlName) {
+      <app-ds-form-control-generator
+        [control]="control"
+      ></app-ds-form-control-generator>
+      }
+
+      <!-- Student selection list (no search) -->
+      <app-student-select-list
+        [students]="studentsOptions()"
+        [selectedIds]="form.controls.studentIds.value || []"
+        (selectedIdsChange)="onStudentIdsChange($event)"
+        [label]="t('global.select_student_with_plural.txt')"
+        [required]="true"
+      ></app-student-select-list>
+    </form>
+  </div>
+</ion-content>
+
+<ion-footer
+  class="border-t border-stroke-black-08 bg-[var(--surface-page)] px-ds-xl py-ds-lg"
+>
+  <ds-button
+    [variant]="'primary'"
+    [size]="'lg'"
+    [fullWidth]="true"
+    [loading]="isLoading()"
+    [disabled]="isLoading() || form.invalid"
+    (click)="onSubmit()"
+  >
+    {{ submitButtonText() }}
+  </ds-button>
+</ion-footer>

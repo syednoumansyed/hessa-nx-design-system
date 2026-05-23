@@ -1,0 +1,44 @@
+<div *transloco="let t" class="flex flex-col bg-neutral-cool-50 p-ds-xl">
+  @if (!selectedClassId()) {
+    <app-class-selection (classSelected)="onClassSelected($event)" />
+  } @else {
+    <div class="flex flex-col">
+      @if (isTeacher && classGroup() && studentsList().length > 0) {
+        <div class="flex-shrink-0">
+          <app-channel-selection
+            [classGroup]="classGroup()"
+            (closeModal)="onCloseModal()"
+            [selectedAcademicYearId]="selectedAcademicYearId"
+          />
+        </div>
+      }
+      <!-- Sticky search box -->
+      <div class="sticky top-0 z-10 flex-shrink-0 bg-neutral-cool-50 py-ds-lg">
+        <app-search-box
+          (searchChange)="onSearchChange($event)"
+          placeholderTxt="{{
+            t('content_management.search_by_name.placeholder')
+          }}"
+        />
+      </div>
+      @if (studentsList().length === 0 && !isLoading()) {
+        <div class="py-ds-lg">
+          <app-no-data-card
+            mainImagePath="assets/icons/no-search-result.svg"
+            title="{{ t('global.no_data.txt') }}"
+            [noBgStyle]="true"
+          />
+        </div>
+      }
+      <!-- User selection content -->
+      <div class="flex-1">
+        <app-chat-user-selection
+          [studentsList]="studentsList()"
+          [showInfiniteScroll]="showInfiniteScroll()"
+          (loadMore)="onLoadMore($event)"
+          (closeModal)="onCloseModal()"
+        />
+      </div>
+    </div>
+  }
+</div>

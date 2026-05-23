@@ -1,0 +1,91 @@
+<ion-content class="ds-page-content" *transloco="let t">
+  <div class="rounded-lg border border-gray-200 p-4 md:border-none md:p-1">
+    @if(isLoading()){
+    <app-card-list-item-skeleton></app-card-list-item-skeleton>
+    } @else if(schoolDetails()) {
+    <app-profile-header
+      [fullName]="schoolDetails()!.displayName"
+      [metadata]="schoolMetadata()"
+      [headerHesIcon]="{src: 'assets/icons/school.svg', class:'text-[3rem]'}"
+      class="rounded-lg"
+      [createdBy]="schoolDetails()!.createdBy.displayName"
+      [creationDate]="schoolDetails()?.createdAt"
+    >
+    </app-profile-header>
+    }
+  </div>
+  @if(isLoading()){
+  <div
+    [ngClass]="{
+        'rounded-xl border bg-white': !isMobile
+      }"
+    class="mt-4"
+  >
+    <div
+      [ngClass]="{
+      'border-b': !isMobile,
+      'mb-3': isMobile
+    }"
+      class="flex items-center justify-between md:p-7"
+    >
+      <ion-skeleton-text
+        [animated]="true"
+        class="h-7 w-24 rounded"
+      ></ion-skeleton-text>
+
+      <ion-skeleton-text
+        [animated]="true"
+        class="h-11 w-11 rounded-lg md:w-40"
+      ></ion-skeleton-text>
+    </div>
+    <app-card-list-skeleton></app-card-list-skeleton>
+  </div>
+  } @else if (schoolDetails()?.schoolLevels?.length === 0) {
+  <div class="mt-4 p-4">
+    <app-no-data-card
+      mainImagePath="assets/illustrations/no_data.svg"
+      title="{{ t('school_structure.no_levels.title') }}"
+      [description]="t('school_structure.no_levels_msg.text')"
+      [primaryButton]="noDataBtnConfig()"
+    ></app-no-data-card>
+  </div>
+  } @if (schoolDetails()?.schoolLevels!.length > 0) {
+  <div
+    [ngClass]="{
+    'rounded-xl border bg-white': !isMobile
+  }"
+    class="mt-4 p-4"
+  >
+    <div
+      [ngClass]="{
+      'border-b': !isMobile,
+      'mb-3': isMobile
+    }"
+      class="flex justify-between md:p-7"
+    >
+      <div class="mt-3 text-2xl font-medium text-gray-900 sm:text-xl">
+        {{ t("resource.level") }}
+      </div>
+      <ion-button
+        hesBtn
+        *hesRbac="addLevelPermissoinId"
+        hesColor="primary"
+        hesSize="lg"
+        (click)="onAddEditLevel()"
+      >
+        <fa-icon [icon]="faPlus" size="sm"></fa-icon>
+        @if(!isMobile){
+        <span class="ms-3"> {{ t("school_structure.add_level.btn") }} </span>
+        }
+      </ion-button>
+    </div>
+    <div
+      class="my-8 flex grid grid-cols-1 flex-col items-start gap-3 md:w-full md:grid-cols-2 md:items-center md:gap-6 md:px-6"
+    >
+      @for (item of levelsMetadata(); track $index; let last = $last) {
+      <app-card-list-item class="w-full" [config]="item"></app-card-list-item>
+      }
+    </div>
+  </div>
+  }
+</ion-content>

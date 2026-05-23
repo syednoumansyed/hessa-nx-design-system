@@ -1,0 +1,342 @@
+/** Ionic CSS Variables **/
+:root {
+  /** primary **/
+  --ion-color-primary: #3880ff;
+  --ion-color-primary-rgb: 56, 128, 255;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #3171e0;
+  --ion-color-primary-tint: #4c8dff;
+
+  /** secondary **/
+  --ion-color-secondary: #3dc2ff;
+  --ion-color-secondary-rgb: 61, 194, 255;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #36abe0;
+  --ion-color-secondary-tint: #50c8ff;
+
+  /** tertiary **/
+  --ion-color-tertiary: #5260ff;
+  --ion-color-tertiary-rgb: 82, 96, 255;
+  --ion-color-tertiary-contrast: #ffffff;
+  --ion-color-tertiary-contrast-rgb: 255, 255, 255;
+  --ion-color-tertiary-shade: #4854e0;
+  --ion-color-tertiary-tint: #6370ff;
+
+  /** success **/
+  --ion-color-success: #2dd36f;
+  --ion-color-success-rgb: 45, 211, 111;
+  --ion-color-success-contrast: #ffffff;
+  --ion-color-success-contrast-rgb: 255, 255, 255;
+  --ion-color-success-shade: #28ba62;
+  --ion-color-success-tint: #42d77d;
+
+  /** warning **/
+  --ion-color-warning: #ffc409;
+  --ion-color-warning-rgb: 255, 196, 9;
+  --ion-color-warning-contrast: #000000;
+  --ion-color-warning-contrast-rgb: 0, 0, 0;
+  --ion-color-warning-shade: #e0ac08;
+  --ion-color-warning-tint: #ffca22;
+
+  /** danger **/
+  --ion-color-danger: #eb445a;
+  --ion-color-danger-rgb: 235, 68, 90;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: #cf3c4f;
+  --ion-color-danger-tint: #ed576b;
+
+  /** dark **/
+  --ion-color-dark: #222428;
+  --ion-color-dark-rgb: 34, 36, 40;
+  --ion-color-dark-contrast: #ffffff;
+  --ion-color-dark-contrast-rgb: 255, 255, 255;
+  --ion-color-dark-shade: #1e2023;
+  --ion-color-dark-tint: #383a3e;
+
+  /** medium **/
+  --ion-color-medium: #92949c;
+  --ion-color-medium-rgb: 146, 148, 156;
+  --ion-color-medium-contrast: #ffffff;
+  --ion-color-medium-contrast-rgb: 255, 255, 255;
+  --ion-color-medium-shade: #808289;
+  --ion-color-medium-tint: #9d9fa6;
+
+  /** light **/
+  --ion-color-light: #f4f5f8;
+  --ion-color-light-rgb: 244, 245, 248;
+  --ion-color-light-contrast: #000000;
+  --ion-color-light-contrast-rgb: 0, 0, 0;
+  --ion-color-light-shade: #d7d8da;
+  --ion-color-light-tint: #f5f6f9;
+
+  --ion-text-color: #272525;
+  --ion-background-color: #fff;
+  @media screen and (min-width: 480px) {
+    --ion-background-color: #f9fafb;
+  }
+}
+
+html {
+  /*
+     * For more information on dynamic font scaling, visit the documentation:
+     * https://ionicframework.com/docs/layout/dynamic-font-scaling
+     */
+  --ion-dynamic-font: var(--ion-default-dynamic-font);
+  --ion-font-family: "Nunito", sans-serif;
+  --hes-text-font: "Nunito", sans-serif;
+  &[lang="ar"] {
+    --ion-font-family: "Lama Rounded", sans-serif;
+    --hes-text-font: "Lama Rounded", sans-serif;
+  }
+}
+
+/* nx Css Variable */
+:root {
+  /* Color Palette */
+  --h-white: #fff;
+
+  --h-color-primary: #ecad01;
+  --h-color-primary-25: #fffce7;
+  --h-color-primary-50: #fff9c1;
+  --h-color-primary-100: #fff086;
+  --h-color-primary-200: #ffdf41;
+  --h-color-primary-300: #ffca0e;
+  --h-color-primary-400: #ecad01;
+  --h-color-primary-500: #d08700;
+  --h-color-primary-600: #a65f02;
+  --h-color-primary-700: #894a0a;
+  --h-color-primary-800: #743d0f;
+  --h-color-primary-900: #441e04;
+
+  --h-color-gray-25: #fcfcfd;
+  --h-color-gray-50: #f9fafb;
+  --h-color-gray-100: #f2f4f7;
+  --h-color-gray-200: #eaecf0;
+  --h-color-gray-300: #d0d5dd;
+  --h-color-gray-400: #98a2b3;
+  --h-color-gray-500: #667085;
+  --h-color-gray-600: #475467;
+  --h-color-gray-700: #344054;
+  --h-color-gray-800: #1d2939;
+  --h-color-gray-900: #101828;
+
+  --h-color-error-25: #fffbfa;
+  --h-color-error-50: #fef3f2;
+  --h-color-error-100: #fee4e2;
+  --h-color-error-200: #fecdca;
+  --h-color-error-300: #fda29b;
+  --h-color-error-400: #f97066;
+  --h-color-error-500: #f04438;
+  --h-color-error-600: #d92d20;
+  --h-color-error-700: #b42318;
+  --h-color-error-800: #912018;
+  --h-color-error-900: #7a271a;
+
+  --h-color-warning-25: #fffcf5;
+  --h-color-warning-50: #fffaeb;
+  --h-color-warning-100: #fef0c7;
+  --h-color-warning-200: #fedf89;
+  --h-color-warning-300: #fec84b;
+  --h-color-warning-400: #fdb022;
+  --h-color-warning-500: #f79009;
+  --h-color-warning-600: #dc6803;
+  --h-color-warning-700: #b54708;
+  --h-color-warning-800: #93370d;
+  --h-color-warning-900: #7a2e0e;
+
+  --h-color-success-25: #f6fef9;
+  --h-color-success-50: #ecfdf3;
+  --h-color-success-100: #d1fadf;
+  --h-color-success-200: #a6f4c5;
+  --h-color-success-300: #6ce9a6;
+  --h-color-success-400: #32d583;
+  --h-color-success-500: #12b76a;
+  --h-color-success-600: #039855;
+  --h-color-success-700: #027a48;
+  --h-color-success-800: #05603a;
+  --h-color-success-900: #054f31;
+
+  --h-color-info-25: #f5faff;
+  --h-color-info-50: #eff8ff;
+  --h-color-info-100: #d1e9ff;
+  --h-color-info-200: #b2ddff;
+  --h-color-info-300: #84caff;
+  --h-color-info-400: #53b1fd;
+  --h-color-info-500: #2e90fa;
+  --h-color-info-600: #1570ef;
+  --h-color-info-700: #175cd3;
+  --h-color-info-800: #1849a9;
+  --h-color-info-900: #194185;
+
+  /* Typography */
+
+  /* Web Font/Web Tile/Header 1 - Bold - 36 - (Line Height 40) */
+  --h-typography-h1-font-family: "Nunito";
+  --h-typography-h1-font-size: 2.25rem;
+  --h-typography-h1-font-style: normal;
+  --h-typography-h1-font-weight: 700;
+  --h-typography-h1-line-height: 2.5rem;
+  --h-typography-h1-letter-spacing: -0.03125rem;
+
+  /* Web Font/Main Title/Header 2 - Bold - 32 (Line Height - 36) */
+  --h-typography-h2-font-family: "Nunito";
+  --h-typography-h2-font-size: 2rem;
+  --h-typography-h2-font-style: normal;
+  --h-typography-h2-font-weight: 700;
+  --h-typography-h2-line-height: 2.25rem; /* 112.5% */
+  --h-typography-h2-letter-spacing: -0.03125rem;
+
+  /* Web Font/Key Headers/Header 3 - SemiBold - 28 (Line Height - 32) */
+  --h-typography-h3-font-family: "Nunito";
+  --h-typography-h3-font-size: 1.75rem;
+  --h-typography-h3-font-style: normal;
+  --h-typography-h3-font-weight: 600;
+  --h-typography-h3-line-height: 2rem; /* 114.286% */
+  --h-typography-h3-letter-spacing: -0.03125rem;
+
+  /* Web Font/Sub Section/Header 4 - Bold - 24 (Line Height - 28) */
+  --h-typography-h4-font-family: "Nunito";
+  --h-typography-h4-font-size: 1.5rem;
+  --h-typography-h4-font-style: normal;
+  --h-typography-h4-font-weight: 700;
+  --h-typography-h4-line-height: 1.75rem; /* 116.667% */
+
+  --h-typography-h5-font-family: "Nunito";
+  --h-typography-h5-font-size: 1.125rem;
+  --h-typography-h5-font-style: normal;
+  --h-typography-h5-font-weight: 600;
+  --h-typography-h5-line-height: 1.375rem; /* 122.222% */
+  --h-typography-h5-letter-spacing: -0.00563rem;
+
+  /* Web Font/Table Header/Heading 6 - Bold - 16 (Line Height 20) */
+  --h-typography-h6-font-family: "Nunito";
+  --h-typography-h6-font-size: 1rem;
+  --h-typography-h6-font-style: normal;
+  --h-typography-h6-font-weight: 700;
+  --h-typography-h6-line-height: 1.25rem; /* 125% */
+  --h-typography-h6-letter-spacing: -0.01563rem;
+
+  /* Web Font/Web Body/Main Body - Regular - 20 (Line Height 24) */
+  --h-typography-body-main-font-family: "Nunito";
+  --h-typography-body-main-font-size: 1.25rem;
+  --h-typography-body-main-font-style: normal;
+  --h-typography-body-main-font-weight: 400;
+  --h-typography-body-main-line-height: 1.5rem; /* 120% */
+  --h-typography-body-main-letter-spacing: -0.01563rem;
+
+  /* Web Font/Long Paragraph/Body Large - 16 - SemiBold (Line Height 20) */
+  --h-typography-body-lg-font-family: "Nunito";
+  --h-typography-body-lg-font-size: 1rem;
+  --h-typography-body-lg-font-style: normal;
+  --h-typography-body-lg-font-weight: 600;
+  --h-typography-body-lg-line-height: 1.25rem; /* 125% */
+  --h-typography-body-lg-letter-spacing: -0.01563rem;
+
+  /* Web Font/Labels/Body Small 14 - Regular (Line Height 18) */
+  --h-typography-body-sm-font-family: "Nunito";
+  --h-typography-body-sm-font-size: 0.875rem;
+  --h-typography-body-sm-font-style: normal;
+  --h-typography-body-sm-font-weight: 400;
+  --h-typography-body-sm-line-height: 1.125rem; /* 128.571% */
+
+  /* Web Font/Tertiary Text/Body Micro - 12 - Regular (Line Height 16) */
+  --h-typography-body-xs-font-family: "Nunito";
+  --h-typography-body-xs-font-size: 0.75rem;
+  --h-typography-body-xs-font-style: normal;
+  --h-typography-body-xs-font-weight: 400;
+  --h-typography-body-xs-line-height: 1rem; /* 133.333% */
+  --h-typography-body-xs-letter-spacing: -0.01563rem;
+
+  /* Web Font/Button/Large - 16 - Medium (Line Height 20) */
+  --h-typography-utility-button-lg-font-family: "Nunito";
+  --h-typography-utility-button-lg-font-size: 1rem;
+  --h-typography-utility-button-lg-font-style: normal;
+  --h-typography-utility-button-lg-font-weight: 500;
+  --h-typography-utility-button-lg-line-height: 1.25rem; /* 125% */
+  --h-typography-utility-button-lg-letter-spacing: -0.01563rem;
+
+  /* Web Font/Button/Small - 14 - Medium (Line Height 18) */
+  --h-typography-utility-button-sm-font-family: "Nunito";
+  --h-typography-utility-button-sm-font-size: 0.875rem;
+  --h-typography-utility-button-sm-font-style: normal;
+  --h-typography-utility-button-sm-font-weight: 500;
+  --h-typography-utility-button-sm-line-height: 1.125rem; /* 128.571% */
+  --h-typography-utility-button-sm-letter-spacing: -0.01563rem;
+
+  /* Web Font/Link/Large - 16 (Line Height 20) */
+  --h-typography-utility-link-lg-font-family: "Nunito";
+  --h-typography-utility-link-lg-font-size: 1rem;
+  --h-typography-utility-link-lg-font-style: normal;
+  --h-typography-utility-link-lg-font-weight: 500;
+  --h-typography-utility-link-lg-line-height: 1.25rem; /* 125% */
+  --h-typography-utility-link-lg-letter-spacing: -0.01563rem;
+  --h-typography-utility-link-lg-text-decoration-line: underline;
+
+  /* Web Font/Link/Small - 14 (Line Height 18) */
+  --h-typography-utility-link-sm-font-family: "Nunito";
+  --h-typography-utility-link-sm-font-size: 0.875rem;
+  --h-typography-utility-link-sm-font-style: normal;
+  --h-typography-utility-link-sm-font-weight: 500;
+  --h-typography-utility-link-sm-line-height: 1.125rem; /* 128.571% */
+  --h-typography-utility-link-sm-letter-spacing: -0.01563rem;
+  --h-typography-utility-link-sm-text-decoration-line: underline;
+
+  /* Spacing */
+  --h-spacing-1: 0.25rem;
+  --h-spacing-2: 0.5rem;
+  --h-spacing-3: 0.75rem;
+  --h-spacing-4: 1rem;
+  --h-spacing-5: 1.25rem;
+  --h-spacing-6: 1.5rem;
+  --h-spacing-8: 2rem;
+  --h-spacing-10: 2.5rem;
+  --h-spacing-12: 3rem;
+  --h-spacing-16: 4rem;
+  --h-spacing-20: 5rem;
+  --h-spacing-24: 6rem;
+  --h-spacing-32: 8rem;
+  --h-spacing-40: 10rem;
+  --h-spacing-48: 12rem;
+  --h-spacing-56: 14rem;
+  --h-spacing-64: 16rem;
+
+  /* Width */
+  --h-width-sm: 40rem;
+  --h-width-md: 48rem;
+  --h-width-lg: 64rem;
+  --h-width-xl: 80rem;
+
+  /* BreakPoints */
+  --h-breakpoint-sm: 40rem;
+  --h-breakpoint-md: 48rem;
+  --h-breakpoint-lg: 64rem;
+  --h-breakpoint-xl: 80rem;
+
+  /* Shadows */
+  --h-shadow-xs: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+  --h-shadow-sm:
+    0px 1px 2px 0px rgba(16, 24, 40, 0.06),
+    0px 1px 3px 0px rgba(16, 24, 40, 0.1);
+  --h-shadow-md:
+    0px 2px 4px -2px rgba(16, 24, 40, 0.06),
+    0px 4px 8px -2px rgba(16, 24, 40, 0.1);
+  --h-shadow-lg:
+    0px 4px 6px -2px rgba(16, 24, 40, 0.03),
+    0px 12px 16px -4px rgba(16, 24, 40, 0.08);
+  --h-shadow-xl:
+    0px 8px 8px -4px rgba(16, 24, 40, 0.03),
+    0px 20px 24px -4px rgba(16, 24, 40, 0.08);
+  --h-shadow-2xl: 0px 24px 48px -12px rgba(16, 24, 40, 0.18);
+  --h-shadow-3xl: 0px 32px 64px -12px rgba(16, 24, 40, 0.14);
+
+  /* Blurs */
+  --h-blur-sm: blur(4px);
+  --h-blur-md: blur(8px);
+  --h-blur-lg: blur(12px);
+  --h-blur-xl: blur(20px);
+  --h-blur-bg-light: rgba(255, 255, 255, 0.6);
+  --h-blur-bg-dark: rgba(52, 64, 84, 0.8);
+}

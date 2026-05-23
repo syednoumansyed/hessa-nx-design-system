@@ -1,0 +1,117 @@
+<div
+  *transloco="let t"
+  class="flex flex-col justify-start gap-4 rounded-xl bg-white p-7 shadow"
+>
+  <div class="mb-3 flex justify-between border-b pb-4">
+    <div class="text-xl font-semibold text-gray-900">
+      @if (isEdit) {
+        {{
+          t("time_period.edit_period_schedule.title", {
+            levelName: timePeriodDetail()?.level?.displayName
+          })
+        }}
+      }
+      @if (!isEdit) {
+        {{ t("time_period.setup_period.title") }}
+      }
+    </div>
+    <fa-icon
+      class="mt-1 cursor-pointer text-[#929CB5] hover:text-[#0000008a]"
+      [icon]="faClose"
+      size="xl"
+      (click)="closeModal()"
+    ></fa-icon>
+  </div>
+  <div class="w-full max-w-full overflow-x-auto">
+    <form [formGroup]="periodDurationForm">
+      <ng-container formArrayName="durations">
+        <div class="mb-5">
+          <div class="mb-1 text-base font-semibold text-gray-900">
+            {{ t("time_period.select_weekdays.title") }}
+          </div>
+          <span class="text-sm text-gray-500">
+            {{ t("time_period.weekdays_selection_note.txt") }}
+          </span>
+
+          <div class="mt-3 flex flex-wrap gap-2">
+            @for (day of daysOfWeek(); track day.value) {
+              <div
+                class="cursor-pointer rounded-full px-4 py-1 font-medium"
+                [ngClass]="{
+                  'bg-yellow-100 text-yellow-600': day.status === 'selected',
+                  'bg-gray-100 text-gray-800': day.status === 'default',
+                  'cursor-not-allowed bg-gray-200 text-gray-400':
+                    day.status === 'disabled'
+                }"
+                (click)="handleDaySelection(day)"
+              >
+                {{ t(day.key) }}
+              </div>
+            }
+          </div>
+        </div>
+        <div class="mb-3 text-base font-semibold text-gray-900">
+          {{ t("time_period.period_and_timing.title") }}
+        </div>
+        <div class="h-full w-full rounded-lg border p-5">
+          @for (
+            periodDuration of durations.controls;
+            track periodDuration;
+            let i = $index
+          ) {
+            <ng-container [formGroupName]="i">
+              <app-period-duration-form
+                [durations]="durations"
+                [durationForm]="periodDuration"
+                [showRemoveButton]="i === durations.controls.length - 1"
+                [isEdit]="isEdit"
+                class="w-full"
+                (removeClicked)="removePeriodDuration(i)"
+              ></app-period-duration-form>
+            </ng-container>
+          }
+          <ion-button
+            class="w-full border-0 hover:bg-[#fffce7] hover:text-[#ecad01]"
+            fill="solid"
+            [ngStyle]="{
+              '--background': periodDurationForm.invalid
+                ? '#f3f3f3'
+                : '#fffce7',
+              '--color': periodDurationForm.invalid ? '#a3a3a3' : '#ecad01',
+              '--border-width': '0',
+              cursor: periodDurationForm.invalid ? 'not-allowed' : 'pointer'
+            }"
+            (click)="addPeriodDuration()"
+            [disabled]="periodDurationForm.invalid"
+          >
+            {{ t("time_period.add_period.btn") }}
+          </ion-button>
+        </div>
+        <div
+          class="mb-2 mt-2 grid grid-cols-1 gap-8 gap-y-10 self-stretch md:grid-cols-2"
+        >
+          <ion-button
+            hesBtn
+            hesColor="secondary"
+            hesSize="xl"
+            (click)="closeModal()"
+          >
+            {{ t("global.cancel.btn") }}
+          </ion-button>
+          <ion-button
+            hesBtn
+            hesSize="xl"
+            [disabled]="periodDurationForm.invalid || !checkIfDayIsSelected()"
+            (click)="isEdit ? onUpdatePeriodDuration() : onAddTimePeriod()"
+          >
+            {{
+              isEdit
+                ? t("time_period.update_time_period.title")
+                : t("time_period.create_time_period.btn")
+            }}
+          </ion-button>
+        </div>
+      </ng-container>
+    </form>
+  </div>
+</div>

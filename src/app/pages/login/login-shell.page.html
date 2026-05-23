@@ -1,0 +1,114 @@
+<!-- html -->
+<!-- file: `src/app/pages/login/login-shell.page.html` -->
+<div
+  class="safe-area-top flex min-h-[100dvh] flex-col items-center bg-brand-35 sm:min-h-screen md:py-[56px]"
+>
+  <div class="flex h-full w-full max-w-[568px] flex-col">
+    <!-- Header with back button and progress -->
+    @if (showHeader()) {
+    <header class="px-2 pt-6" [ngClass]="showHeader() ? '' : 'hidden'">
+      <div class="mx-auto w-full max-w-xl">
+        <!-- Back button and progress container -->
+        <div class="mb-4 flex items-center gap-3">
+          <!-- Back button -->
+          @if (canGoBack() && isMobile) {
+          <button
+            class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-colors hover:bg-white/80 rtl:rotate-180"
+            (click)="goBack()"
+            [attr.aria-label]="'Go back'"
+          >
+            <svg
+              class="h-5 w-5 text-gray-700"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 19l-7-7 7-7"
+              ></path>
+            </svg>
+          </button>
+          }
+
+          <!-- Progress bar with same padding as footer buttons -->
+          <div class="flex-1 px-8">
+            <div class="h-2 w-full overflow-hidden rounded-full bg-gray-200">
+              <div
+                class="h-full bg-emerald-500 transition-all duration-500 ease-out"
+                [style.width.%]="progressPercentage()"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    }
+
+    <!-- Main column (mascot above step content) -->
+    <main class="flex-1 overflow-y-auto pb-[72px]">
+      <div class="mx-auto w-full max-w-xl">
+        @if (showMascot()) {
+        <app-mascot class="mt-6 block w-full px-8"></app-mascot>
+        }
+
+        <!-- IMPORTANT: no card wrapper here -->
+        <section class="mt-4 px-4">
+          <router-outlet></router-outlet>
+        </section>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    @if (showFooter()) {
+    <footer
+      class="fixed bottom-0 left-1/2 z-50 w-full max-w-[568px] -translate-x-1/2 bg-[#FBF7EE]/90 px-8 py-4 pb-[max(env(safe-area-inset-bottom,0px),1rem)] backdrop-blur"
+      style="bottom: env(keyboard-inset-height, 0px)"
+    >
+      @if (isSkipButtonVisible()){
+      <div class="w-full py-3">
+        <ds-button
+          class="mx-4 my-4 w-full"
+          [size]="'lg'"
+          [fullWidth]="true"
+          (click)="skipStep()"
+          variant="secondary"
+        >
+          {{ skipLabel() }}
+        </ds-button>
+      </div>
+      }
+      <div class="flex gap-8">
+        @if (canGoBack() && !isMobile) {
+        <div class="flex-1">
+          <ds-button
+            [disabled]="!canGoBack()"
+            class="w-full"
+            [size]="'lg'"
+            [fullWidth]="true"
+            variant="secondary"
+            (click)="goBack()"
+          >
+            {{ previousLabel() }}
+          </ds-button>
+        </div>
+        }
+        <div class="flex-1">
+          <ds-button
+            [disabled]="!canContinue()"
+            class="w-full"
+            [size]="'lg'"
+            [fullWidth]="true"
+            [loading]="showButtonLoading()"
+            (click)="continue()"
+          >
+            {{ continueLabel() }}
+          </ds-button>
+        </div>
+      </div>
+    </footer>
+    }
+  </div>
+</div>

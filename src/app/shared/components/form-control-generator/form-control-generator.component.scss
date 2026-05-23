@@ -1,0 +1,106 @@
+@use "@taiga-ui/core/styles/taiga-ui-local.scss" as taiga;
+:root {
+  --tui-link: var(--h-color-primary, #ecad01);
+}
+
+label.hes-label {
+  .t-label {
+    font: unset;
+    color: #141519;
+    font-size: var(--font-size-sm);
+    line-height: var(--font-line-height-single);
+    font-weight: var(--font-weight-semibold);
+    padding-inline-start: var(--ds-spacing-md);
+  }
+}
+[tuiWrapper][data-appearance="hes-textfield"] {
+  background: #ffffff;
+  color: rgba(0, 0, 0, 0.87);
+  border-radius: 16px;
+  border: 2px solid #e5e6e7;
+
+  label.t-placeholder {
+    html[dir="rtl"] & {
+      direction: rtl;
+      text-align: right;
+    }
+  }
+
+  input {
+    color: var(--Neutral-neutral-100, #141519);
+    html[dir="rtl"] & {
+      direction: rtl;
+      text-align: right;
+    }
+  }
+
+  &:after {
+    @include taiga.transition(all);
+    height: 100%;
+    background: transparent;
+    border: 1px solid transparent;
+  }
+
+  @include taiga.wrapper-hover {
+    &:after {
+      border-color: var(--h-color-primary, #ecad01);
+    }
+  }
+
+  @include taiga.wrapper-focus {
+    // TODO: Better internal elements customization
+
+    &:after {
+      border-color: var(--h-color-primary, #ecad01);
+    }
+  }
+
+  @include taiga.wrapper-invalid {
+    // TODO: Better internal elements customization
+    label {
+      //   color: #b00020 !important;
+    }
+
+    &:after {
+      border-color: #e62e2e;
+    }
+  }
+  .t-icons {
+    background: #f6f7f9;
+    z-index: 1;
+  }
+}
+
+// Custom styling for tui-input-date
+tui-input-date {
+  [tuiWrapper] {
+    background: #ffffff !important;
+    border-radius: 16px !important;
+    border: 2px solid #e5e6e7 !important;
+  }
+}
+
+[type="text"]:focus,
+input:where(:not([type])):focus,
+[type="email"]:focus,
+[type="url"]:focus,
+[type="password"]:focus,
+[type="number"]:focus,
+[type="date"]:focus,
+[type="datetime-local"]:focus,
+[type="month"]:focus,
+[type="search"]:focus,
+[type="tel"]:focus,
+[type="time"]:focus,
+[type="week"]:focus,
+[multiple]:focus,
+textarea:focus,
+select:focus {
+  border-color: transparent !important;
+}
+
+html[dir="rtl"] tui-input-date-range tui-primitive-textfield._hidden {
+  .t-input {
+    padding-inline-start: 0 !important;
+  }
+}

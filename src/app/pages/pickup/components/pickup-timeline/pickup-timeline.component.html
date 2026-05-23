@@ -1,0 +1,35 @@
+<div *transloco="let t" class="flex flex-col gap-ds-xl">
+  <div class="relative">
+    <div
+      [ngClass]="{
+        'left-2.5': currentLang === 'en',
+        'right-2.5': currentLang === 'ar',
+      }"
+      class="absolute left-2.5 top-3 h-full w-0.5 bg-gray-200"
+    ></div>
+
+    <div class="space-y-6">
+      @for (timeline of timelineResult(); track timeline.id) {
+        @if (timeline.status !== pickupRequestStatus.IN_PROCESS) {
+          <div class="flex items-start">
+            <div class="relative">
+              <div class="h-6 w-6 rounded-full bg-amber-400"></div>
+            </div>
+            <div class="ms-4 flex flex-col gap-ds-xs">
+              <div class="single-line-sm-mid-emphasis text-content-high">
+                {{ timeline.status | enumLang }}
+              </div>
+              <div class="single-line-caption-mid-emphasis text-content-mid">
+                {{ timeline.createdAt | hesTime }}
+                <app-hes-icon [faIcon]="faClock"></app-hes-icon>
+              </div>
+              <div class="content-sm-default mt-1 italic text-content-mid">
+                {{ t(timeline.deniedOption.description) }}
+              </div>
+            </div>
+          </div>
+        }
+      }
+    </div>
+  </div>
+</div>

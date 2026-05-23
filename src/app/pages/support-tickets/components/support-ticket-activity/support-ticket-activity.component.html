@@ -1,0 +1,194 @@
+<ng-container *transloco="let t">
+  <div class="flex flex-col items-stretch gap-3 lg:gap-8">
+    @if (isAssigneeView()) {
+      <div class="text-xl font-semibold capitalize leading-5 text-[#141519]">
+        {{ t("support_ticket.activity.title") }}
+      </div>
+    }
+
+    <div
+      [ngClass]="{ 'hes-card p-6': !isAssigneeView() }"
+      class="flex flex-col items-stretch gap-4 lg:gap-6"
+    >
+      @for (activity of activities(); track $index; let first = $first) {
+        <div
+          [ngClass]="{ 'hes-card p-6': isAssigneeView() }"
+          class="flex flex-col items-start gap-5"
+        >
+          <div class="flex w-full items-start justify-between">
+            <div
+              [ngClass]="{
+                'text-[0.625rem]': isAssigneeView(),
+                'text-base': !isAssigneeView()
+              }"
+              class="font-semibold capitalize leading-5 text-[#141519] lg:text-lg"
+            >
+              @if (isAssigneeView()) {
+                <span>
+                  {{
+                    !activity.isCurrUSer
+                      ? activity.fullName
+                      : t("global.you.txt")
+                  }}
+                </span>
+                @if (activity.initiator) {
+                  <span class="font-normal normal-case">{{
+                    t("support_ticket.initiated_ticket.txt")
+                  }}</span>
+                } @else if (
+                  activity.activityType === SupportTicketStatus.RESOLVED
+                ) {
+                  <span class="font-normal normal-case">{{
+                    t("support_ticket.resolved_ticket.txt")
+                  }}</span>
+                } @else if (
+                  activity.activityType === SupportTicketStatus.DE_ESCALATE
+                ) {
+                  <span class="font-normal normal-case">{{
+                    t("support_ticket.deescalated_ticket.txt") +
+                      " " +
+                      activity.newLevelNumber
+                  }}</span>
+                } @else {
+                  <span class="font-normal normal-case">{{
+                    t("support_ticket.escalated_ticket.txt") +
+                      " " +
+                      activity.newLevelNumber
+                  }}</span>
+                }
+              } @else {
+                @if (activity.activityType === SupportTicketStatus.RESOLVED) {
+                  <ng-container>
+                    {{ t("support_ticket.response.title") }}
+                  </ng-container>
+                } @else {
+                  <span>
+                    {{ t("global.comments.title") }}
+                  </span>
+                }
+              }
+            </div>
+            <div
+              class="whitespace-nowrap text-xs font-normal leading-5 text-[#141519] lg:text-base"
+            >
+              {{
+                t("global.date_time.value", {
+                  date: activity.activityDate | hesDate,
+                  time: activity.activityDate | hesTime
+                })
+              }}
+            </div>
+          </div>
+          @if (activity.description) {
+            <div
+              [ngClass]="{
+                'lg:min-h-28 lg:w-[45rem]': isAssigneeView()
+              }"
+              class="flex w-full flex-col gap-3"
+            >
+              @if (isAssigneeView()) {
+                <div
+                  class="text-xs font-semibold capitalize leading-5 text-[#141519] lg:text-base"
+                >
+                  @if (activity.activityType === SupportTicketStatus.RESOLVED) {
+                    <ng-container>
+                      {{ t("support_ticket.response.title") }}
+                    </ng-container>
+                  } @else {
+                    <span>
+                      {{ t("global.comments.title") }}
+                    </span>
+                  }
+                </div>
+              }
+              <textarea
+                [ngModel]="activity.description"
+                [readonly]="true"
+                type="text"
+                class="w-full resize-none rounded-xl border-none bg-[#F6F7F9] text-base text-[#41434A] md:rounded-lg"
+                autosize
+                [minRows]="2"
+                [maxRows]="7"
+              ></textarea>
+            </div>
+          }
+          @if (imgAttachments(activity.attachments)!.length > 4) {
+            <div class="flex flex-wrap items-center gap-2">
+              @for (
+                attachment of imgAttachments(activity.attachments)!.slice(0, 3);
+                track index;
+                let index = $index
+              ) {
+                <ion-img
+                  (click)="
+                    onViewImg(index, imgAttachments(activity.attachments))
+                  "
+                  [src]="attachment.url"
+                  class="h-[7.5rem] w-[7.5rem] object-cover [&::part(image)]:rounded-lg"
+                ></ion-img>
+              }
+              <div
+                (click)="onViewImg(3, imgAttachments(activity.attachments))"
+                class="relative h-[7.5rem] w-[7.5rem]"
+              >
+                <ion-img
+                  [src]="imgAttachments(activity.attachments)![3].url"
+                  class="h-[7.5rem] w-[7.5rem] object-cover [&::part(image)]:rounded"
+                ></ion-img>
+                <div
+                  class="absolute bottom-0 left-0 right-0 top-0 rounded bg-[#212121] opacity-60"
+                ></div>
+                <div
+                  class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+                >
+                  <span class="text-sm text-white"
+                    >+{{
+                      imgAttachments(activity.attachments)!.length - 3
+                    }}</span
+                  >
+                </div>
+              </div>
+            </div>
+          } @else {
+            <div class="flex flex-wrap items-center gap-2">
+              @for (
+                attachment of imgAttachments(activity.attachments)!;
+                track index;
+                let index = $index
+              ) {
+                <ion-img
+                  (click)="
+                    onViewImg(index, imgAttachments(activity.attachments))
+                  "
+                  [src]="attachment.url"
+                  class="h-[7.5rem] w-[7.5rem] object-cover [&::part(image)]:rounded-lg"
+                ></ion-img>
+              }
+            </div>
+          }
+
+          @if (activity.attachments?.length) {
+            <div class="pdf-cards-wrapper mt-4">
+              @for (
+                file of pdfAttachments(activity.attachments);
+                track $index
+              ) {
+                <app-file-preview-card [file]="file"></app-file-preview-card>
+              }
+            </div>
+          }
+          @if (activity.attachments?.length) {
+            <div class="pdf-cards-wrapper mt-4">
+              @for (
+                file of pptAttachments(activity.attachments);
+                track $index
+              ) {
+                <app-file-preview-card [file]="file"></app-file-preview-card>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</ng-container>

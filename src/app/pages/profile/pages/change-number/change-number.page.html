@@ -1,0 +1,140 @@
+<ion-content class="ds-page-content" *transloco="let t">
+  @if (currentStep() === 'mobile') {
+  <app-mobile-entry-shell
+    [mascotImage]="mascotImage()"
+    [speechBubbleMessage]="t('profile.change_number.txt')"
+    [continueDisabled]="phoneNumberControl.invalid"
+    [continueLoading]="isLoading()"
+    (continueClick)="onContinue()"
+  >
+    <app-ds-input
+      [label]="t('login.enter_your_mobile.title')"
+      [placeholder]="'XXXXXXXXX'"
+      [prefix]="'+966'"
+      [dsType]="'tel'"
+      [inputMode]="'tel'"
+      [errorMessage]="getPhoneNumberError()"
+      [loading]="isLoading()"
+      iconStart="ksa-flag"
+      [formControl]="phoneNumberControl"
+      [maxLength]="9"
+      [outerContainerClass]="'w-full'"
+    ></app-ds-input>
+  </app-mobile-entry-shell>
+  } @if (currentStep() === 'otp') {
+  <app-mobile-entry-shell
+    [mascotImage]="mascotImage()"
+    [speechBubbleMessage]="otpSpeechBubble()"
+    [continueDisabled]="!isOtpComplete() || isVerifying()"
+    [continueLoading]="isVerifying()"
+    (continueClick)="onSubmitOtp()"
+  >
+    <!-- 4-digit OTP inputs -->
+    <div class="flex flex-col items-center gap-ds-xl">
+      <form [formGroup]="otpForm">
+        <div class="flex gap-6 md:gap-8" dir="ltr">
+          <app-ds-input
+            formControlName="digit1"
+            class="block w-[56px]"
+            [dsType]="'tel'"
+            [inputMode]="'numeric'"
+            [maxLength]="1"
+            placeholder=""
+            inputClasses="text-center"
+            (valueChanged)="onDigitInput($event, 0)"
+            [autocomplete]="'one-time-code'"
+          ></app-ds-input>
+          <app-ds-input
+            formControlName="digit2"
+            class="block w-[56px]"
+            [dsType]="'tel'"
+            [inputMode]="'numeric'"
+            [maxLength]="1"
+            placeholder=""
+            inputClasses="text-center"
+            (valueChanged)="onDigitInput($event, 1)"
+          ></app-ds-input>
+          <app-ds-input
+            formControlName="digit3"
+            class="block w-[56px]"
+            [dsType]="'tel'"
+            [inputMode]="'numeric'"
+            [maxLength]="1"
+            placeholder=""
+            inputClasses="text-center"
+            (valueChanged)="onDigitInput($event, 2)"
+          ></app-ds-input>
+          <app-ds-input
+            formControlName="digit4"
+            class="block w-[56px]"
+            [dsType]="'tel'"
+            [inputMode]="'numeric'"
+            [maxLength]="1"
+            placeholder=""
+            inputClasses="text-center"
+            (valueChanged)="onDigitInput($event, 3)"
+          ></app-ds-input>
+        </div>
+      </form>
+
+      <!-- Resend section -->
+      <div class="flex flex-col items-center gap-ds-sm text-center">
+        <p class="content-sm-default text-emphasis-mid">
+          {{ t("login.code_not_received.txt") }}
+        </p>
+        @if (!canResend()) {
+        <p class="content-sm-mid-emphasis text-emphasis-high">
+          {{ t("login.resend_code_time.txt") }} {{ remainingTime() }}
+        </p>
+        } @else {
+        <button
+          class="content-sm-mid-emphasis text-primary-400"
+          (click)="onResendOtp()"
+        >
+          {{ t("login.resend_code.btn") }}
+        </button>
+        }
+      </div>
+    </div>
+  </app-mobile-entry-shell>
+  } @if (currentStep() === 'success') {
+  <div
+    class="safe-area-top flex min-h-[100dvh] flex-col items-center bg-brand-35 sm:min-h-screen md:py-[56px]"
+  >
+    <div
+      class="flex h-full max-w-[568px] flex-col items-center justify-between overflow-hidden py-5 text-center"
+    >
+      <div class="flex flex-col items-center">
+        <ds-animated-icon
+          icon="success-assessment"
+          [loop]="true"
+          [autoplay]="true"
+          [size]="animatedIconSize"
+        />
+        <div class="mb-2 p-2">
+          <h2 class="heading-h2-high-emphasis m-0 mb-2 text-emphasis-high">
+            {{ t("global.successful.title") }}
+          </h2>
+          <p class="content-lg-default m-0 text-emphasis-mid">
+            {{ t("user_management.successfully_updated_number.txt") }}
+          </p>
+        </div>
+      </div>
+
+      <div
+        class="absolute bottom-0 flex w-full max-w-[568px] flex-col gap-3 p-4"
+      >
+        <ds-button
+          class="w-full"
+          [size]="'lg'"
+          variant="primary"
+          [fullWidth]="true"
+          (click)="done()"
+        >
+          {{ t("global.done.btn") }}
+        </ds-button>
+      </div>
+    </div>
+  </div>
+  }
+</ion-content>

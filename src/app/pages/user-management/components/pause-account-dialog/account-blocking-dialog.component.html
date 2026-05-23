@@ -1,0 +1,87 @@
+<div
+  *transloco="let t"
+  class="flex flex-col justify-center gap-5 rounded-xl bg-white md:gap-8 md:p-6"
+>
+  <div class="flex flex-col items-center gap-5">
+    <div>
+      <fa-icon
+        class="rounded-[28px] border-[8px] border-[#FFFAEB] bg-[#FEF0C7] p-3 text-lg text-red-500"
+        [icon]="faTriangleExclamation"
+        size="xl"
+      ></fa-icon>
+    </div>
+    <div class="flex flex-col items-center gap-2">
+      <div class="text-lg font-semibold text-gray-900">
+        @if (isPause()) {
+          {{
+            isBulk()
+              ? t("deactivation_paused_user.bulk_pause_accounts.title")
+              : t("deactivation_paused_user.pause_account.title")
+          }}
+        } @else {
+          {{
+            isBulk()
+              ? t("global.bulk_deactivate_accounts.title")
+              : t("global.deactivate_account.title")
+          }}
+        }
+      </div>
+      <div class="text-sm font-bold text-gray-500">
+        @if (isPause()) {
+          {{
+            isBulk()
+              ? t("deactivation_paused_user.bulk_pause_accounts.txt", {
+                  studentName: this.studentName(),
+                })
+              : t("deactivation_paused_user.pause_account.txt", {
+                  studentName: this.studentName(),
+                })
+          }}
+        } @else {
+          {{
+            isBulk()
+              ? t("user_management.bulk_deactivate_accounts_alert.txt")
+              : t("user_management.deactivate_account_alert.txt")
+          }}
+        }
+      </div>
+    </div>
+  </div>
+
+  <form
+    [formGroup]="form"
+    class="flex w-full flex-col items-end justify-start gap-4"
+  >
+    <div class="grid grid-cols-1 gap-8 gap-y-4 self-stretch md:grid-cols-1">
+      @for (control of formConfig(); track $index) {
+        <div class="flex-1">
+          <app-form-control-generator
+            [control]="control"
+          ></app-form-control-generator>
+        </div>
+      }
+    </div>
+    <div
+      class="mb-2 mt-4 grid grid-cols-1 gap-2 self-stretch md:grid-cols-2 md:gap-8"
+    >
+      <ion-button
+        hesBtn
+        hesColor="secondary"
+        hesSize="xl"
+        (click)="closeModal()"
+      >
+        {{ t("global.cancel.btn") }}
+      </ion-button>
+      <ion-button
+        [disabled]="form.invalid"
+        hesBtn
+        hesColor="primary"
+        hesSize="xl"
+        (click)="onConfirm()"
+        class="order-first md:order-none"
+      >
+        {{ t("global.confirm.btn") }}
+      </ion-button>
+    </div>
+  </form>
+</div>

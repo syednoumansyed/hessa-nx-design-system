@@ -1,0 +1,303 @@
+<div class="flex items-center justify-end gap-2">
+  @if (labelIcon()) {
+    <app-hes-icon
+      class="text-xl text-primary-400"
+      [hesIcon]="{ src: labelIcon() }"
+    ></app-hes-icon>
+  }
+  @if (label()) {
+    <ion-label
+      [ngClass]="{
+        disabled: disabled(),
+      }"
+      class="flex-1 pb-2"
+    >
+      {{ label() }}
+      @if (required()) {
+        <span>*</span>
+      }
+    </ion-label>
+  }
+  @if (isEditabeControl()) {
+    @if (!isEditable()) {
+      <button (click)="toggleIsEditable()">
+        <app-hes-icon
+          class="text-base text-[#344054]"
+          [faIcon]="{ icon: faPen }"
+        ></app-hes-icon>
+      </button>
+    }
+  }
+</div>
+
+<div>
+  <div
+    [id]="'searchable-select-' + randomId"
+    [ngClass]="{
+      'border border-gray-300 bg-transparent': fill() === 'outline',
+      'bg-[#F6F7F9]': fill() === 'solid',
+      'h-8': condensed(),
+      'h-12': !condensed(),
+      'border-[#D0D5DD]':
+        (selectedValue() !== undefined && selectedValue() !== null) ||
+        selectedValues().length,
+      'border-none !shadow-none': readonly(),
+      'pointer-events-none':
+        readonly() || disabled() || (isEditabeControl() && !isEditable()),
+    }"
+    [class]="
+      'flex items-center gap-2 rounded-lg px-[0.88rem] py-[0.63rem] shadow-xs ' +
+      inputClass()
+    "
+  >
+    <span
+      [ngClass]="{
+        'min-w-[1.88rem]': !condensed(),
+        'min-w-5': condensed(),
+        'text-base font-medium leading-6 text-gray-900':
+          (selectedValue() !== undefined && selectedValue() !== null) ||
+          selectedValues().length,
+      }"
+      class="flex-grow overflow-hidden overflow-ellipsis text-nowrap text-sm font-light text-[#838799]"
+    >
+      @if (persistPlaceholder() && placeholder()) {
+        {{ placeholder() }}
+      } @else if (
+        selectedValue() !== undefined &&
+        selectedValue() !== null &&
+        selectedValue()?.toString()?.length &&
+        !multiple() &&
+        data().length > 0
+      ) {
+        @if (selectedDisplayTemplate() && selectedValueObj()) {
+          <ng-container
+            [ngTemplateOutlet]="selectedDisplayTemplate()!"
+            [ngTemplateOutletContext]="{ item: selectedValueObj() }"
+          ></ng-container>
+        } @else {
+          {{
+            isEnumTranslate()
+              ? (selectedValueObj()?.displayedValue | enumLang)
+              : selectedValueObj()?.displayedValue
+          }}
+        }
+      } @else if (selectedValues().length && multiple()) {
+        {{ selectedMultipleDisplayedval().join(", ") }}
+      } @else {
+        {{ placeholder() }}
+      }
+    </span>
+    @if (!readonly()) {
+      <fa-icon
+        class="text-gray-500 transition-transform"
+        [ngClass]="{ 'rotate-180': isOpen() && !showClockIcon() }"
+        [icon]="showClockIcon() ? faClock : faChevronDown"
+        [size]="showClockIcon() ? 'lg' : condensed() ? '2xs' : '1x'"
+      ></fa-icon>
+    }
+  </div>
+  @if (multiple() && showChips()) {
+    <div class="mt-4 flex flex-wrap items-center justify-start gap-3">
+      @for (item of selectedValuesObjs().slice(0, 3); track item.id) {
+        <ion-chip [disabled]="disabled()" class="hes-chip hes-chip--sm">
+          <ion-label>{{
+            formatChipsSelectedValueFn()
+              ? formatChipsSelectedValueFn()!(item.displayedValue)
+              : isEnumTranslate()
+                ? (item.displayedValue | enumLang)
+                : item.displayedValue
+          }}</ion-label>
+          @if (!disabled()) {
+            <ion-icon
+              name="close"
+              (click)="removeSelectedValue(item.value)"
+            ></ion-icon>
+          }
+        </ion-chip>
+      }
+      @if (selectedValues() && selectedValues().length > 3) {
+        <ion-chip
+          [disabled]="disabled()"
+          class="hes-chip hes-chip--sm"
+          [outline]="false"
+          (click)="isChipsModalOpen.set(true)"
+        >
+          <ion-label>+{{ selectedValues().length - 3 }}</ion-label>
+        </ion-chip>
+      }
+    </div>
+    <ion-modal
+      class="hes-modal"
+      [isOpen]="isChipsModalOpen()"
+      (ionModalDidDismiss)="isChipsModalOpen.set(false)"
+    >
+      <ng-template>
+        <div class="p-4 pt-5">
+          <div class="mb-4 text-base font-semibold leading-5">
+            <!-- {{ control().label }} -->
+          </div>
+          <div class="mb-6 flex flex-wrap items-center justify-start gap-3">
+            @for (item of selectedValuesObjs(); track item.value) {
+              <ion-chip class="hes-chip hes-chip--sm">
+                <ion-label>{{
+                  formatChipsSelectedValueFn()
+                    ? formatChipsSelectedValueFn()!(item.displayedValue)
+                    : isEnumTranslate()
+                      ? (item.displayedValue | enumLang)
+                      : item.displayedValue
+                }}</ion-label>
+                @if (!disabled()) {
+                  <ion-icon
+                    name="close"
+                    (click)="removeSelectedValue(item.value)"
+                  ></ion-icon>
+                }
+              </ion-chip>
+            }
+          </div>
+          <ion-button (click)="isChipsModalOpen.set(false)" expand="block"
+            >OK</ion-button
+          >
+        </div>
+      </ng-template></ion-modal
+    >
+  }
+</div>
+
+@if (!readonly()) {
+  <ion-popover
+    #popover
+    [backdropDismiss]="true"
+    [trigger]="'searchable-select-' + randomId"
+    size="auto"
+    (willPresent)="onWillPresent()"
+    (willDismiss)="onWillDismiss()"
+    [ngClass]="{
+      condensed: condensed(),
+      empty: !!!data().length,
+      'auto-height': data().length < 6,
+    }"
+    class="select-popover"
+    mode="md"
+  >
+    <ng-template>
+      @if (searchable()) {
+        <ion-searchbar
+          *transloco="let t"
+          [(ngModel)]="SearchTxt"
+          class="p-0"
+          [debounce]="searchDebounceTime()"
+          (ionInput)="searchInputChanged($event)"
+          (ionChange)="searchChanged($event)"
+          [placeholder]="t('global.search.placeholder')"
+        ></ion-searchbar>
+      }
+      <ion-content [ngClass]="{ condensed: condensed() }" class="bg-white">
+        <div
+          [ngClass]="{
+            hidden: !showClearBtn(),
+            flex: showClearBtn(),
+          }"
+          class="w-full items-center justify-end bg-white pe-1 pt-1"
+          slot="fixed"
+        >
+          <ion-button
+            hesBtn
+            hesColor="link"
+            hesSize="xs"
+            class="!font-normal capitalize !leading-6 text-[#383C57]"
+            (click)="onClear()"
+          >
+            <span *transloco="let t" class="px-1 py-1">{{
+              t("global.clear.btn")
+            }}</span>
+          </ion-button>
+        </div>
+        <ion-list>
+          @if (!multiple()) {
+            @if (computedData().length) {
+              <ion-radio-group
+                [allowEmptySelection]="allowEmptySelection()"
+                [ngModel]="selectedValue()"
+                (ngModelChange)="updateSelectedValue($event)"
+              >
+                @for (item of computedData(); track $index) {
+                  <ion-item [ngClass]="{ 'text-xs': condensed() }" lines="none">
+                    <ion-radio
+                      class="px-[0.88rem]"
+                      alignment="center"
+                      labelPlacement="start"
+                      [value]="item.value"
+                      [disabled]="item.disabled"
+                      ><ng-container
+                        [ngTemplateOutlet]="
+                          selectOptionTemplate()
+                            ? selectOptionTemplate()!
+                            : defaultSelectOption
+                        "
+                        [ngTemplateOutletContext]="{ item: item }"
+                      >
+                      </ng-container
+                    ></ion-radio>
+                  </ion-item>
+                }
+              </ion-radio-group>
+            } @else {
+              <div *transloco="let t" class="p-4 text-center">
+                {{ t("global.no_data.txt") }}
+              </div>
+            }
+          } @else {
+            @if (computedData().length) {
+              <app-hes-checkbox-group
+                [ngModel]="selectedValues()"
+                (ngModelChange)="updateSelectedValues($event)"
+              >
+                @for (item of computedData(); track item.value) {
+                  <ion-item lines="none">
+                    <ion-checkbox
+                      class="px-[0.88rem]"
+                      justify="start"
+                      labelPlacement="end"
+                      [value]="item.value"
+                      [disabled]="item.disabled"
+                      ><ng-container
+                        [ngTemplateOutlet]="
+                          selectOptionTemplate()
+                            ? selectOptionTemplate()!
+                            : defaultSelectOption
+                        "
+                        [ngTemplateOutletContext]="{ item: item }"
+                      >
+                      </ng-container
+                    ></ion-checkbox>
+                  </ion-item>
+                }
+              </app-hes-checkbox-group>
+            } @else {
+              <div *transloco="let t" class="p-4 text-center">
+                {{ t("global.no_data.txt") }}
+              </div>
+            }
+          }
+        </ion-list>
+        @if (
+          pagination() &&
+          pagination()!.totalPages > 1 &&
+          pagination()!.totalItems > pagination()!.itemsPerPage &&
+          pagination()!.pageNumber !== pagination()!.totalPages &&
+          data()!.length < pagination()!.totalItems
+        ) {
+          <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
+            <ion-infinite-scroll-content></ion-infinite-scroll-content>
+          </ion-infinite-scroll>
+        }
+      </ion-content>
+    </ng-template>
+  </ion-popover>
+}
+<ng-template #defaultSelectOption let-item="item">
+  {{
+    isEnumTranslate() ? (item.displayedValue | enumLang) : item.displayedValue
+  }}
+</ng-template>

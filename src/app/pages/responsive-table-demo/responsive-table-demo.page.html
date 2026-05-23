@@ -1,0 +1,33 @@
+<!--
+  SIMPLIFIED USAGE WITH DATASOURCE
+
+  When dataSource is provided in the config, the component handles ALL state internally:
+  - Loading state (shows skeleton/spinner automatically)
+  - Filter values (managed internally, triggers dataSource on change)
+  - Pagination (managed internally, triggers dataSource on change)
+  - Infinite scroll (managed internally for mobile)
+  - Data fetching (automatic on filter/sort/pagination changes)
+
+  Consumer only needs:
+  - [config] with dataSource function
+  - Optional event handlers for business logic (selectionChanged, bulkActionClick, rowClicked, sortChanged)
+-->
+<div class="flex h-full min-h-0 flex-col">
+  <ds-responsive-table
+    class="min-h-0 w-full flex-1"
+    [config]="config()"
+    (selectionChanged)="onSelectionChanged($event)"
+    (bulkActionClick)="onBulkAction($event)"
+    (rowClicked)="onRowClicked($event)"
+    (sortChanged)="onSortChanged($event)"
+  >
+    <!-- Header prefix content (works in both mobile and desktop) -->
+    <ng-template dsHeaderPrefix>
+      <div class="mb-ds-lg flex gap-2 pt-ds-xl lg:mb-0 lg:pt-0">
+        <ds-button variant="tertiary" size="sm" (click)="toggleBulkActions()">
+          {{ bulkActionsEnabled() ? 'Disable' : 'Enable' }} Bulk Actions
+        </ds-button>
+      </div>
+    </ng-template>
+  </ds-responsive-table>
+</div>

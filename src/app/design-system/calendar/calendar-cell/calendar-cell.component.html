@@ -1,0 +1,18 @@
+<div
+  [ngClass]="cellStyle()"
+  [attr.data-week-label]="isWeekLabel() ? 'true' : 'false'"
+  dsTooltip
+  [dsTooltipTitle]="tooltipTitle()"
+  [dsTooltipContent]="tooltipContent()"
+  [dsTooltipFooter]="tooltipFooter()"
+  [dsTooltipIcon]="circleInfoIcon"
+>
+  {{ display() }}
+  @if (icon()) {
+    <div
+      class="pointer-events-none absolute right-0 top-1/2 flex h-5 w-5 -translate-y-1/2 translate-x-[75%] items-center md:translate-x-[60%] rtl:-translate-x-[100%] rtl:md:-translate-x-[120%]"
+    >
+      <app-ds-icon [icon]="icon()!" size="20px" />
+    </div>
+  }
+</div>

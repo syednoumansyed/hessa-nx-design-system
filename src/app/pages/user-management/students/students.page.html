@@ -1,0 +1,14 @@
+<div class="ds-page-content mb-4 h-full w-full md:mt-4" *transloco="let t;">
+  <app-list-view-container
+    [columns]="columns"
+    class="w-full"
+    [dataSource]="fetchStudentList"
+    [primaryActions]="primaryActions()"
+    [noDataConfig]="noDataConfig"
+    [mobileVisibleFieldsLimit]="5"
+    [pageTitle]="t('global.students.title')"
+    [canCopy]="true"
+    [persistColumnSettings]="true"
+    (rowClicked)="onRowClicked($event)"
+  />
+</div>

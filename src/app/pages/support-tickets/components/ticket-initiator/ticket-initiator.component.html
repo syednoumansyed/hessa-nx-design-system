@@ -1,0 +1,161 @@
+<ng-container *transloco="let t">
+  <div class="hes-card flex flex-col p-0">
+    <div class="flex w-full items-center justify-between px-6 py-5">
+      <div class="text-lg font-semibold leading-5 text-gray-900">
+        {{ t("support_ticket.initiated_by.title") }}
+      </div>
+
+      <div
+        *ngIf="
+          !isLoggedInAsOtherUser &&
+          !(
+            currentUserTypeId == user()?.userTypeId &&
+            currentUserType == userType()
+          )
+        "
+      >
+        <ion-button
+          *hesRbac="LOGIN_AS_PERMISSION"
+          hesBtn
+          hesColor="gray"
+          (click)="showLoginDialog()"
+          >{{ t("global.login_user.btn") }}
+        </ion-button>
+      </div>
+    </div>
+    <div class="flex flex-wrap items-center justify-start">
+      <div class="flex flex-grow items-center gap-3 px-6 py-4">
+        <div
+          [ngClass]="{
+            'bg-[#E9F8FF] text-[#01A5EC]': user()?.gender === Gender.MALE,
+            'bg-[#F9F5FF] text-[#7F56D9]': user()?.gender === Gender.FEMALE,
+          }"
+          class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-base font-medium"
+        >
+          <span>{{ user()?.displayName | hesInitials }}</span>
+        </div>
+        <div class="text-gray-000 text-sm font-medium">
+          {{ user()?.displayName }}
+        </div>
+        <div
+          (click)="goToInitiatorProfile()"
+          class="flex h-4 w-4 cursor-pointer items-center justify-center"
+        >
+          <app-hes-icon
+            class="h-4 w-4"
+            [hesIcon]="viewProfileIcon"
+          ></app-hes-icon>
+        </div>
+        <!--  -->
+      </div>
+      <div class="flex flex-grow items-center gap-3 px-6 py-4">
+        <div class="flex flex-col gap-2">
+          <div *transloco="let t" class="text-sm text-gray-500">
+            {{ t("global.role.title") }}
+          </div>
+          <div class="flex items-center gap-2">
+            <app-hes-icon
+              class="flex h-6 w-6 items-center justify-center"
+              [faIcon]="userIcon"
+            ></app-hes-icon>
+            <div class="text-sm font-medium text-gray-900">
+              {{ role()?.displayName }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="h-[0.0625rem] w-full bg-gray-200 lg:hidden"></div>
+      <div
+        *transloco="let t"
+        class="flex flex-grow items-center gap-3 px-6 py-4"
+      >
+        <div class="flex flex-col gap-2">
+          <div class="text-sm text-gray-500">
+            {{ t("global.national_id.title") }}
+          </div>
+          <div class="text-sm font-medium text-gray-900">
+            {{ user()?.nationalId }}
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-grow items-center gap-3 px-6 py-4">
+        <div class="flex flex-col gap-2">
+          <div *transloco="let t" class="text-sm text-gray-500">
+            {{ t("global.phone_number.title") }}
+          </div>
+          <div class="phone-number-dir text-sm font-medium text-gray-900">
+            {{ user()?.displayPhoneNumber }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex w-full items-center justify-between px-6 py-5">
+      <div>
+        <div class="flex items-center justify-between px-6 py-2">
+          <div class="font-semibold leading-5 text-gray-500 underline">
+            {{ t("global.company.title") }}
+          </div>
+        </div>
+        <div class="flex flex-wrap items-center justify-start">
+          <div
+            class="flex flex-grow items-center gap-3 px-6 py-2 text-gray-900"
+            [ngClass]="
+              company().companyAccess
+                ? 'cursor-pointer hover:text-blue-500'
+                : ''
+            "
+            (click)="changeSelection('company')"
+          >
+            {{ schoolStructure()?.company?.displayName }}
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="flex items-center justify-between px-6 py-2">
+          <div class="font-semibold leading-5 text-gray-500 underline">
+            {{ t("global.campus.title") }}
+          </div>
+        </div>
+        <div class="flex flex-wrap items-center justify-start">
+          <div
+            class="flex flex-grow items-center gap-3 px-6 py-2"
+            [ngClass]="
+              campus().campusAccess ? 'cursor-pointer hover:text-blue-500' : ''
+            "
+            (click)="changeSelection('campus')"
+          >
+            {{ schoolStructure()?.campus?.displayName }}
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="flex items-center justify-between px-6 py-2">
+          <div class="font-semibold leading-5 text-gray-500 underline">
+            {{ t("global.school.title") }}
+          </div>
+        </div>
+        <div class="flex flex-wrap items-center justify-start">
+          <div
+            class="flex flex-grow items-center gap-3 px-6 py-2"
+            [ngClass]="
+              school().schoolAccess ? 'cursor-pointer hover:text-blue-500' : ''
+            "
+            (click)="changeSelection('school')"
+          >
+            {{ schoolStructure()?.school?.displayName }}
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="flex items-center justify-between px-6 py-4">
+          <div class="text-lg font-semibold leading-5 text-gray-900"></div>
+        </div>
+        <div class="flex flex-wrap items-center justify-start">
+          <div class="flex flex-grow items-center gap-3 px-6 py-4"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>

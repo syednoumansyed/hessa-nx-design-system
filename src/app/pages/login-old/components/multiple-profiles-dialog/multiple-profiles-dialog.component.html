@@ -1,0 +1,105 @@
+<div
+  *transloco="let t"
+  class="Modal flex flex-col items-center justify-start gap-4 rounded-xl bg-white px-8 py-10 shadow"
+>
+  <div
+    class="Content flex flex-col items-center justify-start gap-5 self-stretch"
+  >
+    <div class="flex items-center justify-between">
+      <div class="relative">
+        <div
+          [ngClass]="{
+            'translate-x-4': currentLang === langEnum.ENGLISH,
+            '-translate-x-4': currentLang === langEnum.ARABIC,
+          }"
+          class="flex h-12 w-12 items-center justify-center rounded-full bg-[#EFEFEF]"
+        >
+          <fa-icon class="text-[#CFCFD0]" [icon]="faUser" size="lg"></fa-icon>
+        </div>
+      </div>
+
+      <div class="relative z-[1]">
+        <div
+          class="flex h-16 w-16 -translate-y-1.5 items-center justify-center rounded-full border border-white bg-[#ECECEE]"
+        >
+          <fa-icon class="text-[#BCBDC3]" [icon]="faUser" size="xl"></fa-icon>
+        </div>
+      </div>
+
+      <div class="relative">
+        <div
+          [ngClass]="{
+            '-translate-x-4': currentLang === langEnum.ENGLISH,
+            'translate-x-4': currentLang === langEnum.ARABIC,
+          }"
+          class="flex h-12 w-12 items-center justify-center rounded-full bg-[#EFEFEF]"
+        >
+          <fa-icon class="text-[#CFCFD0]" [icon]="faUser" size="lg"></fa-icon>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col items-start justify-start gap-2 self-stretch">
+      <div class="self-stretch text-center text-xl font-semibold text-gray-900">
+        {{ t("global.multiple_profiles_detected.title") }}
+      </div>
+      <div
+        class="mb-4 self-stretch text-center text-sm font-normal text-gray-500"
+      >
+        {{
+          t("login-old.associated_profile.txt", { phoneNumber: phoneNumber })
+        }}
+      </div>
+      <ion-list class="ion-no-padding max-h-96 w-full overflow-y-auto bg-white">
+        @for (profile of profilesList; track profile.userId) {
+          <ion-item
+            lines="none"
+            class="w-full cursor-pointer border-b border-gray-300 bg-white p-0"
+            [class.border-b]="!$last"
+            [class.border-gray-300]="!$last"
+            (click)="onProfileSelection(profile)"
+          >
+            <div
+              [ngClass]="{
+                'hover:translate-x-2': currentLang === langEnum.ENGLISH,
+                'hover:-translate-x-2': currentLang === langEnum.ARABIC,
+              }"
+              class="item-inner flex w-full items-center justify-between border-0 p-4 px-0 transition duration-300"
+            >
+              <div
+                [ngClass]="{
+                  'bg-[#F9F5FF] text-[#7F56D9]': profile.type === 'STUDENT',
+                  'bg-[#E9F8FF] text-[#01A5EC]': profile.type === 'PERSONNEL',
+                  'bg-[#FFF9E9] text-[#ECAD01]': profile.type === 'GUARDIAN',
+                }"
+                class="me-4 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full font-semibold"
+              >
+                <span>{{ profile.displayName | hesInitials }}</span>
+              </div>
+              <div class="flex-grow">
+                <div class="text-md font-semibold text-gray-700">
+                  {{ profile.displayName }}
+                </div>
+                <div class="text-md capitalize text-gray-500">
+                  {{ profile.type | lowercase }}
+                </div>
+              </div>
+              <div
+                class="CheckCircle flex h-6 w-6 flex-col items-start justify-start"
+              >
+                <fa-icon
+                  [icon]="
+                    currentLang === langEnum.ENGLISH
+                      ? faAngleRight
+                      : faAngleLeft
+                  "
+                  size="lg"
+                ></fa-icon>
+              </div>
+            </div>
+          </ion-item>
+        }
+      </ion-list>
+    </div>
+  </div>
+</div>

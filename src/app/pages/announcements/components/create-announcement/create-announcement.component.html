@@ -1,0 +1,49 @@
+<div
+  *transloco="let t"
+  class="flex flex-col items-center justify-center gap-8 p-6"
+>
+  <div class="flex flex-col items-center justify-center gap-2">
+    <h5 class="capitalize leading-7 text-gray-900">
+      {{ t("announcements.create_announcement.title") }}
+    </h5>
+    <p class="body-sm leading-5 text-gray-500">
+      {{ t("announcements.select_announcement.txt") }}
+    </p>
+  </div>
+
+  <div class="text- flex w-full flex-col gap-3">
+    <button
+      (click)="onCreatePost()"
+      *hesRbac="createPostPermissionId"
+      class="flex items-center justify-start gap-2 rounded-lg bg-primary px-10 py-3 text-white"
+    >
+      <app-hes-icon
+        hesBtnIcon
+        [hesIcon]="{
+          src: '/assets/icons/create-post.svg',
+          class: 'flex text-2xl',
+        }"
+      ></app-hes-icon>
+      <span class="text-base font-semibold capitalize">{{
+        t("announcements.create_post.btn")
+      }}</span>
+    </button>
+
+    <button
+      (click)="onCreateSMS()"
+      *hesRbac="createSmsPermissionId"
+      class="flex items-center justify-start gap-2 rounded-lg bg-primary px-10 py-3 text-white"
+    >
+      <app-hes-icon
+        hesBtnIcon
+        [hesIcon]="{
+          src: '/assets/icons/create-sms.svg',
+          class: 'flex text-2xl',
+        }"
+      ></app-hes-icon>
+      <span class="text-base font-semibold capitalize">{{
+        t("announcements.create_sms.btn")
+      }}</span>
+    </button>
+  </div>
+</div>

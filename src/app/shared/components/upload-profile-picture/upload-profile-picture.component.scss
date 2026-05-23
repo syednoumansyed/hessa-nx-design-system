@@ -1,0 +1,98 @@
+:host {
+  // Dark overlay outside the crop area
+  --cropper-overlay-color: rgba(0, 0, 0, 0.6);
+  // Cropper border
+  --cropper-outline-color: rgba(255, 255, 255, 0.8);
+}
+
+.cropper-container {
+  width: 100%;
+  height: 60vh;
+  max-height: 600px;
+  position: relative;
+  background: #fff;
+}
+
+// Make resize handle hit-zones larger for mobile touch
+::ng-deep {
+  .ngx-ic-cropper {
+    // Rule-of-thirds grid lines
+    &:after {
+      border: none !important;
+      opacity: 1 !important;
+      background-image:
+        linear-gradient(
+          to right,
+          rgba(255, 255, 255, 0.4) 1px,
+          transparent 1px
+        ),
+        linear-gradient(
+          to bottom,
+          rgba(255, 255, 255, 0.4) 1px,
+          transparent 1px
+        );
+      background-size: 33.333% 33.333%;
+      background-position: 0 0;
+      pointer-events: none;
+    }
+
+    // White border around crop area
+    outline: 2px solid rgba(255, 255, 255, 0.9) !important;
+  }
+
+  // Corner handles - make them larger and styled like Facebook
+  .ngx-ic-resize .ngx-ic-square {
+    width: 20px !important;
+    height: 20px !important;
+    background: transparent !important;
+    border: none !important;
+    opacity: 1 !important;
+  }
+
+  // Corner handles - L-shaped corners
+  .ngx-ic-topleft .ngx-ic-square {
+    border-top: 3px solid #fff !important;
+    border-left: 3px solid #fff !important;
+    border-radius: 2px 0 0 0;
+  }
+
+  .ngx-ic-topright .ngx-ic-square {
+    border-top: 3px solid #fff !important;
+    border-right: 3px solid #fff !important;
+    border-radius: 0 2px 0 0;
+  }
+
+  .ngx-ic-bottomleft .ngx-ic-square {
+    border-bottom: 3px solid #fff !important;
+    border-left: 3px solid #fff !important;
+    border-radius: 0 0 0 2px;
+  }
+
+  .ngx-ic-bottomright .ngx-ic-square {
+    border-bottom: 3px solid #fff !important;
+    border-right: 3px solid #fff !important;
+    border-radius: 0 0 2px 0;
+  }
+
+  // Hide edge mid-point handles (keep corners only)
+  .ngx-ic-top,
+  .ngx-ic-bottom,
+  .ngx-ic-left,
+  .ngx-ic-right {
+    display: none !important;
+  }
+
+  // Increase touch target size for all resize handles on mobile
+  .ngx-ic-resize {
+    padding: 12px !important;
+
+    @media (pointer: coarse) {
+      padding: 16px !important;
+    }
+  }
+
+  // Ensure move cursor inside crop area
+  .ngx-ic-move {
+    cursor: move;
+  }
+}

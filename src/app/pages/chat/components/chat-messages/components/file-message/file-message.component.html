@@ -1,0 +1,15 @@
+<div (click)="onClick()" class="flex cursor-pointer items-center gap-2 text-sm">
+  <div class="flex items-center gap-1">
+    <div
+      class="flex h-8 w-8 items-center justify-center rounded-3xl bg-zinc-100 p-2"
+    >
+      <app-ds-icon [icon]="fileIcon" [size]="'sm'"></app-ds-icon>
+    </div>
+    {{ fileName() }}
+  </div>
+  <app-ds-icon
+    class="text-primary"
+    [icon]="isPdf() ? eyeIcon : arrowDownIcon"
+    [size]="'lg'"
+  ></app-ds-icon>
+</div>

@@ -1,0 +1,29 @@
+<div *transloco="let t">
+  @switch (status()) {
+    @case (topicProgressStatus.AT_RISK) {
+      <span class="single-line-xs-mid-emphasis text-error-ds-600">
+        {{ t("status.at_risk.txt") }}
+      </span>
+    }
+    @case (topicProgressStatus.EXCEEDING_EXPECTATIONS) {
+      <span class="single-line-xs-mid-emphasis text-indigo-400">
+        {{ t("status.exceeding_expectation.txt") }}
+      </span>
+    }
+    @case (topicProgressStatus.NEEDS_SUPPORT) {
+      <span class="single-line-xs-mid-emphasis text-warn-orange-600">
+        {{ t("status.need_support.txt") }}
+      </span>
+    }
+    @case (topicProgressStatus.ON_TRACK) {
+      <span class="single-line-xs-mid-emphasis text-emerald-600">
+        {{ t("status.on_track") }}
+      </span>
+    }
+    @case (topicProgressStatus.CATCHING_UP) {
+      <span class="single-line-xs-mid-emphasis text-warn-orange-600">
+        {{ t("status.catching_up") }}
+      </span>
+    }
+  }
+</div>

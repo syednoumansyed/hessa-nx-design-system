@@ -1,0 +1,37 @@
+<article
+  [@slideInOut]
+  (click)="onClick($event)"
+  (touchstart)="onTouchStart($event)"
+  (touchend)="onTouchEnd($event)"
+  (mousedown)="onMouseDown($event)"
+  (mouseup)="onMouseUp($event)"
+  class="pointer-events-auto flex w-full max-w-[361px] select-none items-start gap-1 rounded-[16px] border-solid border-brand-700 bg-pastels-brand-50 px-ds-lg py-ds-md shadow-md [border-bottom-width:4px] [border-left-width:2px] [border-right-width:2px] [border-top-width:2px]"
+>
+  <!-- Left icon: configurable -->
+  <div class="mr-2 flex h-8 w-8 flex-shrink-0 items-center justify-center">
+    <!-- icon component -->
+    <ds-animated-icon
+      [icon]="notification.icon"
+      [loop]="false"
+      [autoplay]="false"
+      [size]="'lg'"
+      class="flex-shrink-0 transition-transform duration-200"
+    />
+
+    <!-- Fallback placeholder -->
+    <div
+      *ngIf="!notification.icon"
+      class="h-8 w-8 rounded-ds-md bg-amber-200"
+    ></div>
+  </div>
+
+  <!-- Text content -->
+  <div class="flex flex-1 flex-col gap-0.5 leading-[20px]">
+    <div class="content-sm-high-emphasis">
+      {{ notification.title }}
+    </div>
+    <div class="content-sm-default line-clamp-3">
+      {{ notification.message }}
+    </div>
+  </div>
+</article>

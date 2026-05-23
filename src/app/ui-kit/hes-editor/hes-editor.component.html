@@ -1,0 +1,54 @@
+<div class="mb-4 flex flex-col gap-2">
+  <div class="flex items-center justify-between gap-2">
+    @if (label()) {
+      <ion-label class="text-base font-semibold capitalize text-gray-900">
+        {{ label() }}
+        @if (required()) {
+          <span>*</span>
+        }
+      </ion-label>
+    }
+    @if (isEditabeControl()) {
+      @if (!isEditable()) {
+        <button (click)="toggleIsEditable()">
+          <app-hes-icon
+            class="text-base text-[#344054]"
+            [faIcon]="{ icon: faPen }"
+          ></app-hes-icon>
+        </button>
+      }
+    }
+  </div>
+  <tui-loader
+    [overlay]="true"
+    [showLoader]="!!(imageUploadService.loading$ | async)"
+  >
+    @if (!previewOnly()) {
+      <tui-editor
+        [formControl]="control"
+        [tools]="allowImgUpload() ? tools : textOnlyTools"
+        [style.maxHeight.px]="700"
+        [style.minHeight.px]="500"
+      >
+        @if (allowYoutubeExtension()) {
+          <ng-container ngProjectAs="tools">
+            <youtube-tool tuiItem></youtube-tool>
+          </ng-container>
+        }
+        {{ control.value ? "" : placeholder() }}
+      </tui-editor>
+      <tui-error
+        [formControl]="control"
+        [error]="[] | tuiFieldError | async"
+      ></tui-error>
+    }
+    @if (previewOnly() || preview()) {
+      <ng-container>
+        <tui-editor-socket
+          class="tui-example"
+          [content]="control.value || ''"
+        />
+      </ng-container>
+    }
+  </tui-loader>
+</div>

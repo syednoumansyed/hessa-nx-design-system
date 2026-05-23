@@ -1,0 +1,388 @@
+<ng-container *transloco="let t">
+  <!-- ▓▓  OUTER CARD  ▓▓ -->
+  <div
+    class="mx-auto flex max-w-[550px] flex-col rounded-3xl border-[4px] border-b-[8px] border-gray-200 bg-white p-4 shadow-sm"
+  >
+    <div class="mb-ds-xl flex items-center gap-ds-md">
+      @if (!postPreview().viewed) {
+        <span
+          class="inline-flex items-center gap-ds-xs rounded-full bg-violet-500 px-ds-lg py-ds-xs text-ds-sm font-bold text-white shadow"
+        >
+          <ng-icon name="saxStarOutline" class="text-ds-sm"></ng-icon>
+          {{ t("enum.NEW") }}
+        </span>
+      }
+      <span
+        class="inline-flex items-center gap-ds-xs rounded-full border border-blue-500 bg-blue-100 px-ds-lg py-ds-xs text-ds-sm font-bold text-emphasis-high"
+      >
+        <app-hes-icon
+          [hesIcon]="planeIcon"
+          class="flex translate-y-[0.5px] items-center text-ds-lg"
+        ></app-hes-icon>
+        {{ t("enum.ANNOUNCEMENT") }}
+      </span>
+      <span
+        class="content-xs-mid-emphasis basis-full whitespace-nowrap text-left sm:basis-auto sm:text-right"
+        [ngClass]="[
+          postPreview().viewed ? 'text-emphasis-mid' : 'text-indigo-400',
+          selectedLanguage() === 'ar' ? 'order-first' : 'ms-auto',
+        ]"
+      >
+        {{ postPreview().createdAt | hesTimeAgo }}
+      </span>
+    </div>
+
+    <!-- ═══ HEADER ═══ -->
+    <div class="flex items-center gap-3">
+      <!-- Avatar -->
+      <app-ds-avatar
+        [fullName]="postPreview().createdBy.displayName"
+        [color]="postPreview().createdBy.profileColor"
+      />
+
+      <!-- Name + For -->
+      <div class="flex flex-col">
+        <div
+          class="inline-flex cursor-pointer items-center gap-2"
+          (click)="post().id && openAuthorPopup()"
+        >
+          <span class="content-md-high-emphasis text-emphasis-high">
+            {{ postPreview().createdBy.displayName }}
+          </span>
+          <ng-icon
+            *hesRbac="viewPostAuthorPermission"
+            name="saxExport3Outline"
+            class="text-sm"
+          ></ng-icon>
+        </div>
+        <div class="single-line-caption-mid-emphasis text-emphasis-mid">
+          {{ postPreview().createdFor }}
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ CONTENT ═══ -->
+    <h6 class="content-md-high-emphasis mb-1 mt-4 text-emphasis-high">
+      {{ postPreview().title }}
+    </h6>
+    <p
+      class="content-md-default mb-4 text-emphasis-high"
+      [innerHTML]="postPreview().content | newline | linkify"
+    ></p>
+
+    <!-- ═══ YOUTUBE THUMBS ═══ -->
+    <!-- ═══ YOUTUBE THUMBS ═══ -->
+    @if (postPreview().thumbnails.length) {
+      <div
+        [class.mt-auto]="
+          postPreview().thumbnails.length +
+            postPreview().images.length +
+            postPreview().files.length +
+            postPreview().videos.length ===
+          1
+        "
+        [class.mt-2]="
+          postPreview().thumbnails.length +
+            postPreview().images.length +
+            postPreview().files.length +
+            postPreview().videos.length >
+          1
+        "
+        [class.-mx-4]="
+          postPreview().thumbnails.length +
+            postPreview().images.length +
+            postPreview().files.length +
+            postPreview().videos.length ===
+          1
+        "
+      >
+        <!-- single thumbnail -->
+        @if (postPreview().thumbnails.length === 1) {
+          <div
+            class="relative aspect-video w-full cursor-pointer overflow-hidden"
+            [ngClass]="{
+              'rounded-2xl':
+                postPreview().thumbnails.length +
+                  postPreview().images.length +
+                  postPreview().files.length +
+                  postPreview().videos.length >
+                1,
+            }"
+            (click)="openYoutubePlayer(postPreview().youtubeIds[0])"
+          >
+            <img
+              [src]="postPreview().thumbnails[0]"
+              class="h-full w-full object-cover"
+            />
+            <div
+              class="absolute inset-0 flex items-center justify-center bg-black-0/25 transition hover:bg-black-0/35"
+            >
+              <ng-icon
+                name="faSolidCirclePlay"
+                class="pointer-events-none text-6xl text-white opacity-90 drop-shadow-xl"
+              />
+            </div>
+          </div>
+        }
+
+        <!-- 2 thumbnails - use 2 columns, 1 row -->
+        @if (postPreview().thumbnails.length === 2) {
+          <div class="grid grid-cols-2 gap-1 sm:gap-2">
+            @for (thumb of postPreview().thumbnails; track $index) {
+              <div
+                class="relative aspect-square cursor-pointer overflow-hidden rounded-2xl"
+                (click)="openYoutubePlayer(postPreview().youtubeIds[$index])"
+              >
+                <img [src]="thumb" class="h-full w-full object-cover" />
+                <div
+                  class="bg-black-0-0-0/25 absolute inset-0 flex items-center justify-center transition hover:bg-black-0/35"
+                >
+                  <ng-icon
+                    name="faSolidCirclePlay"
+                    class="pointer-events-none text-6xl text-white opacity-90 drop-shadow-xl"
+                  />
+                </div>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- 3 thumbnails - use 2 columns, 2 rows (first thumbnail spans 2 rows) -->
+        @if (postPreview().thumbnails.length === 3) {
+          <div class="grid grid-cols-2 gap-1 sm:gap-2">
+            <div
+              class="relative row-span-2 aspect-square cursor-pointer overflow-hidden rounded-2xl"
+              (click)="openYoutubePlayer(postPreview().youtubeIds[0])"
+            >
+              <img
+                [src]="postPreview().thumbnails[0]"
+                class="h-full w-full object-cover"
+              />
+              <div
+                class="bg-black-0-0-0/25 absolute inset-0 flex items-center justify-center transition hover:bg-black-0/35"
+              >
+                <ng-icon
+                  name="faSolidCirclePlay"
+                  class="pointer-events-none text-6xl text-white opacity-90 drop-shadow-xl"
+                />
+              </div>
+            </div>
+            @for (thumb of postPreview().thumbnails.slice(1); track $index) {
+              <div
+                class="relative aspect-square cursor-pointer overflow-hidden rounded-2xl"
+                (click)="
+                  openYoutubePlayer(postPreview().youtubeIds[$index + 1])
+                "
+              >
+                <img [src]="thumb" class="h-full w-full object-cover" />
+                <div
+                  class="absolute inset-0 flex items-center justify-center bg-black-0/25 transition hover:bg-black-0/35"
+                >
+                  <ng-icon
+                    name="faSolidCirclePlay"
+                    class="pointer-events-none text-6xl text-white opacity-90 drop-shadow-xl"
+                  />
+                </div>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- 4+ thumbnails - use 2x2 grid with overflow indicator -->
+        @if (postPreview().thumbnails.length >= 4) {
+          <div class="grid grid-cols-2 grid-rows-2 gap-1 sm:gap-2">
+            @for (thumb of postPreview().thumbnails.slice(0, 3); track $index) {
+              <div
+                class="relative aspect-square cursor-pointer overflow-hidden rounded-2xl"
+                (click)="openYoutubePlayer(postPreview().youtubeIds[$index])"
+              >
+                <img [src]="thumb" class="h-full w-full object-cover" />
+                <div
+                  class="absolute inset-0 flex items-center justify-center bg-black-0/25 transition hover:bg-black-0/35"
+                >
+                  <ng-icon
+                    name="faSolidCirclePlay"
+                    class="pointer-events-none text-6xl text-white opacity-90 drop-shadow-xl"
+                  />
+                </div>
+              </div>
+            }
+
+            <!-- Fourth slot - always show the 4th thumbnail with optional +N overlay -->
+            <div
+              class="relative aspect-square cursor-pointer overflow-hidden rounded-2xl"
+              (click)="openYoutubePlayer(postPreview().youtubeIds[3])"
+            >
+              <img
+                [src]="postPreview().thumbnails[3]"
+                class="h-full w-full object-cover"
+              />
+              <div
+                class="absolute inset-0 flex items-center justify-center bg-black-0/25 transition hover:bg-black-0/35"
+              >
+                <ng-icon
+                  name="faSolidCirclePlay"
+                  class="pointer-events-none text-6xl text-white opacity-90 drop-shadow-xl"
+                />
+              </div>
+
+              @if (postPreview().images.length > 4) {
+                <div
+                  class="absolute inset-0 flex items-center justify-center bg-black-0/60"
+                >
+                  <span class="text-3xl font-bold text-white drop-shadow-lg">
+                    +{{ postPreview().images.length - 4 }}
+                  </span>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- ═══ IMAGES ═══ -->
+    <!-- ═══ IMAGES ═══ -->
+    @if (postPreview().images.length) {
+      <div
+        [class.mt-auto]="
+          postPreview().thumbnails.length +
+            postPreview().images.length +
+            postPreview().files.length +
+            postPreview().videos.length ===
+          1
+        "
+        [class.mt-2]="
+          postPreview().thumbnails.length +
+            postPreview().images.length +
+            postPreview().files.length +
+            postPreview().videos.length >
+          1
+        "
+        [class.-mx-4]="
+          postPreview().thumbnails.length +
+            postPreview().images.length +
+            postPreview().files.length +
+            postPreview().videos.length ===
+          1
+        "
+      >
+        <!-- single image -->
+        @if (postPreview().images.length === 1) {
+          <div
+            class="cursor-pointer overflow-hidden"
+            [ngClass]="{
+              'rounded-2xl':
+                postPreview().thumbnails.length +
+                  postPreview().images.length +
+                  postPreview().files.length +
+                  postPreview().videos.length >
+                1,
+            }"
+            (click)="onOpenSlider(0)"
+          >
+            <app-attachment-preview
+              [attachment]="postPreview().images[0]"
+              class="block h-auto w-full object-cover"
+            ></app-attachment-preview>
+          </div>
+        }
+
+        <!-- 2 images - use 2 columns, 1 row -->
+        @if (postPreview().images.length === 2) {
+          <div class="grid grid-cols-2 gap-1 sm:gap-2">
+            @for (img of postPreview().images; track $index) {
+              <div
+                class="relative aspect-square cursor-pointer overflow-hidden rounded-2xl"
+                (click)="onOpenSlider($index)"
+              >
+                <app-attachment-preview
+                  [attachment]="img"
+                  class="absolute inset-0"
+                ></app-attachment-preview>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- 3 images - use 2 columns, 2 rows (first image spans 2 rows) -->
+        @if (postPreview().images.length === 3) {
+          <div class="grid grid-cols-2 gap-1 sm:gap-2">
+            <div
+              class="relative row-span-2 aspect-square cursor-pointer overflow-hidden rounded-2xl"
+              (click)="onOpenSlider(0)"
+            >
+              <app-attachment-preview
+                [attachment]="postPreview().images[0]"
+                class="absolute inset-0"
+              ></app-attachment-preview>
+            </div>
+            @for (img of postPreview().images.slice(1); track $index) {
+              <div
+                class="relative aspect-square cursor-pointer overflow-hidden rounded-2xl"
+                (click)="onOpenSlider($index + 1)"
+              >
+                <app-attachment-preview
+                  [attachment]="img"
+                  class="absolute inset-0"
+                ></app-attachment-preview>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- 4+ images - use 2x2 grid with overflow indicator -->
+        @if (postPreview().images.length >= 4) {
+          <div class="grid grid-cols-2 grid-rows-2 gap-1 sm:gap-2">
+            @for (img of postPreview().images.slice(0, 3); track $index) {
+              <div
+                class="relative aspect-square cursor-pointer overflow-hidden rounded-2xl"
+                (click)="onOpenSlider($index)"
+              >
+                <app-attachment-preview
+                  [attachment]="img"
+                  class="absolute inset-0"
+                ></app-attachment-preview>
+              </div>
+            }
+
+            <!-- Fourth slot - always show the 4th image with optional +N overlay -->
+            <div
+              class="relative aspect-square cursor-pointer overflow-hidden rounded-2xl"
+              (click)="onOpenSlider(3)"
+            >
+              <app-attachment-preview
+                [attachment]="postPreview().images[3]"
+                class="absolute inset-0"
+              ></app-attachment-preview>
+
+              @if (postPreview().images.length > 4) {
+                <div
+                  class="absolute inset-0 flex items-center justify-center bg-black-0/60"
+                >
+                  <span class="text-3xl font-bold text-white drop-shadow-lg">
+                    +{{ postPreview().images.length - 4 }}
+                  </span>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+    <!-- ═══ FILES / VIDEOS ═══ -->
+    <div class="mt-3 flex flex-col gap-1">
+      @for (file of postPreview().files; track $index) {
+        <app-file-preview-card [file]="file"></app-file-preview-card>
+      }
+      @for (vid of postPreview().videos; track $index) {
+        <app-video-preview-card [file]="vid"></app-video-preview-card>
+      }
+    </div>
+
+    <ds-react
+      [reactions]="post().reactions || []"
+      (reactionToggled)="getReactionHandler()($event)"
+    ></ds-react>
+  </div>
+</ng-container>

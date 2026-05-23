@@ -1,0 +1,60 @@
+<ng-container *transloco="let t">
+  <ion-content class="ds-page-content">
+    <div class="md:hes-card" [formGroup]="studentListForm">
+      @if(isDesktop){
+      <ng-container *ngTemplateOutlet="infoRef"></ng-container>
+      }
+      <div class="px-4 py-4 md:px-0 md:pt-0">
+        <app-prev-next-selector
+          [items]="studentListOptions()"
+          formControlName="student"
+          containerClasses="border-none"
+        />
+      </div>
+      @if(subjectOption().length > 0) {
+      <div class="md:pt px-4 md:px-0">
+        <app-prev-next-selector
+          [items]="subjectOption()"
+          formControlName="subject"
+          containerClasses="bg-white"
+        />
+      </div>
+      } @if(isMobile){
+      <ng-container *ngTemplateOutlet="infoRef"></ng-container>
+      }
+      <section class="mt-4">
+        <app-report-review
+          [subjectColumns]="selectedSubjectColumns()"
+          [classId]="classId()"
+          [reportCardId]="reportCardId()"
+          [studentId]="selectedStudentId()"
+          [status]="selectStudentStatus()"
+          (reportCardPublished)="onReportCardPublished()"
+        />
+      </section>
+    </div>
+  </ion-content>
+
+  <ng-template #infoRef>
+    <div
+      class="flex flex-wrap items-center gap-2 border-b border-gray-200 px-4 py-2 pb-4 md:border-none md:px-0"
+    >
+      <div class="hidden text-2xl font-semibold md:block">
+        {{t('grade_management.report_card.title')}}
+      </div>
+      <div class="flex gap-1 rounded-3xl bg-[#F9F9F9] px-2 py-1 text-base">
+        <span class="text-[#667085]">{{t('global.level.label')}}</span>
+        <span class="font-medium"
+          >{{selectedStudent()?.level?.displayName}}</span
+        >
+      </div>
+      <div class="flex gap-1 rounded-3xl bg-[#F9F9F9] px-2 py-1 text-base">
+        <span class="text-[#667085]">{{t('global.class.label')}}</span>
+        <span class="font-medium"
+          >{{selectedStudent()?.class?.displayName}}</span
+        >
+      </div>
+      <app-student-report-card-status [status]="selectStudentStatus()" />
+    </div>
+  </ng-template>
+</ng-container>

@@ -1,0 +1,22 @@
+export enum ReportCardHorizontalFunctionEnum {
+  SUM = 'SUM',
+  AVERAGE = 'AVERAGE',
+  LETTER_GRADE = 'LETTER_GRADE',
+  SCALE = 'SCALE',
+  NUMERIC_GRADE = 'NUMERIC_GRADE',
+  CREDIT_HOUR = 'CREDIT_HOUR',
+  NUMERIC_GRADE_AVERAGE = 'NUMERIC_GRADE_AVERAGE',
+  GRADE_POINT = 'GRADE_POINT',
+}
+
+export enum ReportCardCalculatedFunctionEnum {
+  SUM = 'SUM',
+  AVERAGE = 'AVERAGE',
+  WEIGHTED_AVERAGE = 'WEIGHTED_AVERAGE',
+}
+
+export enum ReportCardColumnTypeEnum {
+  CALCULATED = 'CALCULATED',
+  HORIZENTAL = 'HORIZONTAL_CALCULATED',
+  SINGLE_ENTRY = 'SINGLE_ENTRY',
+}

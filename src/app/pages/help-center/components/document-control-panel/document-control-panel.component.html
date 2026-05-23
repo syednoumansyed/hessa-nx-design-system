@@ -1,0 +1,41 @@
+<ng-container>
+  <ng-container *transloco="let t">
+    <div
+      class="ms-6 flex items-center gap-3"
+      [dir]="languageCtrl.value === 'en' ? 'ltr' : 'rtl'"
+    >
+      <app-hes-input
+        *transloco="let t; lang: languageCtrl.value!"
+        [formControl]="searchCtrl"
+        class="border bg-none"
+        [iconPrefix]="iconPrefix"
+        [placeholder]="t('global.search.placeholder')"
+        [clearInput]="true"
+      >
+      </app-hes-input>
+      <div>
+        <ion-select
+          class="hes-select w-32"
+          fill="outline"
+          interface="popover"
+          [formControl]="languageCtrl"
+        >
+          <ion-select-option value="en">English</ion-select-option>
+          <ion-select-option value="ar">اللغة العربية</ion-select-option>
+        </ion-select>
+      </div>
+      <ion-button
+        *hesRbac="addNewDocumentPermission"
+        hesColor="primary"
+        hesSize="xl"
+        [routerLink]="routerLinkPath"
+        hesBtn
+      >
+        <div class="flex gap-2">
+          <fa-icon [icon]="faPlus"></fa-icon>
+          <span class="hidden md:inline-block">{{ addDocButtonText }}</span>
+        </div>
+      </ion-button>
+    </div>
+  </ng-container>
+</ng-container>

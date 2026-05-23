@@ -1,0 +1,108 @@
+<ion-content *transloco="let t;">
+  <div class="flex flex-col gap-ds-lg p-ds-xl">
+    @if ((!isPreviousYears() && isAcademicYearEnded()) || !academicYear()) {
+    <app-setup-banner
+      *hesRbac="addAcademicYearPermission"
+      [bannerData]="setupBannerConf()"
+      (btnClick)="onSetupBannerClick()"
+    />
+    }
+    <div class="mx-auto w-full max-w-[840px]">
+      <div class="flex flex-col gap-ds-3xl">
+        @if(isPreviousYears()){
+        <app-chip-filter
+          [clearSelection]="false"
+          (selectedFilter)="onAcademicYearFilterChange($event)"
+          [filterData]="previousYearsList()"
+        />
+        }
+
+        <div class="flex flex-col gap-ds-lg">
+          @if(academicYear()) {
+          <div class="flex items-center justify-between px-ds-xl">
+            <div class="flex flex-col gap-ds-sm">
+              <div class="heading-h4-high-emphasis text-emphasis-high">
+                {{academicYear()?.name}}
+              </div>
+              <div class="single-line-caption-mid-emphasis text-emphasis-mid">
+                {{academicYear()?.startDate | hesDate}} -
+                {{academicYear()?.endDate | hesDate}}
+              </div>
+            </div>
+            @if(!isAcademicYearEnded() && !isPreviousYears()) {
+            <div
+              class="cursor-pointer"
+              (click)="onEditAcademicYear()"
+              *hesRbac="editAcademicYearPermission"
+            >
+              <app-ds-icon [icon]="faPen" size="2xl" />
+            </div>
+            }
+          </div>
+          } @if (!semesterListData().length){
+          <app-setup-card
+            [cardData]="setupSemesterConfig()"
+            (btnClick)="onAddSemester()"
+            [permissionId]="addSemesterPermission"
+          />
+          } @else {
+          <app-item-list-card
+            [semesterList]="semesterListData()"
+            (itemClick)="onSemesterClick($event)"
+            (onAddSemesterClick)="onAddSemester()"
+            type="semester"
+            [isViewOnly]="isPreviousYears() || isAcademicYearEnded()"
+          />
+          }
+        </div>
+
+        @if (!holidaysListData().length){
+        <app-setup-card
+          [cardData]="setupHolidayConfig()"
+          (btnClick)="onAddHoliday()"
+          [permissionId]="addHolidayPermission"
+        />
+        } @else {
+        <div class="flex flex-col gap-ds-lg" *hesRbac="viewHolidayPermission">
+          <div class="flex items-center justify-between px-ds-xl">
+            <div class="heading-h4-high-emphasis text-emphasis-high">
+              {{t('academic_year.all_holidays.title')}}
+            </div>
+            @if(!isPreviousYears() && !isAcademicYearEnded()) {
+            <ds-button
+              size="sm"
+              [iconStart]="'saxAddOutline'"
+              (click)="onAddHoliday()"
+              *hesRbac="addHolidayPermission"
+            >
+              {{t('global.add')}}
+            </ds-button>
+            }
+          </div>
+
+          <app-item-list-card
+            [semesterList]="holidaysListData()"
+            type="holiday"
+            [holidayActions]="holidayActions()"
+            [isViewOnly]="isPreviousYears() || isAcademicYearEnded()"
+          />
+        </div>
+        } @if(!isPreviousYears() && previousYearsList().length){
+        <div class="flex items-center gap-ds-sm px-ds-xl">
+          <div class="h-px flex-1 bg-neutral-cool-100"></div>
+          <ds-button
+            variant="ghost"
+            size="sm"
+            [iconEnd]="isRtl ? 'saxArrowLeft2Outline' : 'saxArrowRight3Outline'"
+            (click)="onPreviousBtnClick()"
+          >
+            {{t('academic_calendar.previous_year.btn')}}
+          </ds-button>
+
+          <div class="h-px flex-1 bg-neutral-cool-100"></div>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+</ion-content>

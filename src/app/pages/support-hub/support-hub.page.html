@@ -1,0 +1,66 @@
+<div style="background: var(--surface-page)" class="h-full">
+  @if (shouldShowAnyEmptyShell()) {
+  <div
+    class="py-ds-3xl grid h-full place-items-center overflow-y-auto px-ds-2xl md:overflow-hidden"
+  >
+    <app-no-data-card
+      class="!h-auto w-full max-w-[28rem]"
+      [noBgStyle]="true"
+      [mainImagePath]="initiatorEmptyStateImagePath"
+      [title]="initiatorEmptyStateTitle"
+      [description]="initiatorEmptyStateDescription"
+      [primaryButton]="initiatorEmptyStatePrimaryButton"
+    ></app-no-data-card>
+  </div>
+  }
+  <div
+    class="flex h-full flex-col overflow-hidden md:flex-row md:border-t md:border-stroke-black-08"
+    [class.hidden]="shouldHideTicketsPane()"
+  >
+    <app-support-hub-tickets-sidebar
+      class="md:max-w-[40%] md:basis-2/5"
+      [class.h-full]="showListPane() && isCompact()"
+      [class.hidden]="!showListPane()"
+      [selectedTicketId]="selectedTicketId()"
+      [journeyActive]="isJourneyActive()"
+      [refreshToken]="refreshToken()"
+      [deepLinkTicketId]="deepLinkTicketId()"
+      (ticketSelected)="onTicketSelected($event)"
+      (ticketMenuItemSelected)="onTicketMenuItemSelected($event)"
+      (journeyStartRequested)="onHeaderJourneyStartRequested($event)"
+      (emptyShellVisibilityChange)="onEmptyShellVisibilityChange($event)"
+      (deepLinkHandled)="onDeepLinkHandled()"
+    ></app-support-hub-tickets-sidebar>
+
+    <section
+      class="flex flex-1 flex-col overflow-hidden md:basis-3/5"
+      [class.hidden]="!showDetailPane()"
+    >
+      @if (isJourneyActive()) {
+      <app-support-ticket-journey
+        class="flex h-full flex-col bg-surface-primary"
+        [students]="journeyStudents()"
+        (exit)="onJourneyExit()"
+        (studentsRequested)="onJourneyStudentsRequested($event)"
+        (ticketCreated)="onTicketCreated($event)"
+      ></app-support-ticket-journey>
+      } @else { @let ticket = activeTicket(); @if (ticket?.isInitiatorTicket ??
+      false) {
+      <app-support-ticket-initator-view
+        class="flex h-full flex-col"
+        [summary]="ticket"
+        [ticketId]="ticket?.ticketNumber ?? null"
+        (back)="onBackToList()"
+        (viewProfile)="onViewRequesterProfile($event)"
+      ></app-support-ticket-initator-view>
+      } @else if (ticket) {
+      <app-support-ticket-assignee-detail-view
+        class="flex h-full flex-col"
+        [summary]="ticket"
+        [ticketId]="ticket?.ticketNumber ?? null"
+        (back)="onBackToList()"
+      ></app-support-ticket-assignee-detail-view>
+      } }
+    </section>
+  </div>
+</div>

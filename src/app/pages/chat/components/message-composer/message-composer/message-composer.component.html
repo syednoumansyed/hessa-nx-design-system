@@ -1,0 +1,125 @@
+<form (ngSubmit)="onSend()" *transloco="let t">
+  <!-- Reply Preview -->
+  @if (isReplying() && replyMessage()) {
+    <div
+      class="mb-2 flex items-center justify-between rounded-r-ds-md border-l-2 border-neutral-cool-200 bg-neutral-cool-50 p-3"
+    >
+      <div>
+        <div class="single-line-caption-mid-emphasis text-emphasis-mid">
+          {{ replySenderName() }}
+        </div>
+        <div class="mt-1 line-clamp-2 text-sm text-gray-700">
+          @switch (replyMessage()?.getType()) {
+            @case ("text") {
+              {{ replyMessage()?.getData()?.text }}
+            }
+            @case ("image") {
+              <div class="flex items-center gap-1">
+                <app-ds-icon [icon]="faImage" size="sm" />
+                <span>{{ t("global.image.txt") }}</span>
+              </div>
+            }
+            @case ("video") {
+              <div class="flex items-center gap-1">
+                <app-ds-icon [icon]="faFile" size="sm" />
+                <span>{{ t("chats.video.txt") }}</span>
+              </div>
+            }
+            @case ("audio") {
+              <div class="flex items-center gap-1">
+                <app-ds-icon [icon]="faMicrophone" size="sm" />
+                <span>{{ t("chats.audio.txt") }}</span>
+              </div>
+            }
+            @case ("file") {
+              <div class="flex items-center gap-1">
+                <app-ds-icon [icon]="faFile" size="sm" />
+                <span>{{
+                  replyMessage()?.getData()?.attachments?.[0]?.name ||
+                    t("chats.file.txt")
+                }}</span>
+              </div>
+            }
+            @default {
+              {{ t("chat.message") }}
+            }
+          }
+        </div>
+      </div>
+
+      <div
+        class="flex h-6 w-6 cursor-pointer items-center justify-center rounded-full hover:bg-gray-200"
+        (click)="onCancelReply.emit()"
+      >
+        <app-ds-icon [icon]="faClose" size="2xl" />
+      </div>
+    </div>
+  }
+
+  <div class="flex flex-row items-center gap-ds-sm sm:gap-ds-md">
+    @if (isRecordingStart()) {
+      <app-voice-note-controller
+        (delete)="onHideRecording()"
+        (send)="onSendRecording($event)"
+        class="w-full"
+      ></app-voice-note-controller>
+    } @else {
+      @if (isEditing()) {
+        <div
+          class="flex h-[32px] w-[32px] flex-none shrink-0 cursor-pointer items-center justify-center"
+          (click)="onCancelEdit()"
+        >
+          <app-ds-icon [icon]="faClose" size="xl" />
+        </div>
+      } @else {
+        @if (!isMobile || !isSendButtonShow()) {
+          <div
+            class="flex h-[32px] w-[32px] flex-none shrink-0 cursor-pointer items-center justify-center"
+            (click)="onTriggerTakePicture()"
+          >
+            <app-ds-icon [icon]="faCamera" size="xl" />
+          </div>
+          <div
+            class="flex h-[32px] w-[32px] flex-none shrink-0 cursor-pointer items-center justify-center"
+            (click)="onTriggerPickMedia()"
+          >
+            <app-ds-icon [icon]="faImage" size="xl" />
+          </div>
+          <div
+            class="flex h-[32px] w-[32px] flex-none shrink-0 cursor-pointer items-center justify-center"
+            (click)="onTriggerPickDoc()"
+          >
+            <app-ds-icon [icon]="faFile" size="xl" />
+          </div>
+        }
+      }
+      <textarea
+        [formControl]="textInput"
+        (input)="adjustTextareaHeight($event)"
+        (keydown.enter)="onEnter($event)"
+        type="text"
+        placeholder="{{ t('chats.write_message.placeholder') }}"
+        rows="1"
+        class="w-full resize-none rounded-ds-lg border-none bg-pastels-neutralGray-50 text-[#797C7B]"
+        #textInputTplRef
+      ></textarea>
+
+      <div
+        class="flex h-[32px] w-[32px] flex-none shrink-0 cursor-pointer items-center justify-center"
+        (click)="onSend()"
+      >
+        @if (isEditing()) {
+          <app-ds-icon [icon]="faCheck" size="xl" class="rtl:rotate-180" />
+        } @else if (isSendButtonShow() && !isEditing()) {
+          <app-ds-icon
+            [icon]="faPaperPlaneTop"
+            size="xl"
+            class="rtl:rotate-180"
+          />
+        } @else {
+          <app-ds-icon [icon]="'saxMicrophone2Bold'" size="xl" />
+        }
+      </div>
+    }
+  </div>
+</form>

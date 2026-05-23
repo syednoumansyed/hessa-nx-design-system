@@ -1,0 +1,5 @@
+export const TICKET_SUPPORT_TYPE = {
+  SUPPORT: 'SUPPORT',
+};
+
+export const DEFAULT_ESCALATION_DAYS = 2;

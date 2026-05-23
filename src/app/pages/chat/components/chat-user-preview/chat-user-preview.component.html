@@ -1,0 +1,40 @@
+<div class="px-ds-lg py-ds-md">
+  <div class="flex items-center gap-ds-sm">
+    @if (includeBackButton() && isMobile) {
+      <div
+        class="flex w-[35px] cursor-pointer items-center justify-center self-stretch"
+        (click)="goBack()"
+      >
+        <app-ds-icon
+          [icon]="isRtl ? faChevronRight : faChevronLeft"
+          size="xl"
+        />
+      </div>
+    }
+    <div class="flex min-w-0 flex-1 items-center gap-ds-md">
+      @if (info()?.type && info()?.type !== conversationType.USER) {
+        <app-channel-icon [color]="getProfileColor()" />
+      } @else {
+        <app-ds-avatar
+          [fullName]="getName()"
+          size="2xl"
+          [includeBorder]="false"
+          [color]="getProfileColor()"
+          [imageUrl]="info()?.imageUrl"
+        />
+      }
+
+      <div class="flex w-full min-w-0 flex-col gap-ds-sm">
+        <div class="content-md-high-emphasis line-clamp-1 text-emphasis-high">
+          {{ getName() }}
+        </div>
+        @if (info()?.tags?.length) {
+          <app-chat-tags [tags]="info()!.tags!" />
+        }
+        @if (info()?.studentNames?.length) {
+          <app-student-names [students]="info()!.studentNames!" />
+        }
+      </div>
+    </div>
+  </div>
+</div>

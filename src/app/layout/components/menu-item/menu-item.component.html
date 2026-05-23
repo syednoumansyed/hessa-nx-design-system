@@ -1,0 +1,42 @@
+<ng-container *transloco="let t">
+  <ion-item
+    id="nav-item"
+    button
+    [routerLink]="routerPath()"
+    routerLinkActive="router-link-active"
+    [ngStyle]="{
+      '--inner-padding-end': 0,
+      '--padding-start': isSideNavCollapsed() ? 0 : '1rem'
+    }"
+  >
+    <div
+      class="relative flex justify-center"
+      [ngClass]="{
+        'w-full': isSideNavCollapsed()
+      }"
+    >
+      <ng-icon
+        [name]="menuRoute().iconName!"
+        [class]="'text-xl text-white'"
+        [ngClass]="{
+          'me-2': !isSideNavCollapsed(),
+          'mx-auto': isSideNavCollapsed()
+        }"
+      ></ng-icon>
+      @if (!isSideNavCollapsed()) {
+        <ion-label>{{ t(menuRoute().titleI18nKey) }}</ion-label>
+      }
+      @if (count()) {
+        <div
+          class="absolute flex min-h-3.5 min-w-3.5 items-center justify-center rounded-xl bg-[#ECAD01] p-[1px] text-[11px] text-white"
+          [ngClass]="{
+            '-top-1.5 ltr:-right-5 rtl:-left-5': !isSideNavCollapsed(),
+            '-top-1 ltr:right-2 rtl:left-2': isSideNavCollapsed()
+          }"
+        >
+          {{ count() }}
+        </div>
+      }
+    </div>
+  </ion-item>
+</ng-container>

@@ -1,0 +1,60 @@
+<div class="flex select-none flex-col items-stretch justify-start gap-1">
+  <div
+    (click)="onHandleSelect()"
+    [ngClass]="{
+      'item w-full': !firstLevel,
+      'bg-[#F4F4F8]': !isSelected(),
+      'bg-primary': isSelected()
+    }"
+    class="flex h-10 items-center justify-between rounded px-4 py-2"
+  >
+    <div class="flex items-center gap-2">
+      <app-hes-icon
+        [ngClass]="{
+          'text-white': isSelected(),
+          'text-[#9d9d9d]': !item().hasAccess
+        }"
+        class="flex text-[#242424]"
+        [hesIcon]="item().hesIcon"
+      ></app-hes-icon>
+      <span
+        [ngClass]="{
+          'text-white': isSelected(),
+          'text-[#9d9d9d]': !item().hasAccess
+        }"
+        class="text-sm font-medium text-[#242424]"
+      >
+        {{ item().name }}
+      </span>
+    </div>
+    @if (item().children.length) {
+      <div
+        class="cursor-pointer px-0.5"
+        (click)="toggleCollapseChildren($event)"
+      >
+        <app-hes-icon
+          routerLinkActive="!opacity-100 !text-white"
+          [ngClass]="{
+            'text-white': isSelected()
+          }"
+          class="h-6 w-6 text-[#242424]"
+          [hesIcon]="isShowChildren() ? collapseIcon() : expandIcon()"
+        ></app-hes-icon>
+      </div>
+    }
+  </div>
+  @if (item().children.length) {
+    <div
+      [ngClass]="{
+        hidden: !isShowChildren(),
+        'only-child': item().children.length === 1
+      }"
+      class="list flex w-full flex-col items-stretch justify-start gap-1 ps-2 last:mb-0"
+    >
+      @for (child of item().children; track item().id) {
+        <app-school-structure-control-item [item]="child">
+        </app-school-structure-control-item>
+      }
+    </div>
+  }
+</div>

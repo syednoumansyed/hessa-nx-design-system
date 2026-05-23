@@ -1,0 +1,26 @@
+<!-- mobile-entry.component.html -->
+<div class="flex h-full flex-col px-4 pt-8">
+  <form
+    [formGroup]="mobileForm"
+    class="flex flex-1 flex-col"
+    *transloco="let t"
+  >
+    <!-- Mobile Input Section -->
+    <div class="mb-6 flex-1">
+      <app-ds-input
+        [label]="t('login.enter_your_mobile.title')"
+        [placeholder]="'XXXXXXXXX'"
+        [prefix]="'+966'"
+        [dsType]="'tel'"
+        [inputMode]="'tel'"
+        [errorMessage]="validationMessage()"
+        [loading]="isSubmitting()"
+        iconStart="ksa-flag"
+        formControlName="mobile"
+        [maxLength]="9"
+        [outerContainerClass]="'w-full'"
+        (valueChanged)="onMobileInput($event)"
+      ></app-ds-input>
+    </div>
+  </form>
+</div>

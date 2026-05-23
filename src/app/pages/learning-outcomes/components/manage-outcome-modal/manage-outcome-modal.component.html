@@ -1,0 +1,11 @@
+<ng-container *transloco="let t">
+  @if (isLoading()) {
+    <div class="flex items-center justify-center py-ds-2xl">
+      <div class="content-md-mid-emphasis text-emphasis-mid">Loading...</div>
+    </div>
+  } @else {
+    <form [formGroup]="form">
+      <app-ds-form-renderer [controls]="formConfig()" gap="lg" />
+    </form>
+  }
+</ng-container>

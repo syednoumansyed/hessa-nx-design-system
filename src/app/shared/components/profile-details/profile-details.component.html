@@ -1,0 +1,145 @@
+<ng-container *transloco="let t">
+  <div
+    class="hes-card flex flex-1 flex-col items-start justify-start gap-4 bg-white p-6 lg:gap-0 lg:p-0"
+  >
+    <div
+      class="CardHeader flex items-center justify-between self-stretch rounded-lg bg-white lg:px-6 lg:pb-[19px] lg:pt-5"
+    >
+      <ion-label
+        class="text-sm font-semibold uppercase leading-7 text-[#AEAFB8] lg:text-lg lg:normal-case lg:text-gray-900"
+        >{{ t("user_management.profile_details.title") }}</ion-label
+      >
+      <ng-container>
+        <ds-button
+          *hesRbac="updatePermissionId"
+          variant="secondary"
+          size="sm"
+          hesAuth
+          [roles]="['superadmin']"
+          (click)="onUpdateProfile()"
+        >
+          {{ t("global.update_profile.btn") }}
+        </ds-button>
+      </ng-container>
+    </div>
+    <div
+      class="Content hidden flex-col self-stretch rounded-b-lg border-t border-gray-200 bg-white lg:flex"
+    >
+      @for (item of profileDetails; track $index) {
+        <div class="flex items-stretch self-stretch border-b border-gray-200">
+          <div
+            class="TableCell box-content flex min-h-10 w-[292px] flex-1 items-center justify-start px-6 py-4"
+          >
+            <div class="Text">
+              <span class="text-sm font-normal text-gray-500">{{
+                item.title
+              }}</span>
+            </div>
+          </div>
+          <div
+            [ngClass]="{
+              'phone-number-dir':
+                item?.type === 'phoneNumber' && currentLang === 'ar',
+            }"
+            class="TableCell box-content flex min-h-10 w-[381px] flex-1 items-center justify-start px-24 py-4"
+          >
+            @if (item.badges?.length) {
+              <div class="flex flex-wrap items-center gap-1.5">
+                @for (badge of item.badges; track badge) {
+                  <span
+                    class="inline-flex items-center rounded-full bg-[#f9f5ff] px-2 py-0.5 text-xs font-medium text-[#6941c6]"
+                  >
+                    {{ badge }}
+                  </span>
+                }
+              </div>
+            } @else {
+              <div class="Text text-sm font-semibold text-gray-900">
+                {{
+                  isValidDate(item.value)
+                    ? (item.value | hesDate)
+                    : item.isEnum
+                      ? (item.value | enumLang)
+                      : item.value
+                }}
+              </div>
+            }
+          </div>
+          <div
+            class="box-content flex min-h-10 w-[381px] flex-1 items-center px-6 py-4"
+          >
+            <div class="flex items-center justify-start gap-3">
+              @if (item.isSecondaryValueDate && item.secondaryValue) {
+                <div
+                  class="flex h-10 w-10 items-center justify-center rounded-[20px] bg-gray-100 p-2.5"
+                >
+                  <fa-icon
+                    class="text-[#141519]"
+                    [icon]="faCalendarDays"
+                    size="xl"
+                  ></fa-icon>
+                </div>
+              }
+              <div class="text-sm font-semibold text-gray-900">
+                @if (item.secondaryValue) {
+                  {{
+                    isValidDate(item.secondaryValue)
+                      ? (item.secondaryValue | hesDate)
+                      : item.secondaryValue
+                  }}
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+    <div
+      class="Frame25074 flex w-full flex-wrap items-start justify-start gap-4 lg:hidden"
+    >
+      @for (item of profileDetails; track $index) {
+        <div class="flex h-auto w-36 flex-1 items-start justify-start gap-4">
+          <div
+            class="TextInput inline-flex w-40 flex-col items-start justify-start gap-1"
+          >
+            <div
+              class="Top inline-flex items-center justify-start gap-2 self-stretch"
+            >
+              <div class="Title flex-1">
+                <span
+                  class="text-base font-semibold capitalize leading-tight text-neutral-900"
+                  >{{ item.title }}
+                </span>
+              </div>
+            </div>
+            <div
+              class="Container inline-flex items-center justify-start gap-2 self-stretch rounded"
+            >
+              @if (item.badges?.length) {
+                <div class="flex flex-wrap items-center gap-1.5">
+                  @for (badge of item.badges; track badge) {
+                    <span
+                      class="inline-flex items-center rounded-full bg-[#f9f5ff] px-2 py-0.5 text-xs font-medium text-[#6941c6]"
+                    >
+                      {{ badge }}
+                    </span>
+                  }
+                </div>
+              } @else {
+                <div
+                  class="Placeholder shrink grow basis-0 text-sm font-medium leading-tight text-slate-500"
+                >
+                  {{
+                    isValidDate(item.value)
+                      ? (item.value | hesDate)
+                      : item.value
+                  }}
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</ng-container>

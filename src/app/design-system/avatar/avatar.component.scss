@@ -1,0 +1,50 @@
+.crescent {
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    background-image: url("/assets/images/moon-neutral.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: left center;
+    pointer-events: none;
+    z-index: 1;
+  }
+}
+
+.crescent.brand::before {
+  background-image: url("/assets/images/moon-brand.svg");
+}
+.crescent.emerald::before {
+  background-image: url("/assets/images/moon-emerald.svg");
+}
+.crescent.blue::before {
+  background-image: url("/assets/images/moon-blue.svg");
+}
+.crescent.green::before {
+  background-image: url("/assets/images/moon-green.svg");
+}
+.crescent.yellow::before {
+  background-image: url("/assets/images/moon-yellow.svg");
+}
+.crescent.neutral::before {
+  background-image: url("/assets/images/moon-neutral.svg");
+}
+.crescent.coral::before {
+  background-image: url("/assets/images/moon-coral.svg");
+}
+.crescent.teal::before {
+  background-image: url("/assets/images/moon-teal.svg");
+}
+.crescent.purple::before {
+  background-image: url("/assets/images/moon-purple.svg");
+}
+.crescent.indigo::before {
+  background-image: url("/assets/images/moon-indigo.svg");
+}

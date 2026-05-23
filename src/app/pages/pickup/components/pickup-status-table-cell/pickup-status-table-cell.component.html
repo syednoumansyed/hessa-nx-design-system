@@ -1,0 +1,15 @@
+<ng-container>
+  <div
+    class="flex h-5 w-20 cursor-pointer items-center justify-center whitespace-nowrap rounded-2xl px-2 text-xs font-medium"
+    [ngClass]="{
+      'bg-[#F0F9FF] text-[#026AA2]': isRequested,
+      'bg-[#FFFAEB] text-[#B54708]': isInProcess,
+      'bg-[#EEFFE9] text-[#167026]': isPicked,
+      'bg-[#FEF3F2] text-[#B42318]': isDenied,
+      'bg-[#FDF2FA] text-[#C11574]': isLeftSchool
+    }"
+    (click)="onStatusClick()"
+  >
+    {{ statusName }}
+  </div>
+</ng-container>

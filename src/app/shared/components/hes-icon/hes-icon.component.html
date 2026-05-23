@@ -1,0 +1,27 @@
+@if (faIcon) {
+  @if (faIcon.primaryColor || faIcon.secondaryColor) {
+    <fa-duotone-icon
+      [icon]="faIcon.icon"
+      [title]="faIcon.title"
+      [flip]="faIcon.flip"
+      [size]="faIcon.size"
+      [swapOpacity]="faIcon.swapOpacity"
+      [primaryOpacity]="faIcon.primaryOpacity"
+      [secondaryOpacity]="faIcon.secondaryOpacity"
+      [primaryColor]="faIcon.primaryColor"
+      [secondaryColor]="faIcon.secondaryColor"
+      [class]="faIcon.class ?? iconClass"
+    ></fa-duotone-icon>
+  } @else {
+    <fa-icon
+      [icon]="faIcon.icon"
+      [title]="faIcon.title"
+      [flip]="faIcon.flip"
+      [size]="faIcon.size"
+      [class]="faIcon.class ?? iconClass"
+    >
+    </fa-icon>
+  }
+} @else if (hesIcon) {
+  <ion-icon [class]="hesIcon.class ?? iconClass" [src]="hesIcon.src"></ion-icon>
+}

@@ -1,0 +1,32 @@
+<div class="flex flex-col gap-ds-3xl">
+  @for (school of dataToPopulateSchools(); track school.schoolId) {
+    <div class="flex flex-col gap-ds-md">
+      <div class="flex items-center gap-ds-md py-ds-lg">
+        <div class="flex h-[40px] w-[40px] items-center justify-center">
+          <app-ds-icon icon="school-duotone-lg" size="5xl" />
+        </div>
+        <div>
+          <div class="single-line-sm-mid-emphasis text-emphasis-mid">
+            {{ school.campusName }}
+          </div>
+          <div class="single-line-md-high-emphasis text-emphasis-high">
+            {{ school.schoolName }}
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col gap-ds-xl rounded-ds-xl bg-white p-ds-xl">
+        @for (class of school.classes; track class.classId) {
+          <div
+            class="flex cursor-pointer items-center gap-ds-md py-ds-lg"
+            (click)="selectClass(class)"
+          >
+            <app-ds-icon icon="class" size="md" />
+            <div class="single-line-md-mid-emphasis text-emphasis-high">
+              {{ class.levelName }} - {{ class.className }}
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

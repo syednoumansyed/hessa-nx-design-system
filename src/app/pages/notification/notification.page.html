@@ -1,0 +1,149 @@
+<ng-container *transloco="let t">
+  @if (isMobile) {
+  <ion-content
+    fullscreen="true"
+    [ngClass]="{
+        'ds-page-content bottom-bar-spacing surface-page': isMobile
+      }"
+    class="notification-ion-content"
+  >
+    <div class="flex justify-center pt-ds-xs md:max-h-[70vh] md:py-0">
+      <div class="w-full max-w-2xl md:max-h-full">
+        <section class="bg-[var(--surface-page)] md:flex md:h-full md:flex-col">
+          <div class="hidden lg:block">
+            <ng-container *ngTemplateOutlet="notificationHeader"></ng-container>
+          </div>
+          <div class="flex flex-col py-ds-md md:flex-1">
+            <ng-container *ngTemplateOutlet="notificationList"></ng-container>
+          </div>
+        </section>
+      </div>
+    </div>
+  </ion-content>
+  } @else {
+  <div class="flex justify-center pt-ds-xs md:max-h-[70vh] md:py-0">
+    <div class="w-full max-w-2xl md:max-h-full">
+      <section class="bg-[var(--surface-page)] md:flex md:h-full md:flex-col">
+        <ng-container *ngTemplateOutlet="notificationHeader"></ng-container>
+        <ion-content
+          class="notification-desktop-content md:flex-1"
+          [scrollEvents]="false"
+          [scrollY]="true"
+        >
+          <div class="flex flex-col py-ds-md">
+            <ng-container *ngTemplateOutlet="notificationList"></ng-container>
+          </div>
+        </ion-content>
+      </section>
+    </div>
+  </div>
+  }
+  <ng-template #notificationHeader>
+    <header
+      class="hidden items-center justify-between bg-white px-ds-xl py-ds-lg md:flex"
+    >
+      <div class="heading-h4-high-emphasis text-emphasis-high">
+        {{ t("notification.title") }}
+      </div>
+      <div class="flex flex-wrap items-center gap-ds-xl">
+        <ds-segmented-control
+          [options]="[
+            { id: 'all', label: t('global.all.txt') },
+            { id: 'unread', label: t('notification.unread.txt') }
+          ]"
+          [value]="filter()"
+          (valueChange)="onFilterChange($event)"
+        />
+        <button
+          type="button"
+          [attr.aria-label]="t('notifications.settings_label')"
+          class="flex h-6 w-6 items-center justify-center rounded-full text-emphasis-mid transition-colors duration-150 hover:text-emphasis-high focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--surface-action)]"
+          (click)="openSettings()"
+        >
+          <app-ds-icon
+            [icon]="settingsIcon"
+            size="xl"
+            class="text-emphasis-high"
+          ></app-ds-icon>
+        </button>
+      </div>
+    </header>
+  </ng-template>
+
+  <ng-template #notificationList>
+    @if (isLoading() && !hasNotifications()) {
+    <div class="flex justify-center py-ds-2xl">
+      <tui-loader size="m"></tui-loader>
+    </div>
+    } @else if (hasNotifications()) {
+    <div class="flex flex-col gap-ds-lg">
+      @for (group of groupedNotifications(); track group.dateKey) {
+      <section class="flex flex-col">
+        <div
+          class="heading-h5-mid-emphasis px-ds-2xl pb-ds-xs pt-ds-sm text-emphasis-mid"
+        >
+          {{ group.label }}
+        </div>
+
+        <div class="flex flex-col">
+          @for ( notification of group.notifications; track notification.id ) {
+          <button
+            type="button"
+            class="block w-full border-0 bg-transparent p-0 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--surface-action)]"
+            (click)="onNotificationSelected(notification)"
+          >
+            <app-notification-list-item
+              [notification]="notification"
+            ></app-notification-list-item>
+          </button>
+          }
+        </div>
+      </section>
+      }
+    </div>
+    <ion-infinite-scroll
+      [disabled]="!canLoadMore()"
+      (ionInfinite)="loadNotifications($event)"
+    >
+      <ion-infinite-scroll-content loadingSpinner="bubbles">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+    } @else {
+    <div class="flex flex-col items-center gap-ds-xl px-ds-2xl py-ds-2xl">
+      <app-no-data-card
+        class="w-full"
+        mainImagePath="assets/illustrations/mascot-coffee.png"
+        [title]="t('notification.empty_state.title')"
+        [description]="t('notification.empty_state.txt')"
+        [noBgStyle]="true"
+      ></app-no-data-card>
+    </div>
+    }
+  </ng-template>
+
+  <ng-template #mobileHeaderActions>
+    <div class="flex items-center gap-ds-md">
+      <ds-segmented-control
+        [options]="[
+          { id: 'all', label: t('global.all.txt') },
+          { id: 'unread', label: t('notification.unread.txt') }
+        ]"
+        [value]="filter()"
+        (valueChange)="onFilterChange($event)"
+      ></ds-segmented-control>
+
+      <button
+        type="button"
+        [attr.aria-label]="t('notifications.settings_label')"
+        class="flex h-8 w-8 items-center justify-center rounded-full text-emphasis-mid transition-colors duration-150 hover:text-emphasis-high focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--surface-action)]"
+        (click)="openSettings()"
+      >
+        <app-ds-icon
+          [icon]="settingsIcon"
+          size="xl"
+          class="text-emphasis-high"
+        ></app-ds-icon>
+      </button>
+    </div>
+  </ng-template>
+</ng-container>

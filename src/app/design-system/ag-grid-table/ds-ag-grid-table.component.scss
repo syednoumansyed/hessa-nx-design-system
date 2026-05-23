@@ -1,0 +1,383 @@
+:host {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.ds-ag-grid-table-shell {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+}
+
+.ds-ag-grid-table-body {
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  // Prevent scroll from propagating to parent (ion-content)
+  overscroll-behavior: contain;
+
+  // Force light-mode scrollbar colors so dark mode doesn't change appearance
+  color-scheme: light;
+  // In empty overlay state, allow horizontal scroll so header columns remain visible
+  &.has-empty-overlay {
+    overflow-x: auto;
+  }
+}
+
+.ds-ag-grid-table-header,
+.ds-ag-grid-table-footer {
+  position: sticky;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
+  width: 100%;
+  max-width: 100%;
+  z-index: 3;
+  flex-shrink: 0;
+}
+
+// When bulk action is active, sticky bar is a direct child of scroll container
+.ds-bulk-action-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  flex-shrink: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
+  width: 100%;
+  max-width: 100%;
+
+  // Remove rounded corners only when bar is actually stuck at top
+  &.is-stuck ::ng-deep div {
+    border-radius: 0 !important;
+  }
+}
+
+.ds-ag-grid-table-prefix-row {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-md, 8px);
+  padding-top: var(--ds-spacing-md, 8px);
+  padding-bottom: var(--ds-spacing-md, 8px);
+
+  // Hide when no projected content to avoid empty spacing
+  &:not(:has(*)) {
+    display: none;
+  }
+}
+
+.ds-ag-grid-table-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-spacing-md, 8px);
+  padding-bottom: var(--ds-spacing-md, 8px);
+}
+
+.ds-ag-grid-table-filters {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  min-width: 0;
+  gap: var(--ds-spacing-md, 8px);
+}
+
+.ds-ag-grid-table-search {
+  flex: 1 1 auto;
+  max-width: 497px;
+}
+
+.ds-ag-grid-table-filter {
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.ds-ag-grid-table-zoom {
+  display: inline-flex;
+  align-items: center;
+  padding-inline-end: 2px;
+  border-radius: var(--ds-corner-radius-lg, 12px);
+}
+
+.ds-ag-grid-table-zoom__btn {
+  height: 44px;
+  width: 54px;
+  border: 2px solid var(--stroke-color-mid-emphasis);
+  background-color: var(--surface-primary);
+  color: var(--content-high-emphasis);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-extrabold);
+  line-height: var(--font-line-height-single);
+  cursor: pointer;
+  transition: all 150ms ease;
+
+  &:hover:not(:disabled) {
+    background-color: var(--surface-secondary, #f5f5f5);
+    border-color: var(--stroke-color-high-emphasis, #666);
+  }
+
+  &:active:not(:disabled) {
+    background-color: var(--surface-tertiary, #e8e8e8);
+    transform: scale(0.96);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--stroke-color-brand-strong, #7c3ff1);
+    outline-offset: 2px;
+  }
+}
+
+.ds-ag-grid-table-zoom__btn--left {
+  border-start-start-radius: var(--ds-corner-radius-lg, 12px);
+  border-end-start-radius: var(--ds-corner-radius-lg, 12px);
+  border-inline-end: none;
+}
+
+.ds-ag-grid-table-zoom__btn--right {
+  border-start-end-radius: var(--ds-corner-radius-lg, 12px);
+  border-end-end-radius: var(--ds-corner-radius-lg, 12px);
+  border-inline-start: none;
+}
+
+.ds-ag-grid-table-zoom__level {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  min-width: 52px;
+  padding: 0 4px;
+  border-top: 2px solid var(--stroke-color-mid-emphasis);
+  border-bottom: 2px solid var(--stroke-color-mid-emphasis);
+  background-color: var(--surface-secondary, #f9f9f9);
+  color: var(--content-high-emphasis);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-extrabold);
+  line-height: var(--font-line-height-single);
+  user-select: none;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+
+  &:hover {
+    background-color: var(--surface-tertiary, #f0f0f0);
+  }
+
+  &:active {
+    background-color: var(--surface-quaternary, #e5e5e5);
+  }
+}
+
+.ds-ag-grid-table-zoom__btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  background-color: var(--surface-secondary, #f5f5f5);
+  color: var(--content-disabled, #999);
+}
+
+.ds-ag-grid-table-scroll {
+  width: 100%;
+  flex: 1 0 auto; // Grow to fill remaining space, don't shrink below content
+  min-height: 0;
+  // Allow flex item to shrink below content width (important for proper flex sizing)
+  min-width: 0;
+
+  // When showing empty state, use flex column so the grid (headers) and empty state card stack.
+  // flex: 1 0 auto — grows to fill body when content is small, but won't shrink below content
+  // size when viewport is small, which lets the body (overflow: auto) scroll to reveal buttons.
+  &.has-empty-overlay {
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 auto;
+    border-bottom: 2px solid var(--stroke-color-mid-emphasis);
+  }
+}
+
+// Zoom wrapper - applies CSS zoom for Google Sheets-like zoom
+// Uses CSS zoom property which maintains sticky positioning and proper layout
+.ds-ag-grid-table-zoom-wrapper {
+  // Use CSS zoom instead of transform - it properly scales layout and maintains sticky positioning
+  zoom: var(--ds-ag-grid-zoom, 1);
+  // Keep wrapper at 100% width - column sizing in JS will account for zoom factor
+  width: 100%;
+  // Fill scroll container height so grid can stretch to fill available space
+  min-height: 100%;
+  display: flex;
+
+  // When empty, don't stretch — let the grid be just the header height
+  .has-empty-overlay > & {
+    min-height: auto !important;
+    flex-shrink: 0;
+  }
+}
+
+// External empty state card shown below the grid when no rows (keeps column headers intact)
+.ds-ag-grid-table-grid-empty-state {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  padding: var(--ds-spacing-3xl, 48px) var(--ds-spacing-xl, 16px);
+  border-inline-start: 2px solid var(--stroke-color-mid-emphasis);
+  border-inline-end: 2px solid var(--stroke-color-mid-emphasis);
+  background-color: var(--surface-primary);
+  zoom: var(--ds-ag-grid-zoom, 1);
+}
+
+.ds-ag-grid-table-footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-sm, 4px);
+  padding: var(--ds-spacing-md, 10px) var(--ds-spacing-xl, 16px);
+  background-color: var(--surface-primary);
+  border: 1px solid var(--stroke-color-mid-emphasis);
+  border-top: 1px solid var(--stroke-color-mid-emphasis);
+  border-end-start-radius: 12px;
+  border-end-end-radius: 12px;
+}
+
+.ds-ag-grid-pagination {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-sm, 4px);
+  flex-wrap: wrap;
+}
+
+.ds-ag-grid-pagination__summary {
+  color: var(--content-mid-emphasis);
+  font-size: var(--font-size-sm);
+  line-height: var(--font-line-height-single);
+  font-weight: var(--font-weight-semibold);
+  text-align: center;
+  flex-shrink: 0;
+  min-width: 150px; // Prevent layout shift when numbers change
+}
+
+.ds-ag-grid-pagination__pager {
+  display: flex;
+  align-items: center;
+}
+
+.ds-ag-grid-pagination__pages {
+  display: flex;
+  align-items: center;
+}
+
+.ds-ag-grid-pagination__nav,
+.ds-ag-grid-pagination__page {
+  height: 40px;
+  min-width: 40px;
+  border: 1px solid var(--stroke-color-mid-emphasis);
+  background-color: transparent;
+  color: var(--content-mid-emphasis);
+  // Typography: Single line/sm/mid-emphasis
+  font-size: var(--font-size-sm);
+  line-height: var(--font-line-height-single);
+  font-weight: var(--font-weight-semibold);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-inline-end: -1px;
+  position: relative;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background-color: var(--surface-secondary, #f5f5f5);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.ds-ag-grid-pagination__page.is-active {
+  background-color: var(--surface-brand-surface-light);
+  border-color: var(--stroke-color-brand-strong);
+  color: var(--surface-pastel-foreground-brand);
+  z-index: 1;
+}
+
+.ds-ag-grid-pagination__nav--prev {
+  border-start-start-radius: var(--ds-corner-radius-sm, 4px);
+  border-end-start-radius: var(--ds-corner-radius-sm, 4px);
+}
+
+.ds-ag-grid-pagination__nav--next {
+  border-start-end-radius: var(--ds-corner-radius-sm, 4px);
+  border-end-end-radius: var(--ds-corner-radius-sm, 4px);
+  margin-inline-end: 0;
+}
+
+.ds-ag-grid-pagination__ellipsis {
+  height: 40px;
+  min-width: 40px;
+  border: 1px solid var(--stroke-color-mid-emphasis);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--content-mid-emphasis);
+  // Typography: Single line/sm/mid-emphasis
+  font-size: var(--font-size-sm);
+  line-height: var(--font-line-height-single);
+  font-weight: var(--font-weight-semibold);
+  margin-inline-end: -1px;
+}
+
+.ds-ag-grid-pagination__per-page {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+  padding: 10px;
+  border: 1px solid var(--stroke-color-mid-emphasis);
+  border-radius: var(--ds-corner-radius-sm, 4px);
+  color: var(--content-mid-emphasis);
+  // Typography: Single line/sm/mid-emphasis
+  font-size: var(--font-size-sm);
+  line-height: var(--font-line-height-single);
+  font-weight: var(--font-weight-semibold);
+  background-color: transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  &:hover {
+    background-color: var(--surface-secondary, #f5f5f5);
+  }
+}
+
+// 2-line clamp for plain-text cell values.
+// For cells with block-level custom renderers the renderer host element fills
+// the -webkit-box slot as a single item, so the clamp has no visual effect on
+// them and their internal layout is preserved.
+/* stylelint-disable-next-line selector-pseudo-element-no-unknown */
+::ng-deep .ds-ag-grid-table {
+  // Increase row height to comfortably fit 2 wrapped lines
+  --ag-row-height: 60px;
+
+  .ag-cell-value {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+// Global empty state (shown before grid initialization)
+.ds-ag-grid-table-empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ds-spacing-3xl, 48px) var(--ds-spacing-xl, 16px);
+  min-height: 400px;
+  background-color: var(--surface-primary);
+  border: 2px solid var(--stroke-color-mid-emphasis);
+  border-radius: 0;
+  zoom: var(--ds-ag-grid-zoom, 1);
+}

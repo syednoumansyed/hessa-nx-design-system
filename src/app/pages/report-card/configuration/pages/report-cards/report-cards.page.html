@@ -1,0 +1,23 @@
+<app-no-selected-scope-card
+  [requiredScope]="requiredScopes"
+  (onScopeUpdate)="handleDisplayContent($event)"
+>
+</app-no-selected-scope-card>
+@if(displayContent()){
+<ng-container *transloco="let t">
+  <ion-content class="hes-card ds-page-content h-full w-full">
+    <app-list-view-container
+      [columns]="columns()"
+      class="w-full"
+      [dataSource]="fetchReportCards"
+      [primaryActions]="[primaryBtnConfig]"
+      [mobileVisibleFieldsLimit]="5"
+      [pageTitle]="t('global.manage_report_card.title')"
+      [canCopy]="true"
+      [persistColumnSettings]="false"
+      [noDataConfig]="noDataConfig"
+      [autoSizeStrategy]="{ type: 'fitGridWidth' }"
+    />
+  </ion-content>
+</ng-container>
+}

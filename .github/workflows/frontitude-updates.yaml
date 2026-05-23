@@ -1,0 +1,66 @@
+name: Frontitude - Update i18n Jsons from Frontitude
+
+on:
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  update-locales:
+    name: Update i18n Jsons to branches
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate token
+        id: generate_token
+        uses: tibdex/github-app-token@v1
+        with:
+          app_id: ${{ secrets.FRONTITUDE_BOT_APP_ID }}
+          private_key: ${{ secrets.FRONTITUDE_BOT_PRIVATE_KEY }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ steps.generate_token.outputs.token }}
+          fetch-depth: 0
+          ref: development
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "lts/*"
+
+      - name: Install Frontitude CLI and update locales
+        env:
+          FRONTITUDE_AUTH_TOKEN: ${{ secrets.FRONTITUDE_AUTH_TOKEN }}
+        run: |
+          npm install -g @frontitude/cli
+          frontitude config set access-token $FRONTITUDE_AUTH_TOKEN
+          frontitude pull --has-key --include-translations
+          mv src/assets/i18n/i18n.json src/assets/i18n/en.json
+          mv src/assets/i18n/i18n-ar.json src/assets/i18n/ar.json
+
+      - name: Push changes to development branch
+        env:
+          GH_TOKEN: ${{ steps.generate_token.outputs.token }}
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Actions"
+
+          # Commit changes to the current branch
+          git add src/assets/i18n/en.json src/assets/i18n/ar.json
+          git diff --cached --quiet && echo "No changes to commit" || (git commit -m "Update locale files" && git push origin development && echo "Changes committed and pushed")
+
+      - name: Push changes to deployment branches and active sprint branch
+        env:
+          GH_TOKEN: ${{ steps.generate_token.outputs.token }}
+        run: |
+          branches=("sprint/stable" "staging" "main" "production")
+          # branches+=($(git branch -r | grep origin/sprint/ | sed 's/.*origin\///' | sort -V | tail -1))
+
+          for branch in "${branches[@]}"; do
+            echo "Processing branch: $branch"
+            git fetch origin "$branch"
+            git checkout -B "$branch" "origin/$branch"
+            git checkout origin/development -- src/assets/i18n/en.json src/assets/i18n/ar.json
+
+            git add src/assets/i18n/en.json src/assets/i18n/ar.json
+            git diff --cached --quiet && echo "No changes to commit" || (git commit -m "Update locale files" && git push origin "$branch" && echo "Changes committed and pushed")
+          done

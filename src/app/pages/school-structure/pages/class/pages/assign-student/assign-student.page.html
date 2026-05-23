@@ -1,0 +1,21 @@
+<ng-container *transloco="let t;">
+  <ion-content class="ds-page-content">
+    <div
+      class="hes-card flex h-full w-full flex-col items-start justify-start p-0"
+    >
+      <app-list-view-container
+        class="w-full flex-1"
+        [columns]="columns"
+        [dataSource]="fetchStudentList"
+        [primaryActions]="primaryActions()"
+        [noDataConfig]="noDataConfig"
+        [mobileVisibleFieldsLimit]="5"
+        [pageTitle]="t('school_structure.assign_studnts.title')"
+        [pageCountTitle]="t('school_structure.assign_studnts.title')"
+        [canCopy]="true"
+        [rowSelection]="'multiple'"
+        (selectedRowsChange)="selectedRowsChange($event)"
+      ></app-list-view-container>
+    </div>
+  </ion-content>
+</ng-container>

@@ -1,0 +1,6 @@
+:host ::ng-deep youtube-player iframe,
+:host ::ng-deep youtube-player-placeholder {
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 16/9; /* adjust aspect ratio */
+}

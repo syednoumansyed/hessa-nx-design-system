@@ -1,0 +1,28 @@
+<div
+  class="flex w-fit select-none items-center justify-between gap-ds-md border-2 text-content-high"
+  [ngClass]="chipClasses()"
+>
+  @if (startIcon()) {
+    <app-ds-icon
+      [icon]="startIcon()!"
+      [size]="computedIconSize()"
+      [class]="startIconColorClass()"
+    />
+  }
+  <div class="single-line-caption-mid-emphasis">
+    @if (text()) {
+      {{ text() }}
+    } @else {
+      <ng-content></ng-content>
+    }
+  </div>
+
+  @if (removable()) {
+    <app-ds-icon
+      [icon]="closeIcon"
+      size="md"
+      class="relative cursor-pointer after:absolute after:inset-0 after:-top-1 after:h-5 after:w-5 after:rounded-ds-full"
+      (click)="remove.emit()"
+    />
+  }
+</div>

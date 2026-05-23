@@ -1,0 +1,80 @@
+<div
+  class="flex w-full max-w-full flex-col gap-ds-xl rounded-t-ds-2xl bg-surface-primary px-ds-xl py-ds-xl"
+>
+  <!-- Header -->
+  <div class="flex items-start justify-between gap-ds-lg">
+    <div class="flex flex-1 items-center gap-ds-md">
+      <!-- Back Button (Conditional) -->
+      @if (showBackButton()) {
+        <button
+          type="button"
+          class="hover:bg-surface-secondary-hover centered-flex h-10 w-10 rounded-ds-full text-icon-high transition"
+          (click)="handleBack()"
+          [attr.aria-label]="
+            currentStage() === 'subcategory'
+              ? 'Go back to categories'
+              : 'Go back to subcategories'
+          "
+        >
+          <app-ds-icon [icon]="backIcon" [size]="'xl'"></app-ds-icon>
+        </button>
+      }
+
+      <!-- Title and Subtitle -->
+      <div class="gap-ds-2xs flex flex-col px-ds-xl">
+        <h2 class="heading-h3-high-emphasis text-emphasis-high">
+          {{ modalTitle() }}
+        </h2>
+        @if (modalSubtitle()) {
+          <p class="content-sm-mid-emphasis text-emphasis-mid">
+            {{ modalSubtitle() }}
+          </p>
+        }
+      </div>
+    </div>
+
+    <!-- Close Button -->
+    <div class="cursor-pointer text-[#B3B3B3] md:block" (click)="onClose()">
+      <app-ds-icon [icon]="closeIcon" size="2xl" />
+    </div>
+  </div>
+
+  <!-- Content Area (Stage-based) -->
+  <div class="flex flex-col">
+    <!-- Stage 1: Category Selection -->
+    @if (currentStage() === "category") {
+      <app-selection-list
+        [items]="categoriesToDisplay()"
+        [selectedId]="selectedCategory()?.id ?? null"
+        (itemSelect)="handleCategorySelect($event)"
+      ></app-selection-list>
+    }
+
+    <!-- Stage 2: Subcategory Selection -->
+    @if (currentStage() === "subcategory") {
+      <app-selection-list
+        [items]="subcategoriesToDisplay()"
+        [selectedId]="selectedSubcategory()?.id ?? null"
+        (itemSelect)="handleSubcategorySelect($event)"
+      ></app-selection-list>
+    }
+
+    <!-- Stage 3: Update Form -->
+    @if (
+      currentStage() === "form" && selectedCategory() && selectedSubcategory()
+    ) {
+      <app-update-category-form
+        [categoryTitle]="selectedCategory()!.title"
+        [subcategoryTitle]="selectedSubcategory()!.title"
+        [campusName]="selectedCampusName() ?? ''"
+        [schoolName]="selectedSchoolName() ?? ''"
+        [assigneesPills]="formAssignees()"
+        [isSubmitting]="isSubmitting()"
+        (goToCategory)="currentStage.set('category')"
+        (goToSubcategory)="currentStage.set('subcategory')"
+        (formSubmit)="handleFormSubmit()"
+        (formCancel)="handleFormCancel()"
+      ></app-update-category-form>
+    }
+  </div>
+</div>

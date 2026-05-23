@@ -1,0 +1,33 @@
+<!-- welcome-mascot.component.html -->
+<div class="flex min-h-full flex-col bg-transparent" *transloco="let t">
+  <!-- Speech bubble -->
+  <div class="px-6 pt-8">
+    <div class="mx-auto w-full max-w-sm">
+      <div class="relative inline-block w-fit min-w-[14ch] max-w-full">
+        <div
+          class="chat-bubble-down relative overflow-visible rounded-[20px] border-x-4 border-b-8 border-t-4 border-[#C2D2DE] bg-[#D1E2EF] px-5 py-5"
+        >
+          <div
+            class="relative z-10 text-[17px] font-bold leading-tight text-emphasis-high"
+          >
+            {{ "global.salam.txt" | transloco }}
+          </div>
+          <div
+            class="relative z-10 mt-1 text-[14px] font-medium leading-snug text-emphasis-mid"
+          >
+            {{ "login.introduction.txt" | transloco }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mascot - positioned closer to bubble -->
+  <div class="flex justify-center px-6 pb-8 pt-12">
+    <img
+      src="assets/mascot/welcome.svg"
+      alt="Welcome Mascot"
+      class="h-72 w-72 object-contain drop-shadow-sm sm:h-80 sm:w-80"
+    />
+  </div>
+</div>

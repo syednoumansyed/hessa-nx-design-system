@@ -1,0 +1,72 @@
+<ion-content
+  [fullscreen]="true"
+  [ngStyle]=" {'--ion-background-color': '#fff'}"
+>
+  <div
+    class="ios-header-padding mt-3"
+    *ngIf="isMobile"
+    [ngClass]="transloco.getActiveLang() === 'ar' ? 'text-left ml-10' : 'text-right mr-10'"
+  >
+    <ion-select
+      class="hes-select hes-select--lang inline-block w-28"
+      label-placement="stacked"
+      fill="outline"
+      interface="popover"
+      (ionChange)="onLanguageChange($event)"
+      [value]="selectedLanguage"
+    >
+      <ion-select-option
+        [class]="['max-h-16', 'overflow-y-auto', 'w-auto']"
+        value="en"
+        >English</ion-select-option
+      >
+      <ion-select-option [class]="['max-h-16', 'overflow-y-auto']" value="ar"
+        >اللغة العربية</ion-select-option
+      >
+    </ion-select>
+  </div>
+  <ion-grid class="ion-no-padding bg-white">
+    <ion-row>
+      <ion-col
+        class="flex justify-center pb-12 pt-20 md:justify-start md:ps-12 md:pt-12"
+      >
+        <div class="flex cursor-pointer flex-col items-center">
+          <ion-img
+            [src]="!isMobile ? 'assets/logos/hessa-logo-1.svg' : 'assets/logos/hessa-logo-2.svg'"
+            alt="hessa logo"
+            class="h-[5.62rem] w-[7.25rem] md:h-20 md:w-60"
+            (click)="goToLogin()"
+          ></ion-img>
+        </div>
+      </ion-col>
+      <ion-col
+        class="flex justify-center pb-12 pt-20 md:justify-end md:pe-12 md:pt-12"
+        *ngIf="!isMobile"
+      >
+        <div class="flex items-center">
+          <ion-select
+            class="hes-select hes-select--lang w-28"
+            label-placement="stacked"
+            fill="outline"
+            interface="popover"
+            (ionChange)="onLanguageChange($event)"
+            [value]="selectedLanguage"
+          >
+            <ion-select-option
+              [class]="['max-h-16', 'overflow-y-auto', 'w-auto']"
+              value="en"
+              >English</ion-select-option
+            >
+            <ion-select-option
+              [class]="['max-h-16', 'overflow-y-auto', 'w-auto']"
+              value="ar"
+              >اللغة العربية</ion-select-option
+            >
+          </ion-select>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <router-outlet></router-outlet>
+  </ion-grid>
+</ion-content>

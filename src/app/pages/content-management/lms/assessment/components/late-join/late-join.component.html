@@ -1,0 +1,38 @@
+<div class="p-ds-xl" *transloco="let t">
+  <div class="float-right flex cursor-pointer justify-end text-[#B3B3B3]">
+    <app-ds-icon [icon]="xMarks" (click)="closeModal()"></app-ds-icon>
+  </div>
+  <div class="flex flex-col items-center pt-ds-xl">
+    <div class="p-ds-md">
+      <app-ds-icon icon="warning" size="56px" />
+    </div>
+
+    <div class="heading-h4-mid-emphasis text-emphasis-high">
+      {{ t("joining_late.title") }}
+    </div>
+
+    @if (dueDate()) {
+      <div
+        class="content-lg-high-emphasis my-2 flex justify-center rounded-2xl border-2 bg-surface-secondary px-3 text-center"
+      >
+        <app-assessment-timer
+          [dueDate]="dueDate()"
+          [duration]="duration()"
+          counterCss="content-lg-mid-emphasis text-content-error"
+        >
+          <div class="content-sm-mid-emphasis text-emphasis-high">
+            {{ t("remaining_time") }}
+          </div>
+        </app-assessment-timer>
+      </div>
+    }
+    <div class="content-md-default mt-2 flex text-center text-emphasis-mid">
+      {{ t("joining_late.txt") }}
+    </div>
+  </div>
+  <div class="my-ds-lg">
+    <ds-button [variant]="'primary'" [fullWidth]="true" (click)="startExam()">
+      {{ t("global.start") }}
+    </ds-button>
+  </div>
+</div>

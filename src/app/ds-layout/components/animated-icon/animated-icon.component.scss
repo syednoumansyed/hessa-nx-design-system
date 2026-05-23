@@ -1,0 +1,18 @@
+/* ───────────────────────────────────────────────
+   Animated Lottie icon (scoped)
+   ─────────────────────────────────────────────── */
+
+:host {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* Let it inherit the colour from its parent
+     (so bottom-nav active/inactive just works) */
+  color: inherit;
+}
+
+/* Optional little scale-up while playing */
+.playing {
+  transform: scale(1.1);
+  transition: transform 200ms ease-in-out;
+}

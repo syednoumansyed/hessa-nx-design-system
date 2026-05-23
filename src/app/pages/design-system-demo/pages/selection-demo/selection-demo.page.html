@@ -1,0 +1,227 @@
+<ion-content>
+  <div class="p-4 md:p-6">
+    <app-demo-page-wrapper title="Selection Controls">
+      <!-- Select -->
+      <h2 class="heading-h2-high-emphasis mb-4">Select</h2>
+      <app-select-testing />
+
+      <!-- Selectable -->
+      <h2 class="heading-h2-high-emphasis mb-4 mt-8">Selectable</h2>
+      <app-selectable-demo></app-selectable-demo>
+
+      <!-- Chips -->
+      <h2 class="heading-h2-high-emphasis mb-4 mt-8">Chips</h2>
+      <div class="flex items-center gap-3">
+        <app-ds-chip text="Simple"></app-ds-chip>
+        <app-ds-chip variant="primary" text="Simple"></app-ds-chip>
+        <app-ds-chip text="Simple" [removable]="true"></app-ds-chip>
+        <app-ds-chip
+          variant="primary"
+          text="Simple"
+          [removable]="true"
+        ></app-ds-chip>
+        <app-ds-chip
+          text="Simple"
+          [startIcon]="checkIcon"
+          [removable]="true"
+        ></app-ds-chip>
+        <app-ds-chip
+          variant="primary"
+          text="Simple"
+          [startIcon]="checkIcon"
+          [removable]="true"
+        ></app-ds-chip>
+        <app-ds-chip text="Simple" [startIcon]="checkIcon"></app-ds-chip>
+        <app-ds-chip
+          variant="primary"
+          text="Simple"
+          [startIcon]="checkIcon"
+        ></app-ds-chip>
+        <app-ds-chip text="New" variant="red"></app-ds-chip>
+      </div>
+
+      <!-- Switch -->
+      <h2 class="heading-h2-high-emphasis mb-4 mt-8">Switches</h2>
+      <div class="flex flex-row items-start gap-8">
+        <div class="flex flex-col items-center gap-2">
+          <h3 class="text-lg font-semibold">Language Switch (two way)</h3>
+          <app-ds-switch
+            [option1]="'En'"
+            [option2]="'Ar'"
+            type="two-way"
+            [selectedOption]="'En'"
+          >
+          </app-ds-switch>
+        </div>
+
+        <div class="flex flex-col items-center gap-2">
+          <h3 class="text-lg font-semibold">One way boolean switch</h3>
+          <app-ds-switch type="boolean"> </app-ds-switch>
+        </div>
+      </div>
+
+      <!-- Checkbox -->
+      <h2 class="heading-h2-high-emphasis mb-4 mt-8">Checkboxes</h2>
+      <div class="mt-4 flex flex-col-reverse flex-wrap gap-6 md:flex-row">
+        <div class="flex flex-col gap-4">
+          <div class="text-2xl personnel:text-blue-500 student:text-red-500">
+            Checkbox Samples
+          </div>
+          <app-ds-checkbox title="This is un-checked" />
+          <app-ds-checkbox title="This is checked" [defaultValue]="true" />
+          <app-ds-checkbox
+            [title]="'This is disabled un-checked'"
+            [disabled]="true"
+          />
+          <app-ds-checkbox
+            [title]="'This is disabled checked'"
+            [defaultValue]="true"
+            [disabled]="true"
+          />
+          <app-ds-checkbox
+            [title]="'This is checked'"
+            [defaultValue]="true"
+            variantInput="indeterminate"
+          />
+          <app-ds-checkbox
+            [title]="'This is small size checkbox'"
+            [defaultValue]="true"
+            size="sm"
+          />
+          <app-ds-checkbox
+            [title]="'This is small size indeterminate checkbox'"
+            [defaultValue]="true"
+            variantInput="indeterminate"
+            size="sm"
+          />
+        </div>
+        <div class="flex flex-col gap-4">
+          <div class="text-2xl personnel:text-blue-500 student:text-red-500">
+            Checkbox used with reactive forms
+          </div>
+
+          <form [formGroup]="checkboxForm" (ngSubmit)="onSubmit()">
+            <app-ds-checkbox
+              formControlName="agree"
+              title="I agree to the terms"
+            ></app-ds-checkbox>
+            <br />
+            <br />
+
+            <app-ds-checkbox
+              formControlName="disagree"
+              title="This is disabled example"
+            ></app-ds-checkbox>
+            <br />
+            <br />
+
+            <ds-button
+              variant="primary"
+              type="submit"
+              class="mt-3"
+              [disabled]="checkboxForm.invalid"
+            >
+              Submit un-grouped
+            </ds-button>
+          </form>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <div class="text-2xl personnel:text-blue-500 student:text-red-500">
+            Group Checkboxes with reactive forms
+          </div>
+
+          <form [formGroup]="checkboxGroupForm" (ngSubmit)="onGroupSubmit()">
+            <div class="text-xl">Group 1</div>
+            <br />
+            <app-ds-checkbox-group formControlName="selectedOptions">
+              <app-ds-checkbox
+                title="Select All"
+                [value]="'SELECT_ALL'"
+              ></app-ds-checkbox>
+              <br />
+              <br />
+
+              <app-ds-checkbox
+                title="Option 1"
+                [value]="'option1'"
+              ></app-ds-checkbox>
+              <br />
+              <br />
+
+              <app-ds-checkbox
+                title="Option 2"
+                [value]="'option2'"
+              ></app-ds-checkbox>
+              <br />
+              <br />
+
+              <app-ds-checkbox
+                title="Option 3"
+                [value]="'option3'"
+              ></app-ds-checkbox>
+            </app-ds-checkbox-group>
+            <br />
+            <br />
+
+            <div class="text-xl">Group 2</div>
+            <br />
+            <app-ds-checkbox-group formControlName="selectedOptions2">
+              <app-ds-checkbox
+                title="Select All"
+                [value]="'SELECT_ALL'"
+              ></app-ds-checkbox>
+              <br />
+              <br />
+
+              <app-ds-checkbox
+                title="Option 1"
+                [value]="'option1'"
+              ></app-ds-checkbox>
+              <br />
+              <br />
+
+              <app-ds-checkbox
+                title="Option 2"
+                [value]="'option2'"
+              ></app-ds-checkbox>
+              <br />
+              <br />
+
+              <app-ds-checkbox
+                title="Option 3"
+                [value]="'option3'"
+              ></app-ds-checkbox>
+            </app-ds-checkbox-group>
+            <br />
+            <br />
+
+            <ds-button type="submit" [disabled]="checkboxGroupForm.invalid"
+              >Submit Group</ds-button
+            >
+          </form>
+        </div>
+      </div>
+
+      <!-- Radio Button -->
+      <h2 class="heading-h2-high-emphasis mb-4 mt-8">Radio Button</h2>
+      <form [formGroup]="form" class="mb-2 mt-3 flex flex-col gap-4">
+        <app-ds-radio-group formControlName="radioCtrl" [required]="true">
+          <app-ds-radio value="upi" title="UPI" class="m-3"></app-ds-radio>
+          <app-ds-radio
+            value="cod"
+            title="Cash on Delivery"
+            class="m-3"
+          ></app-ds-radio>
+          <app-ds-radio
+            value="card"
+            title="Card (Shows Disable Item)"
+            [disabled]="true"
+            class="m-3"
+          ></app-ds-radio>
+        </app-ds-radio-group>
+      </form>
+      <h5 class="mb-3">Selected Value : {{ form.value.radioCtrl }}</h5>
+    </app-demo-page-wrapper>
+  </div>
+</ion-content>

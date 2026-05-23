@@ -1,0 +1,60 @@
+<div class="Modal flex flex-col gap-5 p-8" *transloco="let t">
+  <div class="flex items-center justify-between">
+    <h2 class="text-lg font-semibold text-[#101828]">
+      {{
+        column || existingColumn
+          ? t("grade_management.edit_column.title")
+          : t("grade_management.add_column.title")
+      }}
+    </h2>
+    <fa-icon
+      class="mt-1 cursor-pointer text-[#929CB5] hover:text-[#0000008a]"
+      [icon]="faClose"
+      size="xl"
+      (click)="onCloseModal()"
+    ></fa-icon>
+  </div>
+  <div class="flex justify-between border-b"></div>
+  <div class="flex max-h-11 items-center overflow-hidden rounded-md">
+    <label
+      class="flex h-11 w-1/2 cursor-pointer items-center justify-center text-center text-sm font-medium"
+    >
+      <input
+        [formControl]="columnTypeControl"
+        type="radio"
+        name="columnType"
+        value="newColumn"
+        class="peer hidden"
+      />
+      <div
+        class="flex h-full w-full items-center justify-center bg-[#F5F5F6] text-[#7F8491] peer-checked:bg-primary peer-checked:text-white"
+      >
+        {{ t("grade_management.new_column.txt") }}
+      </div>
+    </label>
+    <label
+      class="flex h-11 w-1/2 cursor-pointer items-center justify-center text-center text-sm font-normal"
+    >
+      <input
+        [formControl]="columnTypeControl"
+        type="radio"
+        name="columnType"
+        value="existingColumn"
+        class="peer hidden"
+      />
+      <div
+        class="flex h-full w-full items-center justify-center bg-[#F5F5F6] font-medium text-[#7F8491] peer-checked:bg-primary peer-checked:text-white"
+      >
+        {{ t("grade_management.existed_column.txt") }}
+      </div>
+    </label>
+  </div>
+  @if (isExistingColumn()) {
+    <app-existing-column-form
+      [reportCard]="reportCard"
+      [column]="existingColumn"
+    />
+  } @else {
+    <app-new-column-form [reportCard]="reportCard" [column]="column" />
+  }
+</div>

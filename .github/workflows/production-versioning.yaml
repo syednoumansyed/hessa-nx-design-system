@@ -1,0 +1,104 @@
+name: Mobile Production Versioning - Need to Run after Mobile apps are approved, published & new version is available for download on stores
+
+on:
+  workflow_dispatch:
+    inputs:
+      versioning:
+        type: choice
+        description: "Select 'No' when submitting for review, 'Other' when approved"
+        required: true
+        default: "No Versioning"
+        options:
+          - "No Versioning"
+          - "android"
+          - "ios"
+      forceUpdate:
+        type: choice
+        required: true
+        default: "No"
+        description: "Force User to Update app or not"
+        options:
+          - "Yes"
+          - "No"
+
+env:
+  PLAYSTORE_URL: https://play.google.com/store/apps/details?id=sa.com.hessa.app
+  APPSTORE_URL: https://apps.apple.com/us/app/hessa/id6737763248
+  AWS_REGION: eu-central-1
+  S3_FE_BUCKET: production-nx-fe-bucket
+  S3_ADMIN_BUCKET: production-nx-admin-bucket
+  FE_BASE_URL: https://app.nx.solutions
+  BE_API_BASE_URL: https://api.nx.solutions/api
+  SOCKET_BASE_URL: https://ws.nx.solutions
+  AUTH_API_BASE_URL: https://auth.nx.solutions/api
+  SMS_RECHARGE_URL: https://cloud.unifonic.com/payment/topup
+  FE_BUILD_DIR: ./www/browser
+  ADMIN_BUILD_DIR: ./admin-panel/www
+  ENVIRONMENT: production
+  COMET_CHAT_REGION: in
+  NODE_AUTH_TOKEN: ${{ secrets.NPM_GITHUB_AUTH_TOKEN }}
+  NPM_FONTAWESOME_AUTH_TOKEN: ${{ secrets.NPM_FONTAWESOME_AUTH_TOKEN }}
+  SENTRY_AUTH_TOKEN: ${{ secrets.PRODUCTION_SENTRY_AUTH_TOKEN }}
+  APP_ID: "sa.com.hessa.app"
+  APP_NAME: "nx"
+  SLACK_URL: ${{ secrets.SLACK_PROD_WEBHOOK }}
+  AWS_ACCESS_KEY: ${{ secrets.PRODUCTION_AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.PRODUCTION_AWS_SECRET_ACCESS_KEY }}
+  MICROSOFT_AUTHORITY: https://login.microsoftonline.com/
+
+jobs:
+  versioning:
+    name: Production Versioning - Create latest version from tag on backend for android or ios
+    if: github.event.inputs.versioning == 'android' || github.event.inputs.versioning == 'ios'
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: ${{ env.FE_BASE_URL }}
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@ncle-edu"
+      - name: Install dependencies
+        run: npm i
+      - name: Prepare App version
+        if: github.event_name != 'pull_request' && success()
+        run: |
+          LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1) | tr -d '\n')
+          APP_VERSION=$(echo "$LATEST_TAG" | cut -d'+' -f1 | sed 's/^v//')
+          APP_BUILD_NUMBER=$(echo "$LATEST_TAG" | cut -d'+' -f2)
+          echo "Printing LATEST_TAG=$LATEST_TAG"
+          echo "Printing APP_VERSION=$APP_VERSION"
+          echo "Printing APP_BUILD_NUMBER=$APP_BUILD_NUMBER"
+          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+          echo "APP_VERSION=$APP_VERSION" >> $GITHUB_ENV
+          echo "APP_BUILD_NUMBER=$APP_BUILD_NUMBER" >> $GITHUB_ENV
+          echo "CAPGO_VERSION=$APP_VERSION+$APP_BUILD_NUMBER" >> $GITHUB_ENV
+      - name: Get Release Notes
+        if: github.event_name != 'pull_request' && success()
+        uses: cardinalby/git-get-release-action@v1
+        id: get_release_notes
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          tag: ${{ env.LATEST_TAG }}
+      - name: Save latest version on the backend
+        if: github.event_name != 'pull_request' && success()
+        run: |
+          npm run post-version
+        env:
+          BE_API_BASE_URL: ${{ env.BE_API_BASE_URL }}
+          BACKEND_API_KEY: ${{ secrets.PRODUCTION_BACKEND_API_KEY }}
+          CHANGELOGS: ${{ steps.get_release_notes.outputs.body }}
+          VERSION_NUMBER: ${{ env.APP_VERSION }}
+          BUILD_NUMBER: ${{ env.APP_BUILD_NUMBER }}
+          PLATFORM: ${{ github.event.inputs.versioning }}
+          FORCE_UPDATE: ${{ github.event.inputs.forceUpdate }}
+          GITHUB_SHA: ${{ github.sha }}

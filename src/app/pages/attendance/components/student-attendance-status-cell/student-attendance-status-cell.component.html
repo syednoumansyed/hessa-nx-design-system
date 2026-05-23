@@ -1,0 +1,37 @@
+<div
+  class="flex select-none items-center justify-start gap-1 py-4 text-xs font-medium leading-[1.125rem]"
+  [ngClass]="{
+    'pointer-events-none opacity-40 blur-[1px]': isAttendanceMissing(),
+  }"
+>
+  @for (item of statusOptions(); track item.value) {
+    <button
+      class="py-auto flex items-center justify-center rounded-full border border-transparent bg-gray-100 px-2"
+      dsTooltip
+      [dsTooltipTitle]="getTooltipText(item.value)"
+      [ngClass]="{
+        '!border-success-700 !bg-success-50 text-success-700':
+          statusValue() === AttendanceStatus.PRESENT &&
+          item.value === AttendanceStatus.PRESENT,
+        '!border-error-700 !bg-error-50 text-error-700':
+          statusValue() === AttendanceStatus.ABSENT &&
+          item.value === AttendanceStatus.ABSENT,
+        '!border-[#3538CD] !bg-[#EEF4FF] text-[#3538CD]':
+          statusValue() === AttendanceStatus.ON_LEAVE &&
+          item.value === AttendanceStatus.ON_LEAVE,
+        '!border-[#026AA2] !bg-[#F0F9FF] text-[#026AA2]':
+          statusValue() === AttendanceStatus.EXCUSED &&
+          item.value === AttendanceStatus.EXCUSED,
+        '!bg-warnig-50 !border-warning-700 text-warning-700':
+          statusValue() === AttendanceStatus.LATE_ARRIVAL &&
+          item.value === AttendanceStatus.LATE_ARRIVAL,
+        'opacity-70':
+          getDisabledStatusMap()[item.value] && statusValue() !== item.value,
+      }"
+      (click)="onClick(item.value)"
+      [disabled]="getDisabledStatusMap()[item.value]"
+    >
+      {{ item.displayedValue }}
+    </button>
+  }
+</div>

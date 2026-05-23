@@ -1,0 +1,32 @@
+<div class="flex flex-col gap-[2px]">
+  <div
+    class="content-md-mid-emphasis flex justify-between rounded-ds-xl border-4 px-ds-xl py-ds-lg text-emphasis-high"
+    [ngClass]="stateClasses()"
+    role="radio"
+    [attr.aria-checked]="value() === selectedValue() ? 'true' : 'false'"
+    [attr.aria-disabled]="isDisabled() ? 'true' : 'false'"
+    [attr.data-state]="optionState()"
+    tabindex="0"
+    (click)="handleClick()"
+    (keydown.enter)="handleClick()"
+    (keydown.space)="handleClick()"
+  >
+    <span>{{ display() }}</span>
+    @if (iconConfig()) {
+      <div
+        class="flex items-center justify-center"
+        [ngClass]="iconConfig()?.class"
+      >
+        <app-ds-icon [icon]="iconConfig()?.icon" />
+      </div>
+    }
+  </div>
+  @if (isUnselectedCorrect()) {
+    <div
+      class="Single single-line-xs-mid-emphasis flex justify-end pe-ds-md text-content-success"
+    >
+      <span class="rtl:hidden">Correct answer</span>
+      <span class="ltr:hidden">الإجابة الصحيحة </span>
+    </div>
+  }
+</div>

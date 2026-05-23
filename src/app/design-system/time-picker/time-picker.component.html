@@ -1,0 +1,59 @@
+<ion-picker mode="ios" class="w-full">
+  <!-- Define column templates once -->
+  <ng-template #colHour>
+    <ion-picker-column
+      (ionChange)="onHourChange($event)"
+      [value]="hourSignal() ?? 12"
+    >
+      <ion-picker-column-option *ngIf="hourSignal() === null" value="" disabled
+        >--</ion-picker-column-option
+      >
+      <ion-picker-column-option *ngFor="let h of hourOptions" [value]="h">{{
+        h | number: "2.0"
+      }}</ion-picker-column-option>
+    </ion-picker-column>
+  </ng-template>
+
+  <ng-template #colMinute>
+    <ion-picker-column
+      (ionChange)="onMinuteChange($event)"
+      [value]="minuteSignal() ?? 0"
+    >
+      <ion-picker-column-option
+        *ngIf="minuteSignal() === null"
+        value=""
+        disabled
+        >--</ion-picker-column-option
+      >
+      <ion-picker-column-option *ngFor="let m of minuteOptions" [value]="m">{{
+        m | number: "2.0"
+      }}</ion-picker-column-option>
+    </ion-picker-column>
+  </ng-template>
+
+  <ng-template #colMeridiem>
+    <ion-picker-column
+      (ionChange)="onAmPmChange($event)"
+      [value]="isPmSignal() ? 'pm' : 'am'"
+    >
+      <ion-picker-column-option value="am">{{
+        amDisplay
+      }}</ion-picker-column-option>
+      <ion-picker-column-option value="pm">{{
+        pmDisplay
+      }}</ion-picker-column-option>
+    </ion-picker-column>
+  </ng-template>
+
+  <!-- Conditional order: Arabic -> Meridiem, Hour, Minute | LTR -> Hour, Minute, Meridiem -->
+  <ng-container *ngIf="isAr(); else ltrOrder">
+    <ng-container *ngTemplateOutlet="colMeridiem"></ng-container>
+    <ng-container *ngTemplateOutlet="colHour"></ng-container>
+    <ng-container *ngTemplateOutlet="colMinute"></ng-container>
+  </ng-container>
+  <ng-template #ltrOrder>
+    <ng-container *ngTemplateOutlet="colHour"></ng-container>
+    <ng-container *ngTemplateOutlet="colMinute"></ng-container>
+    <ng-container *ngTemplateOutlet="colMeridiem"></ng-container>
+  </ng-template>
+</ion-picker>

@@ -1,0 +1,32 @@
+<div
+  (click)="onSelectItem()"
+  class="flex select-none items-center justify-between rounded-ds-md p-ds-md hover:bg-[var(--colors-neutral-cool-black-04)]"
+  [ngClass]="disabled() ? 'cursor-not-allowed' : 'cursor-pointer'"
+>
+  <div class="flex items-center gap-2">
+    @if (icon()) {
+      <div>
+        <app-ds-icon [icon]="icon()!"></app-ds-icon>
+      </div>
+    }
+    <!-- primary text -->
+    <div
+      class="content-md-mid-emphasis"
+      [ngClass]="disabled() ? '!text-content-mid' : 'text-content-high'"
+    >
+      {{ display() }}
+    </div>
+    <!-- secondary text -->
+    @if (secondaryDisplay()) {
+      <div class="content-md-default text-content-low">
+        {{ secondaryDisplay() }}
+      </div>
+    }
+  </div>
+  <!-- select icon-->
+  @if (isSelected()) {
+    <div>
+      <app-ds-icon [icon]="checkIcon"></app-ds-icon>
+    </div>
+  }
+</div>

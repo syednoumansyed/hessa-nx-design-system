@@ -1,0 +1,47 @@
+// Design System Sidebar - slides in from the right side
+ion-modal.ds-sidebar {
+  --width: 400px;
+  --height: 100%;
+  --max-height: 100%;
+  --border-radius: 0;
+  --backdrop-opacity: 0.7;
+  --background: var(--White, #fff);
+  --box-shadow: -4px 0 24px rgba(16, 24, 40, 0.12);
+
+  // Position the modal content on the right side of the screen (left in RTL)
+  &::part(content) {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: auto;
+    width: var(--width);
+    height: 100%;
+    max-height: 100%;
+    padding: 0;
+    border-radius: 0;
+    overflow: hidden;
+  }
+
+  [dir="rtl"] &::part(content) {
+    right: auto;
+    left: 0;
+  }
+
+  // Ensure the inner wrapper component fills the full height
+  .ion-page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+}
+
+// When multiple sidebars are stacked, only the bottom-most one shows a backdrop.
+// Ionic stacks modals in DOM order (later modals = on top). For any ds-sidebar that
+// has a preceding ds-sidebar sibling, hide its backdrop so the overlay tint stays
+// constant no matter how many sidebars are stacked.
+// Uses !important to beat the generic `ion-modal.modal-default.show-modal ~`
+// rule in _modal.scss which has higher specificity (3 class selectors vs 2).
+ion-modal.ds-sidebar ~ ion-modal.ds-sidebar {
+  --backdrop-opacity: 0 !important;
+}

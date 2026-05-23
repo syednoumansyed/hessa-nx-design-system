@@ -1,0 +1,10 @@
+body {
+  color: #272525;
+}
+
+:root,
+:root[mode="md"],
+:root[mode="ios"] {
+  font-family: var(--ion-font-family) !important;
+  --tui-text-font: var(--hes-text-font, "Nunito", sans-serif);
+}

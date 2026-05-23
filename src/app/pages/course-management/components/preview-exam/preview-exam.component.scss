@@ -1,0 +1,25 @@
+.timer {
+  color: #f00000;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1rem;
+  letter-spacing: 0.125rem;
+
+  @media (min-width: 768px) {
+    font-size: 2rem;
+    line-height: 2rem;
+  }
+}
+
+.finish-txt {
+  color: rgba(0, 0, 0, 0.8);
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+
+  @media (min-width: 768px) {
+    font-size: 1.25rem;
+  }
+}

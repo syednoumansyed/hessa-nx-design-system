@@ -1,0 +1,13 @@
+<div>
+  @if (submissionValue) {
+    <div class="text-gray-900">
+      {{ submissionValue | hesDate }}
+    </div>
+    <div class="text-gray-500">
+      {{ submissionValue | hesTime }}
+    </div>
+  }
+  @if (!submissionValue) {
+    <div>-</div>
+  }
+</div>

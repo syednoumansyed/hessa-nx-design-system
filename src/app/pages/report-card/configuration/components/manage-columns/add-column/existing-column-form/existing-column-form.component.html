@@ -1,0 +1,35 @@
+<ng-container *transloco="let t">
+  <div class="w-full">
+    <form [formGroup]="form">
+      @for (control of formConfig(); track $index; let first = $first) {
+        <div class="mb-4 flex w-full flex-col">
+          <app-form-control-generator
+            [control]="control"
+          ></app-form-control-generator>
+        </div>
+      }
+      <app-select-column
+        [columnsList]="selectedReportCardColumns()"
+        formControlName="reportCardColumnId"
+        [isMultiple]="false"
+        [showEmptyPlaceholder]="true"
+      ></app-select-column>
+    </form>
+  </div>
+
+  <div class="mt-4 grid grid-cols-1 gap-2 gap-y-2 self-stretch md:grid-cols-2">
+    <ion-button hesBtn hesColor="white" hesSize="xl" (click)="onCloseModal()">
+      {{ t("global.cancel.btn") }}
+    </ion-button>
+    <ion-button
+      [disabled]="form.invalid"
+      (click)="onSave()"
+      hesBtn
+      hesColor="primary"
+      hesSize="xl"
+      >{{
+        t(column() ? "global.update.btn" : "grade_management.create_column.btn")
+      }}</ion-button
+    >
+  </div>
+</ng-container>

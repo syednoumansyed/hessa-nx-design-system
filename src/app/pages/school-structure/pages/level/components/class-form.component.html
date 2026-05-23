@@ -1,0 +1,15 @@
+<form
+  *transloco="let t"
+  [formGroup]="classForm"
+  class="flex w-full flex-col items-end justify-start gap-8"
+>
+  <div class="grid grid-cols-1 gap-8 gap-y-10 self-stretch md:grid-cols-2">
+    @for (control of classForm1Config(); track control.formControlName) {
+      <div class="flex-1">
+        <app-form-control-generator
+          [control]="control"
+        ></app-form-control-generator>
+      </div>
+    }
+  </div>
+</form>

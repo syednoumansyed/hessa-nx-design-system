@@ -1,0 +1,19 @@
+ion-label {
+  color: #141519;
+  /* Web Font/Table Header/Heading 6 - SemiBold - 16 (Line Height 20) */
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1.25rem; /* 125% */
+  text-transform: capitalize;
+  span {
+    color: #e62e2e;
+  }
+
+  &.disabled {
+    color: #6b6f80;
+    span {
+      color: inherit;
+    }
+  }
+}

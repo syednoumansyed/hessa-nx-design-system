@@ -1,0 +1,92 @@
+<div
+  class="relative w-full overflow-hidden rounded-[16px] border-2 border-stroke-cool-black-04 p-ds-xs"
+  [ngClass]="{
+    'bg-brand-100': variant() === 'primary',
+    'bg-white': variant() === 'secondary',
+  }"
+>
+  <!-- Left Navigation Arrow -->
+  @if (canScrollLeft()) {
+    <button
+      type="button"
+      class="absolute bottom-0 top-0 z-30 flex w-8 cursor-pointer items-center justify-center rounded-s-[14px]"
+      [ngClass]="{
+        'left-0': !isRtl,
+        'right-0': isRtl,
+        'bg-brand-100': variant() === 'primary',
+        'bg-white': variant() === 'secondary',
+      }"
+      (click)="scrollLeft()"
+    >
+      <app-ds-icon
+        [icon]="isRtl ? faAngleRight : faAngleLeft"
+        size="16"
+        cssClass="text-emphasis-high"
+      />
+    </button>
+  }
+
+  <!-- Scrollable Tabs Container -->
+  <div
+    #tabsContainer
+    class="no-scrollbar relative flex w-full gap-ds-md overflow-x-auto"
+    [attr.dir]="isRtl ? 'rtl' : 'ltr'"
+    [ngClass]="{
+      'ps-10': canScrollLeft(),
+      'pe-10': canScrollRight(),
+    }"
+    (scroll)="onScroll($event)"
+  >
+    @for (tab of tabs(); track tab.id; let i = $index) {
+      <div
+        #tabElement
+        class="relative flex flex-shrink-0 cursor-pointer items-center justify-center rounded-[12px] p-ds-md transition-colors duration-200 ease-in-out"
+        [ngClass]="{
+          'flex-1': !needsScrolling(),
+          'bg-brand-500': tab.id === _activeTabId(),
+        }"
+        (click)="onTabClick(tab, i)"
+      >
+        <div class="flex items-center gap-ds-xs whitespace-nowrap">
+          <span
+            class="single-line-xs-high-emphasis text-emphasis"
+            [ngClass]="{
+              'text-emphasis-high':
+                tab.id === _activeTabId() || variant() === 'secondary',
+              'text-content-mid':
+                tab.id !== _activeTabId() && variant() === 'primary',
+            }"
+            >{{ tab.label | dsTranslate }}</span
+          >
+          @if (tab.badge) {
+            <span
+              class="single-line-caption-mid-emphasis flex h-5 min-w-[20px] flex-shrink-0 items-center justify-center rounded-full bg-error-ds-500 px-1.5 text-white"
+              >{{ tab.badge }}
+            </span>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Right Navigation Arrow -->
+  @if (canScrollRight()) {
+    <button
+      type="button"
+      class="absolute bottom-0 top-0 z-30 flex w-8 cursor-pointer items-center justify-center rounded-e-[14px]"
+      [ngClass]="{
+        'right-0': !isRtl,
+        'left-0': isRtl,
+        'bg-brand-100': variant() === 'primary',
+        'bg-white': variant() === 'secondary',
+      }"
+      (click)="scrollRight()"
+    >
+      <app-ds-icon
+        [icon]="isRtl ? faAngleLeft : faAngleRight"
+        size="lg"
+        cssClass="text-emphasis-high"
+      />
+    </button>
+  }
+</div>

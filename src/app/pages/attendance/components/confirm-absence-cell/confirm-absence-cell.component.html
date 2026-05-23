@@ -1,0 +1,18 @@
+<div *transloco="let t; read: 'enum'">
+  <!-- Show hyphen for PRESENT attendance status -->
+  <span *ngIf="isPresent" class="flex justify-center text-gray-400">-</span>
+
+  <!-- Show confirmation status badge for non-PRESENT attendance -->
+  <div
+    *ngIf="!isPresent"
+    class="flex h-5 min-w-[5rem] items-center justify-center rounded-2xl px-3 py-2 text-center text-xs font-medium leading-none"
+    [ngClass]="{
+      'bg-success-50 text-success-700':
+        statusValue === AttendanceConfirmStatus.CONFIRMED,
+      'bg-warning-50 text-warning-700':
+        statusValue === AttendanceConfirmStatus.PENDING,
+    }"
+  >
+    {{ t(statusValue) }}
+  </div>
+</div>

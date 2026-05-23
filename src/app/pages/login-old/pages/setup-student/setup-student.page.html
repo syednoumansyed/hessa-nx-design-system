@@ -1,0 +1,68 @@
+<div *transloco="let t;" class="p-4">
+  <div class="flex items-center justify-evenly overflow-hidden rounded-lg">
+    <div
+      class="max-md:px-5 w-full items-stretch gap-6 bg-white px-2 py-2 font-semibold md:flex md:w-[35rem] md:max-w-[35rem] md:flex-col md:px-16 md:py-12 md:shadow-[0_0_80px_0_rgba(0,0,0,0.05)]"
+    >
+      <div class="flex flex-col items-stretch gap-6">
+        <div class="flex flex-col items-stretch gap-16">
+          <header
+            class="whitespace-wrap flex flex-col items-center justify-center gap-4 text-center text-3xl leading-7 text-gray-800"
+          >
+            <div
+              class="flex h-[7.2rem] w-[7.2rem] items-center justify-center rounded-full bg-[#383C57]/[0.06]"
+            >
+              <div
+                class="flex h-[5.6rem] w-[5.6rem] items-center justify-center rounded-full bg-[#383C57]/[0.1]"
+              >
+                <fa-icon class="text-[56px] text-[#383C57]" [icon]="faUser" />
+              </div>
+            </div>
+            <div
+              class="text-center text-[28px] font-medium text-neutral-900"
+              [innerHTML]="t('global.welcome_to_hessa_first.title')"
+            ></div>
+          </header>
+
+          <form [formGroup]="form" class="flex flex-col gap-4">
+            <app-hes-input
+              [label]="t('global.national_id.label')"
+              [required]="true"
+              fill="solid"
+              formControlName="nationalId"
+              [errorText]="nationalIdErr() ?? undefined"
+              [maxLength]="18"
+            ></app-hes-input>
+
+            <app-hes-input
+              [type]="'password'"
+              [label]="t('global.password.label')"
+              [placeholder]="t('global.enter_password.placeholder')"
+              [required]="true"
+              fill="solid"
+              formControlName="password"
+              [errorText]="passwordErr() ?? undefined"
+            ></app-hes-input>
+
+            <app-hes-input
+              [type]="'password'"
+              [label]="t('login-old.confirm_password.label')"
+              [placeholder]="t('login-old.re_type_password.placeholder')"
+              [required]="true"
+              fill="solid"
+              formControlName="confirmPassword"
+              [errorText]="confirmPasswordErr() ?? undefined"
+            ></app-hes-input>
+          </form>
+        </div>
+        <ion-button
+          hesBtn
+          type="submit"
+          [disabled]="form.invalid"
+          (click)="setup()"
+        >
+          {{t('global.create.btn') | titlecase}}
+        </ion-button>
+      </div>
+    </div>
+  </div>
+</div>

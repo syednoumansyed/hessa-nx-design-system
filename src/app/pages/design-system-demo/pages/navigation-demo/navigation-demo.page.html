@@ -1,0 +1,194 @@
+<ion-content>
+  <div class="p-4 md:p-6">
+    <app-demo-page-wrapper title="Navigation & Layout">
+      <!-- Tabs -->
+      <h2 class="heading-h2-high-emphasis mb-4">Tabs</h2>
+
+      <h3 class="heading-h3-mid-emphasis mb-2">Basic Tabs (3 tabs)</h3>
+      <app-ds-tabs
+        [tabs]="tabsData"
+        activeTabId="messages"
+        (tabChange)="onTabChanged($event)"
+      >
+      </app-ds-tabs>
+      <div>
+        <h4 class="heading-h4-high-emphasis mb-4 mt-3">
+          Active Tab: {{ activeTab().label }}
+        </h4>
+      </div>
+
+      <div class="mb-[20px] max-w-[600px]">
+        <h3 class="heading-h3-mid-emphasis mb-2 mt-8">
+          Tabs with API Integration (Students Pagination)
+        </h3>
+        <p class="content-sm-mid-emphasis mb-3">
+          Real-world example: Each tab fetches a different page of students from
+          the API. Swipe or click tabs to load data.
+        </p>
+
+        <ds-tabs-with-swipe
+          [tabs]="studentsTabs"
+          [activeTabId]="activeStudentsPage()"
+          [isLoading]="isLoadingStudents()"
+          [skeletonComponent]="TabsSkeletonComponent"
+          (tabChange)="onStudentsTabChanged($event)"
+          variant="secondary"
+          contentClass="mt-4 block h-[420px] select-none overflow-y-auto rounded-ds-lg border border-stroke-cool-black-04 bg-white p-ds-lg"
+        >
+          <ng-template #content>
+            <h4 class="heading-h4-high-emphasis mb-4">
+              Page {{ activeStudentsPage() }} - Students
+            </h4>
+
+            @if (studentsData().length > 0) {
+            <div class="flex flex-col gap-3">
+              @for (student of studentsData(); track student.id) {
+              <div
+                class="bg-cool-black-02 rounded-ds-md border border-stroke-cool-black-04 p-ds-md"
+              >
+                <p class="single-line-md-high-emphasis">
+                  {{ student.displayName }}
+                </p>
+                <p class="content-sm-mid-emphasis">
+                  ID: {{ student.id }} &bull; Gender: {{ student.gender }}
+                </p>
+                @if (student.nationalId) {
+                <p class="content-sm-low-emphasis">
+                  National ID: {{ student.nationalId }}
+                </p>
+                }
+              </div>
+              }
+            </div>
+            } @else {
+            <div class="flex h-[200px] items-center justify-center">
+              <p class="content-md-mid-emphasis">
+                No students found on this page
+              </p>
+            </div>
+            }
+          </ng-template>
+        </ds-tabs-with-swipe>
+      </div>
+
+      <!-- Carousel -->
+      <h2 class="heading-h2-high-emphasis mb-4 mt-8">Carousel</h2>
+      <ds-carousal
+        [slides]="carouselSlides"
+        [isContentLoading]="isContentLoading"
+        [skeletonTemplate]="skeletonTemplate"
+        (slideChange)="onSlideChange($event)"
+      >
+        <div class="p-4">
+          <h3 class="mb-2 text-xl font-bold">
+            This is a slide # {{ currentSlideId }} data
+          </h3>
+          <div class="mb-6">
+            <h4 class="text-black mb-2 text-lg font-semibold">Description</h4>
+            <p class="leading-relaxed text-gray-600">
+              Figma design and FigJam are two products that, when used together,
+              support your entire design process. While you might begin your
+              design process in FigJam, you'll likely find yourself moving to
+              Figma to develop your designs further.
+            </p>
+          </div>
+          <div class="mb-6">
+            <h4 class="text-black mb-2 text-lg font-semibold">Description</h4>
+            <p class="leading-relaxed text-gray-600">
+              Figma design and FigJam are two products that, when used together,
+              support your entire design process. While you might begin your
+              design process in FigJam, you'll likely find yourself moving to
+              Figma to develop your designs further.
+            </p>
+          </div>
+          <div class="mb-6">
+            <h4 class="text-black mb-2 text-lg font-semibold">Description</h4>
+            <p class="leading-relaxed text-gray-600">
+              Figma design and FigJam are two products that, when used together,
+              support your entire design process. While you might begin your
+              design process in FigJam, you'll likely find yourself moving to
+              Figma to develop your designs further.
+            </p>
+          </div>
+        </div>
+        <ng-template #skeletonTemplate>
+          <div class="animate-pulse space-y-6 p-6">
+            <div class="h-6 w-3/4 rounded-ds-lg bg-gray-300"></div>
+            <div class="h-4 w-1/3 rounded-ds-lg bg-gray-300"></div>
+            <div class="h-4 w-full rounded-ds-lg bg-gray-300"></div>
+            <div class="h-4 w-full rounded-ds-lg bg-gray-300"></div>
+            <div class="h-4 w-5/6 rounded-ds-lg bg-gray-300"></div>
+            <div class="h-4 w-1/4 rounded-ds-lg bg-gray-300"></div>
+            <div class="my-4 h-12 w-full rounded-2xl bg-gray-300"></div>
+            <div class="flex flex-wrap gap-4">
+              <div class="h-10 w-20 rounded-full bg-gray-300"></div>
+              <div class="h-10 w-36 rounded-full bg-gray-300"></div>
+              <div class="h-10 w-36 rounded-full bg-gray-300"></div>
+              <div class="h-10 w-20 rounded-full bg-gray-300"></div>
+            </div>
+            <div class="flex gap-6 overflow-x-auto">
+              <div class="w-[180px] flex-shrink-0 space-y-4">
+                <div class="h-40 w-full rounded-3xl bg-gray-300"></div>
+                <div class="h-4 w-full rounded bg-gray-300"></div>
+                <div class="h-4 w-full rounded bg-gray-300"></div>
+              </div>
+              <div class="w-[180px] flex-shrink-0 space-y-4">
+                <div class="h-40 w-full rounded-3xl bg-gray-300"></div>
+                <div class="h-4 w-full rounded bg-gray-300"></div>
+                <div class="h-4 w-full rounded bg-gray-300"></div>
+              </div>
+              <div class="w-[180px] flex-shrink-0 space-y-4">
+                <div class="h-40 w-full rounded-3xl bg-gray-300"></div>
+                <div class="h-4 w-full rounded bg-gray-300"></div>
+                <div class="h-4 w-full rounded bg-gray-300"></div>
+              </div>
+              <div class="w-[180px] flex-shrink-0 space-y-4">
+                <div class="h-40 w-full rounded-3xl bg-gray-300"></div>
+                <div class="h-4 w-full rounded bg-gray-300"></div>
+                <div class="h-4 w-full rounded bg-gray-300"></div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </ds-carousal>
+
+      <!-- Progress Bar -->
+      <h2 class="heading-h2-high-emphasis mb-4 mt-8">Progress Bar</h2>
+      <div class="flex flex-col gap-4">
+        <app-ds-progress-bar [progress]="50" [showPercentage]="false" />
+        <app-ds-progress-bar [progress]="90" variant="green" />
+        <app-ds-progress-bar [progress]="30" variant="red" />
+        <app-ds-progress-bar [progress]="60" variant="blue" />
+        <app-ds-progress-bar [progress]="80" variant="yellow" />
+        <app-ds-progress-bar [progress]="50" variant="indigo" />
+        <app-ds-progress-bar [progress]="20" variant="orange" />
+        <app-ds-progress-bar [progress]="20" variant="neon-green" />
+        <app-ds-progress-bar [progress]="20" variant="neon-green" size="sm" />
+        <app-ds-progress-bar [progress]="90" variant="green" size="sm" />
+        <app-ds-progress-bar [progress]="30" variant="red" size="sm" />
+        <app-ds-progress-bar
+          [progress]="60"
+          [showPercentage]="false"
+          variant="blue"
+          size="sm"
+        />
+        <app-ds-progress-bar [progress]="80" variant="yellow" size="sm" />
+        <app-ds-progress-bar
+          [progress]="50"
+          [showPercentage]="false"
+          variant="indigo"
+          size="sm"
+        />
+        <app-ds-progress-bar [progress]="20" variant="orange" size="sm" />
+
+        <h5>Downloading Progress Bar</h5>
+        <app-ds-progress-bar [progress]="progressBarValue()" />
+        <app-ds-progress-bar
+          [progress]="progressBarValue()"
+          variant="indigo"
+          size="sm"
+        />
+      </div>
+    </app-demo-page-wrapper>
+  </div>
+</ion-content>

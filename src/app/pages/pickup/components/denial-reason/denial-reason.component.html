@@ -1,0 +1,27 @@
+<div *transloco="let t" class="mx-auto w-full max-w-md text-center">
+  @if (isLoading()) {
+    <div
+      class="mx-auto mb-ds-lg h-16 w-16 animate-pulse rounded-full bg-gray-300"
+    ></div>
+    <div
+      class="mx-auto mb-4 mt-6 h-6 w-full animate-pulse rounded bg-gray-300"
+    ></div>
+    <div class="space-y-2">
+      <div class="mx-auto h-4 w-full animate-pulse rounded bg-gray-300"></div>
+      <div class="mx-auto h-4 w-5/6 animate-pulse rounded bg-gray-300"></div>
+      <div class="mx-auto h-4 w-2/3 animate-pulse rounded bg-gray-300"></div>
+    </div>
+  }
+  @if (!isLoading()) {
+    <ion-img
+      [src]="denialReasonImageUrl()"
+      class="mx-auto mb-ds-lg h-16 w-16"
+    ></ion-img>
+    <div class="heading-h3-high-emphasis mb-2 mt-4 text-emphasis-high">
+      {{ t(denialReasonTitle()) }}
+    </div>
+    <div class="text-base text-gray-500">
+      {{ t(denialReasonDescription()) }}
+    </div>
+  }
+</div>

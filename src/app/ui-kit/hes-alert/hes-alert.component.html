@@ -1,0 +1,96 @@
+<div
+  [ngClass]="{
+    'border-[#F79009] bg-[#FFFAEB]': type === 'warning',
+    'border-[#D92D20] bg-[#FEF3F2]': type === 'error',
+    'border-[#2E90FA] bg-[#EFF8FF]': type === 'info',
+    'border-[#12B76A] bg-[#ECFDF3]': type === 'success'
+  }"
+  class="w-full overflow-hidden rounded-sm border px-4 py-3"
+  [style.display]="state.value === 'inactive' ? 'none' : ''"
+>
+  <div class="flex items-center justify-between gap-[7.5rem] self-stretch">
+    <div class="Group1 flex flex-col gap-[0.62rem] md:gap-[0.38rem]">
+      <div class="Title flex items-center justify-start gap-2.5">
+        <div class="h-6 w-6">
+          @switch (type) {
+            @case ("success") {
+              <fa-icon
+                class="text-[#12B76A]"
+                [icon]="faCircleCheck"
+                size="lg"
+              />
+            }
+            @case ("error") {
+              <fa-icon
+                class="text-[#D92D20]"
+                [icon]="faCircleXmark"
+                size="lg"
+              />
+            }
+            @case ("warning") {
+              <fa-icon
+                class="text-[#F79009]"
+                [icon]="faCircleExclamation"
+                size="lg"
+              />
+            }
+            @case ("info") {
+              <fa-icon
+                class="text-[#2E90FA]"
+                [icon]="faCircleExclamation"
+                size="lg"
+              />
+            }
+          }
+        </div>
+        <div class="text-sm font-medium leading-[1.125rem] text-[#141519]">
+          {{ title }}
+        </div>
+        @if (faXmark && toastPackage.config.closeButton) {
+          <div
+            class="ms-auto flex h-[0.875rem] w-[0.875rem] items-center justify-center text-[#141519]"
+          >
+            <fa-icon [icon]="faXmark" size="sm"></fa-icon>
+          </div>
+        }
+      </div>
+      @if (message) {
+        <div
+          class="flex flex-col justify-between text-sm font-normal leading-[1.125rem] text-[#6B6F80] md:flex-1 md:flex-row"
+        >
+          <div [innerHTML]="message"></div>
+          @if (showButton && buttonTitle) {
+            <ion-button
+              [ngClass]="{
+                'hes-btn--error': type === 'error',
+                'hes-btn--info': type === 'info'
+              }"
+              class="md:hidden"
+              hesBtn
+              hesSize="sm"
+              hesAuth
+              (click)="onBtnClick()"
+              [disabled]="isActionDisabled"
+              >{{ buttonTitle }}</ion-button
+            >
+          }
+        </div>
+      }
+    </div>
+
+    @if (showButton && buttonTitle) {
+      <ion-button
+        [ngClass]="{
+          'hes-btn--error': type === 'error',
+          'hes-btn--info': type === 'info'
+        }"
+        class="hidden md:inline-block"
+        hesBtn
+        hesAuth
+        (click)="onBtnClick()"
+        [disabled]="isActionDisabled"
+        >{{ buttonTitle }}</ion-button
+      >
+    }
+  </div>
+</div>

@@ -1,0 +1,378 @@
+name: Mobile Staging - Tests, Build & Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      build:
+        type: choice
+        description: "Choose build type"
+        required: true
+        default: "stg:android:slack"
+        options:
+          - "stg:android:slack"
+          - "stg:ios:testflight"
+      # version:
+      #   type: string
+      #   description: "App version (e.g., 1.0.0 or latest tag by default)"
+      #   required: false
+      number:
+        type: string
+        description: "App Number (e.g., 21 or latest tag by default)"
+        required: false
+      forceUpdate:
+        type: choice
+        required: true
+        default: "No"
+        description: "Force User to Update App or not"
+        options:
+          - "Yes"
+          - "No"
+
+env:
+  AWS_REGION: eu-central-1
+  S3_FE_BUCKET: staging-nx-fe-bucket
+  S3_ADMIN_BUCKET: staging-nx-admin-bucket
+  FE_BASE_URL: https://nx.uat.ncle.dev
+  BE_API_BASE_URL: https://api.uat.ncle.dev/api
+  SOCKET_BASE_URL: https://ws.uat.ncle.dev
+  AUTH_API_BASE_URL: https://auth.uat.ncle.dev/api
+  SMS_RECHARGE_URL: https://cloud.unifonic.com/payment/topup
+  FE_BUILD_DIR: ./www/browser
+  ADMIN_BUILD_DIR: ./admin-panel/www
+  ENVIRONMENT: staging
+  COMET_CHAT_REGION: in
+  NODE_AUTH_TOKEN: ${{ secrets.NPM_GITHUB_AUTH_TOKEN }}
+  NPM_FONTAWESOME_AUTH_TOKEN: ${{ secrets.NPM_FONTAWESOME_AUTH_TOKEN }}
+  APP_ID: "stg.ncle.hessa.app"
+  APP_NAME: "nx Stg"
+  MICROSOFT_AUTHORITY: https://login.microsoftonline.com/
+  SLACK_URL: ${{ secrets.SLACK_NON_PROD_WEBHOOK }}
+  AWS_ACCESS_KEY: ${{ secrets.STAGING_AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.STAGING_AWS_SECRET_ACCESS_KEY }}
+  PLAUSIBLE_SCRIPT_URL: ""
+
+jobs:
+  android:
+    name: Android Staging - Tests, Build & Send to Slack
+    if: github.event.inputs.build == 'stg:android:slack'
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: ${{ env.FE_BASE_URL }}
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@ncle-edu"
+      - name: Setup Environment Variables
+        run: |
+          echo "export const environment = {
+            production: true,
+            APP_ID: '${{ env.APP_ID }}',
+            APP_NAME: '${{ env.APP_NAME }}',
+            SENTRY_DSN: '${{ secrets.STAGING_SENTRY_DSN }}',
+            COMET_APP_ID: '${{ secrets.STAGING_COMET_APP_ID }}',
+            COMET_AUTH_KEY: '${{ secrets.STAGING_COMET_AUTH_KEY }}',
+            MICROSOFT_APPLICATION_CLIENT_ID: '${{ secrets.MICROSOFT_APPLICATION_CLIENT_ID }}',
+            MICROSOFT_AUTHORITY: '${{ env.MICROSOFT_AUTHORITY }}',
+            MICROSOFT_TENANT_ID: '${{ secrets.MICROSOFT_TENANT_ID }}',
+            COMET_REGION: '${{ env.COMET_CHAT_REGION }}',
+            FE_BASE_URL: '${{ env.FE_BASE_URL }}',
+            BE_API_BASE_URL: '${{ env.BE_API_BASE_URL }}',
+            SOCKET_BASE_URL: '${{ env.SOCKET_BASE_URL }}',
+            AUTH_API_BASE_URL: '${{ env.AUTH_API_BASE_URL }}',
+            SMS_RECHARGE_URL: '${{ env.SMS_RECHARGE_URL }}',
+            ENVIRONMENT_NAME: '${{ env.ENVIRONMENT }}',
+            MOCK_ENABLED: false,
+            PLAUSIBLE_SCRIPT_URL: '${{ env.PLAUSIBLE_SCRIPT_URL }}',
+          };" > src/environments/environment.ts
+          cp src/environments/environment.ts admin-panel/src/environments/environment.ts
+          cp src/environments/environment.ts src/environments/environment.${{ env.ENVIRONMENT }}.ts
+          cp src/environments/environment.ts admin-panel/src/environments/environment.${{ env.ENVIRONMENT }}.ts
+      - name: Install dependencies
+        run: npm i
+      # - name: Run Lint
+      #   run: npm run lint
+      # - name: Run Tests
+      #   run: npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessCI
+      # - name: Run Cypress E2E Tests
+      #   uses: cypress-io/github-action@v6
+      #   with:
+      #     install: false
+      #     record: false
+      #     start: npm run start
+      #     browser: chrome
+      # - name: Run Cypress Component Tests
+      #   uses: cypress-io/github-action@v6
+      #   with:
+      #     install: false
+      #     record: false
+      #     component: true
+      #     start: npm run start
+      #     browser: chrome
+      - name: Run Angular Tests
+        run: npm run ng:test:ci
+      - name: Prepare App version
+        if: github.event_name != 'pull_request' && success()
+        run: |
+          LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1) | tr -d '\n')
+          TAG_APP_VERSION=$(echo "$LATEST_TAG" | cut -d'+' -f1 | sed 's/^v//')
+          TAG_BUILD_NUMBER=$(echo "$LATEST_TAG" | cut -d'+' -f2)
+          # Use input values if provided, otherwise use defaults
+          APP_VERSION="${{ github.event.inputs.version }}" 
+          APP_BUILD_NUMBER="${{ github.event.inputs.number }}" 
+          # Fallback to default values if inputs are empty
+          if [[ -z "$APP_VERSION" ]]; then
+            APP_VERSION="$TAG_APP_VERSION"
+          fi
+          if [[ -z "$APP_BUILD_NUMBER" ]]; then
+            APP_BUILD_NUMBER="$TAG_BUILD_NUMBER"
+          fi
+          echo "Printing LATEST_TAG=$LATEST_TAG"
+          echo "Printing APP_VERSION=$APP_VERSION"
+          echo "Printing APP_BUILD_NUMBER=$APP_BUILD_NUMBER"
+          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+          echo "APP_VERSION=$APP_VERSION" >> $GITHUB_ENV
+          echo "APP_BUILD_NUMBER=$APP_BUILD_NUMBER" >> $GITHUB_ENV
+          echo "CAPGO_VERSION=$APP_VERSION+$APP_BUILD_NUMBER" >> $GITHUB_ENV
+          npx capacitor-set-version --version=$APP_VERSION --build=$APP_BUILD_NUMBER
+      - name: Get Release Notes
+        if: github.event_name != 'pull_request' && success()
+        uses: cardinalby/git-get-release-action@v1
+        id: get_release_notes
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          tag: ${{ env.LATEST_TAG }}
+      - name: Prepare version.json & changelogs file
+        if: github.event_name != 'pull_request' && success()
+        run: |
+          echo "{\"version\": \"${{ env.CAPGO_VERSION }}\"}" > src/assets/json/version.json
+          echo "${{ steps.get_release_notes.outputs.body }}" > CHANGELOGS.md
+          jq --indent 2 '.version="${{ env.CAPGO_VERSION }}"' package.json > temp.json && mv temp.json package.json
+      - name: Build Static Files
+        if: github.event_name != 'pull_request' && success()
+        run: npm run build:web:staging
+
+      # - name: Push latest version to CapGo
+      #   if: github.event_name != 'pull_request' && success()
+      #   run: npm run push:capgo:staging -- --apikey ${{ secrets.CAPGO_TOKEN }}
+      # env:
+      #   CAPGO_VERSION: ${{ env.CAPGO_VERSION }}
+      #   ENVIRONMENT: ${{ env.ENVIRONMENT }}
+      #   CAPGO_PUBLIC_KEY: ${{ secrets.CAPGO_PUBLIC_KEY }}
+      - name: Save latest version on the backend
+        if: github.event_name != 'pull_request' && success()
+        run: |
+          npm run post-version
+        env:
+          BE_API_BASE_URL: ${{ env.BE_API_BASE_URL }}
+          BACKEND_API_KEY: ${{ secrets.STAGING_BACKEND_API_KEY }}
+          CHANGELOGS: ${{ steps.get_release_notes.outputs.body }}
+          VERSION_NUMBER: ${{ env.APP_VERSION }}
+          BUILD_NUMBER: ${{ env.APP_BUILD_NUMBER }}
+          PLATFORM: ios
+          FORCE_UPDATE: ${{ github.event.inputs.forceUpdate }}
+          GITHUB_SHA: ${{ github.sha }}
+      - name: Prepare secure files
+        if: github.event_name != 'pull_request' && success()
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" > android/keystore.p12.base64
+          xxd -r -p android/keystore.p12.base64 > android/keystore.p12
+          echo "${{ secrets.ANDROID_KEYSTORE_PROPERTIES }}" > android/keystore.properties
+          echo "${{ secrets.STAGING_GOOGLE_SERVICE_JSON_BASE64 }}" > android/app/google-services.json.base64
+          xxd -r -p android/app/google-services.json.base64 > android/app/google-services.json
+      - name: Setup Ruby
+        if: github.event_name != 'pull_request' && success()
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.4.1"
+          bundler-cache: true
+      - name: Setup Java
+        if: github.event_name != 'pull_request' && success()
+        uses: actions/setup-java@v4
+        with:
+          distribution: "zulu"
+          java-version: "21"
+      - name: Build Android Apk & Send to Slack
+        if: github.event_name != 'pull_request' && success()
+        run: |
+          npm run build:android:staging
+          cd fastlane
+          bundle install
+          bundle exec fastlane android buildStgApk
+          bundle exec fastlane android sendStgApkToSlack
+          cd ..
+
+  ios:
+    name: iOS Staging- Tests, Build & Upload to TestFlight
+    if: github.event.inputs.build == 'stg:ios:testflight'
+    runs-on: macos-latest
+    environment:
+      name: staging
+      url: ${{ env.FE_BASE_URL }}
+    steps:
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          # xcode-version: latest-stable
+          xcode-version: "26.2"
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@ncle-edu"
+      - name: Setup Environment Variables
+        run: |
+          echo "export const environment = {
+            production: true,
+            APP_ID: '${{ env.APP_ID }}',
+            APP_NAME: '${{ env.APP_NAME }}',
+            SENTRY_DSN: '${{ secrets.STAGING_SENTRY_DSN }}',
+            COMET_APP_ID: '${{ secrets.STAGING_COMET_APP_ID }}',
+            COMET_AUTH_KEY: '${{ secrets.STAGING_COMET_AUTH_KEY }}',
+            MICROSOFT_APPLICATION_CLIENT_ID: '${{ secrets.MICROSOFT_APPLICATION_CLIENT_ID }}',
+            MICROSOFT_AUTHORITY: '${{ env.MICROSOFT_AUTHORITY }}',
+            MICROSOFT_TENANT_ID: '${{ secrets.MICROSOFT_TENANT_ID }}',
+            COMET_REGION: '${{ env.COMET_CHAT_REGION }}',
+            FE_BASE_URL: '${{ env.FE_BASE_URL }}',
+            BE_API_BASE_URL: '${{ env.BE_API_BASE_URL }}',
+            SOCKET_BASE_URL: '${{ env.SOCKET_BASE_URL }}',
+            AUTH_API_BASE_URL: '${{ env.AUTH_API_BASE_URL }}',
+            SMS_RECHARGE_URL: '${{ env.SMS_RECHARGE_URL }}',
+            ENVIRONMENT_NAME: '${{ env.ENVIRONMENT }}',
+            MOCK_ENABLED: false,
+            PLAUSIBLE_SCRIPT_URL: '${{ env.PLAUSIBLE_SCRIPT_URL }}',
+          };" > src/environments/environment.ts
+          cp src/environments/environment.ts admin-panel/src/environments/environment.ts
+          cp src/environments/environment.ts src/environments/environment.${{ env.ENVIRONMENT }}.ts
+          cp src/environments/environment.ts admin-panel/src/environments/environment.${{ env.ENVIRONMENT }}.ts
+      - name: Install dependencies
+        run: npm i
+      # - name: Run Lint
+      #   run: npm run lint
+      # - name: Run Tests
+      #   run: npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessCI
+      # - name: Run Cypress E2E Tests
+      #   uses: cypress-io/github-action@v6
+      #   with:
+      #     install: false
+      #     record: false
+      #     start: npm run start
+      #     browser: chrome
+      # - name: Run Cypress Component Tests
+      #   uses: cypress-io/github-action@v6
+      #   with:
+      #     install: false
+      #     record: false
+      #     component: true
+      #     start: npm run start
+      #     browser: chrome
+      - name: Run Angular Tests
+        run: npm run ng:test:ci
+      - name: Prepare App version
+        if: github.event_name != 'pull_request' && success()
+        run: |
+          LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1) | tr -d '\n')
+          TAG_APP_VERSION=$(echo "$LATEST_TAG" | cut -d'+' -f1 | sed 's/^v//')
+          TAG_BUILD_NUMBER=$(echo "$LATEST_TAG" | cut -d'+' -f2)
+          # Use input values if provided, otherwise use defaults
+          APP_VERSION="${{ github.event.inputs.version }}" 
+          APP_BUILD_NUMBER="${{ github.event.inputs.number }}" 
+          # Fallback to default values if inputs are empty
+          if [[ -z "$APP_VERSION" ]]; then
+            APP_VERSION="$TAG_APP_VERSION"
+          fi
+          if [[ -z "$APP_BUILD_NUMBER" ]]; then
+            APP_BUILD_NUMBER="$TAG_BUILD_NUMBER"
+          fi
+          echo "Printing LATEST_TAG=$LATEST_TAG"
+          echo "Printing APP_VERSION=$APP_VERSION"
+          echo "Printing APP_BUILD_NUMBER=$APP_BUILD_NUMBER"
+          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+          echo "APP_VERSION=$APP_VERSION" >> $GITHUB_ENV
+          echo "APP_BUILD_NUMBER=$APP_BUILD_NUMBER" >> $GITHUB_ENV
+          echo "CAPGO_VERSION=$APP_VERSION+$APP_BUILD_NUMBER" >> $GITHUB_ENV
+          npx capacitor-set-version --version=$APP_VERSION --build=$APP_BUILD_NUMBER
+      - name: Get Release Notes
+        if: github.event_name != 'pull_request' && success()
+        uses: cardinalby/git-get-release-action@v1
+        id: get_release_notes
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          tag: ${{ env.LATEST_TAG }}
+      - name: Prepare version.json & changelogs file
+        if: github.event_name != 'pull_request' && success()
+        run: |
+          echo "{\"version\": \"${{ env.LATEST_TAG }}\"}" > src/assets/json/version.json
+          echo "${{ steps.get_release_notes.outputs.body }}" > CHANGELOGS.md
+          jq --indent 2 '.version="${{ env.CAPGO_VERSION }}"' package.json > temp.json && mv temp.json package.json
+      - name: Build Static Files
+        if: github.event_name != 'pull_request' && success()
+        run: npm run build:web:staging
+
+      # - name: Push latest version to CapGo
+      #   if: github.event_name != 'pull_request' && success()
+      #   run: npm run push:capgo:staging -- --apikey ${{ secrets.CAPGO_TOKEN }}
+      #   env:
+      #     CAPGO_VERSION: ${{ env.CAPGO_VERSION }}
+      #     ENVIRONMENT: ${{ env.ENVIRONMENT }}
+      #     CAPGO_PUBLIC_KEY: ${{ secrets.CAPGO_PUBLIC_KEY }}
+      - name: Save latest version on the backend
+        if: github.event_name != 'pull_request' && success()
+        run: |
+          npm run post-version
+        env:
+          BE_API_BASE_URL: ${{ env.BE_API_BASE_URL }}
+          BACKEND_API_KEY: ${{ secrets.STAGING_BACKEND_API_KEY }}
+          CHANGELOGS: ${{ steps.get_release_notes.outputs.body }}
+          VERSION_NUMBER: ${{ env.APP_VERSION }}
+          BUILD_NUMBER: ${{ env.APP_BUILD_NUMBER }}
+          PLATFORM: ios
+          FORCE_UPDATE: ${{ github.event.inputs.forceUpdate }}
+          GITHUB_SHA: ${{ github.sha }}
+      - name: Prepare secure files
+        if: github.event_name != 'pull_request' && success()
+        run: |
+          echo "${{ secrets.IOS_DIST_SIGNING_KEY_BASE64 }}" > ios/ios-dist-signing-key.p12.base64
+          xxd -r -p ios/ios-dist-signing-key.p12.base64 > ios/ios-dist-signing-key.p12
+          echo "${{ secrets.APPLE_RELEASE_PRIVATE_KEY }}" > ios/nx-appstore-release.p8
+          echo "${{ secrets.STAGING_GOOGLE_SERVICE_PLIST_BASE64 }}" > ios/App/App/GoogleService-Info.plist.base64
+          xxd -r -p ios/App/App/GoogleService-Info.plist.base64 > ios/App/App/GoogleService-Info.plist
+      - name: Setup Ruby
+        if: github.event_name != 'pull_request' && success()
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.4.1"
+          bundler-cache: true
+      - name: Refresh iOS Pods
+        if: github.event_name != 'pull_request' && success()
+        run: cd ios/App && pod update --repo-update
+      - name: Build iOS ipa & Send to TestFlight
+        if: github.event_name != 'pull_request' && success()
+        run: |
+          npm run build:ios:staging
+          cd fastlane
+          bundle install
+          bundle exec fastlane ios buildStgIpaForTestflight
+          cd ..
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_KEY_ID: ${{ secrets.APPLE_KEY_ID }}
+          APPLE_ISSUER_ID: ${{ secrets.APPLE_ISSUER_ID }}
+          APPLE_SIGNING_KEY_PASSWORD: ${{ secrets.APPLE_SIGNING_KEY_PASSWORD }}
+          CURRENT_DIR: "${{ github.workspace }}/fastlane"

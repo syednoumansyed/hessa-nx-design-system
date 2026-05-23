@@ -1,0 +1,14 @@
+<div
+  class="content-sm-mid-emphasis text-emphasis-high"
+  [innerHTML]="messageText() | newline | linkify"
+></div>
+
+@if (youtubeIds().length > 0) {
+  @for (video of youtubeIds(); track $index) {
+    <div class="mt-2 flex w-full flex-col gap-2">
+      @if (video) {
+        <youtube-player [videoId]="video" [width]="width"></youtube-player>
+      }
+    </div>
+  }
+}

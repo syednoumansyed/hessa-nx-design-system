@@ -1,0 +1,134 @@
+<ion-content *transloco="let t;" class="ds-page-content">
+  <app-no-selected-scope-card [requiredScope]="requiredScopes()">
+    @if (isLoading()) {
+    <div class="lg:hes-card flex flex-col gap-8 lg:py-10">
+      <ion-skeleton-text
+        [animated]="true"
+        class="h-7 w-24 rounded"
+      ></ion-skeleton-text>
+      <app-card-list-skeleton class="w-full"></app-card-list-skeleton>
+    </div>
+
+    } @else {
+    <div
+      class="lg:hes-card flex h-full flex-col gap-8 overflow-y-auto bg-white p-4 lg:py-10"
+    >
+      <div
+        *transloco="let t;"
+        class="hidden px-5 text-2xl font-medium leading-7 text-gray-900 lg:block"
+      >
+        {{ isCMS() ? t('global.courses.title') : t('global.my_courses.title') }}
+      </div>
+      @if (isCMS()) {
+      <app-course-list-filter
+        (filterChange)="onFiltersChange($event)"
+      ></app-course-list-filter>
+      } @else {
+      <app-course-list-lms-filter (filterChange)="onFiltersChange($event)" />
+      } @if (mappedCoursesList().length) {
+      <div
+        class="grid w-full grid-cols-1 gap-8 md:grid-cols-[31.25rem] md:justify-center laptopL:grid-cols-[31.25rem_31.25rem]"
+      >
+        @for (item of (isCMS() ? mappedCoursesList() : mappedCoursesListLMS());
+        track $index; let even = $even) {
+        <button
+          (click)="navigateToCourseContent(item)"
+          class="hes-card flex w-full max-w-full flex-col gap-4 p-3 transition-transform duration-300 hover:scale-103 md:w-128 lg:p-4"
+        >
+          <div class="flex items-start gap-4">
+            <!-- subject image -->
+            @if (item.image) {
+            <div>
+              <ion-img
+                class="h-[5.25rem] w-[5.25rem] rounded-lg object-cover lg:h-[5.875rem] lg:w-[5.875rem]"
+                [src]="item.image"
+              ></ion-img>
+            </div>
+            }
+
+            <div class="flex flex-col items-start gap-3 lg:gap-[0.62rem]">
+              <div class="text-xl font-semibold text-gray-900 md:font-medium">
+                {{ item.title }}
+              </div>
+              <div class="flex flex-wrap items-start justify-start gap-4">
+                @for (info of item.info; track $index) {
+                <div class="flex items-center gap-2 lg:gap-[0.62rem]">
+                  <ion-icon
+                    class="text-lg text-[#292D32]"
+                    [src]="info.src"
+                  ></ion-icon>
+                  <span class="text-xs text-[#7F8491] md:text-sm"
+                    >{{ info.label }}</span
+                  >
+                </div>
+                }
+              </div>
+            </div>
+          </div>
+
+          @if (!isCMS()) {
+          <div class="hes-card w-full">
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+              @for (data of item.metadata; track $index) {
+              <div class="flex items-center gap-3">
+                <!-- Icon container with a light background -->
+                <div class="rounded-md w-11 h-11 p-3 {{data.bgClass}}">
+                  <ion-icon
+                    [class]="data.iconClass"
+                    [src]="data.iconSrc"
+                  ></ion-icon>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="p-1">
+                    <span class="text-xl font-bold">{{ data.viewed }}</span>
+                    <span class="text-base text-gray-500"
+                      >/{{ data.count }}</span
+                    >
+                  </div>
+                  <div class="text-xs font-semibold">
+                    <span> {{t(data.i18n ?? '')}}</span>
+                    <br />
+                    <span class="text-gray-500">
+                      {{ t(data?.statusLabel ?? '') }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              }
+            </div>
+          </div>
+          } @else {
+          <div class="flex flex-wrap items-start justify-start gap-4">
+            @for (item of item.metadata; track $index) {
+            <div class="flex items-center">
+              <div
+                class="flex items-center justify-center p-[0.13rem] lg:p-[0.38rem]"
+              >
+                <ion-icon
+                  [class]="item.iconClass"
+                  [src]="item.iconSrc"
+                ></ion-icon>
+              </div>
+              <span
+                class="flex-shrink-0 text-[0.625rem] font-medium leading-4 text-[#272525]"
+                >{{item.count}} {{ item.i18n ? t(item.i18n) :item.title }}</span
+              >
+            </div>
+            }
+          </div>
+          }
+        </button>
+        }
+      </div>
+      } @else {
+      <app-no-data-card
+        [mainImagePath]="noDataCardConfig().mainImagePath"
+        [title]="t(noDataCardConfig().title)"
+        [description]="t(noDataCardConfig().description)"
+        [noBgStyle]="true"
+      ></app-no-data-card>
+      }
+    </div>
+    }
+  </app-no-selected-scope-card>
+</ion-content>

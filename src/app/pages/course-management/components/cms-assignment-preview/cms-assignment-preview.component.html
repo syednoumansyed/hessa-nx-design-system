@@ -1,0 +1,50 @@
+@if (isMobile) {
+  <ion-header class="bg-white shadow-none">
+    <ion-toolbar class="bg-white">
+      <div class="flex min-h-3 items-center justify-between p-3">
+        <app-hes-icon
+          (click)="onCloseModal()"
+          class="me-2 flex items-center text-[#A5A9B2] rtl:rotate-180"
+          [faIcon]="angleLeft"
+        ></app-hes-icon>
+        <h5>{{ assignmentTitle() }}</h5>
+        <div></div>
+      </div>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content class="bg-white">
+    <ng-container [ngTemplateOutlet]="tpl"></ng-container>
+  </ion-content>
+} @else {
+  <ng-container [ngTemplateOutlet]="tpl"></ng-container>
+}
+<ng-template #tpl>
+  <div class="p-4 md:p-8">
+    @if (!isMobile) {
+      <div class="my-4 flex w-full items-center justify-between">
+        <div class="text-2xl font-medium">{{ assignmentTitle() }}</div>
+        <fa-icon
+          class="mr-4 mt-1 cursor-pointer text-[#929CB5] hover:text-[#0000008a]"
+          [icon]="faClose"
+          size="xl"
+          (click)="onCloseModal()"
+        ></fa-icon>
+      </div>
+    }
+    <form
+      [formGroup]="assignmentQuestionForm"
+      class="flex w-full flex-col items-start justify-center gap-8 lg:mx-auto lg:w-auto"
+    >
+      <div class="flex w-full flex-col gap-4 p-4">
+        @for (question of assignmentQuestions(); track question.id) {
+          <div class="flex-full">
+            <app-question-form-control-generator
+              class="w-full lg:w-[50.5rem]"
+              [config]="question"
+            ></app-question-form-control-generator>
+          </div>
+        }
+      </div>
+    </form>
+  </div>
+</ng-template>

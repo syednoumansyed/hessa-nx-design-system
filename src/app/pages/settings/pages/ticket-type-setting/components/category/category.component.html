@@ -1,0 +1,50 @@
+<ng-container *transloco="let t">
+  <div class="hes-card flex justify-between">
+    <div class="flex flex-col gap-4">
+      <div class="flex gap-4">
+        <span class="text-lg font-semibold text-[#101828]">
+          {{ category()?.displayName }}</span
+        >
+        <span
+          class="flex items-center rounded-2xl px-2 py-[2px] text-xs font-medium"
+          [ngClass]="{
+            'bg-[#FDF2FA] text-[#C11574]':
+              category()?.accessLevel === 'INTERNAL',
+            'bg-[#EFF8FF] text-[#175CD3]': category()?.accessLevel === 'PUBLIC'
+          }"
+          >{{ category()?.accessLevel ?? "" | enumLang }}</span
+        >
+      </div>
+      <div class="flex gap-1 text-sm">
+        <span class="font-normal text-[#7F8491]"
+          >{{ t("support_ticket.total_sub_categories.txt") }}:
+        </span>
+        <span class="font-medium text-[#383C57]"
+          >{{ category()?.categoryCount }}
+          {{ t("support_ticket.main_content.categories_section_title") }}</span
+        >
+      </div>
+    </div>
+    @if (isMobile) {
+      <div class="gap-2">
+        <app-hes-action-sheet
+          class="self-end"
+          [actions]="actions()"
+          [forceActionSheet]="true"
+        ></app-hes-action-sheet>
+      </div>
+    } @else {
+      <div class="flex gap-2">
+        @for (action of actions(); track $index) {
+          <ion-button
+            hesBtn
+            hesColor="gray"
+            class="h-9"
+            (click)="action?.onClick({ id: category()!.id })"
+            >{{ action.text }}</ion-button
+          >
+        }
+      </div>
+    }
+  </div>
+</ng-container>

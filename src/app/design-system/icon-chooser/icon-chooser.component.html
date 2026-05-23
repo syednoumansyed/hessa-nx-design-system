@@ -1,0 +1,60 @@
+<ng-container *transloco="let t">
+  <div class="flex flex-col gap-ds-md">
+    <!-- Label -->
+    @if (label()) {
+      <label class="single-line-md-mid-emphasis block">
+        {{ label() }}
+        @if (required()) {
+          <span class="text-error">*</span>
+        }
+      </label>
+    }
+
+    <div class="flex items-center gap-4">
+      @if (value()) {
+        <!-- Icon Preview Box with Clear Button -->
+        <div class="relative">
+          <div
+            class="flex h-16 w-16 items-center justify-center rounded-lg border border-neutral-200 bg-neutral-50"
+          >
+            <app-ds-icon [icon]="selectedIconDef()!" size="2xl" />
+          </div>
+
+          <!-- Clear Button (top-right corner) -->
+          @if (!isDisabled()) {
+            <button
+              type="button"
+              class="absolute -end-2 -top-2 text-neutral-400 hover:text-neutral-500"
+              (click)="clearIcon_click()"
+              aria-label="Clear selection"
+            >
+              <app-ds-icon [icon]="clearIcon" size="lg" />
+            </button>
+          }
+        </div>
+
+        <!-- Change Icon Button -->
+        <ds-button
+          variant="tertiary"
+          size="md"
+          [iconStart]="editIcon"
+          [disabled]="isDisabled()"
+          (click)="openModal()"
+        >
+          {{ t("support.icon.edit.action") }}
+        </ds-button>
+      } @else {
+        <!-- Choose Icon Button (when no icon selected) -->
+        <ds-button
+          variant="tertiary"
+          size="md"
+          [iconStart]="chooseIcon"
+          [disabled]="isDisabled()"
+          (click)="openModal()"
+        >
+          {{ t("support.icon.choose.action") }}
+        </ds-button>
+      }
+    </div>
+  </div>
+</ng-container>

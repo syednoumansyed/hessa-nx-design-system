@@ -1,0 +1,66 @@
+:host {
+  display: contents;
+}
+
+.ds-modal-sheet-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(19, 21, 23, 0.4);
+  z-index: 9998;
+}
+
+.ds-modal-sheet-wrapper {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  // Sheet is always 90vh tall (cap per design — never exceeds 90% viewport so
+  // backdrop stays visible at top). 25vh safety floor for tiny viewports.
+  height: 90vh;
+  min-height: 25vh;
+  @supports (height: 90dvh) {
+    height: 90dvh;
+    min-height: 25dvh;
+  }
+  transform-origin: top center;
+  will-change: transform, opacity;
+
+  &.ds-modal-sheet-pointer-none {
+    pointer-events: none;
+
+    .ds-modal-sheet {
+      pointer-events: none;
+    }
+  }
+}
+
+.ds-modal-sheet {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--surface-primary, #fff);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0px -4px 24px rgba(16, 24, 40, 0.12);
+  pointer-events: auto;
+}
+
+.ds-modal-sheet-header {
+  flex-shrink: 0;
+  border-bottom: 1px solid rgba(19, 21, 23, 0.08);
+  padding: 20px 16px 14px;
+}
+
+.ds-modal-sheet-content {
+  flex: 1;
+  min-height: 0;
+}
+
+.ds-modal-sheet-footer {
+  flex-shrink: 0;
+  border-top: 1px solid rgba(19, 21, 23, 0.08);
+  padding: 14px 16px 16px;
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
+}

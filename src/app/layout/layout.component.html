@@ -1,0 +1,546 @@
+<ng-container *transloco="let t">
+  @if (isMobile) {
+    @if (auth.isLoggedInAsOtherUser()) {
+      <div
+        class="flex w-full bg-[#D92D20] p-3 pl-8 pr-8 text-[#FFF4F3]"
+        (click)="auth.restoreOriginalProfileData()"
+      >
+        <div class="flex h-full items-center justify-center">
+          <fa-icon [icon]="faCircleWarning" size="xl"></fa-icon>
+        </div>
+        <div class="pl-2">
+          <span>{{ t("global.signed_in_as_another_user.txt") }}</span>
+          <span
+            class="cursor-pointer pl-1 underline"
+            (click)="auth.restoreOriginalProfileData()"
+            >{{ t("global.bac_to_acc.btn") }}</span
+          >
+        </div>
+      </div>
+    }
+    <ion-header class="flex-shrink-0 border-b border-[#D9D9D9] shadow-none">
+      <ion-toolbar>
+        @if (showMainMobileHeader()) {
+          <ng-container *ngTemplateOutlet="mobileHomeHeader"></ng-container>
+        } @else {
+          <ng-container *ngTemplateOutlet="mobilePageHeader"></ng-container>
+        }
+        <ion-progress-bar
+          [ngClass]="{ hidden: !isShowProgressBar() }"
+          type="indeterminate"
+          class="hes-progress"
+        ></ion-progress-bar>
+      </ion-toolbar>
+    </ion-header>
+    <ng-container *ngTemplateOutlet="content"></ng-container>
+    @if (!isSchoolStructureEmpty()) {
+      <ion-tab-bar
+        slot="bottom"
+        class="h-20 flex-shrink-0 border-t border-gray-200 px-3"
+      >
+        <ion-tab-button
+          [routerLink]="'home'"
+          routerLinkActive="tab-selected"
+          class="whitespace-nowrap pb-3 pt-3 text-xs font-medium text-[#6B6F80] [&:is(.tab-selected)]:text-primary"
+        >
+          <ng-icon
+            [name]="!isActive('home') ? 'saxHome2Outline' : 'saxHome2Bold'"
+            class="mb-[0.38rem] text-2xl"
+          ></ng-icon>
+          {{ t("global.home.title") }}
+        </ion-tab-button>
+        <ion-tab-button
+          [routerLink]="'chat'"
+          routerLinkActive="tab-selected"
+          class="whitespace-nowrap pb-3 pt-3 text-xs font-medium text-[#6B6F80] [&:is(.tab-selected)]:text-primary"
+        >
+          <ng-icon
+            [name]="
+              !isActive('chat') ? 'saxMessages3Outline' : 'saxMessages3Bold'
+            "
+            class="mb-[0.38rem] text-2xl"
+          ></ng-icon>
+          {{ t("global.chats.title") }}
+        </ion-tab-button>
+        <ion-tab-button
+          [routerLink]="coursesRoute()"
+          routerLinkActive="tab-selected"
+          class="whitespace-nowrap pb-3 pt-3 text-xs font-medium text-[#6B6F80] [&:is(.tab-selected)]:text-primary"
+        >
+          <ng-icon
+            [name]="
+              !isActive(coursesRoute()) ? 'saxBook1Outline' : 'saxBook1Bold'
+            "
+            class="mb-[0.38rem] text-2xl"
+          ></ng-icon>
+          {{ t("global.courses.title") }}
+        </ion-tab-button>
+        @if (!isSuperAdmin) {
+          <ion-tab-button
+            *hesRbacSome="[
+              guardianPickupRequestsPermissionId,
+              guardianHistoryPermissionId,
+              personnelPickupRequestGuardPermissionId,
+              personnelPickupRequestAdminPermissionId,
+            ]"
+            [routerLink]="
+              isGuardianUser() ? ['pickup'] : ['pickup/personnel-request']
+            "
+            routerLinkActive="tab-selected"
+            class="whitespace-nowrap pb-3 pt-3 text-xs font-medium text-[#6B6F80] [&:is(.tab-selected)]:text-primary"
+          >
+            <ng-icon
+              [name]="!isActive('pickup') ? 'saxCarOutline' : 'saxCarBold'"
+              class="mb-[0.38rem] text-2xl"
+            ></ng-icon>
+            {{ t("dismissal.pickup.btn") }}
+          </ion-tab-button>
+        }
+        <ion-tab-button
+          [routerLink]="['menu']"
+          routerLinkActive="tab-selected"
+          class="whitespace-nowrap pb-3 pt-3 text-xs font-medium text-[#6B6F80] [&:is(.tab-selected)]:text-primary"
+        >
+          <ng-icon
+            [name]="
+              !isActive('menu') ? 'saxElement3Outline' : 'saxElement3Bold'
+            "
+            class="mb-[0.38rem] text-2xl"
+          ></ng-icon>
+          {{ t("global.menu.title") }}
+        </ion-tab-button>
+      </ion-tab-bar>
+    }
+  } @else {
+    <div id="layout" class="flex h-full w-full">
+      <!-- Menu -->
+      <div
+        id="menu"
+        class="relative"
+        [ngStyle]="{
+          width: showSchoolStructureSideMenu()
+            ? isSideNavCollapsed()
+              ? '8rem'
+              : '33rem'
+            : isSideNavCollapsed()
+              ? '3rem'
+              : '15rem',
+        }"
+      >
+        <div class="flex h-full">
+          <div
+            [ngClass]="{
+              'w-60': !isSideNavCollapsed(),
+              'w-12': isSideNavCollapsed(),
+            }"
+            class="flex flex-col overflow-y-auto"
+          >
+            <!-- Menu Header -->
+            <ion-header class="h-24 border-b border-[#414769] shadow-none">
+              <ion-toolbar class="flex h-full items-center">
+                <ion-img
+                  [src]="'assets/logos/hessa-logo-3.svg'"
+                  alt="nx logo"
+                  [routerLink]="
+                    isSchoolStructureEmpty() ? ['/help-center'] : ['/home']
+                  "
+                  class="m-auto h-12 w-40 cursor-pointer"
+                ></ion-img>
+                <div class="text-center text-gray-500">v{{ appVersion() }}</div>
+              </ion-toolbar>
+            </ion-header>
+            <!-- Menu Content -->
+            <div id="menu-content" class="flex h-full flex-col gap-5">
+              <ion-content class="ion-no-padding">
+                <div class="flex flex-col items-center justify-center gap-4">
+                  @if (!isSchoolStructureEmpty()) {
+                    <app-school-scope-selection-popover>
+                      <app-school-scope-selection-button
+                        #schoolScopeDisplayTarget
+                        [ngClass]="{ 'w-52': !isSideNavCollapsed() }"
+                        [collapsed]="isSideNavCollapsed()"
+                      ></app-school-scope-selection-button>
+                    </app-school-scope-selection-popover>
+                  }
+                  <app-academic-year-popover>
+                    <app-academic-year-selection
+                      #academicYearDisplayTarget
+                      [collapsed]="isSideNavCollapsed()"
+                    ></app-academic-year-selection>
+                  </app-academic-year-popover>
+                </div>
+                <ion-list
+                  lines="none"
+                  class="flex flex-col gap-1 bg-inherit p-0"
+                >
+                  @for (
+                    menuRoute of menuRoutes().upper;
+                    track menuRoute.titleI18nKey
+                  ) {
+                    <app-menu-item
+                      [menuRoute]="menuRoute"
+                      [isSideNavCollapsed]="isSideNavCollapsed()"
+                    ></app-menu-item>
+                  }
+                </ion-list>
+              </ion-content>
+            </div>
+            <!-- Menu Footer -->
+            <ion-footer class="">
+              <ion-toolbar class="h-full">
+                @for (
+                  menuRoute of menuRoutes().lower;
+                  track menuRoute.titleI18nKey
+                ) {
+                  <app-menu-item
+                    [menuRoute]="menuRoute"
+                    [isSideNavCollapsed]="isSideNavCollapsed()"
+                  ></app-menu-item>
+                }
+
+                <div class="my-4 h-[0.0625rem] w-full bg-[#414558]"></div>
+                <ion-item
+                  id="nav-item"
+                  class="border-[#414769]"
+                  lines="none"
+                  (click)="logout()"
+                  button
+                  [ngStyle]="{
+                    '--inner-padding-end': 0,
+                    '--padding-start': isSideNavCollapsed() ? 0 : '1rem',
+                  }"
+                >
+                  <ng-icon
+                    name="saxLogout1Outline"
+                    class="text-xl text-white"
+                    [ngClass]="{
+                      'me-2': !isSideNavCollapsed(),
+                      'mx-auto': isSideNavCollapsed(),
+                    }"
+                  ></ng-icon>
+                  @if (!isSideNavCollapsed()) {
+                    <ion-label>{{ t("global.logout.btn") }}</ion-label>
+                  }
+                </ion-item>
+                @if (!isSideNavCollapsed()) {
+                  <div class="mt-6 px-4 py-3 text-sm text-[#50577B]">
+                    {{ t("global.copyright.txt") }} {{ copyRightYear }}
+                    {{ t("global.app_name.txt") }}
+                  </div>
+                }
+              </ion-toolbar>
+            </ion-footer>
+          </div>
+          @if (showSchoolStructureSideMenu()) {
+            <app-school-structure-nav-menu
+              #schoolNav
+            ></app-school-structure-nav-menu>
+          }
+        </div>
+        <button
+          (click)="toggleSideNav()"
+          [ngClass]="{ 'translate-x-1/2': !isRtl, '-translate-x-1/2': isRtl }"
+          class="absolute bottom-10 end-0 z-[99] flex h-8 w-8 translate-x-1/2 cursor-pointer items-center justify-center rounded bg-[#353C63] text-white"
+          title="toggle button"
+        >
+          <fa-icon
+            [icon]="
+              isRtl
+                ? !isSideNavCollapsed()
+                  ? faAnglesRight
+                  : faAnglesLeft
+                : !isSideNavCollapsed()
+                  ? faAnglesLeft
+                  : faAnglesRight
+            "
+            size="xl"
+          ></fa-icon>
+        </button>
+      </div>
+
+      <!-- Main Content -->
+      <div class="flex w-full flex-col" id="main">
+        <!-- Main Header -->
+        <ion-header
+          id="desktop-header"
+          class="h-24 flex-shrink-0 border-b border-[#D9D9D9] shadow-none"
+        >
+          @if (auth.isLoggedInAsOtherUser()) {
+            <div
+              class="w-full bg-[#D92D20] p-3 text-center text-[#FFF4F3]"
+              (click)="auth.restoreOriginalProfileData()"
+            >
+              <fa-icon [icon]="faCircleWarning" size="xl"></fa-icon>
+              <span class="pl-2">
+                {{ t("global.signed_in_as_another_user.txt") }}
+              </span>
+              <span
+                class="cursor-pointer underline"
+                (click)="auth.restoreOriginalProfileData()"
+              >
+                {{ t("global.bac_to_acc.btn") }}
+              </span>
+            </div>
+          }
+          <ion-toolbar class="flex h-full items-center">
+            <ng-container *ngTemplateOutlet="desktopHeader"></ng-container>
+          </ion-toolbar>
+        </ion-header>
+        <!-- Content -->
+        <ng-container *ngTemplateOutlet="content"></ng-container>
+      </div>
+    </div>
+  }
+</ng-container>
+
+<ng-template #desktopHeader>
+  <ion-buttons slot="start">
+    @if (canGoBack() && isWebBackBtn()) {
+      <button
+        *transloco="let t"
+        class="items-center-justify-center font flex gap-2 text-base font-medium"
+        (click)="goBack()"
+      >
+        <fa-icon
+          [icon]="isRtl ? faAngleRight : faAngleLeft"
+          class="text-base"
+        ></fa-icon>
+        {{ t("global.back.txt") }}
+      </button>
+    }
+    @if (isGuardianUser()) {
+      <app-student-selection class=""></app-student-selection>
+    }
+  </ion-buttons>
+  <ion-buttons slot="end">
+    <div class="flex items-center gap-6">
+      <div class="flex items-center justify-center gap-2">
+        <div>
+          <app-hes-searchable-select
+            [data]="[
+              {
+                value: 'en',
+                displayedValue: 'English',
+              },
+              {
+                value: 'ar',
+                displayedValue: 'اللغة العربية',
+              },
+            ]"
+            [searchable]="false"
+            [fill]="'solid'"
+            [condensed]="true"
+            (onSelectionChange)="onLanguageChange($event)"
+            [selectedValue]="selectedLanguage"
+            [inputClass]="'!rounded-full'"
+            [popoverSize]="'auto'"
+            [showClearBtn]="false"
+          ></app-hes-searchable-select>
+        </div>
+        @if (!isSchoolStructureEmpty()) {
+          <!-- HES-3351: For now, we don't need this as the home page is showing the notification. We may need it later. -->
+          <!-- <div
+            class="none justif relative flex h-[2.5rem] w-[2.5rem] cursor-pointer items-center justify-center"
+            [routerLink]="'user-feed'"
+          >
+            <ng-icon
+              name="announcement-solid"
+              class="text-3xl text-[#6B6F80]"
+            ></ng-icon>
+            @if (postAnnouncementsUnreadCounts() > 0) {
+              <div
+                class="absolute -end-2 top-0 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white"
+              >
+                {{ postAnnouncementsUnreadCounts() }}
+              </div>
+            }
+          </div> -->
+        }
+        <app-academic-year-popover
+          [isMainPopover]="true"
+          class="mx-auto block w-fit"
+        ></app-academic-year-popover>
+        @if (!isSchoolStructureEmpty() && isPersonalUser()) {
+          <app-school-scope-selection-popover
+            [isMainPopover]="true"
+            class="mx-auto block w-fit"
+          >
+          </app-school-scope-selection-popover>
+        }
+      </div>
+      <app-header-user-info></app-header-user-info>
+    </div>
+  </ion-buttons>
+  <ion-progress-bar
+    [ngClass]="{ hidden: !isShowProgressBar() }"
+    type="indeterminate"
+    class="hes-progress"
+  ></ion-progress-bar>
+</ng-template>
+
+<ng-template #content>
+  <ng-container>
+    <ion-backdrop
+      [ngClass]="{ hidden: !isShowPageSpinner() }"
+      [visible]="true"
+    ></ion-backdrop>
+    <ion-spinner
+      [ngClass]="{
+        hidden: !isShowPageSpinner(),
+      }"
+      class="absolute start-1/2 top-1/2 z-40"
+    ></ion-spinner>
+
+    @if (!showMainMobileHeader() && isMobile) {
+      <app-school-scope-selection-popover
+        [isMainPopover]="true"
+        class="mx-auto hidden w-fit"
+      >
+      </app-school-scope-selection-popover>
+    }
+  </ng-container>
+
+  <div
+    class="relative flex h-full flex-col gap-4 bg-white p-4 pb-0 md:pb-4 lg:gap-6 lg:bg-gray-50 lg:p-6"
+    [class.no-mobile-padding]="noMobilePadding()"
+    *transloco="let t"
+  >
+    @if (showSchoolStructureSideMenu() && isMobile) {
+      <app-school-structure-nav-button></app-school-structure-nav-button>
+    }
+    @if (isBreadcrumbVisible$ | async) {
+      @if (!isMobile) {
+        <div class="flex flex-col items-start gap-2">
+          <div class="flex w-full items-center justify-start gap-1">
+            <div class="text-lg font-semibold leading-normal text-[#272525]">
+              {{ currentPageTitle() }}
+            </div>
+            @if (isShowClassLevelBadges()) {
+              <app-class-level-badges
+                [className]="currentClassName()!"
+                [levelName]="currentLevelName()!"
+              ></app-class-level-badges>
+            }
+          </div>
+          <div class="flex w-full items-center justify-between">
+            @if ((breadCrumbRestrictRoutes$ | async) === false) {
+              <app-hes-breadcrumb>
+                <ng-container *xngBreadcrumbItem="let breadcrumb">
+                  <ng-container>{{ t(breadcrumb) }}</ng-container>
+                </ng-container>
+              </app-hes-breadcrumb>
+            }
+            @if (projectedTemplateRef$ | async; as projectedTemplateRef) {
+              <ng-container
+                *ngTemplateOutlet="projectedTemplateRef"
+              ></ng-container>
+            }
+          </div>
+        </div>
+      }
+    }
+    @if (!isOffline()) {
+      <ion-router-outlet
+        class="relative block h-full w-full"
+      ></ion-router-outlet>
+    }
+    <ng-container *ngTemplateOutlet="offline"></ng-container>
+  </div>
+</ng-template>
+
+<ng-template #mobileHomeHeader>
+  <ion-buttons slot="start">
+    <app-header-user-info></app-header-user-info>
+  </ion-buttons>
+
+  <div class="relative flex flex-col items-center" *transloco="let t">
+    <ion-img
+      src="assets/logos/hessa-logo-3.svg"
+      alt="nx logo"
+      class="h-[2.3rem] w-[7.5rem]"
+    ></ion-img>
+
+    <div class="text-center text-sm text-gray-500">v{{ appVersion() }}</div>
+  </div>
+
+  <ion-buttons slot="end">
+    <div class="flex items-center gap-2">
+      <div>
+        <app-hes-searchable-select
+          [data]="[
+            {
+              value: 'en',
+              displayedValue: 'En',
+            },
+            {
+              value: 'ar',
+              displayedValue: 'ع',
+            },
+          ]"
+          [searchable]="false"
+          [fill]="'solid'"
+          [condensed]="true"
+          (onSelectionChange)="onLanguageChange($event)"
+          [selectedValue]="selectedLanguage"
+          [inputClass]="'!px-2 !py-1'"
+          [popoverSize]="'auto'"
+          [showClearBtn]="false"
+        ></app-hes-searchable-select>
+      </div>
+    </div>
+  </ion-buttons>
+</ng-template>
+
+<ng-template #mobilePageHeader>
+  <ion-buttons slot="start">
+    @if (canGoBack()) {
+      <button (click)="goBack()" title="back button">
+        <fa-icon
+          [icon]="isRtl ? faAngleRight : faAngleLeft"
+          class="text-2xl"
+        ></fa-icon>
+      </button>
+    }
+  </ion-buttons>
+  <div class="flex w-full flex-wrap items-center justify-center gap-2">
+    <div class="text-center text-lg font-semibold leading-6 text-[#3E414C]">
+      {{ currentPageTitle() }}
+    </div>
+    @if (isShowClassLevelBadges()) {
+      <app-class-level-badges
+        [className]="currentClassName()!"
+        [levelName]="currentLevelName()!"
+      ></app-class-level-badges>
+    }
+  </div>
+  <ion-buttons slot="end">
+    @if (projectedTemplateRef$ | async; as projectedTemplateRef) {
+      <ng-container *ngTemplateOutlet="projectedTemplateRef"></ng-container>
+    }
+  </ion-buttons>
+</ng-template>
+
+<ng-template #offline>
+  <div
+    *transloco="let t"
+    class="lg:hes-card absolute start-0 top-0 h-full w-full bg-white"
+    [ngClass]="{ invisible: !isOffline() }"
+  >
+    <div class="lg:hes-card flex h-full items-center justify-center bg-white">
+      <div
+        class="flex w-full shrink-0 flex-col items-center justify-center gap-4 pb-8 pt-8"
+      >
+        <img
+          [src]="'assets/illustrations/offline.png'"
+          alt="offline illustration"
+          class="h-[18rem]"
+        />
+        <div
+          class="mt-4 self-stretch text-center text-xl font-semibold text-[#485F66] md:text-[1.3125rem]"
+        >
+          {{ t("global.no_internet_connection.txt") }}
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

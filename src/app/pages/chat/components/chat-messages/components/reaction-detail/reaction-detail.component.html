@@ -1,0 +1,60 @@
+<div class="flex flex-col">
+  <!-- Reaction pills -->
+  <div
+    class="no-scrollbar reactions flex items-center gap-ds-md overflow-hidden overflow-x-auto px-ds-2xl py-ds-lg"
+  >
+    @for (item of mappedReactions(); track $index) {
+      <div
+        class="flex cursor-pointer items-center gap-1 rounded-full border border-neutral-cool-100 px-ds-xl py-ds-md"
+      >
+        @if (item.config) {
+          <app-ds-icon [icon]="item.config.svgIcon" [size]="'2xl'" />
+        } @else {
+          {{ item.emoji }}
+        }
+        @if (item.count > 1) {
+          <span class="content-sm-mid-emphasis text-emphasis-high">{{
+            item.count
+          }}</span>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Grouped reaction users -->
+  <div>
+    @for (group of groupedReactionData(); track group.reactionType) {
+      <div>
+        <div class="px-ds-xl py-ds-md">
+          <span class="content-md-high-emphasis text-emphasis-mid">{{
+            group.label
+          }}</span>
+        </div>
+
+        @for (user of group.users; track user.id) {
+          <div class="flex items-center gap-ds-md px-ds-2xl py-ds-lg">
+            <app-ds-avatar
+              [fullName]="user.fullName"
+              size="xl"
+              [includeBorder]="false"
+              [color]="user.profileColor"
+              [imageUrl]="user.imageUrl"
+              class="shrink-0"
+            />
+            <div>
+              <div class="heading-h5-high-emphasis text-emphasis-high">
+                {{ user.fullName }}
+              </div>
+              <div class="single-line-caption-mid-emphasis text-emphasis-mid">
+                {{ getUserType(user.role) }}
+              </div>
+            </div>
+            <div class="ml-auto">
+              <app-ds-icon [icon]="user.svgIcon" [size]="'2xl'" />
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,100 @@
+<div class="ds-qr-scanner">
+  <!-- Background overlay -->
+  <div class="ds-qr-scanner__overlay"></div>
+
+  <!-- Camera feed -->
+  <div class="ds-qr-scanner__camera-container">
+    <zxing-scanner
+      [enable]="canScan()"
+      [device]="currentDevice()"
+      [formats]="formats"
+      [tryHarder]="tryHarder"
+      [videoConstraints]="videoConstraints"
+      [torch]="isTorchEnabled()"
+      (camerasFound)="onCamerasFound($event)"
+      (camerasNotFound)="onCamerasNotFound()"
+      (permissionResponse)="onPermissionResponse($event)"
+      (scanSuccess)="onScanSuccess($event)"
+      (scanFailure)="onScanFailure($event)"
+      (scanError)="onScanError($event)"
+      (torchCompatible)="onTorchCompatible($event)"
+    ></zxing-scanner>
+  </div>
+
+  <!-- Content overlay -->
+  <div class="ds-qr-scanner__content">
+    <!-- Close button -->
+    @if (showCloseButton()) {
+      <button
+        type="button"
+        class="ds-qr-scanner__close-btn"
+        (click)="onClose()"
+        aria-label="Close scanner"
+      >
+        <app-ds-icon [icon]="closeIcon" size="24px" cssClass="text-white" />
+      </button>
+    }
+
+    <!-- Header section -->
+    <div class="ds-qr-scanner__header">
+      <h1 class="ds-qr-scanner__title">{{ displayTitle() }}</h1>
+      <p class="ds-qr-scanner__subtitle">{{ displaySubtitle() }}</p>
+    </div>
+
+    <!-- Scanner frame -->
+    <div class="ds-qr-scanner__frame-container">
+      <div class="ds-qr-scanner__frame">
+        <!-- Scanning line animation -->
+        @if (isReady() || isScanning()) {
+          <div class="ds-qr-scanner__scan-line"></div>
+        }
+      </div>
+
+      <!-- Loading state -->
+      @if (isInitializing()) {
+        <div class="ds-qr-scanner__loading">
+          <div class="ds-qr-scanner__spinner"></div>
+          <p class="ds-qr-scanner__loading-text">{{ loadingText() }}</p>
+        </div>
+      }
+
+      <!-- Error state -->
+      @if (hasError()) {
+        <div class="ds-qr-scanner__error">
+          <p class="ds-qr-scanner__error-text">{{ errorMessage() }}</p>
+        </div>
+      }
+    </div>
+
+    <!-- Torch control (only shown if available) -->
+    @if (isTorchAvailable()) {
+      <div class="ds-qr-scanner__controls">
+        <button
+          type="button"
+          class="ds-qr-scanner__control-btn"
+          [class.ds-qr-scanner__control-btn--active]="isTorchEnabled()"
+          (click)="toggleTorch()"
+          aria-label="Toggle flashlight"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M18 6c0 2-2 2-2 4v10a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V10c0-2-2-2-2-4V2h12z"
+            ></path>
+            <line x1="6" x2="18" y1="6" y2="6"></line>
+            <line x1="12" x2="12" y1="12" y2="12"></line>
+          </svg>
+        </button>
+      </div>
+    }
+  </div>
+</div>

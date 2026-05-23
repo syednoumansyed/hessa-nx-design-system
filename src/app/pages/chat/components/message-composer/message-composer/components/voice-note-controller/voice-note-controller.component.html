@@ -1,0 +1,81 @@
+<div class="flex w-full items-center gap-3">
+  <button
+    (click)="onDelete()"
+    aria-label="Delete voice note"
+    class="flex h-8 w-8 flex-none items-center justify-center transition-colors hover:text-red-500"
+    type="button"
+  >
+    <app-ds-icon [icon]="faTrashIcon" size="xl"></app-ds-icon>
+  </button>
+  <div
+    class="flex h-[40px] min-w-0 max-w-full flex-1 items-center gap-4 overflow-hidden rounded-full bg-neutral-cool-800 px-2 text-white"
+  >
+    <button
+      *ngIf="!audioUrl; else playbackBtn"
+      (click)="togglePause()"
+      class="flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-full bg-white text-neutral-900 shadow"
+      type="button"
+      [attr.aria-label]="isPaused() ? 'Resume recording' : 'Pause recording'"
+    >
+      <app-ds-icon
+        [icon]="isPaused() ? faPlayIcon : faPauseIcon"
+        size="lg"
+      ></app-ds-icon>
+    </button>
+    <ng-template #playbackBtn>
+      <button
+        (click)="togglePlayback()"
+        class="flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-full bg-white text-neutral-900 shadow"
+        type="button"
+        [attr.aria-label]="isPlaying ? 'Pause playback' : 'Play voice note'"
+        (playing)="isPlaying = true"
+        (pause)="isPlaying = false"
+      >
+        <app-ds-icon
+          [icon]="isPlaying ? faPauseIcon : faPlayIcon"
+          size="lg"
+        ></app-ds-icon>
+      </button>
+    </ng-template>
+
+    <div class="min-w-0 flex-1 overflow-hidden">
+      <div
+        *ngIf="!audioUrl"
+        #liveWave
+        class="flex h-[16px] items-center gap-[3px] overflow-hidden"
+      >
+        <span
+          *ngFor="let v of levels; trackBy: trackByIndex"
+          class="w-[3px] shrink-0 rounded-full bg-white/80 transition-[height] duration-100 ease-linear"
+          [style.height.%]="v"
+        ></span>
+      </div>
+    </div>
+
+    <div
+      class="single-line-caption-low-emphasis shrink-0 select-none text-right tabular-nums"
+    >
+      {{ formattedTime }}
+    </div>
+
+    <audio
+      #player
+      *ngIf="audioUrl"
+      [src]="audioUrl"
+      (timeupdate)="onTimeUpdate()"
+      (ended)="onPlaybackEnded()"
+      (play)="isPlaying = true"
+      (pause)="isPlaying = false"
+      class="hidden"
+    ></audio>
+  </div>
+
+  <button
+    (click)="onSend()"
+    aria-label="Send voice note"
+    class="flex h-8 w-8 flex-none items-center justify-center transition-colors rtl:rotate-180"
+    type="button"
+  >
+    <app-ds-icon [icon]="faSendIcon" size="xl"></app-ds-icon>
+  </button>
+</div>

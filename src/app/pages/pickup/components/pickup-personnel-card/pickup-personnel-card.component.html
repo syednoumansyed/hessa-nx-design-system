@@ -1,0 +1,197 @@
+<div
+  *transloco="let t"
+  class="flex flex-col gap-ds-lg overflow-hidden rounded-ds-xl border-2 border-stroke-black-08 bg-white p-ds-xl"
+>
+  <!-- Header: Avatar + Student Info -->
+  <div class="flex items-center gap-ds-md">
+    <app-ds-avatar
+      [fullName]="data().displayName"
+      [imageUrl]="data().imageUrl || defaultAvatar"
+      size="2xl"
+      [class.cursor-pointer]="data().imageUrl"
+      (click)="handleAvatarClick(); $event.stopPropagation()"
+    />
+    <div class="flex flex-col gap-ds-md">
+      <p class="content-md-high-emphasis text-emphasis-high">
+        {{ data().displayName }}
+      </p>
+      <p
+        class="single-line-caption-mid-emphasis flex items-center gap-ds-md text-emphasis-mid"
+      >
+        <span>
+          {{ data().schoolStructure.level.displayName }}
+        </span>
+        <span>•</span>
+        <span>
+          {{ data().schoolStructure.class.displayName }}
+        </span>
+      </p>
+    </div>
+  </div>
+
+  <!-- Contact Info Section -->
+  <div
+    class="grid grid-cols-[auto_1fr] items-center gap-x-ds-xl gap-y-ds-md rounded-ds-lg border-2 border-stroke-black-08 bg-pastels-neutralGray-50 px-ds-lg py-ds-md"
+  >
+    <!-- Picked By Name -->
+    <span
+      class="single-line-caption-mid-emphasis min-w-[120px] text-emphasis-mid"
+    >
+      {{ t("dismissal.picked_by.title") }}
+    </span>
+    <span class="content-xs-mid-emphasis text-emphasis-high">
+      {{ data().pickedByName }}
+    </span>
+
+    <!-- Picked By Type -->
+    <span class="single-line-caption-mid-emphasis text-emphasis-mid">
+      {{ t("global.type.title") }}
+    </span>
+    <span class="content-xs-mid-emphasis text-emphasis-high">
+      {{
+        data().pickedByType === PickupRequestBy.DELEGATE
+          ? t("enum.DELEGATE")
+          : t("enum.GUARDIAN")
+      }}
+    </span>
+
+    <!-- Contact Guardian -->
+    <span class="single-line-caption-mid-emphasis text-emphasis-mid">
+      {{ t("dismissal.contact_guardian.title") }}
+    </span>
+    <div class="flex items-center gap-ds-md">
+      <!-- Call Button -->
+      <ds-button
+        [variant]="'secondary'"
+        [size]="'sm'"
+        [iconStart]="phoneIcon"
+        (click)="handleCallPhoneNumber(); $event.stopPropagation()"
+      />
+      <!-- Copy Button -->
+      <ds-button
+        [variant]="'secondary'"
+        [size]="'sm'"
+        [iconStart]="copyIcon"
+        (click)="handleCopyPhoneNumber(); $event.stopPropagation()"
+      />
+    </div>
+  </div>
+
+  <!-- Action Area: Status or Buttons -->
+  @if (showWaitingStatus()) {
+    <!-- Waiting Status -->
+    <div
+      class="flex w-full items-center justify-center rounded-ds-lg bg-pastels-neutralGray-100 px-ds-xl py-ds-md"
+    >
+      <span class="text-ds-base font-extrabold text-emphasis-high">
+        {{ t("general.waiting.txt") }}
+      </span>
+    </div>
+  }
+
+  @if (showPendingStatus()) {
+    <!-- Pending Status (History mode) -->
+    <div
+      class="flex w-full items-center justify-center rounded-ds-lg bg-error-ds-50 px-ds-xl py-ds-md"
+    >
+      <span class="text-ds-base font-extrabold text-emphasis-high">
+        {{ t("global.pending.txt") }}
+      </span>
+    </div>
+  }
+
+  @if (showAcceptDeclineButtons()) {
+    <!-- Accept/Decline Buttons -->
+    <div class="flex w-full items-center gap-ds-md">
+      <ds-button
+        [variant]="'dangerStroke'"
+        [size]="'md'"
+        class="flex-1"
+        [fullWidth]="true"
+        (click)="handleDecline(); $event.stopPropagation()"
+      >
+        {{ t("general.decline.txt") }}
+      </ds-button>
+      <ds-button
+        [variant]="'tertiary'"
+        [size]="'md'"
+        class="flex-1"
+        [fullWidth]="true"
+        (click)="handleAccept(); $event.stopPropagation()"
+      >
+        {{ t("global.accept.btn") }}
+      </ds-button>
+    </div>
+  }
+
+  @if (showLeftSchoolButton()) {
+    <!-- Left School Button -->
+    <ds-button
+      [variant]="'secondary'"
+      [size]="'md'"
+      [fullWidth]="true"
+      (click)="handleLeftSchool(); $event.stopPropagation()"
+    >
+      {{ t("dismissal.left_school.btn") }}
+    </ds-button>
+  }
+
+  @if (showLeftSchoolStatus()) {
+    <!-- Left School Status (with checkmark) -->
+    <div
+      class="flex w-full items-center justify-center gap-ds-md rounded-ds-lg bg-pastels-green-200 px-ds-xl py-ds-md"
+    >
+      <app-ds-icon [icon]="checkIcon" size="lg" class="text-emerald-700" />
+      <span class="text-ds-base font-extrabold text-emerald-700">
+        {{ t("enum.LEFT_SCHOOL") }}
+      </span>
+    </div>
+  }
+
+  @if (showMarkedPickedStatus()) {
+    <!-- Marked Picked Status -->
+    <div
+      class="flex w-full items-center justify-center gap-ds-md rounded-ds-lg bg-pastels-indigo-200 px-ds-xl py-ds-md"
+    >
+      <app-ds-icon [icon]="checkIcon" size="lg" class="text-indigo-600" />
+      <span class="text-ds-base font-extrabold text-indigo-600">
+        {{ t("general.marked_picked.txt") }}
+      </span>
+    </div>
+  }
+
+  @if (showDenialReason()) {
+    <!-- Denial Reason -->
+    <div
+      class="flex w-full justify-start rounded-ds-lg bg-pastels-blue-50 px-ds-xl py-ds-md"
+    >
+      <span class="content-md-default text-emphasis-high">
+        {{
+          denialReasonText()
+            ? t(denialReasonText()!)
+            : t("dismissal.denied.status")
+        }}
+      </span>
+    </div>
+  }
+
+  <!-- Footer: Date, Time, and Timeline Icon -->
+  @if (data().pickupRequest?.createdAt) {
+    <div
+      class="flex cursor-pointer items-center justify-end gap-ds-md"
+      (click)="handleTimelineClick(); $event.stopPropagation()"
+    >
+      <span class="single-line-caption-mid-emphasis text-emphasis-mid">
+        {{ data().pickupRequest!.createdAt! | hesDate }}
+      </span>
+      <span class="single-line-caption-mid-emphasis text-emphasis-mid">
+        {{ data().pickupRequest!.createdAt! | hesTime }}
+      </span>
+      <app-ds-icon
+        [icon]="clockRotateLeftIcon"
+        size="lg"
+        class="text-emphasis-mid"
+      />
+    </div>
+  }
+</div>

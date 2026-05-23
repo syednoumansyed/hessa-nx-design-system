@@ -1,0 +1,31 @@
+// Smooth fade-in animation for the entire page
+:host {
+  opacity: 1;
+  animation: slideIn 0.2s ease-in-out forwards;
+  &.slide-out {
+    animation: slideOut 0.2s ease-in-out forwards;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+// Prevent any layout shifts
+.min-h-screen {
+  min-height: 100vh;
+}

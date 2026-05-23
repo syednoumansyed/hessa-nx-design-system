@@ -1,0 +1,143 @@
+import {
+  Meta,
+  StoryObj,
+  applicationConfig,
+  moduleMetadata,
+  componentWrapperDecorator,
+} from '@storybook/angular';
+import { provideIonicAngular } from '@ionic/angular/standalone';
+import { ToastrService } from 'ngx-toastr';
+import { DsAttachmentFormControlComponent } from '@ds/attachment/ds-attachment-form-control.component';
+import { DS_TRANSLATION_TOKEN } from '@ds/i18n/ds-translation.token';
+
+const translationProvider = {
+  provide: DS_TRANSLATION_TOKEN,
+  useValue: {
+    translate: (key: string, params?: any) => {
+      const translations: Record<string, string> = {
+        'global.multiple_attachment_upload.info': 'Drag and drop or click here to upload files ({{types}} up to {{size}}GB)',
+        'global.single_attachment_upload.info': 'Drag and drop or click here to upload a file ({{types}} up to {{size}}GB)',
+        'global.attachment.max_size.error.msg': 'File {{name}} exceeds the maximum allowed size.',
+        'global.attachment.not_supported.error.msg': 'File {{name}} has an unsupported format.',
+      };
+      let text = translations[key] || key;
+      if (params) {
+        Object.entries(params).forEach(([k, v]) => {
+          text = text.replace(`{{${k}}}`, String(v));
+        });
+      }
+      return text;
+    },
+    getActiveLang: () => 'en',
+  },
+};
+
+const toastrMock = {
+  provide: ToastrService,
+  useValue: {
+    success: () => {},
+    error: () => {},
+  },
+};
+
+/**
+ * # Attachment Form Control — `ds-attachment-form-control`
+ *
+ * A drag-and-drop file uploader component that implements `ControlValueAccessor` for full Reactive Forms support.
+ *
+ * **When to use:**
+ * - Uploading assignments, homework files, profile attachments, or receipts
+ * - Supporting single or multi-file uploads with size/type restrictions
+ */
+const meta: Meta<DsAttachmentFormControlComponent> = {
+  title: '3. P2 Components/Attachment Form Control',
+  component: DsAttachmentFormControlComponent,
+  tags: ['autodocs'],
+  decorators: [
+    applicationConfig({
+      providers: [provideIonicAngular(), translationProvider, toastrMock],
+    }),
+    moduleMetadata({ imports: [DsAttachmentFormControlComponent] }),
+    componentWrapperDecorator(
+      (story) => `<div style="max-width:480px;margin:0 auto;padding:16px;">${story}</div>`
+    ),
+  ],
+  parameters: {
+    layout: 'centered',
+  },
+  argTypes: {
+    label: { control: 'text' },
+    subLabel: { control: 'text' },
+    placeholder: { control: 'text' },
+    hint: { control: 'text' },
+    maxSizeInMB: { control: 'number' },
+    isMultiple: { control: 'boolean' },
+    isreadonly: { control: 'boolean' },
+    isReplacePrevious: { control: 'boolean' },
+  },
+};
+
+export default meta;
+type Story = StoryObj<DsAttachmentFormControlComponent>;
+
+export const Default: Story = {
+  args: {
+    label: 'Upload Assignment',
+    subLabel: 'Please upload your homework',
+    maxSizeInMB: 10,
+    isMultiple: false,
+    acceptFileTypes: ['PDF', 'WORD'],
+  },
+};
+
+export const MultipleFiles: Story = {
+  name: 'Multiple File Upload',
+  args: {
+    label: 'Course Assets',
+    subLabel: 'Attach supporting course materials',
+    isMultiple: true,
+    maxSizeInMB: 25,
+    acceptFileTypes: ['COMMON_IMAGES', 'PDF'],
+  },
+};
+
+export const Readonly: Story = {
+  name: 'State: Readonly',
+  args: {
+    label: 'Syllabus PDF',
+    isreadonly: true,
+    acceptFileTypes: ['PDF'],
+  },
+};
+
+// ─── LTR ─────────────────────────────────────────────────────────────────────
+
+export const LTR: Story = {
+  name: 'LTR (English)',
+  args: {
+    label: 'Document Upload',
+    hint: 'PDF and DOCX only',
+    acceptFileTypes: ['PDF', 'WORD'],
+  },
+  decorators: [
+    componentWrapperDecorator(
+      (story) => `<div lang="en" dir="ltr" style="font-family:'Nunito',sans-serif;">${story}</div>`
+    ),
+  ],
+};
+
+// ─── RTL ─────────────────────────────────────────────────────────────────────
+
+export const RTL: Story = {
+  name: 'RTL (Arabic)',
+  args: {
+    label: 'تحميل المستندات',
+    hint: 'الملفات المتاحة: PDF و DOCX فقط',
+    acceptFileTypes: ['PDF', 'WORD'],
+  },
+  decorators: [
+    componentWrapperDecorator(
+      (story) => `<div lang="ar" dir="rtl" style="font-family:'Lama Rounded',sans-serif;">${story}</div>`
+    ),
+  ],
+};

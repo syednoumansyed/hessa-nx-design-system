@@ -1,0 +1,63 @@
+<div
+  class="relative flex items-stretch md:gap-2"
+  [ngClass]="isHide() ? 'bg-[#F7F7F7]' : 'bg-white'"
+  *transloco="let t"
+>
+  @if (isEdit()) {
+    <div
+      class="absolute start-0 top-1/2 z-10 flex h-4 w-4 -translate-y-1/2 items-center justify-center overflow-hidden rounded-full bg-white shadow-[0px_0px_3.75px_0px_rgba(0,0,0,0.25)] ltr:-translate-x-1/2 rtl:translate-x-1/2"
+    >
+      <fa-icon [icon]="barsIcon"></fa-icon>
+    </div>
+  }
+  <div
+    class="flex flex-grow flex-wrap items-center gap-x-3 gap-y-2 px-5 py-3 md:gap-x-4"
+  >
+    <div class="me-auto text-sm font-medium text-[#343A46]">
+      {{ title() }}
+    </div>
+    <app-report-card-function-chip
+      [column]="column()"
+      [exsitingColumn]="existingColumn()"
+    ></app-report-card-function-chip>
+
+    @if (column()?.maxEntries || column()?.minEntries) {
+      <div
+        class="flex w-full flex-wrap items-center gap-3 rounded-sm bg-[#F1F1F1] px-3 py-1 text-xs md:w-auto"
+      >
+        <div class="text-[#828489]">
+          {{
+            t("grade_management.maximum_entries.txt", {
+              count: column()?.maxEntries,
+            })
+          }}
+        </div>
+        <div class="text-[#828489]/40">
+          {{
+            t("grade_management.minimum_entries.txt", {
+              count: column()?.minEntries ? column()?.minEntries : "N/A",
+            })
+          }}
+        </div>
+      </div>
+    }
+    @if (isHide()) {
+      <div
+        class="mt-1 flex w-full items-center gap-1 text-[12px] leading-[12px] text-[#5822BD]"
+      >
+        <fa-icon class="h-4 w-4 text-[#5822BD]" [icon]="faEyeSlash"></fa-icon>
+        <span>{{ t("grade_management.hidden_from_report.txt") }}</span>
+      </div>
+    }
+  </div>
+  @if (!isView()) {
+    <div
+      class="flex min-h-14 cursor-pointer items-center justify-center border-s border-[#EAECF0] px-3 text-[#828489]"
+    >
+      <app-hes-action-sheet
+        [actions]="actions()"
+        [forceActionSheet]="true"
+      ></app-hes-action-sheet>
+    </div>
+  }
+</div>

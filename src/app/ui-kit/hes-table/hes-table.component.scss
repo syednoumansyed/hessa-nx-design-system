@@ -1,0 +1,144 @@
+ion-fab-button {
+  &.hes-btn {
+    --background: var(--h-color-primary);
+    --background-activated-opacity: 0;
+    --background-hover-opacity: 0;
+    --background-focused-opacity: 0;
+
+    --box-shadow: var(--h-shadow-xs);
+    --color: var(--h-white);
+    --color-activated: var(--h-white);
+    --color-hover: var(--h-white);
+    --color-focused: var(--h-white);
+
+    .hes-btn-icon {
+      &--start {
+        margin-inline-end: 0.5rem;
+      }
+      &--end {
+        margin-inline-start: 0.5rem;
+      }
+    }
+
+    &--primary {
+      --background: var(--h-color-primary);
+
+      --border-radius: 3.13rem;
+      --border-style: solid;
+      --border-width: 1px;
+      --border-color: var(--h-color-primary);
+
+      --color: var(--h-white);
+      --color-activated: var(--h-white);
+      --color-hover: var(--h-white);
+      --color-focused: var(--h-white);
+      &:hover {
+        --background: var(--h-color-primary-500);
+      }
+      &:active,
+      &:focus {
+        --background: var(--h-color-primary-600);
+      }
+      &.hes-btn--disabled {
+        opacity: 1;
+        --background: #fef8c3;
+        --border-color: #fef8c3;
+        --color: #d3af8b;
+      }
+    }
+    &--secondary {
+      --background: var(--h-white);
+
+      --border-radius: 3.13rem;
+      --border-style: solid;
+      --border-width: 1px;
+      --border-color: var(--h-color-primary-600);
+
+      --color: var(--h-color-primary-600);
+      --color-activated: var(--h-color-primary-600);
+      --color-hover: var(--h-color-primary-600);
+      --color-focused: var(--h-color-primary-600);
+
+      &:hover {
+        --background: var(--h-color-primary-25);
+      }
+      &:active,
+      &:focus {
+        --background: var(--h-color-primary-50);
+      }
+      &.hes-btn--disabled {
+        opacity: 1;
+        --background: #fff;
+        --border-color: #d3af8b;
+        --color: #d3af8b;
+      }
+    }
+    &--sm {
+      --padding-top: var(--h-spacing-2);
+      --padding-bottom: var(--h-spacing-2);
+      --padding-start: var(--h-spacing-3);
+      --padding-end: var(--h-spacing-3);
+
+      /* Text sm/Semibold */
+      font-size: 0.875rem;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 1.25rem; /* 142.857% */
+    }
+    &--md {
+      --padding-top: var(--h-spacing-3);
+      --padding-bottom: var(--h-spacing-3);
+      --padding-start: var(--h-spacing-4);
+      --padding-end: var(--h-spacing-4);
+
+      /* Text sm/Semibold */
+      font-size: 0.875rem;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 1.25rem; /* 142.857% */
+    }
+    &--lg {
+      --padding-top: var(--h-spacing-3);
+      --padding-bottom: var(--h-spacing-3);
+      --padding-start: var(--h-spacing-5);
+      --padding-end: var(--h-spacing-5);
+
+      /* Text md/Semibold */
+      font-size: 1rem;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 1.5rem; /* 150% */
+    }
+    &--xl {
+      --padding-top: var(--h-spacing-4);
+      --padding-bottom: var(--h-spacing-4);
+      --padding-start: var(--h-spacing-5);
+      --padding-end: var(--h-spacing-5);
+
+      /* Text md/Semibold */
+      font-size: 1rem;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 1.5rem; /* 150% */
+    }
+    &--2xl {
+      --padding-top: var(--h-spacing-4);
+      --padding-bottom: var(--h-spacing-4);
+      --padding-start: var(--h-spacing-6);
+      --padding-end: var(--h-spacing-6);
+
+      /* Text lg/Semibold */
+      font-size: 1.125rem;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 1.75rem; /* 155.556% */
+    }
+  }
+}
+
+.entities-select {
+  &::part(text) {
+    min-width: 2rem;
+    text-align: center;
+  }
+}

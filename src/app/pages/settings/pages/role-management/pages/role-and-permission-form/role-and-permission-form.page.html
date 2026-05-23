@@ -1,0 +1,142 @@
+<ng-container *transloco="let t;">
+  <ion-content class="ds-page-content">
+    @if(permissionFormGroup.formView.length){
+    <!-- <div> -->
+    <div class="hes-card sm:block md:hidden">
+      <ng-container *ngTemplateOutlet="roleInputTpl"></ng-container>
+    </div>
+    <div class="my-4">
+      <div class="hes-card">
+        <div class="hidden md:block">
+          <ng-container *ngTemplateOutlet="roleInputTpl"></ng-container>
+        </div>
+        <hr class="hidden md:my-8 md:block" />
+        <h6 class="my-4 font-semibold text-gray-500 md:my-8 md:text-inherit">
+          {{t('roles_permissions.role_permissions.title')}}
+        </h6>
+        <table
+          class="block min-w-full overflow-x-auto border bg-white md:border-none"
+        >
+          <thead>
+            <tr class="text-base text-neutral-900">
+              <th class="p-3 text-start font-semibold md:px-0 md:py-3">
+                {{t('roles_permissions.resources.title')}}
+              </th>
+              <th class="hidden py-3 text-start font-semibold md:table-cell">
+                {{t('global.actions.title')}}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            @for(resource of permissionFormGroup.formView; track resource.id;
+            let even=$even; let last = $last; ){
+            <tr
+              class="py-2 md:bg-white"
+              [class.bg-gray-100]="even"
+              [class.border-b]="!last"
+            >
+              <td
+                class="hidden py-3 pt-6 text-start align-top capitalize md:table-cell md:pe-4"
+              >
+                <h5 class="text-xl font-medium text-gray-700">
+                  {{t(resource.resource)}}
+                </h5>
+              </td>
+              <td class="px-3 py-3 text-start md:px-0 md:pt-6">
+                <h5
+                  class="my-4 text-xl font-medium capitalize text-gray-700 md:hidden md:text-inherit"
+                >
+                  {{t(resource.resource)}}
+                </h5>
+                <div
+                  class="mt-2 flex flex-col justify-between md:flex-row lg:items-start"
+                >
+                  @for(operationItem of (resource.operations | keyvalue); track
+                  operationItem.key){
+                  <div class="flex flex-col">
+                    <div>
+                      <ion-checkbox
+                        hesSize="sm"
+                        hesCheckbox
+                        labelPlacement="end"
+                        [formControl]="operationItem.value.operationControl"
+                        [indeterminate]="operationItem.value.indeterminate"
+                        (ionChange)="onAllToggle($event,operationItem.value.permissions)"
+                      >
+                        <span class="font-semibold capitalize"
+                          >{{t(operationItem.key) | lowercase}}</span
+                        >
+                      </ion-checkbox>
+                    </div>
+                    <div class="flex flex-wrap md:flex-col">
+                      @for (permissionItem of operationItem.value.permissions;
+                      track permissionItem.id) {
+                      <div class="p-3 md:p-4">
+                        @if(permissionItem.control){
+                        <ion-checkbox
+                          hesSize="sm"
+                          hesCheckbox
+                          labelPlacement="end"
+                          [formControl]="permissionItem.control"
+                          (ionChange)="onTogglePermission($event,permissionItem)"
+                        >
+                          <span class="font-normal capitalize"
+                            >{{t(permissionItem.action)}}</span
+                          >
+                        </ion-checkbox>
+                        }
+                      </div>
+                      }
+                    </div>
+                  </div>
+                  }
+                </div>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- </div> -->
+    <ng-template #roleInputTpl>
+      <h5 class="mb-4 text-gray-500 md:text-inherit">
+        {{t('roles_permissions.role_details.title')}}
+      </h5>
+      <div class="flex flex-col gap-4 md:flex-row">
+        <app-hes-input
+          [required]="true"
+          [label]="t('role.role_name_en.label')"
+          [formControl]="enRoleNameControl"
+          class="flex-grow"
+        ></app-hes-input>
+        <app-hes-input
+          [required]="true"
+          [label]="t('role.role_name_ar.label')"
+          [formControl]="arRoleNameControl"
+          class="flex-grow"
+        ></app-hes-input>
+      </div>
+    </ng-template>
+    }
+  </ion-content>
+  <ion-footer class="shadow-none">
+    <div class="flex gap-4 p-4 md:justify-end">
+      <ion-button
+        hesBtn
+        hesColor="secondary"
+        (click)="onCancel()"
+        class="hes-btn--white flex-1 md:flex-none"
+        >{{t('global.cancel.btn')}}</ion-button
+      >
+      <ion-button
+        (click)="onSave()"
+        hesBtn
+        [disabled]="isSaveDisabled"
+        class="hes-btn--primary flex-1 md:flex-none"
+        >{{roleId ? t('roles_permissions.edit_role.btn')
+        :t('roles_permissions.add_role.btn')}}</ion-button
+      >
+    </div>
+  </ion-footer>
+</ng-container>

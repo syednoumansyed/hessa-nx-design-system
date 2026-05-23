@@ -1,0 +1,98 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Design System/Role Adaptability" />
+
+# Role Adaptability (Personnel vs. Student)
+
+The Hessa Design System implements role-specific component styling. The visual layout, borders, and tactile responses of core input and action elements adapt dynamically based on whether the active user is a **Teacher (Personnel)** or a **Student**.
+
+This theme-switching is entirely CSS-driven and utilizes a custom Tailwind CSS plugin that matches descendant elements under container nodes tagged with specific role attributes.
+
+---
+
+## 🛠️ Dynamic Role Mechanism
+
+Instead of compiling separate CSS assets or maintaining distinct React/Angular components, the system targets a parent container (typically the `<html>` or `<body>` element, or a card wrapper) with the `data-role` attribute:
+
+* **Teacher / Admin role:** `<div data-role="personnel">`
+* **Student role:** `<div data-role="student">`
+
+### Custom Tailwind Variants
+
+In `tailwind.config.js`, a Tailwind CSS plugin is registered to declare custom variants:
+
+```javascript
+plugins: [
+  plugin(({ addVariant }) => {
+    addVariant("personnel", '&:where([data-role="personnel"] *)');
+    addVariant("student", '&:where([data-role="student"] *)');
+  }),
+]
+```
+
+This enables the use of the `student:` and `personnel:` variants inside component templates. The variant is activated automatically when a component resides inside a container that has the corresponding `data-role`.
+
+---
+
+## 🎨 Visual Comparisons
+
+The table below contrasts how components render between Personnel and Student roles:
+
+| Component | Personnel Mode (Teacher/Staff) | Student Mode | Style Details |
+| :--- | :--- | :--- | :--- |
+| **`ds-button`** | Flat, sleek button with standard borders and shadows. | Raised, 3D tactile button with thick bottom borders and a press-down click animation. | **Student classes:**<br/>`student:border-b-[4px]` (sm/md)<br/>`student:border-[2px] student:border-b-[6px]` (lg)<br/>*Compensates borders on active press.* |
+| **`ds-input`** | Standard 1px input outline. | Heavy "tray-like" 3D container outline. | **Student classes:**<br/>`student:border-[4px] student:border-b-[8px]` |
+| **`ds-textarea`** | Standard 1px border. | Heavy 3D border matching the input element. | **Student classes:**<br/>`student:border-[4px] student:border-b-[8px]` |
+| **`ds-picker-select`** | Standard outline with standard typography. | Thick bottom-heavy border tray. | **Student classes:**<br/>`student:border-[4px] student:border-b-[8px]` |
+
+---
+
+## 💻 Code Examples
+
+### 1. Activating the Student Theme Globally
+To set the student theme application-wide, simply bind the attribute to the root `<html>` or `<body>` element during session initialization:
+
+```html
+<!-- index.html or root container -->
+<html data-role="student">
+  <body>
+     <app-root></app-root>
+  </body>
+</html>
+```
+
+### 2. Component Implementation Example
+In `DsInputComponent`, the outer container conditionally applies the student class styles:
+
+```html
+<!-- Inside input.component.html -->
+<div 
+  class="inline-flex w-full items-center border border-neutral-cool-100 bg-surface-primary transition-all
+         student:border-[4px] student:border-b-[8px]">
+  <input class="w-full bg-transparent outline-none" />
+</div>
+```
+
+When rendering this input inside a `<div data-role="student">` container, the `student:` prefix classes take precedence, giving it the signature thick-bordered student tray appearance.
+
+### 3. Tactile Active State for `ds-button`
+When a student clicks a button, the button visually "presses down" into the screen. This is accomplished by thinning the bottom border and offsetting padding on active clicks to simulate depth movement:
+
+```typescript
+// Inside button.component.ts classes configuration
+const mdClasses = [
+  'student:border-b-[4px]',
+  'student:[:not(:disabled)]:active:border-[3px]',
+  'student:[:not(:disabled)]:active:px-[calc(var(--ds-spacing-md)-0.0625rem)]'
+];
+```
+
+---
+
+## ⚠️ Guidelines for Developers
+
+> [!IMPORTANT]
+> **Do NOT apply role variants manually in layouts:** Developers should never write `<ds-input class="student:border-4">` in their page files. The components handle their own role variants internally. The page layout simply specifies `<div data-role="student">` at a high level.
+
+> [!TIP]
+> **Tooling Support in Storybook:** To test role adaptability, use the **Role** toolbar dropdown at the top of the Storybook viewport. It toggles the `data-role` attribute between `personnel` and `student` on the iframe `:root` node, letting you check adaptability in real-time.

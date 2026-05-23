@@ -1,0 +1,102 @@
+@if (isDetailLoading$ | async) {
+  <div class="centered-flex min-h-[70vh]">
+    <ion-spinner class="h-10 w-10"></ion-spinner>
+  </div>
+} @else {
+  @if (isMobile) {
+    <ng-container *transloco="let t">
+      <ion-header class="bg-white shadow-none">
+        <ion-toolbar class="bg-white">
+          <div class="flex min-h-3 items-center justify-between p-3">
+            <app-hes-icon
+              (click)="onCloseModal()"
+              class="me-2 flex items-center text-[#343A46] rtl:rotate-180"
+              [faIcon]="angleLeft"
+            ></app-hes-icon>
+            <h5>{{ title || titlePlaceholder }}</h5>
+            <div></div>
+          </div>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="relative h-full bg-white">
+        <ng-container [ngTemplateOutlet]="tempRef"></ng-container>
+        <div class="mx-4 mb-40 mt-6">
+          @switch (actionType$ | async) {
+            @case ("view") {
+              <ion-button
+                (click)="onEditState()"
+                hesBtn
+                class="hes-btn--outline block"
+                >{{ t("global.edit.btn") }}</ion-button
+              >
+            }
+            @default {
+              @if (form.controls.type.value !== "new") {
+                <ion-button
+                  (click)="onSave()"
+                  hesBtn
+                  [disabled]="form.invalid"
+                  class="mb-3 block"
+                  >{{ t("global.save.btn") }}</ion-button
+                >
+
+                <ion-button
+                  (click)="onSelectParent()"
+                  hesBtn
+                  class="hes-btn--outline block"
+                  >{{ t("global.cancel.btn") }}</ion-button
+                >
+              }
+            }
+          }
+        </div>
+      </ion-content>
+    </ng-container>
+  } @else {
+    <div class="flex h-full flex-col">
+      <ng-container [ngTemplateOutlet]="tempRef"></ng-container>
+    </div>
+  }
+}
+
+<ng-template #tempRef>
+  <div [formGroup]="form" *transloco="let t">
+    <div class="border-[#D0D5DD] md:border-b">
+      <div class="flex flex-row items-center gap-4 text-lg font-semibold">
+        <div
+          class="my-7 ms-6 hidden text-xl font-normal text-gray-900 md:block"
+        >
+          {{ t("content_management.select_question_type.title") }}
+        </div>
+        <app-form-control-generator
+          class=":min-w-[300px] mx-auto w-[80%] md:mx-0 md:w-[300px]"
+          [control]="switcherConfig()"
+        ></app-form-control-generator>
+      </div>
+    </div>
+
+    <div class="mt-7 max-w-[1000px] px-6">
+      @switch (form.controls.type.value) {
+        @case (questionType.trueFalse) {
+          <app-true-false-question></app-true-false-question>
+        }
+        @case (questionType.mcq) {
+          <app-mcq-question></app-mcq-question>
+        }
+        @case (questionType.essay) {
+          <app-essay-question></app-essay-question>
+        }
+        @default {
+          <app-no-data-card
+            class="px-4"
+            mainImagePath="assets/illustrations/no_data.svg"
+            [title]="t('content_management.no_question_added.title')"
+            [description]="t('content_management.Please_select_question.txt')"
+            [noBgStyle]="true"
+          >
+          </app-no-data-card>
+        }
+      }
+    </div>
+  </div>
+</ng-template>

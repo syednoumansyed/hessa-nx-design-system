@@ -1,0 +1,148 @@
+<div cdkOverlayOrigin #origin="cdkOverlayOrigin" class="block">
+  @if (showSearch()) {
+    <app-ds-input
+      [iconEnd]="isOpen() ? arrowup : arrowDown"
+      [label]="label() ?? ''"
+      [placeholder]="placeholder() ?? ''"
+      [required]="required()"
+      [suppressFormError]="true"
+      (click)="openOverlay($event)"
+      [formControl]="searchCtrl"
+      [inputValue]="
+        !isOpen() && !isMultiple() && !showChips() ? selectedLabel() : undefined
+      "
+      class="block"
+      [outerContainerClass]="isOpen() ? 'bg-neutral-cool-700' : ''"
+    />
+  } @else {
+    <app-ds-input
+      [iconEnd]="isOpen() ? arrowup : arrowDown"
+      [label]="label() ?? ''"
+      [placeholder]="placeholder() ?? ''"
+      [required]="required()"
+      (click)="openOverlay($event)"
+      [inputValue]="!isMultiple() && !showChips() ? selectedLabel() : undefined"
+      [readOnly]="true"
+      class="block"
+      [outerContainerClass]="isOpen() ? 'bg-neutral-cool-700' : ''"
+    />
+  }
+</div>
+
+@if (showChips() && (isMultiple() || selectedItems().length)) {
+  <div class="mt-2 flex gap-1">
+    @for (value of displayedItems(); track $index) {
+      <app-ds-chip
+        [variant]="'primary'"
+        [text]="value.display"
+        [removable]="!effectiveDisabled() && !isOptionDisabled(value.id)"
+        (remove)="onRemoveByValue(value.id)"
+      />
+    }
+    @if (remainingCount() > 0) {
+      <app-ds-chip
+        [text]="remainingCount() > 99 ? '+99' : '' + remainingCount()"
+        [removable]="false"
+      />
+    }
+  </div>
+}
+
+@if (isMobile) {
+  <ion-modal
+    [initialBreakpoint]="0.9"
+    [breakpoints]="[0, 0.9]"
+    [isOpen]="isOpen()"
+    (willDismiss)="closeOverlay()"
+  >
+    <ng-template>
+      <div
+        class="mt-ds-lg flex h-full min-h-52 flex-1 flex-col gap-ds-lg p-ds-xl pb-11"
+      >
+        @if (showSearch()) {
+          <app-ds-input [iconEnd]="searchIcon" [formControl]="searchCtrl" />
+        }
+        <!-- <ion-content class="ion-padding bg-white" scrollY="false"> -->
+        <div
+          class="flex h-full w-full flex-col overflow-y-auto pb-6"
+          infiniteScroll
+          [infiniteScrollDistance]="2"
+          [infiniteScrollThrottle]="50"
+          (scrolled)="onScroll()"
+          [scrollWindow]="false"
+        >
+          <ng-container *ngTemplateOutlet="list"></ng-container>
+        </div>
+        <!-- </ion-content> -->
+      </div>
+      <!-- block h-full -->
+    </ng-template>
+  </ion-modal>
+} @else {
+  <ng-template
+    cdkConnectedOverlay
+    [cdkConnectedOverlayOrigin]="origin"
+    [cdkConnectedOverlayOpen]="isOpen()"
+    (overlayOutsideClick)="closeOverlay()"
+    [cdkConnectedOverlayMinWidth]="origin.elementRef.nativeElement.offsetWidth"
+    [cdkConnectedOverlayOffsetY]="7"
+    [cdkConnectedOverlayScrollStrategy]="scrollStrategy"
+    [cdkConnectedOverlayHasBackdrop]="true"
+    [cdkConnectedOverlayBackdropClass]="'cdk-overlay-transparent-backdrop'"
+    [cdkConnectedOverlayHeight]="overlayHeight()"
+  >
+    <div
+      class="w-full overflow-hidden rounded-ds-md border border-neutral-cool-700 bg-white p-ds-md pb-4"
+    >
+      <div
+        class="flex max-h-[290px] w-full flex-col overflow-y-auto"
+        infiniteScroll
+        [infiniteScrollDistance]="2"
+        [infiniteScrollThrottle]="50"
+        (scrolled)="onScroll()"
+        [scrollWindow]="false"
+      >
+        <ng-container *ngTemplateOutlet="list"></ng-container>
+      </div>
+    </div>
+  </ng-template>
+}
+
+<ng-template #list>
+  @if (options().length) {
+    @if (showSelectAll()) {
+      <div
+        (click)="toggleSelectAll()"
+        class="text-primary-default hover:bg-primary-default/5 mb-ds-xs flex cursor-pointer select-none items-center justify-between p-ds-md"
+      >
+        <span class="content-md-high-emphasis font-semibold">
+          {{
+            isAllSelected()
+              ? ("global.clear.btn" | dsTranslate)
+              : ("global.select_all.txt" | dsTranslate)
+          }}
+        </span>
+      </div>
+    }
+    @for (option of options(); track $index) {
+      <app-ds-select-item [option]="option" />
+    }
+    @if (isLoadOptions() && isLoading()) {
+      <div class="absolute bottom-3 left-1/2 -translate-x-1/2">
+        <ion-spinner
+          class="h-4 w-4 text-content-low"
+          aria-label="Loading"
+        ></ion-spinner>
+      </div>
+    }
+  } @else if (isLoading()) {
+    <div class="absolute bottom-1/2 left-1/2 -translate-x-1/2">
+      <ion-spinner
+        class="h-4 w-4 text-content-low"
+        aria-label="Loading"
+      ></ion-spinner>
+    </div>
+  } @else if (isNoItemFoundText()) {
+    <div class="text-content-mid">{{ noItemFoundText() }}</div>
+  }
+</ng-template>

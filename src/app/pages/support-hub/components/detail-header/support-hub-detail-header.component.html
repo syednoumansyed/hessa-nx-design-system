@@ -1,0 +1,84 @@
+@if (config(); as header) {
+  <div
+    class="safe-area-top flex items-center gap-ds-md px-ds-2xl py-ds-md"
+    style="--safe-area-top-padding: var(--ds-spacing-md)"
+  >
+    @if (showBackButton()) {
+      <ds-button
+        class="shrink-0 md:hidden rtl:rotate-180"
+        variant="ghost"
+        size="sm"
+        [iconStart]="backIcon"
+        (click)="onBack()"
+        [title]="backLabel()"
+      >
+        <span class="sr-only">{{ backLabel() }}</span>
+      </ds-button>
+    }
+    @if (avatarIcon(); as icon) {
+      <span
+        class="flex h-12 w-12 shrink-0 items-center justify-center rounded-ds-full bg-icon-low text-icon-high"
+      >
+        <app-ds-icon
+          [icon]="icon"
+          [cssClass]="avatarIconCssClass() ?? 'text-icon-high'"
+          size="2xl"
+          aria-hidden="true"
+        ></app-ds-icon>
+      </span>
+    } @else {
+      <app-ds-avatar
+        class="shrink-0"
+        [fullName]="header.fullName || title()"
+        [imageUrl]="header.avatarUrl ?? null"
+        [color]="header.avatarColor"
+        size="2xl"
+      ></app-ds-avatar>
+    }
+
+    <div class="flex min-w-0 flex-1 flex-col gap-ds-xs">
+      <div class="flex flex-wrap items-center gap-ds-sm">
+        <p class="heading-h3-high-emphasis truncate text-emphasis-high">
+          {{ title() }}
+        </p>
+      </div>
+
+      @if (hasHighlightBadges()) {
+        <div class="flex flex-wrap items-center gap-ds-sm">
+          @for (badge of highlightBadges(); track badge) {
+            <span
+              class="single-line-caption-mid-emphasis inline-flex items-center gap-ds-xs rounded-ds-2xl bg-surface-brand-surface-light px-ds-lg py-ds-sm text-surface-pastel-foreground-brandRich"
+            >
+              {{ badge }}
+            </span>
+          }
+        </div>
+      }
+
+      @if (subtitle(); as subtitleText) {
+        <p class="content-md-mid-emphasis text-emphasis-mid">
+          {{ subtitleText }}
+        </p>
+      }
+    </div>
+
+    @if (showProfileButton()) {
+      <ds-button
+        variant="ghost"
+        size="sm"
+        [iconStart]="infoIcon"
+        [disabled]="!canNavigateToProfile()"
+        [title]="profileLabel()"
+        [cssClass]="
+          canNavigateToProfile()
+            ? 'text-surface-pastel-foreground-brandRich'
+            : 'text-icon-low'
+        "
+        (click)="onViewProfile()"
+        class="ml-auto"
+      >
+        <span class="sr-only">{{ profileLabel() }}</span>
+      </ds-button>
+    }
+  </div>
+}

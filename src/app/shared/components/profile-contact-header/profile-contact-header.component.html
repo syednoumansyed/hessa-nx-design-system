@@ -1,0 +1,32 @@
+<div class="relative overflow-visible pt-[42px]">
+  <div
+    class="flex items-end gap-ds-xl overflow-visible rounded-ds-xl border-4 border-stroke-black-08 bg-surface-primary px-ds-xl py-ds-md"
+  >
+    <div class="relative -top-[42px] -mb-[42px] shrink-0">
+      <app-ds-avatar
+        [fullName]="fullName"
+        [imageUrl]="imageUrl"
+        [color]="profileColor"
+        [size]="'3xl'"
+      ></app-ds-avatar>
+      @if (showEditIcon()) {
+        <button
+          type="button"
+          class="absolute bottom-0 start-1/2 flex size-9 -translate-x-1/2 translate-y-1/2 cursor-pointer items-center justify-center rounded-ds-full border-2 border-white bg-primary-400 text-white shadow-sm lg:size-7"
+          (click)="editIconClick.emit()"
+        >
+          <app-ds-icon [icon]="imageUrl ? faPen : faPlus" size="sm" />
+        </button>
+      }
+    </div>
+
+    <div class="min-w-0 flex-1">
+      <div class="heading-h5-high-emphasis truncate text-emphasis-high">
+        {{ fullName }}
+      </div>
+      <div class="content-md-default truncate text-emphasis-mid">
+        <bdi>{{ phoneNumber }}</bdi>
+      </div>
+    </div>
+  </div>
+</div>

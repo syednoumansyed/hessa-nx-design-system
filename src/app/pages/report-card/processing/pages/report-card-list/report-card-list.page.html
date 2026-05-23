@@ -1,0 +1,40 @@
+<app-no-selected-scope-card
+  [requiredScope]="requiredScopes"
+  (onScopeUpdate)="handleDisplayContent($event)"
+>
+</app-no-selected-scope-card>
+@if(displayContent()){
+<ng-container *transloco="let t">
+  <ion-content class="hes-card ds-page-content h-full w-full">
+    <ng-template
+      #reportCardUpdatedBadge
+      let-row
+      let-col="column"
+      let-value="value"
+    >
+      @if (row?.updatedAt && row.inDraft > 0) {
+      <div class="flex w-full justify-center py-2">
+        <div
+          class="flex w-full items-center gap-2 rounded-2xl bg-[#FEF0C7] px-3 py-1 text-xs font-medium text-[#B54708]"
+        >
+          {{(t('global.update.btn')) }} {{(row.updatedAt | hesDateTime)}}
+        </div>
+      </div>
+      }
+    </ng-template>
+    <app-list-view-container
+      [columns]="columns()"
+      class="w-full"
+      [dataSource]="fetchReportCardsByClass"
+      [mobileVisibleFieldsLimit]="5"
+      [pageTitle]="t('global.report_cards.tilte')"
+      [canCopy]="true"
+      [persistColumnSettings]="true"
+      [noDataConfig]="noDataConfig"
+      [autoSizeStrategy]="{ type: 'fitGridWidth' }"
+      [showSearchInput]="false"
+      [persistColumnSettings]="false"
+    />
+  </ion-content>
+</ng-container>
+}

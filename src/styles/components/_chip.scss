@@ -1,0 +1,41 @@
+ion-chip.hes-chip {
+  margin: 0;
+  --background: var(--h-color-gray-100, #f2f4f7);
+  --color: var(--h-color-gray-700, #344054);
+
+  ion-icon:last-child {
+    color: var(--h-color-gray-500, #344054);
+    margin: 0;
+    margin-inline-start: 0.25rem;
+    width: 0.75rem;
+    height: 0.75rem;
+  }
+
+  &.hes-chip--sm {
+    padding: 0.12rem 0.5rem;
+    ion-label {
+      font-size: 0.75rem;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 1.125rem; /* 150% */
+    }
+  }
+  &.hes-chip--md {
+    padding: 0.12rem 0.62rem;
+    ion-label {
+      font-size: 0.875rem;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 1.25rem; /* 142.857% */
+    }
+  }
+  &.hes-chip--lg {
+    padding: 0.25rem 0.75rem;
+    ion-label {
+      font-size: 0.875rem;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 1.25rem; /* 142.857% */
+    }
+  }
+}

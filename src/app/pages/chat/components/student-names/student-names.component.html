@@ -1,0 +1,17 @@
+<div
+  class="single-line-caption-mid-emphasis flex w-full items-center overflow-hidden whitespace-nowrap text-emphasis-mid"
+>
+  @for (student of students(); track $index; let isLast = $last) {
+    <span
+      class="min-w-0 max-w-[60%] truncate"
+      [style.flex-grow]="student?.length"
+    >
+      <!-- [style.flex-grow]="(student.preferredName || student.fullName)?.length" -->
+      {{ student }}
+    </span>
+
+    @if (!isLast) {
+      <span class="shrink-0 px-ds-sm text-neutral-cool-200">|</span>
+    }
+  }
+</div>

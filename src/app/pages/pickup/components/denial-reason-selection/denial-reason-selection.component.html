@@ -1,0 +1,41 @@
+<div *transloco="let t">
+  @if (isLoading()) {
+    <div class="mx-auto grid max-w-4xl grid-cols-2 gap-ds-lg">
+      @for (i of [1, 2]; track i) {
+        <div
+          class="animate-pulse cursor-pointer rounded-ds-xl bg-gray-100 p-ds-lg"
+        >
+          <div class="flex flex-col items-center">
+            <div class="mb-ds-lg h-16 w-16 rounded-full bg-gray-300"></div>
+            <div class="h-4 w-24 rounded bg-gray-300"></div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+  @if (!isLoading()) {
+    <div class="mx-auto grid max-w-4xl grid-cols-2 gap-ds-lg">
+      @for (denialReason of denialReasons(); track denialReason.id) {
+        <div
+          [ngClass]="{
+            'bg-pastels-amber-200 border-brand-600':
+              activeSelection === denialReason.id,
+            'border-transparent': activeSelection !== denialReason.id,
+          }"
+          class="cursor-pointer rounded-ds-xl border-2 p-ds-lg transition-colors"
+          (click)="updateSelectedValue(denialReason.id)"
+        >
+          <div class="flex flex-col items-center">
+            <ion-img
+              src="{{ denialReason.url }}"
+              class="mb-ds-lg h-16 w-16"
+            ></ion-img>
+            <div class="content-md-default text-center text-emphasis-high">
+              {{ t(denialReason.title) }}
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

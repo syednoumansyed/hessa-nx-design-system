@@ -1,0 +1,154 @@
+@if (activeArticle$ | async; as article) {
+  @if (this.isLoading()) {
+    @for (i of [1, 2]; track $index) {
+      <div class="mb-12 mt-4 md:px-12">
+        <ion-skeleton-text
+          [animated]="true"
+          class="mb-4 h-7 w-full rounded-md md:w-2/4"
+        ></ion-skeleton-text>
+        <ion-skeleton-text
+          [animated]="true"
+          class="mb-4 h-7 w-full rounded-md md:w-3/4"
+        ></ion-skeleton-text>
+        <ion-skeleton-text
+          [animated]="true"
+          class="mdw-2/3 mb-4 h-7 w-full rounded-md"
+        ></ion-skeleton-text>
+        <ion-skeleton-text
+          [animated]="true"
+          class="h-36 w-full rounded-md md:w-2/4"
+        ></ion-skeleton-text>
+      </div>
+    }
+  } @else {
+    @if (isMobile) {
+      <div class="flex min-h-[60vh] flex-col">
+        @if (activeType$ | async; as activeType) {
+          <div
+            class="flex max-w-full items-center justify-between"
+            *transloco="let t"
+          >
+            <h5 class="text-sm font-semibold text-[#AEAFB8]">
+              @if (activeType.data) {
+                {{ activeType.data.displayName }}
+              }
+            </h5>
+            <div class="flex items-center gap-1.5">
+              <div
+                *hesRbac="editPermission"
+                [routerLink]="['documentation', article.id, 'edit']"
+                class="flex h-8 w-8 items-center justify-center rounded bg-[#F9F9F9] text-[#344054]"
+              >
+                <app-hes-icon [faIcon]="faPen"></app-hes-icon>
+              </div>
+              <div
+                *hesRbac="deletePermission"
+                class="flex h-8 w-8 items-center justify-center rounded bg-[#F9F9F9] text-[#344054]"
+                (click)="onDeleteClick(article.id)"
+              >
+                <app-hes-icon [faIcon]="faTrash"></app-hes-icon>
+              </div>
+              <div
+                *hesRbac="addPermission"
+                [routerLink]="['documentation/create']"
+                class="flex h-8 w-8 items-center justify-center rounded bg-primary text-white"
+              >
+                <app-hes-icon [faIcon]="plusIcon"></app-hes-icon>
+              </div>
+            </div>
+          </div>
+          <h5 class="mt-4">{{ article.title }}</h5>
+          <div class="mt-6 text-base font-normal text-[#667085]">
+            <div [innerHTML]="article.content"></div>
+          </div>
+          <ng-container [ngTemplateOutlet]="videoTemplate"></ng-container>
+          <div class="mt-14 flex flex-grow items-end justify-between">
+            <div>
+              @if (previous$ | async; as prevArticle) {
+                <ion-button
+                  (click)="onSelectedArticle(prevArticle, activeType)"
+                  fill="outline"
+                  class="hes-btn--outline hesBtn"
+                >
+                  <app-hes-icon
+                    [faIcon]="IconBackword"
+                    class="pr-2"
+                  ></app-hes-icon>
+                  <span class="max-w-[110px] truncate">
+                    {{ prevArticle.title }}
+                  </span>
+                </ion-button>
+              }
+            </div>
+
+            <div>
+              @if (nextArticle$ | async; as nextArticle) {
+                <ion-button
+                  (click)="onSelectedArticle(nextArticle, activeType)"
+                  class="hes-btn--outline hesBtn"
+                >
+                  <span class="max-w-[110px] truncate">
+                    {{ nextArticle.title }}
+                  </span>
+                  <app-hes-icon
+                    [faIcon]="IconForward"
+                    class="pl-2"
+                  ></app-hes-icon>
+                </ion-button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="w-full flex-1 bg-white md:px-12 md:py-8" *transloco="let t">
+        <div class="flex items-center justify-between">
+          <h5>{{ article.title }}</h5>
+          <div class="flex">
+            <ion-button
+              *hesRbac="editPermission"
+              hesBtn
+              hesColor="secondary"
+              class="hes-btn--gray"
+              [routerLink]="['documentation', article.id, 'edit']"
+              hesSize="sm"
+              >{{ t("global.edit.btn") }}</ion-button
+            >
+            <ion-button
+              *hesRbac="deletePermission"
+              hesBtn
+              hesColor="secondary"
+              class="hes-btn--gray"
+              (click)="onDeleteClick(article.id)"
+              hesSize="sm"
+              >{{ t("global.delete.btn") }}</ion-button
+            >
+          </div>
+        </div>
+        <div class="mt-4">
+          <div [innerHTML]="article.content"></div>
+        </div>
+        <ng-container [ngTemplateOutlet]="videoTemplate"></ng-container>
+      </div>
+    }
+  }
+
+  <ng-template #videoTemplate>
+    @if (article.attachments.length) {
+      <div class="mb-16">
+        <div class="my-4 text-base font-semibold">
+          {{ article.attachments[0].title }}
+        </div>
+        <div
+          (click)="openVideo(article.attachments)"
+          class="flex cursor-pointer"
+        >
+          <ion-img
+            [src]="'assets/illustrations/video.svg'"
+            class="h-40 w-40 object-cover"
+          ></ion-img>
+        </div>
+      </div>
+    }
+  </ng-template>
+}

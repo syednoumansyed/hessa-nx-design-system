@@ -1,0 +1,26 @@
+<!-- trigger -->
+<div id="{{ targetId }}" class="cursor-pointer" (click)="onTriggerClick()">
+  <ng-content></ng-content>
+</div>
+
+<!-- desktop pop-over -->
+@if (!isDisabled() && !isMobileOrTablet()) {
+  <ion-popover
+    #popover
+    side="end"
+    alignment="start"
+    [trigger]="targetId"
+    (didDismiss)="onPopoverDismiss()"
+    class="hes-popover"
+  >
+    <ng-template>
+      <ion-content class="white-bg">
+        <app-academic-year-tree
+          (onAcademicYearSelection)="
+            onSemesterSelect($event.semester, $event.academicYear)
+          "
+        ></app-academic-year-tree>
+      </ion-content>
+    </ng-template>
+  </ion-popover>
+}

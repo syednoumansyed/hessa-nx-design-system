@@ -1,0 +1,105 @@
+<ion-toolbar class="flex items-center bg-white" *transloco="let t">
+  <!-- Left Side: Menu/Profile Button -->
+  <!-- Header buttons -->
+  @if (isMobileRootPage() && isMobileOrTablet()) {
+    <ion-buttons slot="start" class="lg:hidden" (click)="onMenuToggle.emit()">
+      <div class="relative flex items-center">
+        <app-ds-avatar [fullName]="username()" size="xl"></app-ds-avatar>
+
+        <button
+          [ngClass]="{ '-left-[8px]': isRtl, '-right-[10px]': !isRtl }"
+          class="absolute -bottom-[6px] grid h-6 w-6 place-items-center rounded-full bg-white shadow focus:outline-none"
+        >
+          <ng-icon name="menu" class="text-[14px] text-gray-700"></ng-icon>
+        </button>
+      </div>
+    </ion-buttons>
+    <!-- Right Side: Logo -->
+  } @else if (canGoBack()) {
+    <ion-buttons slot="start" class="lg:hidden" (click)="goBack()">
+      <ng-icon
+        name="back"
+        class="text-gray-700"
+        size="24"
+        [ngClass]="isRtl ? 'rotate-180' : ''"
+      />
+      <span>
+        {{ pageTitle() }}
+      </span>
+    </ion-buttons>
+  }
+
+  @if (hasRightContent()) {
+    <ion-buttons slot="end" class="flex items-center gap-ds-md lg:gap-ds-lg">
+      @if (mobileActionsTemplate()) {
+        <ng-container
+          *ngTemplateOutlet="mobileActionsTemplate()"
+        ></ng-container>
+      }
+
+      @if (showHelpCenterShortcut()) {
+        <button
+          type="button"
+          class="flex h-10 w-10 items-center justify-center"
+          (click)="onHelpCenterClick()"
+          [attr.aria-label]="t('support.help_center.link') || 'Help Center'"
+        >
+          <app-ds-icon
+            [icon]="helpCenterIcon"
+            class="h-6 w-6 text-emphasis-high"
+            size="xl"
+          />
+        </button>
+      }
+      @if (isNotificationVisible()) {
+        <button
+          type="button"
+          id="header-notification-trigger"
+          (click)="onNotificationClick($event)"
+          class="relative me-4 flex items-center justify-center rounded-full text-emphasis-high transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 active:scale-95 md:me-6"
+          [attr.aria-label]="t('layout.notifications') || 'Notifications'"
+        >
+          <app-ds-icon
+            [icon]="notificationIcon"
+            class="h-6 w-6 text-emphasis-high"
+            size="xl"
+          />
+          @if (shouldShowNotificationBadge()) {
+            <span
+              class="absolute -top-[8px] flex min-h-[16px] min-w-[16px] items-center justify-center rounded-full bg-[var(--surface-notification-badge)] px-[5px] text-[10px] font-semibold leading-[14px] text-[var(--surface-on-notification-badge)] ltr:-right-[8px] rtl:-left-[8px]"
+            >
+              {{ notificationBadgeLabel() }}
+            </span>
+          }
+        </button>
+
+        @if (!isMobile()) {
+          <ion-popover
+            #notificationPopover
+            trigger="header-notification-trigger"
+            triggerAction="click"
+            side="bottom"
+            alignment="end"
+            class="notification-popover"
+          >
+            <ng-template>
+              <app-notification-page
+                [onSettingsNavigate]="closeNotificationsPopover"
+              ></app-notification-page>
+            </ng-template>
+          </ion-popover>
+        }
+      }
+    </ion-buttons>
+  }
+
+  <div slot="start">
+    <!-- Desktop/Tablet: Page Title -->
+    <div class="hidden px-6 pt-4 text-lg font-semibold lg:block">
+      {{ pageTitle() }}
+    </div>
+
+    <!-- Desktop: Breadcrumb & Additional Content -->
+    <ng-content></ng-content>
+  </div>
+</ion-toolbar>

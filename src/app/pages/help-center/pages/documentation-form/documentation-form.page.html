@@ -1,0 +1,53 @@
+<ng-container *transloco="let t">
+  <ion-content class="ds-page-content bg-white">
+    <div
+      class="hes-card flex w-full flex-col items-center justify-center p-4 md:items-start md:p-10"
+    >
+      <h5 class="mb-8 hidden w-full text-start md:block">
+        {{ t( docId() ?
+        'support_ticket.edit_article.title':'global.add_question_or_article.title')}}
+      </h5>
+      <div>
+        <form [formGroup]="form">
+          <div class="grid grid-cols-1 gap-8 gap-y-8 self-stretch">
+            @for (control of formConfig(); track $index) {
+            <div class="flex-1">
+              <app-form-control-generator
+                [control]="control"
+              ></app-form-control-generator>
+            </div>
+            @if($index === 1){
+            <div
+              class="text-base font-light text-slate-500"
+              [innerHTML]="'user_manual.public_information.txt'| transloco"
+            ></div>
+            } }
+          </div>
+          <div
+            class="mt-4 flex flex-col-reverse gap-4 md:flex-row md:justify-end"
+          >
+            <ion-button
+              hesBtn
+              hesColor="secondary"
+              class="mt-4 min-w-48"
+              (click)="onCancel()"
+            >
+              {{ t("global.cancel.btn") }}
+            </ion-button>
+            <ion-button
+              hesBtn
+              hesColor="primary"
+              class="mt-4 min-w-48"
+              (click)="onSubmit()"
+              [disabled]="form.invalid || loading()"
+            >
+              @if (loading()) {
+              <ion-spinner class="h-5 w-5"></ion-spinner>
+              } @else { {{ t("global.save.btn") }} }
+            </ion-button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </ion-content>
+</ng-container>

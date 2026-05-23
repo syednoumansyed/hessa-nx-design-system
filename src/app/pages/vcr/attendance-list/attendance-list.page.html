@@ -1,0 +1,22 @@
+<ion-content class="ds-page-content">
+  <div
+    class="hes-card flex h-full w-full flex-col items-start justify-start p-0"
+  >
+    <ng-container *transloco="let t">
+      <div class="flex w-full items-start justify-between px-6 py-5">
+        <div class="mb-5 w-full text-lg font-medium leading-7 text-gray-900">
+          {{ t("attendance.attendance_list.title") }}
+        </div>
+      </div>
+      <app-hes-table
+        [columns]="colDef()"
+        [rowData]="rowsData()"
+        [loading]="isLoading()"
+        [hideColumnsSelection]="true"
+        [hideEntriesSelection]="true"
+        [autoSizeStrategy]="autoSizeStrategy()"
+        [noRowsOverlayComponentParams]="noRowsOverlayComponentParams()"
+      ></app-hes-table>
+    </ng-container>
+  </div>
+</ion-content>

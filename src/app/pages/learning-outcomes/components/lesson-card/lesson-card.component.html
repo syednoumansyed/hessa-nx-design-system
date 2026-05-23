@@ -1,0 +1,48 @@
+<!-- Lesson Card Component -->
+<div
+  *transloco="let t"
+  class="flex cursor-pointer items-center justify-between border border-stroke-black-08 px-ds-xl py-ds-lg transition-colors hover:bg-pastels-neutralGray-100"
+  (click)="onViewOutcomes()"
+>
+  <!-- Lesson Info -->
+  <div class="flex flex-col gap-ds-xs">
+    <span class="heading-h5-mid-emphasis text-emphasis-high">
+      {{ lesson.name }}
+    </span>
+    <span class="single-line-xs-mid-emphasis text-emphasis-mid">
+      {{
+        t("learning_outcome.outcomes_count.txt", {
+          count: lesson.outcomesCount || 0,
+        })
+      }}
+    </span>
+  </div>
+
+  <!-- Actions -->
+  <div class="flex items-center gap-ds-md">
+    <!-- View Outcomes Icon -->
+    <div class="flex h-[28px] w-[28px] items-center justify-center">
+      <div
+        class="flex h-4 w-4 items-center justify-center rounded-ds-full bg-brand-500"
+      >
+        <app-ds-icon
+          [icon]="faChevronRight"
+          class="text-icon-inverse"
+          [ngClass]="isRtl ? 'rotate-180' : ''"
+          size="xs"
+        ></app-ds-icon>
+      </div>
+    </div>
+
+    <!-- Menu (only shown when there are menu items) -->
+    @if (hasMenuItems) {
+      <ds-responsive-menu
+        [items]="menuItems"
+        [triggerClass]="
+          'flex h-[28px] w-[28px] items-center justify-center text-icon-high'
+        "
+        (click)="$event.stopPropagation()"
+      ></ds-responsive-menu>
+    }
+  </div>
+</div>

@@ -1,0 +1,21 @@
+<div
+  [ngClass]="{ 'w-20': isCollapsed(), 'w-72': !isCollapsed() }"
+  class="h-full"
+>
+  <!-- Menu Header -->
+  <ion-header class="h-24 border-b border-[#414769] shadow-none">
+    <ion-toolbar class="flex h-full"> </ion-toolbar>
+  </ion-header>
+  <!-- School Structure Content -->
+  <ion-content [ngClass]="{ collapsed: isCollapsed() }" id="school-menu">
+    <div class="flex flex-col items-stretch justify-start gap-1">
+      @for (item of schoolStructure(); track item.id) {
+        <app-school-structure-nav-item
+          [item]="item"
+          [firstLevel]="true"
+          [isCollapsed]="isCollapsed()"
+        ></app-school-structure-nav-item>
+      }
+    </div>
+  </ion-content>
+</div>

@@ -1,0 +1,27 @@
+<div class="p-ds-xl" *transloco="let t">
+  <div class="float-right flex cursor-pointer justify-end text-[#B3B3B3]">
+    <app-ds-icon [icon]="xMarks" (click)="closeModal()"></app-ds-icon>
+  </div>
+  <div class="flex flex-col items-center pt-ds-xl">
+    <div class="p-ds-md">
+      <app-ds-icon icon="warning" size="56px" />
+    </div>
+
+    <div class="single-line-md-high-emphasis text-center text-emphasis-high">
+      {{ title() }}
+    </div>
+
+    <div class="content-md-default mt-2 flex text-center text-emphasis-mid">
+      {{ description() }}
+    </div>
+  </div>
+  <div class="my-ds-lg">
+    <ds-button
+      [variant]="'primary'"
+      [fullWidth]="true"
+      (click)="onReAttemptClicked()"
+    >
+      {{ btnText() }}
+    </ds-button>
+  </div>
+</div>

@@ -1,0 +1,66 @@
+<div class="flex h-full flex-col gap-ds-xl p-ds-xl">
+  <div class="min-h-0 flex-1 overflow-y-auto pr-ds-sm">
+    <div class="flex flex-col">
+      @for (step of ladder().steps; track step.id; let last = $last) {
+        <section class="flex gap-ds-lg">
+          <div class="flex flex-col items-center self-stretch">
+            <span [ngClass]="dotClasses(step.dotTone)"></span>
+            @if (!last) {
+              <div class="w-[1px] flex-1 bg-stroke-black-12"></div>
+            }
+          </div>
+
+          <div class="flex flex-1 flex-col gap-ds-lg pb-ds-2xl">
+            <div class="flex flex-col gap-ds-sm">
+              <p class="single-line-md-mid-emphasis text-emphasis-high">
+                {{ step.title }}
+              </p>
+              @if (step.timeLabel) {
+                <div
+                  class="flex items-center gap-ds-xs"
+                  [ngClass]="timeToneClasses(step.timeTone)"
+                >
+                  <app-ds-icon [icon]="step.timeIcon" size="sm"></app-ds-icon>
+                  <span class="single-line-caption-mid-emphasis">
+                    {{ step.timeLabel }}
+                  </span>
+                </div>
+              }
+            </div>
+
+            @if (step.personnels.length) {
+              <div class="flex flex-col gap-ds-md">
+                @for (person of step.personnels; track person.id) {
+                  <div class="flex items-center gap-ds-md">
+                    <app-ds-avatar
+                      [fullName]="person.name"
+                      [color]="person.avatarColor"
+                      [size]="'lg'"
+                      [includeBorder]="false"
+                    ></app-ds-avatar>
+                    <div class="gap-ds-2xs flex flex-col text-left">
+                      <p class="single-line-sm-mid-emphasis text-emphasis-high">
+                        {{ person.name }}
+                      </p>
+                      @if (person.role) {
+                        <p
+                          class="single-line-xs-low-emphasis text-emphasis-mid"
+                        >
+                          {{ person.role }}
+                        </p>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            } @else if (step.emptyStateLabel) {
+              <p class="content-sm-default text-emphasis-mid">
+                {{ step.emptyStateLabel }}
+              </p>
+            }
+          </div>
+        </section>
+      }
+    </div>
+  </div>
+</div>

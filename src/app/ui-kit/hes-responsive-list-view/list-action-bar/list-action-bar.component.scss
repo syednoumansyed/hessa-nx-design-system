@@ -1,0 +1,168 @@
+@use "@taiga-ui/core/styles/taiga-ui-local.scss" as taiga;
+
+:root {
+  --tui-link: var(--h-color-primary, #ecad01);
+}
+
+label.hes-label {
+  .t-label {
+    font: unset;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 1.25rem;
+    color: #141519;
+  }
+}
+[tuiWrapper][data-appearance="hes-date-table-filter"] {
+  background: white;
+  color: rgba(0, 0, 0, 0.87);
+  border-radius: 0.5rem;
+  --border-end: 0;
+  height: 40px;
+  @media (max-width: 768px) {
+    font-size: 12px;
+  }
+  input {
+    color: var(--Neutral-neutral-100, #141519);
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.25rem; /* 125% */
+    letter-spacing: -0.01563rem;
+    font-size: 1rem;
+    @media (max-width: 768px) {
+      font-size: 12px;
+    }
+    html[dir="rtl"] & {
+      direction: rtl;
+      text-align: right;
+    }
+  }
+
+  input[readonly] {
+    background-color: var(--h-color-gray-100);
+    color: var(--h-color-gray-500);
+    cursor: not-allowed;
+  }
+
+  &:after {
+    @include taiga.transition(all);
+    height: 100%;
+    background: transparent;
+    border: 1px solid var(--h-color-gray-300);
+  }
+
+  @include taiga.wrapper-hover {
+    &:after {
+      border-color: var(--h-color-primary, #ecad01);
+      border-width: 1px;
+    }
+  }
+
+  @include taiga.wrapper-focus {
+    &:after {
+      border-color: var(--h-color-primary, #ecad01);
+      border-width: 1px;
+    }
+  }
+
+  @include taiga.wrapper-invalid {
+    &:after {
+      border-color: #e62e2e;
+    }
+  }
+}
+
+.search-wrapper {
+  display: flex;
+
+  &:focus-within .search-icon, // When input inside is focused
+  &:hover .search-icon {
+    // When input inside is hovered
+    border-color: var(--h-color-primary, #ecad01); // Match the hover color
+  }
+  .search-input {
+    &:hover {
+      border-color: var(--h-color-primary, #ecad01);
+    }
+
+    color: black;
+    outline: none;
+    padding: 0.3em 0.5em;
+    background-color: #fafafa;
+    border: 1px solid #d0d5dd;
+    height: 40px;
+
+    &:dir(ltr) {
+      border-radius: 0 5px 5px 0;
+      border-left: none;
+    }
+    &:dir(rtl) {
+      border-radius: 5px 0 0 5px;
+      border-right: none;
+    }
+  }
+
+  .search-icon {
+    cursor: grab;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border: 1px solid #d0d5dd;
+    width: 48px;
+    height: 40px;
+    border-radius: 5px 0 0 5px;
+    border-right: none;
+    &:dir(rtl) {
+      transform: scaleX(-1); // Horizontal flip
+    }
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .search-wrapper {
+    .search-input {
+      border: 0;
+      border-radius: 0 !important;
+    }
+    .search-icon {
+      border: 0;
+      border-radius: 0 !important;
+      box-shadow: 0px 1px 2px rgba(16, 24, 40, 0.05);
+    }
+  }
+}
+
+// .search-wrapper {
+//   position: relative;
+//   height: -moz-fit-content;
+//   height: fit-content;
+//   .input {
+//     color: black;
+//     width: 15em;
+//     outline: none;
+//     padding: 0.3em 1.2em;
+//     border-radius: 5px;
+//     border: 1px solid #d0d5dd;
+//   }
+//   .search-icon {
+//     position: absolute;
+//     width: 1rem;
+//     height: 1rem;
+//     left: 0.8rem;
+//     top: 25%;
+//     opacity: 0;
+//     transition-property: opacity, rotate;
+//     transition-duration: 0.15s;
+//     cursor: grab;
+//   }
+
+//   &:has(.input:placeholder-shown) .search-icon,
+//   &:has(.input:not(:placeholder-shown)) .x-icon {
+//     opacity: 1;
+//     pointer-events: all;
+//     transform: rotate(0deg);
+//     visibility: visible;
+//   }
+// }

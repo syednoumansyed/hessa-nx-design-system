@@ -1,0 +1,36 @@
+<div class="flex w-full py-0">
+  <div class="w-full bg-white py-4">
+    <div>
+      <div
+        (click)="onToggle()"
+        class="border-s-4 py-2 pe-8 ps-6 font-semibold text-[#101828]"
+        [ngClass]="
+          isExpended()
+            ? ' border-[#ECAD01] bg-[#FDF9DB]  font-normal'
+            : ' border-white'
+        "
+      >
+        <h5 class="cursor-pointer">
+          {{ userManual().displayName }}
+        </h5>
+      </div>
+      @if (isExpended()) {
+        <ul class="px-8">
+          @for (article of userManual().articles; track article.id) {
+            <li
+              (click)="onActiveArticle(article.id)"
+              class="cursor-pointer py-2 text-base font-normal"
+              [ngClass]="{
+                'text-[#ECAD01]':
+                  (activeArticle$ | async)?.typeId === userManual().id &&
+                  (activeArticle$ | async)?.articleId === article.id
+              }"
+            >
+              {{ article.title }}
+            </li>
+          }
+        </ul>
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,11 @@
+<ds-calendar-month
+  [month]="month()"
+  [year]="year()"
+  [config]="calendarConfig()"
+  [cellTemplate]="cellTemplate"
+  (dayClick)="onDayClick($event)"
+  (monthChange)="onMonthChange($event)"
+  [locale]="local()"
+  (calendarReady)="onCalendarReady($event)"
+>
+</ds-calendar-month>

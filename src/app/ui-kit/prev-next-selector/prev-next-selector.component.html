@@ -1,0 +1,37 @@
+<div
+  class="flex items-center justify-between rounded-[4px] border border-[##D9D9D9] bg-[#F6F7F9] text-base text-[#344054]"
+  [ngClass]="containerClasses()"
+>
+  <button
+    title="prev-button"
+    type="button"
+    (click)="previous()"
+    [disabled]="currentIndex === 0"
+    class="h-11 pe-8 ps-4 text-start"
+  >
+    <fa-icon
+      [icon]="isRtl ? faAngleRight : faAngleLeft"
+      class="text-base"
+    ></fa-icon>
+  </button>
+
+  <span class="flex items-center gap-1 py-2">
+    <span class="text-base">{{ currentDisplayedValue }}</span>
+    <span class="text-sm font-medium"
+      >({{ currentIndex + 1 }}/{{ items().length }})</span
+    >
+  </span>
+
+  <button
+    title="next-button"
+    type="button"
+    class="h-11 pe-4 ps-8 text-end"
+    (click)="next()"
+    [disabled]="currentIndex === items.length - 1"
+  >
+    <fa-icon
+      [icon]="!isRtl ? faAngleRight : faAngleLeft"
+      class="text-base"
+    ></fa-icon>
+  </button>
+</div>

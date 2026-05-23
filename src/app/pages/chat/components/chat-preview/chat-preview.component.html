@@ -1,0 +1,90 @@
+<div
+  class="cursor-pointer px-ds-xl py-ds-lg"
+  [ngClass]="{
+    'bg-brand-100': activeConversationId() === getConversationId(),
+    'hover:bg-gray-100': activeConversationId() !== getConversationId(),
+  }"
+>
+  <div class="flex items-start gap-ds-sm">
+    <div class="flex min-w-0 flex-1 items-center gap-ds-md">
+      @if (getConversationType() === conversationType.USER) {
+        <app-ds-avatar
+          [fullName]="title()"
+          size="2xl"
+          [includeBorder]="false"
+          [color]="profileColor()"
+          [imageUrl]="imageUrl()"
+          class="shrink-0"
+        />
+      } @else {
+        <app-channel-icon [color]="profileColor()" />
+      }
+
+      <div class="flex min-w-0 flex-col gap-ds-sm">
+        <div class="heading-h4-high-emphasis line-clamp-1 text-emphasis-high">
+          {{ title() }}
+        </div>
+        @if (isTyping()) {
+          <div class="content-md-mid-emphasis italic text-emphasis-mid">
+            {{ getTypingText() }}
+          </div>
+        } @else if (isLastMessageDeleted()) {
+          <div
+            class="flex items-center gap-1 text-emphasis-mid"
+            *transloco="let t"
+          >
+            <app-ds-icon [icon]="faBan" size="sm" />
+            <span class="content-md-mid-emphasis">
+              {{
+                isLastMessageDeletedByMe()
+                  ? t("chats.you_deleted_msg.txt")
+                  : t("chats.msg_deleted.txt")
+              }}
+            </span>
+          </div>
+        } @else if (getLastMessageText()) {
+          <div class="flex items-start gap-ds-sm">
+            @if (isLastMessageMine()) {
+              <app-ds-icon
+                [icon]="getLastMessageStatusIcon()"
+                [ngClass]="{
+                  'text-blue-500': isLastMessageRead(),
+                  'text-gray-500':
+                    isLastMessageDelivered() && !isLastMessageRead(),
+                  'text-gray-400':
+                    !isLastMessageDelivered() && !isLastMessageRead(),
+                }"
+              />
+            }
+
+            <div class="content-md-mid-emphasis line-clamp-2 text-emphasis-mid">
+              @if (getLastMessageMediaIcon()) {
+                <app-ds-icon [icon]="getLastMessageMediaIcon()" size="sm" />
+              }
+              {{ getLastMessageText() }}
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="flex shrink-0 flex-col items-end gap-1">
+      @if (getLastMessageTime()) {
+        <time
+          class="text-sm"
+          [ngClass]="
+            getUnreadCount() > 0 ? 'text-error-ds-400' : 'text-gray-500'
+          "
+          >{{ getLastMessageTime() | chatTime }}
+        </time>
+      }
+      @if (!isTyping() && getUnreadCount() > 0) {
+        <span
+          class="single-line-caption-low-emphasis inline-flex h-[20px] w-[20px] items-center justify-center rounded-full bg-error-ds-400 text-white"
+        >
+          {{ getUnreadCount() }}
+        </span>
+      }
+    </div>
+  </div>
+</div>

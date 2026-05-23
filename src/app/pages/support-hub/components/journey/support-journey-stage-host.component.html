@@ -1,0 +1,249 @@
+<div class="flex w-full flex-col gap-ds-xs" [ngClass]="containerClasses()">
+  <div class="flex w-full items-end gap-ds-sm" [ngClass]="messageRowClasses()">
+    @if (shouldReserveSupportAvatarSpace()) {
+      <span
+        class="flex h-8 w-8 shrink-0 items-center justify-center rounded-ds-full bg-icon-action text-icon-high transition-opacity duration-150"
+        [class.invisible]="!shouldShowSupportAvatar()"
+        aria-hidden="true"
+      >
+        <app-ds-icon
+          [icon]="supportAvatarIcon"
+          [size]="'lg'"
+          cssClass="text-icon-high"
+        ></app-ds-icon>
+      </span>
+    }
+
+    @let currentStage = stage();
+    <article
+      class="relative py-ds-md text-emphasis-high"
+      [class.overflow-hidden]="!shouldShowPrivateRequestHint()"
+      [class.overflow-visible]="shouldShowPrivateRequestHint()"
+      [ngClass]="bubbleClasses()"
+      [attr.data-subcategory-prompt]="
+        currentStage.kind === 'subcategoryPrompt' ? 'true' : null
+      "
+    >
+      <ng-template #selectionStageTemplate let-selection>
+        @let hasPendingOptions =
+          selection.status !== "completed" &&
+          (selection.options?.length ?? 0) > 0;
+        @if (hasPendingOptions) {
+          <div class="-mt-ds-md flex flex-col gap-ds-md">
+            @if (
+              selection.kind === "subcategorySelection" &&
+              selection.allowPrivateRequest
+            ) {
+              <div
+                class="flex items-start gap-ds-md bg-surface-success-subtle px-ds-lg py-ds-md"
+              >
+                <span class="flex h-8 w-8 shrink-0 items-center justify-center">
+                  <app-ds-icon
+                    [icon]="privateRequestBannerIcon"
+                    cssClass="text-feedback-success"
+                    size="xl"
+                    aria-hidden="true"
+                  />
+                </span>
+                <div class="gap-ds-2xs flex flex-col">
+                  <div class="heading-h5-mid-emphasis text-emphasis-high">
+                    {{ "support.request.anonymous.allow" | dsTranslate }}
+                  </div>
+                  <div
+                    class="single-line-caption-mid-emphasis text-emphasis-mid"
+                  >
+                    {{ "support.request.anonymous.helper" | dsTranslate }}
+                  </div>
+                </div>
+              </div>
+            }
+            <div class="flex flex-col gap-ds-sm">
+              @for (option of selection.options; track option.id) {
+                <button
+                  type="button"
+                  class="flex w-full items-start gap-ds-lg px-ds-lg py-ds-md text-left transition-colors duration-150 hover:bg-surface-secondary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-brand-default rtl:flex-row-reverse rtl:text-right"
+                  (click)="onSelectionOptionSelected(selection, option)"
+                >
+                  @if (option.icon) {
+                    <span
+                      class="flex h-6 w-6 shrink-0 items-center justify-center"
+                    >
+                      @if (isExternalIcon(option.icon)) {
+                        <img
+                          [src]="option.icon"
+                          alt=""
+                          class="h-6 w-6 object-contain"
+                          loading="lazy"
+                        />
+                      } @else {
+                        <app-ds-icon
+                          [icon]="option.icon"
+                          cssClass="text-emphasis-high"
+                          aria-hidden="true"
+                          size="xl"
+                        ></app-ds-icon>
+                      }
+                    </span>
+                  }
+                  <span class="gap-ds-2xs flex min-w-0 flex-1 flex-col">
+                    <span class="gap-ds-2xs flex min-w-0 items-center">
+                      <span
+                        class="heading-h5-high-emphasis w-full max-w-full truncate text-emphasis-high"
+                      >
+                        {{ option.label }}
+                      </span>
+                      @if (option.allowPrivateRequest) {
+                        <app-ds-icon
+                          [icon]="allowPrivateRequestIcon"
+                          cssClass="text-emphasis-mid  ms-2"
+                          size="sm"
+                          aria-hidden="true"
+                        />
+                      }
+                    </span>
+                    @if (option.description) {
+                      <span
+                        class="single-line-caption-mid-emphasis line-clamp-2 text-start text-emphasis-mid"
+                      >
+                        {{ option.description }}
+                      </span>
+                    }
+                  </span>
+                </button>
+              }
+            </div>
+          </div>
+        } @else {
+          <div class="flex flex-col gap-ds-xs px-ds-xl">
+            @if (selection.editable) {
+              <button
+                type="button"
+                class="gap-ds-2xs py-ds-2xs group mb-2 flex items-center self-start border-stroke-brand-default px-ds-sm text-content-action transition-colors duration-150 hover:bg-surface-brand-subtle focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stroke-brand-default"
+                (click)="onSelectionEdit(selection)"
+              >
+                <app-ds-icon
+                  [icon]="editIcon"
+                  cssClass="text-content-action"
+                  aria-hidden="true"
+                ></app-ds-icon>
+                <span class="content-md-high-emphasis ms-4 text-content-action">
+                  {{ "global.edit.btn" | dsTranslate }}
+                </span>
+              </button>
+            }
+            <div class="flex items-start gap-ds-sm">
+              @if (selection.icon) {
+                <app-ds-icon
+                  [icon]="selection.icon"
+                  [cssClass]="selection.iconCssClass ?? 'text-emphasis-high'"
+                  aria-hidden="true"
+                  size="xl"
+                ></app-ds-icon>
+              }
+              <p class="heading-h5-high-emphasis text-emphasis-high">
+                {{ selection.label }}
+              </p>
+            </div>
+            @if (selection.timestamp) {
+              <span
+                class="single-line-caption-mid-emphasis self-end text-emphasis-mid"
+              >
+                {{ selection.timestamp }}
+              </span>
+            }
+          </div>
+        }
+      </ng-template>
+
+      @if (introStage(); as intro) {
+        <div class="flex flex-col gap-ds-xs px-ds-xl">
+          <p class="content-md-default whitespace-pre-line text-emphasis-high">
+            {{ intro.title }}
+          </p>
+          @if (currentStage.timestamp) {
+            <span class="single-line-caption-mid-emphasis text-emphasis-mid">
+              {{ currentStage.timestamp }}
+            </span>
+          }
+        </div>
+      } @else {
+        @if (promptStage()) {
+          @let prompt = promptStage()!;
+          <p class="content-md-default px-ds-xl text-emphasis-high">
+            {{ prompt.body }}
+          </p>
+        } @else {
+          @if (selectionStage()) {
+            @let selection = selectionStage()!;
+            <ng-container
+              *ngTemplateOutlet="
+                selectionStageTemplate;
+                context: { $implicit: selection }
+              "
+            ></ng-container>
+          } @else {
+            @if (attachmentsStage()) {
+              @let attachments = attachmentsStage()!;
+              <div class="flex flex-col gap-ds-xs px-ds-xl">
+                <p class="heading-h6-high-emphasis">
+                  {{ attachments.title }}
+                </p>
+                @if (attachments.description) {
+                  <p class="content-md-mid-emphasis text-emphasis-mid">
+                    {{ attachments.description }}
+                  </p>
+                }
+              </div>
+            } @else {
+              @if (summaryStage()) {
+                @let summary = summaryStage()!;
+                <div class="flex flex-col gap-ds-xs px-ds-xl">
+                  <p class="heading-h6-high-emphasis">
+                    {{ summary.heading }}
+                  </p>
+                  <p class="content-md-default text-emphasis-high">
+                    {{ summary.body }}
+                  </p>
+                </div>
+              } @else {
+                <p class="content-md-default text-emphasis-mid">
+                  {{ unsupportedStageMessage }}
+                </p>
+              }
+            }
+          }
+        }
+      }
+
+      @if (
+        currentStage.timestamp &&
+        currentStage.kind !== "intro" &&
+        !senderSelectionStage()
+      ) {
+        <span
+          class="single-line-caption-mid-emphasis px-ds-xl text-emphasis-mid"
+          [ngClass]="timestampClasses()"
+        >
+          {{ currentStage.timestamp }}
+        </span>
+      }
+      @if (shouldShowPrivateRequestHint()) {
+        <div
+          class="absolute -bottom-8 left-1/2 flex -translate-x-1/2 items-center justify-center gap-2"
+        >
+          <app-ds-icon
+            [icon]="allowPrivateRequestIcon"
+            cssClass="text-emphasis-mid"
+            size="sm"
+            aria-hidden="true"
+          />
+          <span
+            class="single-line-xs-mid-emphasis whitespace-nowrap text-emphasis-mid"
+          >
+            {{ "support.settings.private_allowed" | dsTranslate }}
+          </span>
+        </div>
+      }
+    </article>
+  </div>
+</div>

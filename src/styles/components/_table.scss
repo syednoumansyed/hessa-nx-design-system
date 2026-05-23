@@ -1,0 +1,103 @@
+.ag-theme-quartz.hes-table {
+  --ag-wrapper-border-radius: 0px;
+  --ag-header-background-color: white;
+  --ag-border-color: var(--h-color-gray-200);
+  --ag-header-height: 44px;
+  font-family: "Nunito";
+  &:dir(rtl) {
+    font-family: Lama Rounded;
+  }
+  .ag-header-cell {
+    padding: 0 24px 0 16px;
+    &.ag-floating-filter {
+      padding: 12px;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+    &-label {
+      gap: 1rem;
+      justify-content: space-between;
+      .ag-header-cell-text {
+        width: max-content;
+        color: #343a46;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 18px; /* 128.571% */
+        text-transform: uppercase;
+      }
+    }
+  }
+  .ag-row {
+    &-even {
+      background-color: var(--h-color-gray-50);
+    }
+    &-odd {
+      background-color: transparent;
+    }
+  }
+
+  .ag-cell {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0 1.5rem 0 1rem;
+    &.hes-table-actions-cell {
+      padding: 0 0.5rem;
+      overflow: visible;
+    }
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.25rem;
+    color: var(--h-color-gray-500);
+    &.ag-column-first {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--h-color-gray-900);
+    }
+    & .ag-cell-wrapper {
+      width: 100%;
+    }
+    & .ag-cell-wrapper .ag-invisible {
+      display: none;
+    }
+  }
+
+  .ag-root-wrapper {
+    border-right-width: 0;
+    border-left-width: 0;
+  }
+
+  &.overlay-h-full {
+    .ag-root-wrapper {
+      height: 100%;
+      .ag-root-wrapper-body {
+        height: 100%;
+      }
+    }
+  }
+
+  .ag-overlay-wrapper.ag-layout-auto-height.ag-overlay-no-rows-wrapper {
+    padding: 0;
+  }
+}
+
+select.hes-filter-select {
+  --webkit-appearance: auto;
+  -moz-appearance: auto;
+  appearance: auto;
+}
+
+.ag-checkbox-input-wrapper.ag-checked {
+  --ag-icon-image-checkbox-checked: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="%23ecad01" d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>');
+  --ag-checkbox-checked-color: transparent;
+  border-width: 1px;
+  border-color: var(--h-color-primary-400);
+}
+
+.ag-checkbox-input-wrapper.ag-indeterminate {
+  --ag-icon-image-checkbox-indeterminate: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Pro 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2024 Fonticons, Inc.--><path fill="%23ecad01" d="M432 256c0 13.3-10.7 24-24 24L40 280c-13.3 0-24-10.7-24-24s10.7-24 24-24l368 0c13.3 0 24 10.7 24 24z"/></svg>');
+  --ag-checkbox-indeterminate-color: transparent;
+  border-color: var(--h-color-primary-400);
+  border-width: 1px;
+}

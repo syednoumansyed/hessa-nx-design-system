@@ -1,0 +1,27 @@
+<div class="relative">
+  <form [formGroup]="optionsForm">
+    <div formArrayName="options" class="flex flex-col gap-ds-md">
+      @for (option of optionFormGroups; track option) {
+        <div [formGroupName]="$index">
+          <ds-select-option-creator-item
+            [formGroup]="option"
+            (remove)="removeOption($index)"
+            [isMultSelect]="isMultSelect()"
+            (singleSelected)="onSingleSelect($index)"
+            [isTrueOrFalse]="isTrueOrFalse()"
+          />
+        </div>
+      }
+    </div>
+
+    @if (!isTrueOrFalse()) {
+      <div
+        class="absolute ms-4 mt-2 ltr:left-[22px] lg:ltr:left-[33px] rtl:right-[20px] lg:rtl:right-[27px]"
+      >
+        <ds-button variant="ghost" (click)="addNewOption()" [size]="'sm'">
+          Add Option +
+        </ds-button>
+      </div>
+    }
+  </form>
+</div>

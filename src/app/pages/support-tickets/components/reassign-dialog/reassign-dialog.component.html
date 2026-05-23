@@ -1,0 +1,93 @@
+<div
+  *transloco="let t"
+  class="Modal flex flex-col justify-start gap-4 rounded-xl bg-white p-7 shadow"
+>
+  <div class="mb-3 flex justify-between border-b pb-4">
+    <div class="text-2xl font-semibold text-gray-900">
+      {{ t("support_ticket.reassign_or_update_type.txt") }}
+    </div>
+    <fa-icon
+      class="mt-1 cursor-pointer text-[#929CB5] hover:text-[#0000008a]"
+      [icon]="faClose"
+      size="xl"
+      (click)="onCloseModal()"
+    ></fa-icon>
+  </div>
+  <div class="mb-4 border-b pb-6">
+    <div class="text-lg font-semibold text-gray-900">
+      {{ t("global.school.title") }}
+    </div>
+    <div class="mt-4 text-gray-500">
+      {{ selectedSchool()?.name }}
+    </div>
+  </div>
+
+  <form
+    [formGroup]="form"
+    class="flex w-full flex-col items-end justify-start gap-4"
+  >
+    <div class="grid grid-cols-1 gap-8 gap-y-4 self-stretch md:grid-cols-1">
+      @for (control of formConfig(); track $index) {
+        <div class="flex-1">
+          <app-form-control-generator
+            [control]="control"
+          ></app-form-control-generator>
+        </div>
+      }
+    </div>
+    <div
+      class="mb-2 mt-4 grid grid-cols-1 gap-8 gap-y-10 self-stretch md:grid-cols-2"
+    >
+      <ion-button
+        hesBtn
+        hesColor="secondary"
+        hesSize="xl"
+        (click)="onCloseModal()"
+      >
+        {{ t("global.cancel.btn") }}
+      </ion-button>
+      <ion-button
+        [disabled]="form.invalid"
+        hesBtn
+        hesColor="primary"
+        hesSize="xl"
+        (click)="onSave()"
+        class="order-first md:order-none"
+      >
+        {{ t("global.save.btn") }}
+      </ion-button>
+    </div>
+  </form>
+</div>
+
+<ng-template #customselectOption let-item="item">
+  @if (item.value === -1) {
+    {{ item.displayedValue }}
+  } @else {
+    <div class="flex items-start gap-2 lg:items-center">
+      <fa-duotone-icon
+        [icon]="faUserTieHair"
+        primaryColor="#1B84FF"
+        secondaryColor="#1B84FF"
+        secondaryOpacity="0.4"
+        [size]="'lg'"
+      ></fa-duotone-icon>
+      <div
+        class="flex flex-col text-[0.9rem] font-medium capitalize leading-6 text-[#7F8491] lg:flex-row"
+      >
+        <span class="me-2 text-gray-900"> {{ item.displayedValue }}, </span>
+        <span *transloco="let t" class="me-2"
+          >{{ t("global.national_id.title") }}:
+          <span class="text-gray-900">{{ item.nationalId }}</span
+          >,
+        </span>
+        <span *transloco="let t"
+          >{{ t("global.role.title") }}:
+          <span class="text-gray-900">
+            {{ joinRoleNames(item.roles) }}</span
+          ></span
+        >
+      </div>
+    </div>
+  }
+</ng-template>

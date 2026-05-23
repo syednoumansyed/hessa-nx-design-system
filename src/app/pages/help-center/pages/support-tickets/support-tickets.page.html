@@ -1,0 +1,31 @@
+<ion-content class="ds-page-content" *transloco="let t;">
+  <app-no-selected-scope-card
+    [requiredScope]="requiredScopes"
+    (onScopeUpdate)="handleDisplayContent($event)"
+  >
+  </app-no-selected-scope-card>
+  @if(displayContent()){
+  <div
+    class="hes-card flex h-full w-full flex-col items-start justify-start p-0"
+  >
+    <app-listing-header
+      [title]="t('support_ticket.my_tickets.title')"
+      [primaryBtnTitle]="t('support_ticket.add_ticket.btn')"
+      [primaryBtnPermissionId]="[createTicketPermissionId]"
+      (onPrimaryBtnClick)="onAddSupportTicket()"
+      [loading]="isLoading()"
+    ></app-listing-header>
+
+    <app-hes-table
+      [columns]="columns()"
+      [rowData]="supportTicketsList()"
+      [autoSizeStrategy]="autoSizeStrategy"
+      (filterSortModelChanged)="onTableModelChanged($any($event))"
+      [pagination]="supportTicketsPagination()"
+      (rowClicked)="onRowClicked($event)"
+      [noRowsOverlayComponentParams]="noRowsOverlayComponentParams()"
+      [loading]="isLoading()"
+    ></app-hes-table>
+  </div>
+  }
+</ion-content>

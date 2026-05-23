@@ -1,0 +1,16 @@
+<ng-container *transloco="let t">
+  <div class="h-0 bg-white md:h-6"></div>
+  <app-list-view-container
+    [columns]="columns"
+    class="w-full"
+    [dataSource]="fetchJournalList"
+    [inlineFilterConfig]="inlineFilterConfig"
+    [noDataConfig]="noDataConfig"
+    [pageTitle]="t('journals.journal_list.title')"
+    [isFilterShow]="false"
+    [canCopy]="true"
+    [showSearchInput]="false"
+  >
+    <app-selected-guardian-student></app-selected-guardian-student>
+  </app-list-view-container>
+</ng-container>

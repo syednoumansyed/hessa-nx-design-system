@@ -1,0 +1,63 @@
+<ion-content class="ds-page-content bottom-bar-spacing">
+  <app-no-selected-scope-card
+    [requiredScope]="requiredScopes"
+    (onScopeUpdate)="handleDisplayContent($event)"
+  />
+  @if (displayContent()) {
+
+  <div
+    class="flex flex-col gap-ds-xl"
+    [ngClass]="{ 'px-ds-lg pb-ds-lg pt-ds-xl': isMobile }"
+  >
+    <app-ds-tabs
+      [tabs]="tabsData()"
+      [activeTabId]="activeTabId()"
+      (tabChange)="onTabChanged($event)"
+    />
+    @if(activeTabId() === coursesTab.TODO) {
+    <app-course-todo-filters (selectedFilter)="onFilterSelected($event)" />
+    } @if(!isLoading()){ @if(activeTabId() === coursesTab.COURSES &&
+    courseList().length > 0){
+    <div class="flex flex-wrap gap-ds-lg">
+      @for (course of courseList(); track course.id) {
+      <div
+        class="w-full md:w-[calc(50%-0.5rem)]"
+        [ngClass]="hasChildSidebar() ? 'xl:w-[calc(33.333%-0.75rem)]' : 'lg:w-[calc(33.333%-0.75rem)]'"
+      >
+        <app-course-card
+          [courseData]="course"
+          (click)="onCourseClick(course)"
+        />
+      </div>
+      }
+    </div>
+    } @if(activeTabId() === coursesTab.TODO && todoList().length > 0){
+    <div class="flex flex-wrap gap-ds-lg">
+      @for (todo of todoList(); track todo.id) {
+      <div
+        class="w-full md:w-[calc(50%-0.5rem)]"
+        [ngClass]="hasChildSidebar() ? 'xl:w-[calc(33.333%-0.75rem)]' : 'lg:w-[calc(33.333%-0.75rem)]'"
+      >
+        <app-course-todo-card [courseData]="todo" (click)="onTodoClick(todo)" />
+      </div>
+      }
+    </div>
+    } @if(activeTabId() === coursesTab.COURSES && courseList().length === 0 ||
+    activeTabId() === coursesTab.TODO && todoList().length === 0) {
+    <app-no-data-card
+      *transloco="let t"
+      class="px-4"
+      [mainImagePath]="noDataConfig().mainImagePath"
+      [title]="noDataConfig().title"
+      [description]="noDataConfig().description"
+      [noBgStyle]="true"
+    />
+    } } @if(isLoading()) {
+    <div class="flex items-center justify-center py-28">
+      <ion-spinner class="h-10 w-10 text-brand-500"></ion-spinner>
+    </div>
+    }
+  </div>
+
+  }
+</ion-content>

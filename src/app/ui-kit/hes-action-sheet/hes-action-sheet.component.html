@@ -1,0 +1,93 @@
+@if (actions.length > 0) {
+  @if (actions.length <= 2 && !forceActionSheet()) {
+    <div class="flex items-center justify-start gap-4">
+      @for (action of actions; track $index; let last = $last) {
+        @if (action.iconProps) {
+          <fa-icon
+            (click)="action?.onClick ? action?.onClick(data) : undefined"
+            class="cursor-pointer text-gray-700"
+            [icon]="action.iconProps.icon"
+            [flip]="action.iconProps.flip"
+            [size]="'xl'"
+            slot="start"
+          ></fa-icon>
+        } @else if (action.hesIconProps) {
+          <app-hes-icon
+            (click)="action?.onClick ? action?.onClick(data) : undefined"
+            class="me-3 h-4 cursor-pointer text-gray-700"
+            [hesIcon]="action.hesIconProps"
+          ></app-hes-icon>
+        } @else if (action.button) {
+          <ion-button
+            hesBtn
+            [hesColor]="action.button.color ?? 'primary'"
+            [hesSize]="action.button.size ?? 'md'"
+            (click)="action?.onClick(data)"
+            [disabled]="
+              action.button.isDisabled ? action.button.isDisabled!(data) : false
+            "
+          >
+            {{ action.button.label }}
+          </ion-button>
+        }
+      }
+    </div>
+  } @else {
+    <div
+      [id]="'popover-icon' + randomId"
+      class="cursor-pointer px-2 py-1"
+      (click)="onMenuClick($event)"
+    >
+      <fa-icon
+        class="text-gray-700"
+        [icon]="faEllipsisVertical"
+        size="xl"
+      ></fa-icon>
+    </div>
+    @if (isMobile) {
+      <ion-action-sheet
+        [trigger]="'popover-icon' + randomId"
+        [buttons]="actionSheetButtons()"
+      ></ion-action-sheet>
+    } @else {
+      <ion-popover
+        class="hes-action-sheet"
+        [trigger]="'popover-icon' + randomId"
+        [dismissOnSelect]="true"
+      >
+        <ng-template>
+          <ion-list class="ion-no-padding">
+            @for (action of actions; track $index; let last = $last) {
+              <ion-item
+                [button]="true"
+                [detail]="false"
+                [lines]="last ? 'none' : 'full'"
+                (click)="onClick(action)"
+              >
+                @if (action.iconProps) {
+                  <fa-icon
+                    class="me-3 cursor-pointer text-gray-700"
+                    [icon]="action.iconProps.icon"
+                    [flip]="action.iconProps.flip"
+                    [size]="action.iconProps.size ?? 'sm'"
+                    slot="start"
+                  ></fa-icon>
+                } @else if (action.hesIconProps) {
+                  <app-hes-icon
+                    class="me-3 h-4 cursor-pointer text-gray-700"
+                    [hesIcon]="action.hesIconProps"
+                  ></app-hes-icon>
+                }
+                <div
+                  class="text-sm font-medium capitalize leading-tight text-gray-700"
+                >
+                  {{ action.text }}
+                </div></ion-item
+              >
+            }
+          </ion-list>
+        </ng-template>
+      </ion-popover>
+    }
+  }
+}

@@ -1,0 +1,289 @@
+/* ============================================================================
+   LAYOUT SHELL  ▸  ONLY stuff that still applies to the page wrapper
+   ============================================================================ */
+
+/* ── MAIN CONTENT AREA ──────────────────────────────────────────────────── */
+
+ion-content.route-content {
+  --background: var(--colors-brand-40);
+  --padding-top: 0 !important;
+  --padding-bottom: 0 !important;
+  /* padding controlled by ::part(scroll) in media queries */
+  --padding-left: 0 !important;
+  --padding-right: 0 !important;
+
+  /* Background image support - when bg-assessment-image class is applied */
+  &.bg-assessment-image {
+    --background: transparent;
+  }
+
+  &.bg-assessment-image::part(scroll) {
+    background-image: url("/assets/images/bg-assessment.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
+}
+
+ion-content.route-content::part(scroll) {
+  @apply box-border flex h-full w-full flex-col items-center overflow-y-auto bg-brand-35 p-8;
+  /* var(--ds-spacing-2xl)==2rem=>p-8 */
+  padding: 28px !important;
+  /* 2rem + 4px for scrollbar */
+}
+
+/* Remove default background when custom background is applied */
+ion-content.route-content.bg-assessment-image::part(scroll) {
+  background-color: transparent;
+}
+
+/* wrapper for table routes — original left spacing, extends to right edge for scrollbar */
+.main-content-wrapper-table {
+  @apply box-border h-auto w-full overflow-visible;
+
+  @media (min-width: 1024px) {
+    max-width: calc(100% - 2rem);
+    margin-inline-start: 2rem;
+    margin-inline-end: 0;
+  }
+}
+
+/* wrapper for chat routes - full width without any spacing */
+.main-content-wrapper-chat {
+  @apply box-border h-auto w-full overflow-visible;
+  max-width: 100%;
+}
+
+/* wrapper that centres the router-outlet column */
+.main-content-wrapper {
+  @apply box-border h-auto w-full max-w-[1200px] overflow-visible;
+}
+
+/* remove header shadow globally (still OK to keep here) */
+ion-header,
+ion-header::after {
+  --box-shadow: none;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+/* ── GUARDIAN CHILD-SELECTION SPLIT PANE ─────────────────────────────── */
+
+.child-menu {
+  --background: var(--colors-brand-35);
+  --ion-background-color: var(--colors-brand-35);
+  --side-width: 350px;
+}
+
+ion-menu.child-menu[type="split"] .menu-inner {
+  padding-inline: 12px;
+}
+
+ion-split-pane.child-split.split-pane-visible {
+  gap: 16px;
+}
+
+@supports not (gap: 16px) {
+  ion-split-pane.child-split.split-pane-visible > .split-pane-side.child-menu {
+    margin-inline-end: 16px;
+  }
+}
+
+/* keep Safari/scroll fixes */
+ion-menu.child-menu[type="split"] {
+  top: 20px;
+  left: 10px;
+  height: calc(100% - 116px);
+  max-width: 350px;
+}
+
+.banner-open ion-menu.child-menu[type="split"] {
+  top: 50px;
+}
+
+/* ── RESPONSIVE PADDING ADJUSTMENTS (page-shell only) ────────────────── */
+
+@media (max-width: 1023px) {
+  ion-content.route-content.pb-20 {
+    padding-bottom: 5rem !important;
+  }
+
+  ion-content.route-content::part(scroll) {
+    padding: 1rem;
+    padding-bottom: 5.5rem;
+  }
+}
+
+@media (min-width: 600px) and (max-width: 840px) {
+  ion-content.route-content::part(scroll) {
+    @apply p-6;
+  }
+}
+
+@media (max-width: 599px) {
+  ion-content.route-content::part(scroll) {
+    padding: 0.75rem;
+    padding-bottom: 5.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  ion-content.route-content.pb-20 {
+    padding-bottom: 0 !important;
+  }
+
+  ion-content.route-content::part(scroll) {
+    padding: var(--ds-spacing-2xl) !important;
+  }
+
+  /* Keep desktop gutter only below header for child-selection layouts. */
+  ion-split-pane.child-split.split-pane-visible > #child-pane-content,
+  ion-split-pane.child-split-table.split-pane-visible > #child-pane-content,
+  ion-split-pane.child-split-narrow.split-pane-visible > #child-pane-content {
+    box-sizing: border-box;
+    padding-inline: 0 !important;
+  }
+
+  /* Default desktop: keep routed content aligned with the pane edges. */
+  ion-split-pane.child-split.split-pane-visible
+    > #child-pane-content
+    > ion-router-outlet,
+  ion-split-pane.child-split-table.split-pane-visible
+    > #child-pane-content
+    > ion-router-outlet,
+  ion-split-pane.child-split-narrow.split-pane-visible
+    > #child-pane-content
+    > ion-router-outlet {
+    box-sizing: border-box;
+    inset-inline-start: 0 !important;
+    inset-inline-end: 0 !important;
+    width: auto !important;
+  }
+}
+
+/* Table routes: remove right padding so vertical scrollbar sits at screen edge.
+   Uses padding-right to override the padding shorthand which resets logical properties. */
+ion-content.route-content.ds-table-route::part(scroll) {
+  padding-right: 0 !important;
+}
+
+/* Chat routes on mobile: remove all scroll padding so the chat component
+   can manage its own full-screen layout without extra spacing. */
+@media (max-width: 1023px) {
+  ion-content.route-content.chat-route::part(scroll) {
+    padding: 0 !important;
+  }
+}
+
+/* Laptop-width balancing: split selector spacing on both sides.
+   Scoped via `child-split-balanced` (journal/report-card/lms courses). */
+@media (min-width: 1024px) and (max-width: 1600px) {
+  ion-split-pane.child-split.child-split-balanced.split-pane-visible {
+    gap: 20px !important;
+  }
+
+  ion-split-pane.child-split.child-split-balanced.split-pane-visible
+    > ion-menu.child-menu {
+    margin-inline-start: 20px;
+  }
+}
+
+/* ── UTILITIES THAT ARE STILL GLOBAL ─────────────────────────────────── */
+
+.transition-all {
+  transition: all 0.2s ease;
+}
+
+.loading-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+:host-context([dir="rtl"]) .loading-skeleton {
+  animation-direction: reverse;
+}
+
+/* keyboard-focus outline (kept global so every component gets it) */
+button:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--colors-brand-500, #3b82f6);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* reduced-motion respect */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+ion-split-pane.child-split.split-pane-visible {
+  gap: 16px;
+  --side-width: 350px;
+  max-width: calc(1200px + var(--side-width) + 16px);
+  margin-inline: auto;
+}
+
+ion-split-pane.child-split-table.split-pane-visible {
+  gap: 16px;
+  --side-width: 350px;
+  margin-inline: auto;
+  max-width: calc(100vw - (var(--side-width) + 16px));
+}
+
+ion-split-pane.child-split-narrow.split-pane-visible {
+  gap: 16px;
+  --side-width: 350px;
+  max-width: calc(560px + var(--side-width) + 16px);
+  margin-inline: auto;
+}
+
+ion-menu.child-menu {
+  position: static !important;
+  top: auto !important;
+  left: auto !important;
+  height: auto !important;
+  max-width: 350px !important;
+}
+
+ion-content.child-menu {
+  --padding-top: 24px !important;
+  --overflow: auto;
+
+  /* Smooth scroll & iOS behavior */
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+
+  /* Hide scrollbar on Edge/Firefox */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  /* Hide scrollbar in WebKit browsers */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar from Shadow DOM scroll container */
+  &::part(scroll) {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  &::part(scroll)::-webkit-scrollbar {
+    display: none;
+  }
+}

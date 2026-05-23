@@ -1,0 +1,411 @@
+<div
+  class="group relative flex items-center gap-2"
+  [ngClass]="{
+    'justify-start': !sendByMe(),
+    'flex-row-reverse': sendByMe(),
+    'mb-4': mappedReactions().length,
+  }"
+  *transloco="let t"
+>
+  <div
+    class="message relative mt-4 flex max-w-[90%] flex-col border-4 border-stroke-black-04 p-ds-md"
+    [ngClass]="{
+      send: sendByMe(),
+      received: !sendByMe(),
+      'w-fit': 'text' === messageType(),
+      'w-72': 'audio' === messageType() && !isDeleted(),
+      'highlight-message': isHighlighting(),
+    }"
+    [longPress]="500"
+    (onRelease)="openMobileReactionsMenu($event)"
+  >
+    @if (loginUserId()) {
+      <div>
+        @if (isDeleted()) {
+          <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1">
+              <app-hes-icon [faIcon]="banIcon"></app-hes-icon>
+              <div class="text-xs">
+                {{
+                  sendByMe()
+                    ? t("chats.you_deleted_msg.txt")
+                    : t("chats.msg_deleted.txt")
+                }}
+              </div>
+            </div>
+            <div class="text-xs font-normal">
+              {{ message().getSentAt() * 1000 | hesTime }}
+            </div>
+          </div>
+        } @else {
+          <div class="flex flex-col gap-ds-md">
+            @if (isGroupChat()) {
+              <div
+                class="single-line-sm-mid-emphasis"
+                [ngClass]="senderTextColorClass()"
+              >
+                {{ senderDisplayName() }}
+              </div>
+            }
+
+            <!-- Reply Reference -->
+            @if (isReply()) {
+              <div
+                class="flex cursor-pointer flex-col gap-ds-sm rounded-ds-sm border-l-4 bg-black-4 p-ds-md transition-colors hover:bg-black-8"
+                [ngClass]="{
+                  'border-emerald-600': sendByMe(),
+                  'border-neutral-cool-200': !sendByMe(),
+                }"
+                (click)="onScrollToReplyMessage()"
+              >
+                <div class="single-line-caption-mid-emphasis">
+                  {{ replyToSenderName() }}
+                </div>
+                <div class="single-line-xs-low-emphasis line-clamp-3">
+                  {{ replyToMessageText() }}
+                </div>
+              </div>
+            }
+
+            @switch (messageType()) {
+              @case ("text") {
+                @defer {
+                  <app-text-message [message]="message()" />
+                }
+              }
+              @case ("video") {
+                @defer {
+                  <div class="relative">
+                    <app-video-message
+                      [message]="message()"
+                      #videoRef="videMessage"
+                    />
+                    <ng-container
+                      [ngTemplateOutlet]="timeAndStatusTpl"
+                    ></ng-container>
+                  </div>
+                }
+              }
+              @case ("file") {
+                @defer {
+                  <app-file-message [message]="message()" />
+                }
+              }
+              @case ("image") {
+                @defer {
+                  <div class="relative">
+                    <app-image-message [message]="message()" />
+                    <ng-container
+                      [ngTemplateOutlet]="timeAndStatusTpl"
+                    ></ng-container>
+                  </div>
+                }
+              }
+              @case ("audio") {
+                @defer {
+                  <app-voice-message [message]="message()" />
+                }
+              }
+              @default {}
+            }
+          </div>
+          @if (captionText()) {
+            <div class="mt-1 max-w-[190px] whitespace-pre-line">
+              {{ captionText() }}
+            </div>
+          }
+          @if (
+            messageType() === "audio" ||
+            messageType() === "text" ||
+            messageType() === "file"
+          ) {
+            <ng-container [ngTemplateOutlet]="timeAndStatusTpl"></ng-container>
+          }
+          @if (!!mappedReactions().length) {
+            <div class="reactions mt-2 flex flex-wrap items-center gap-2">
+              @for (item of mappedReactions(); track $index) {
+                <div
+                  (click)="onReactionClicked(item)"
+                  (mouseenter)="onReactionHover(item)"
+                  (mouseleave)="onReactionLeave()"
+                  class="flex cursor-pointer items-center gap-1 rounded-full px-ds-md py-ds-xs transition-all duration-150 hover:scale-105"
+                  [ngClass]="{
+                    'border border-brand-700 bg-brand-200': item.reactedByMe,
+                    'border-0 bg-[#E3E3E3]': !item.reactedByMe,
+                  }"
+                  [title]="item.config?.label"
+                  [longPress]="500"
+                  (onRelease)="onReactionLongPressed($event)"
+                  (mousedown)="$event.stopPropagation()"
+                  (touchstart)="$event.stopPropagation()"
+                  dsTooltip
+                  [dsTooltipEnabled]="shouldShowTooltip()"
+                  [tooltipTemplate]="reactTooltip"
+                >
+                  @if (item.config) {
+                    <app-ds-icon [icon]="item.config.svgIcon" [size]="'2xl'" />
+                  } @else {
+                    {{ item.emoji }}
+                  }
+                  @if (item.count > 1) {
+                    <span class="content-sm-mid-emphasis text-emphasis-high">{{
+                      item.count
+                    }}</span>
+                  }
+                </div>
+              }
+            </div>
+          }
+          @if (!isMobile() && (isGroupChat() ? isPersonnelUser() : true)) {
+            <div
+              id="{{ 'message-more-option' + messageId() }}"
+              class="absolute right-1 top-2 hidden h-4 w-4 cursor-pointer items-center justify-center text-emphasis-high group-hover:flex"
+            >
+              <app-hes-icon [faIcon]="faAngleDown" />
+            </div>
+          }
+        }
+      </div>
+    }
+  </div>
+
+  @if (!isMobile() && !isDeleted()) {
+    <div
+      class="mt-4 hidden cursor-pointer group-hover:flex"
+      id="{{ 'reaction-' + messageId() }}"
+    >
+      <app-hes-icon [faIcon]="faceSmile"></app-hes-icon>
+    </div>
+  }
+</div>
+
+<ng-template #reactTooltip>
+  @if (isTooltipLoading()) {
+    <div class="flex items-center justify-center p-ds-md">
+      <ion-spinner name="crescent" class="text-white"></ion-spinner>
+    </div>
+  } @else if (tooltipData()) {
+    <div class="p-ds-md text-[#F9FAFB]" *transloco="let t">
+      <div class="flex items-start gap-2">
+        <div class="flex-shrink-0">
+          <app-ds-icon [icon]="tooltipData()!.svgIcon" [size]="'2xl'" />
+        </div>
+        <div class="flex flex-col gap-ds-lg">
+          <div class="heading-h4-high-emphasis">
+            <span>{{ tooltipData()!.reactionName }}</span>
+          </div>
+
+          @if (tooltipData()!.students.length > 0) {
+            <div class="flex flex-col gap-ds-sm">
+              <div class="heading-h5-high-emphasis">
+                {{ t("global.students.title") }}
+              </div>
+              <div class="single-line-caption-mid-emphasis">
+                {{ tooltipData()!.students.join(", ") }}
+              </div>
+            </div>
+          }
+
+          @if (tooltipData()!.guardians.length > 0) {
+            <div class="flex flex-col gap-ds-sm">
+              <div class="heading-h5-high-emphasis">
+                {{ t("global.guardians.title") }}
+              </div>
+              <div class="single-line-caption-mid-emphasis">
+                {{ tooltipData()!.guardians.join(", ") }}
+              </div>
+            </div>
+          }
+
+          @if (tooltipData()!.teachers.length > 0) {
+            <div class="flex flex-col gap-ds-sm">
+              <div class="heading-h5-high-emphasis">
+                {{ t("chats.teachers.title") }}
+              </div>
+              <div class="single-line-caption-mid-emphasis">
+                {{ tooltipData()!.teachers.join(", ") }}
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</ng-template>
+
+<ion-popover
+  trigger="{{ 'message-more-option' + messageId() }}"
+  [dismissOnSelect]="true"
+  [showBackdrop]="false"
+  triggerAction="click"
+  class="message-options-popover"
+>
+  <ng-template>
+    <div
+      class="rounded-ds-lg border-4 border-stroke-black-04 bg-white p-2 shadow-lg"
+      *transloco="let t"
+    >
+      @if (sendByMe()) {
+        @if (message().getType() === "text") {
+          <div
+            class="flex cursor-pointer items-center gap-3 rounded-ds-lg px-ds-md py-ds-md transition-colors hover:bg-gray-100"
+            (click)="onEditMessage()"
+          >
+            <app-hes-icon
+              [faIcon]="faEditIcon"
+              class="text-emphasis-mid"
+            ></app-hes-icon>
+            <span class="single-line-sm-mid-emphasis text-emphasis-high">{{
+              t("global.edit.btn")
+            }}</span>
+          </div>
+        }
+        <div
+          class="flex cursor-pointer items-center gap-3 rounded-ds-lg px-ds-md py-ds-md transition-colors hover:bg-gray-100"
+          (click)="onDeleteMessage()"
+        >
+          <app-hes-icon
+            [faIcon]="faTrashCan"
+            class="text-emphasis-mid"
+          ></app-hes-icon>
+          <span class="single-line-sm-mid-emphasis text-emphasis-high">{{
+            t("global.delete.btn")
+          }}</span>
+        </div>
+      }
+      <div
+        class="flex cursor-pointer items-center gap-3 rounded-ds-lg px-ds-md py-ds-md transition-colors hover:bg-gray-100"
+        (click)="onReplyMessage()"
+      >
+        <app-hes-icon
+          [faIcon]="faReplyIcon"
+          class="text-emphasis-mid"
+        ></app-hes-icon>
+        <span class="single-line-sm-mid-emphasis text-emphasis-high">{{
+          t("chat.action.reply")
+        }}</span>
+      </div>
+    </div>
+  </ng-template>
+</ion-popover>
+
+<ion-popover
+  class="hes-reaction-popover"
+  trigger="{{ 'reaction-' + messageId() }}"
+  [showBackdrop]="false"
+  [attr.trigger-action]="isMobile() ? 'context-menu' : 'click'"
+  [dismissOnSelect]="true"
+>
+  <ng-template>
+    <div
+      class="flex items-center gap-1 rounded-full border-2 border-gray-200 bg-surface-primary px-ds-md py-ds-sm"
+    >
+      @for (config of reactionConfigs; track config.type) {
+        <button
+          class="relative flex items-center justify-center rounded-full p-ds-md transition-all duration-150 hover:scale-150"
+          (click)="onSelectReactionNew(config)"
+          [title]="config.label"
+        >
+          <app-ds-icon [icon]="config.svgIcon" [size]="'2xl'" />
+        </button>
+      }
+    </div>
+  </ng-template>
+</ion-popover>
+
+<ion-popover
+  #mobileReactionsPopover
+  class="hes-reaction-popover mobile-reactions"
+  [isOpen]="isMobileReactionsOpen()"
+  [showBackdrop]="true"
+  [dismissOnSelect]="true"
+  (didDismiss)="closeMobileReactionsMenu()"
+>
+  <ng-template>
+    <div
+      class="flex items-center gap-1 rounded-full border-2 border-gray-200 bg-surface-primary px-ds-md py-ds-sm shadow-lg"
+    >
+      @for (config of reactionConfigs; track config.type) {
+        <button
+          class="relative flex items-center justify-center rounded-full p-ds-md"
+          (click)="onSelectReactionNew(config)"
+          [title]="config.label"
+        >
+          <app-ds-icon [icon]="config.svgIcon" [size]="'2xl'" />
+        </button>
+      }
+    </div>
+
+    <!-- Show edit and delete action on mobile (only if message is sent by me OR not in group chat)-->
+    @if (sendByMe() || !isGroupChat() || isPersonnelUser()) {
+      <div *transloco="let t" class="mt-4 rounded-ds-md bg-white p-1 px-3">
+        @if (sendByMe()) {
+          @if (message().getType() === "text") {
+            <div
+              (click)="onEditMessage()"
+              class="rounded-2xl active:bg-gray-300"
+            >
+              <div class="flex gap-2 p-3">
+                <app-hes-icon [faIcon]="faEditIcon"></app-hes-icon>
+                {{ t("global.edit.btn") }}
+              </div>
+            </div>
+          }
+          <div
+            (click)="onDeleteMessage()"
+            class="rounded-2xl active:bg-gray-300"
+          >
+            <div class="flex gap-2 p-3">
+              <app-hes-icon [faIcon]="faTrashCan"></app-hes-icon>
+              {{ t("global.delete.btn") }}
+            </div>
+          </div>
+        }
+        <div (click)="onReplyMessage()" class="rounded-2xl active:bg-gray-300">
+          <div class="flex gap-2 p-3">
+            <app-hes-icon [faIcon]="faReplyIcon"></app-hes-icon>
+            {{ t("chat.action.reply") }}
+          </div>
+        </div>
+      </div>
+    }
+  </ng-template>
+</ion-popover>
+
+<ng-template #timeAndStatusTpl>
+  @if (videoRef()?.isShowPlayButton() ?? true) {
+    <div
+      class="flex items-center justify-end gap-1 text-gray-500"
+      [ngClass]="{
+        'absolute bottom-0 right-2':
+          'image' === messageType() || 'video' === messageType(),
+      }"
+      *transloco="let t"
+    >
+      <div
+        class="single-line-caption-low-emphasis mt-[8px] flex items-center gap-1 text-emphasis-mid"
+      >
+        @if (isEdited()) {
+          <span>{{ t("chat.edited.txt") }}</span>
+        }
+        {{ message().getSentAt() * 1000 | hesTime }}
+      </div>
+      @if (sendByMe()) {
+        @switch (markStatus()) {
+          @case ("read") {
+            <app-hes-icon
+              [faIcon]="doubleCheck"
+              class="text-[#1B84FF]"
+            ></app-hes-icon>
+          }
+          @case ("delivered") {
+            <app-hes-icon [faIcon]="doubleCheck"></app-hes-icon>
+          }
+          @default {
+            <app-hes-icon [faIcon]="check"></app-hes-icon>
+          }
+        }
+      }
+    </div>
+  }
+</ng-template>

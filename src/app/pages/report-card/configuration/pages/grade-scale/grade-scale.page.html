@@ -1,0 +1,12 @@
+<ion-content class="ds-page-content" *transloco="let t">
+  <app-list-view-container
+    [columns]="columnsDef"
+    class="w-full"
+    [dataSource]="fetchGradeScales"
+    [primaryActions]="[primaryBtnConfig]"
+    [noDataConfig]="noDataCardConfig()"
+    [pageTitle]="t('grade_management.manage_grade_scale.title')"
+    [canCopy]="true"
+    [showSearchInput]="false"
+  />
+</ion-content>

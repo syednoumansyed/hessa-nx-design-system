@@ -1,0 +1,55 @@
+<div
+  *transloco="let t"
+  class="flex w-full flex-col transition-transform active:scale-[.98]"
+  [routerLink]="menuRoute().clickable ? null : routerPath()"
+  (click)="onMenuItemClick($event)"
+>
+  <!-- blob -->
+  <div class="relative flex h-32 items-center justify-center">
+    <img
+      class="pointer-events-none absolute inset-0 m-auto w-28 select-none"
+      [src]="backgroundImage()"
+      alt=""
+    />
+
+    @if (menuRoute().iconName) {
+      <ds-animated-icon
+        [icon]="menuRoute().iconName"
+        class="relative z-10"
+        [size]="'xxl'"
+        [autoplay]="false"
+        (animationReady)="savePlayFunctionForItem($event)"
+      />
+    }
+
+    @if (count()) {
+      <span
+        class="absolute right-2 top-2 z-20 flex h-5 w-5 items-center justify-center rounded-full bg-[#ECAD01] text-[10px] font-bold text-white"
+      >
+        {{ count() }}
+      </span>
+    }
+  </div>
+
+  <!-- caption row -->
+  <div class="flex justify-center px-4 pb-2">
+    <!-- self-sizing bubble: text + chevron always stay as one unit -->
+    <div class="inline-flex items-center gap-1">
+      <span
+        class="break-words text-center text-base leading-snug text-emphasis-high"
+      >
+        {{ t(menuRoute().titleI18nKey) }}
+      </span>
+
+      <!-- chevron inside lil’ circle -->
+      <span
+        class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-pastels-purple-250"
+      >
+        <ng-icon
+          name="chevron-right"
+          class="h-3 w-3 text-lg font-bold text-emphasis-high rtl:rotate-180"
+        ></ng-icon>
+      </span>
+    </div>
+  </div>
+</div>

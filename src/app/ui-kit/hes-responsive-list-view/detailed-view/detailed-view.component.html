@@ -1,0 +1,54 @@
+<div
+  *transloco="let t"
+  class="Modal flex max-h-[90vh] w-full max-w-[500px] flex-col justify-start gap-4 overflow-y-auto rounded-xl bg-white p-7 shadow"
+>
+  <!-- Title Section -->
+  @if (primaryColumnCol) {
+    <div class="flex w-full flex-col">
+      <div class="text-[11px] font-medium text-[#667085]">
+        {{ primaryColumnCol.headerName }}
+      </div>
+      <div class="text-sm font-semibold text-[#343A46]">
+        {{ primaryColumnValue }}
+      </div>
+      <div class="my-4 text-base font-bold text-[#343A46]">
+        {{ displayName() }}
+      </div>
+    </div>
+  }
+
+  <!-- Divider and Data Rows -->
+  @for (col of viewColumns(); track col) {
+    <div class="w-full">
+      <div
+        class="-ml-6 mb-3 w-[calc(100%+3rem)] border-t border-[#EAECF0]"
+      ></div>
+      <div class="flex w-full items-center justify-between text-sm">
+        <div class="font-medium text-[#343A46]">{{ col.headerName }}</div>
+        <div class="font-normal text-[#667085]">
+          @if (col.valueFormatter) {
+            {{
+              col.valueFormatter({
+                data: this.data,
+                value: getValueByField(col)
+              })
+            }}
+          } @else if (col.cellRenderer) {
+            <div
+              [dynamicCellRenderer]="{
+                component: col.cellRenderer,
+                params: {
+                  data: this.data,
+                  col: col,
+                  value: getValueByField(col)
+                }
+              }"
+            ></div>
+          } @else {
+            {{ getValueByField(col) }}
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>

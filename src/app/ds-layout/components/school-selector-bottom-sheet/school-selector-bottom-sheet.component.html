@@ -1,0 +1,8 @@
+<div class="white-bg" *transloco="let t">
+  <app-school-structure-tree
+    [scopeSelection]="true"
+    [maxDepth]="maxDepth"
+    (close)="close()"
+    (selectionComplete)="onSelectionComplete($event)"
+  ></app-school-structure-tree>
+</div>

@@ -1,0 +1,148 @@
+<div *transloco="let t">
+  <div [class]="'w-full bg-white p-4 ' + class">
+    <div class="flex items-start gap-ds-xl">
+      <div id="avatar" class="flex-shrink-0">
+        @if (headerFaIcon || headerHesIcon) {
+          <app-hes-icon
+            [faIcon]="headerFaIcon"
+            [hesIcon]="headerHesIcon"
+            class="text-primary-400"
+          ></app-hes-icon>
+        } @else {
+          <app-ds-avatar
+            [size]="isMobile ? 'xl' : '4xl'"
+            [fullName]="fullName"
+            [imageUrl]="profilePictureUrl"
+            [color]="profileColor"
+          />
+        }
+      </div>
+      <div class="w-full">
+        <div class="flex w-full items-center">
+          <div class="text-base font-bold text-gray-900 lg:text-[1.375rem]">
+            {{ fullName }}
+          </div>
+          @if (isMobile && showProfileUploadButton) {
+            <ds-button
+              *hesRbac="uploadProdilePicturePermissionId"
+              variant="secondary"
+              size="sm"
+              cssClass="mb-2 ms-auto"
+              (click)="initiateProfileUpload()"
+            >
+              {{
+                profilePictureUrl
+                  ? t("global.edit_picture.title")
+                  : t("global.upload_picture.title")
+              }}
+            </ds-button>
+          }
+        </div>
+        <div>
+          <div
+            class="mt-4 flex flex-col flex-wrap items-start gap-2 lg:flex-row lg:gap-6"
+          >
+            <div
+              class="mb-3 grid grid-cols-2 gap-4 sm:gap-6 lg:flex lg:flex-nowrap lg:gap-6"
+            >
+              @for (item of metadata; track $index) {
+                <div class="inline-flex items-center gap-2">
+                  <app-hes-icon
+                    [faIcon]="item.faIcon"
+                    [hesIcon]="item.hesIcon"
+                    class="text-primary-400"
+                  ></app-hes-icon>
+                  <div
+                    [ngClass]="{
+                      'phone-number-dir': item?.type === 'phoneNumber',
+                    }"
+                    class="text-base font-medium leading-tight text-[#7F8491]"
+                  >
+                    {{ item.title | enumLang }}
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+        @if (isMobile) {
+          <div>
+            <ng-container *ngTemplateOutlet="creationData"></ng-container>
+          </div>
+        }
+      </div>
+      @if (!isMobile) {
+        <div>
+          <ng-container *ngTemplateOutlet="creationData"></ng-container>
+        </div>
+      }
+    </div>
+  </div>
+
+  <ng-template #creationData>
+    <div class="flex flex-col items-start justify-start gap-1 lg:items-end">
+      @if (!isMobile && showProfileUploadButton) {
+        <ds-button
+          *hesRbac="uploadProdilePicturePermissionId"
+          variant="secondary"
+          size="sm"
+          cssClass="mb-2"
+          (click)="initiateProfileUpload()"
+        >
+          {{
+            profilePictureUrl
+              ? t("global.edit_picture.title")
+              : t("global.upload_picture.title")
+          }}
+        </ds-button>
+      }
+      @if (creationDate) {
+        <div class="flex items-start justify-end gap-1 whitespace-nowrap">
+          <div class="text-sm font-normal text-gray-500">
+            {{ t("global.created_on.title") }}
+          </div>
+          <div class="text-sm font-medium text-slate-700">
+            {{ creationDate | hesDate }}
+          </div>
+        </div>
+      }
+      @if (createdBy) {
+        <div class="flex items-start justify-end gap-1 whitespace-nowrap">
+          <div class="text-sm font-normal text-gray-500">
+            {{ t("global.created_by.title") }}:
+          </div>
+          <div class="text-sm font-medium text-slate-700">
+            {{ createdBy }}
+          </div>
+        </div>
+      }
+      @if (userType === personnelUserType && associateSchoolControl) {
+        <ng-container *hesRbac="associateSchoolPermissionId">
+          <app-hes-school-structure-control
+            [formControl]="associateSchoolControl"
+            [isMultiSelect]="true"
+            (onClose)="onClose($event)"
+            [depth]="depth"
+          >
+            <div
+              #displayTarget
+              class="hes-badge hes-badge--warnning cursor-pointer p-2 capitalize"
+            >
+              {{ t("user_management.associate_with_school.btn") }}
+            </div>
+          </app-hes-school-structure-control>
+        </ng-container>
+      }
+      @if (lastActiveDate) {
+        <div class="flex items-start justify-end gap-1 whitespace-nowrap">
+          <div class="text-sm font-normal text-gray-500">
+            {{ t("global.last_active.txt") }}:
+          </div>
+          <div class="text-sm font-medium text-slate-700">
+            {{ lastActiveDate | hesDateTime }}
+          </div>
+        </div>
+      }
+    </div>
+  </ng-template>
+</div>

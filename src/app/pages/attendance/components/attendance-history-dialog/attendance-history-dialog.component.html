@@ -1,0 +1,122 @@
+<ds-modal
+  *transloco="let t"
+  [headerConfig]="{
+    title: t('global.attendance_updates.txt'),
+    showCloseButton: true,
+  }"
+  [footerConfig]="{ primaryButton: { text: t('global.ok.btn') } }"
+  (closeClick)="onClose()"
+  (primaryClick)="onClose()"
+>
+  <!-- Content Container -->
+  <div class="flex flex-col items-start self-stretch ps-5">
+    <!-- Timeline -->
+    @if (history().length > 0) {
+      <div>
+        @for (item of history(); track item.createdAt; let isLast = $last) {
+          <div class="flex items-stretch gap-ds-lg">
+            <!-- Timeline Dot & Line -->
+            <div class="flex w-7 flex-col items-center">
+              <!-- Dot - larger hollow circle for latest entry (last in list) -->
+              @if (isLast) {
+                <div
+                  class="h-6 w-6 shrink-0 rounded-full border-[5.5px] border-[#ECAD01] bg-white"
+                ></div>
+              } @else {
+                <div
+                  class="mx-auto h-4 w-4 shrink-0 rounded-full bg-[#fed143]"
+                ></div>
+                <!-- Vertical line (not shown for last item) -->
+                <div class="w-0.5 flex-1 bg-gray-200"></div>
+              }
+            </div>
+
+            <!-- Content -->
+            <div
+              class="flex flex-[1_0_0] flex-col items-start gap-ds-xs pb-ds-xl"
+            >
+              <!-- Status Chip -->
+              <app-ds-chip
+                [text]="item.status | enumLang"
+                [customClasses]="getStatusChipClasses(item.status)"
+              ></app-ds-chip>
+
+              <!-- By: Show confirmedByName when confirmed, otherwise markedByName -->
+              @if (
+                item.confirmationStatus === ConfirmationStatus.CONFIRMED &&
+                item.confirmedByName
+              ) {
+                <div class="single-line-caption-mid-emphasis text-gray-700">
+                  {{ t("attendance.confirmed_by.title") }}:
+                  {{ item.confirmedByName }}
+                </div>
+              } @else if (item.markedByName) {
+                <div class="single-line-caption-mid-emphasis text-gray-700">
+                  {{ t("attendance.marked_by.title") }}:
+                  {{ item.markedByName }}
+                </div>
+              }
+              <!-- Date & Time -->
+              <div class="single-line-caption-mid-emphasis text-content-mid">
+                {{ item.createdAt | hesDate }} {{ item.createdAt | hesTime }}
+              </div>
+
+              <!-- SMS sent to guardian -->
+              @if (item.isSmsSent) {
+                <div
+                  class="single-line-caption-mid-emphasis flex items-center gap-1 text-gray-700"
+                >
+                  <span>{{ t("global.sms_sent_to_guardian.txt") }}</span>
+                  @if (item.smsContent) {
+                    <button
+                      class="flex items-center justify-center text-gray-400 hover:text-gray-600"
+                      dsTooltip
+                      [dsTooltipTitle]="t('global.sms_sent_to_guardian.txt')"
+                      [dsTooltipContent]="item.smsContent"
+                      [dsTooltipIcon]="tooltipIcon"
+                      dsTooltipIconClass="text-[var(--surface-info-light)]"
+                      dsTooltipPosition="right"
+                    >
+                      <app-hes-icon [faIcon]="faCircleInfo"></app-hes-icon>
+                    </button>
+                  }
+                </div>
+
+                <!-- SMS Delivery Details -->
+                @if (!item.smsDeliveredAt && item.smsSentAt) {
+                  <div
+                    class="single-line-caption-mid-emphasis text-content-mid"
+                  >
+                    {{ t("attendance.sms_sent_at.label") }}:
+                    {{ item.smsSentAt | hesDate }}
+                    {{ item.smsSentAt | hesTime }}
+                  </div>
+                }
+                <div class="single-line-caption-mid-emphasis text-content-mid">
+                  {{ t("attendance.sms_delivered_at.label") }}:
+                  {{
+                    item.smsDeliveredAt
+                      ? (item.smsDeliveredAt | hesDate) +
+                        " " +
+                        (item.smsDeliveredAt | hesTime)
+                      : t("global.pending.txt")
+                  }}
+                </div>
+              }
+              <!-- Guardian was notified (when confirmed without SMS for non-present status) -->
+              @if (
+                !item.isSmsSent &&
+                item.confirmationStatus === ConfirmationStatus.CONFIRMED &&
+                item.status !== AttendanceStatus.PRESENT
+              ) {
+                <div class="single-line-caption-mid-emphasis text-gray-700">
+                  {{ t("global.guardian_was_notified.txt") }}
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</ds-modal>

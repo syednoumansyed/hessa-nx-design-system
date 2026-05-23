@@ -1,0 +1,24 @@
+@switch (currentView()) {
+  @case ("category") {
+    <app-category-form
+      [form]="form"
+      [isEdit]="isEdit()"
+      [selectedCustomFields]="selectedCustomFields()"
+      [hasExistingCustomFields]="hasExistingCustomFields()"
+      (onNavigate)="navigateTo($event)"
+      (onRemoveCustomField)="removeCustomField($event)"
+    />
+  }
+  @case ("search-fields") {
+    <app-search-custom-fields
+      [customFields]="allCustomFields()"
+      [selectedFieldIds]="selectedFieldIds()"
+      (onSelect)="selectCustomField($event)"
+      (onDeselect)="deselectCustomField($event)"
+      (onAddNew)="navigateTo('add-field')"
+    />
+  }
+  @case ("add-field") {
+    <app-add-custom-field [form]="addFieldForm" />
+  }
+}

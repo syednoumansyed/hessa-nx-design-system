@@ -1,0 +1,92 @@
+<ion-content class="ds-page-content" *transloco="let t;">
+  <div [ngClass]="{'hes-card flex items-center': !isMobile}">
+    <div
+      [ngClass]="{'hes-card h-fit border border-gray-200 p-10': !isMobile}"
+      class="flex w-full flex-col"
+    >
+      <div class="flex flex-row justify-between">
+        <div class="mb-2 text-2xl font-semibold leading-7 text-gray-900">
+          {{ t('support_ticket.view_assigned_ticket.title') }}
+        </div>
+        @if(isAllowToPerformAction()){
+        <div class="flex gap-5">
+          @if (!isInitialLevel()) {
+          <ion-button
+            *hesRbac="deEscalatePermissionId"
+            hesColor="gray"
+            (click)="onDeEscalate()"
+          >
+            <ion-icon
+              src="assets/icons/ticket-discount.svg"
+              alt="ticket-discount"
+              class="h-[1.5rem] w-[1.5rem] pr-2"
+            ></ion-icon>
+            {{t('support_ticket.view_assigned_ticket.de_escalate.btn')}}</ion-button
+          >
+          }
+          <ion-button
+            *hesRbac="reassignPermissionId"
+            hesColor="gray"
+            (click)="onReassign()"
+          >
+            <ion-icon
+              src="assets/icons/user-tick.svg"
+              alt="user-tick"
+              class="h-[1.5rem] w-[1.5rem] pr-2"
+            ></ion-icon>
+            {{t('support_tickets.reassign.btn')}}</ion-button
+          >
+        </div>
+        }
+      </div>
+
+      <div class="mb-5 text-gray-600">
+        {{t('support_ticket.ticket_id.label')}}: {{ ticketDetails()!.id }}
+      </div>
+
+      <app-ticket-initiator
+        class="mb-5 lg:mb-8"
+        [user]="ticketDetails()!.user"
+        [userType]="ticketDetails()!.createdByType"
+        [role]="ticketDetails()!.roles[0]"
+        [schoolStructure]="ticketDetails()!.schoolStructure"
+        [createdByType]="ticketDetails()!.createdByType"
+      ></app-ticket-initiator>
+
+      <app-ticket-details
+        class="mb-5 lg:mb-8"
+        [ticketDetails]="ticketDetails()"
+      ></app-ticket-details>
+
+      @if (isAllowToPerformAction()){
+      <div class="mb-5 flex w-full items-center justify-end gap-3 lg:mb-8">
+        <div class="flex w-[25rem] items-center gap-3">
+          @if (!isLastLevel() ) {
+          <ion-button
+            *hesRbac="escalationPermissionId"
+            hesSize="lg"
+            class="flex-grow"
+            hesColor="white"
+            (click)="onEscalate()"
+          >
+            {{ t("support_ticket.escalate.btn") }}
+          </ion-button>
+          }
+          <ion-button
+            *hesRbac="resolvePermissionId"
+            hesSize="lg"
+            class="flex-grow"
+            (click)="onResolve()"
+            >{{ t("support_ticket.resolve.btn") }}</ion-button
+          >
+        </div>
+      </div>
+      } @if(escalationLadderConfig()){
+      <app-hes-ladder [config]="escalationLadderConfig()!" class="my-4" />
+      }
+      <app-support-ticket-activity
+        [activities]="ticketDetailActivities()"
+      ></app-support-ticket-activity>
+    </div>
+  </div>
+</ion-content>

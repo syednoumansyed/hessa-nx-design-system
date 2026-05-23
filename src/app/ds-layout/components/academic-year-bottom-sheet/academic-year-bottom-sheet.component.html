@@ -1,0 +1,10 @@
+<div class="white-bg pt-2" *transloco="let t">
+  <h3 class="mx-4 mt-4 text-base">
+    {{ t("global.select_academic_year.btn") }}
+  </h3>
+  <app-academic-year-tree
+    (close)="close()"
+    (onAcademicYearSelection)="onAcademicYearSelection($event)"
+  >
+  </app-academic-year-tree>
+</div>

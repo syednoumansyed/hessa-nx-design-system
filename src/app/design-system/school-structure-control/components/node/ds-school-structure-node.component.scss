@@ -1,0 +1,152 @@
+/* Reuse the navigation tree styling so the control matches ds-layout. */
+
+$rail-x: 12px;
+$rail-clr: #d4d4d4;
+
+.tree-rail {
+  position: relative;
+
+  &:not(.last-sibling)::before {
+    content: "";
+    position: absolute;
+    left: $rail-x;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    border-left: 1px dashed $rail-clr;
+    background: #fff;
+    pointer-events: none;
+  }
+
+  &.first-level.first-sibling:not(.last-sibling)::before {
+    /* Skip the top segment so the root rail starts at the first toggle. */
+    top: 20px;
+  }
+
+  &:not(.last-sibling):dir(rtl)::before {
+    left: auto;
+    right: $rail-x;
+    border-left: none;
+    border-right: 1px dashed $rail-clr;
+  }
+}
+
+.tree-children {
+  padding-left: 2rem;
+
+  &:dir(rtl) {
+    padding-left: 0;
+    padding-right: 2rem;
+  }
+}
+
+.tree-content {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 10px 0;
+  position: relative;
+}
+
+.tree-rail.last-sibling > .tree-content {
+  /* Drop extra space below the final node so the list hugs the footer. */
+  padding-bottom: 0;
+}
+
+.tree-rail.last-sibling.active > .tree-content {
+  /* Keep selection highlight from touching the container edge. */
+  padding-bottom: 10px;
+}
+
+.active > .tree-content {
+  background: #fff9e8;
+  border-radius: 8px;
+  font-weight: 600;
+  padding-left: 8px;
+  padding-right: 8px;
+  margin-left: -8px;
+  margin-right: -8px;
+
+  &:dir(rtl) {
+    padding-right: 8px;
+    padding-left: 8px;
+    margin-right: -8px;
+    margin-left: -8px;
+  }
+}
+
+.active > .tree-content > .toggle-box {
+  margin-left: 8px;
+
+  &:dir(rtl) {
+    margin-left: 0;
+    margin-right: 8px;
+  }
+}
+
+.toggle-box {
+  position: relative;
+  z-index: 10;
+  display: grid;
+  height: 1.5rem;
+  width: 1.5rem;
+  flex-shrink: 0;
+  place-items: center;
+  border-radius: 0.375rem;
+  border: 1px solid #d4d4d4;
+  background: #fff;
+  color: #6b7280;
+
+  &:hover {
+    background: #f5f5f5;
+    color: #374151;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+  }
+}
+
+.tree-label {
+  min-width: 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+  word-wrap: break-word;
+  hyphens: auto;
+}
+
+.toggle-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+}
+
+.node-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 0.5rem;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.node-icon--active {
+  filter: none;
+}
+
+.node-icon--disabled {
+  opacity: 0.5;
+  filter: grayscale(0.15);
+}
+
+.select-disabled {
+  pointer-events: none;
+
+  .tree-label {
+    color: var(--hes-emphasis-low, #9d9d9d);
+  }
+}

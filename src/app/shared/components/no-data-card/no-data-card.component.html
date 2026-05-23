@@ -1,0 +1,80 @@
+<div
+  [ngClass]="{
+    'rounded-lg border border-gray-200 bg-white pb-8 pt-8 shadow': !noBgStyle,
+  }"
+  class="flex w-full flex-col items-center overflow-auto pt-8 text-center lg:pt-0"
+>
+  <div
+    class="flex w-full max-w-[280px] shrink-0 flex-col items-center justify-center gap-4 lg:max-w-2xl"
+  >
+    <ion-img [src]="mainImagePath" alt="hessa logo" class="w-[14rem]"></ion-img>
+    <div class="flex flex-col gap-ds-sm">
+      <div class="content-lg-high-emphasis text-center text-emphasis-high">
+        {{ title }}
+      </div>
+      <div
+        [innerHTML]="description"
+        class="content-sm-default w-full whitespace-normal break-words text-center text-emphasis-mid"
+      ></div>
+    </div>
+    @if (filteredBy.length) {
+      <div class="mt-2 flex w-full flex-col items-center">
+        <div class="content-sm-default text-center text-emphasis-mid">
+          {{ filteredByLabel | dsTranslate }}
+        </div>
+        <div
+          class="mt-ds-md flex flex-wrap items-center justify-center gap-ds-sm"
+        >
+          @for (chip of filteredBy; track chip.label) {
+            <app-ds-chip
+              [text]="chip.label"
+              [variant]="'primary'"
+              [removable]="chip.removable ?? !!chip.onRemove"
+              (remove)="chip.onRemove?.()"
+            ></app-ds-chip>
+          }
+          @if (clearFiltersButton) {
+            <ds-button
+              variant="tertiary"
+              size="sm"
+              (click)="clearFiltersButton.onAction()"
+              [disabled]="clearFiltersButton.disabled ?? false"
+              [iconStart]="clearFiltersButton.iconStart"
+              [iconEnd]="clearFiltersButton.iconEnd"
+            >
+              {{ clearFiltersButton.label | dsTranslate }}
+            </ds-button>
+          }
+        </div>
+      </div>
+    }
+    @if (secondaryButton || primaryButton) {
+      <div class="flex flex-nowrap items-center justify-center gap-3">
+        @if (secondaryButton) {
+          <ds-button
+            [variant]="secondaryButton.variant ?? 'secondary'"
+            size="lg"
+            (click)="secondaryButton.onAction()"
+            [disabled]="secondaryButton.disabled ?? false"
+            [iconStart]="secondaryButton.iconStart"
+            [iconEnd]="secondaryButton.iconEnd"
+          >
+            {{ secondaryButton.label }}
+          </ds-button>
+        }
+        @if (primaryButton) {
+          <ds-button
+            [variant]="primaryButton.variant ?? 'primary'"
+            size="lg"
+            (click)="primaryButton.onAction()"
+            [disabled]="primaryButton.disabled ?? false"
+            [iconStart]="primaryButton.iconStart"
+            [iconEnd]="primaryButton.iconEnd"
+          >
+            {{ primaryButton.label }}
+          </ds-button>
+        }
+      </div>
+    }
+  </div>
+</div>

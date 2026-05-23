@@ -1,0 +1,42 @@
+<ion-content class="ds-page-content" *transloco="let t">
+  @if(isLoading()) {
+  <div class="flex min-h-[30vh] items-center justify-center">
+    <ion-spinner></ion-spinner>
+  </div>
+  } @else if (categories().length > 0) {
+
+  <div
+    class="flex w-full flex-col gap-8 p-4"
+    [ngClass]="{'hes-card' : !isMobile}"
+  >
+    <div class="-mx-8 flex items-center justify-between border-b px-8 pb-6">
+      <span class="text-2xl font-semibold text-[#101828]"
+        >{{ t('support_ticket.main_content.categories_section_title') }}</span
+      >
+      <ion-button
+        *hesRbac="addCategoryPermission"
+        hesbtn
+        (click)="onAddCategory()"
+      >
+        <fa-icon [icon]="faPlus"></fa-icon>
+        @if(!isMobile){{{ t('support_tickets.add_category.btn') }}}</ion-button
+      >
+    </div>
+
+    @for (cat of categories(); track $index) {
+    <app-category
+      [category]="cat"
+      (onRefresh)="refreshCategories()"
+    ></app-category>
+    }
+  </div>
+  } @else {
+  <app-no-data-card
+    [mainImagePath]="noDataCardConfig().mainImagePath"
+    [title]="noDataCardConfig().title"
+    [description]="noDataCardConfig().description"
+    [primaryButton]="noDataCardConfig().primaryBtn"
+  >
+  </app-no-data-card>
+  }
+</ion-content>

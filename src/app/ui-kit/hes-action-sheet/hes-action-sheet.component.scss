@@ -1,0 +1,24 @@
+ion-popover.hes-action-sheet {
+  --width: 15rem;
+  --background: #fff;
+  --offset-y: 0.75rem;
+
+  &::part(content) {
+    border-radius: 0.5rem;
+    border-color: var(--h-color-gray-100);
+    border-width: 1px;
+  }
+
+  ion-item {
+    --padding-start: 1rem;
+    --padding-end: 1rem;
+    --padding-top: 0.62rem;
+    --padding-bottom: 0.62rem;
+    --border-color: var(--h-color-gray-100);
+    --border-width: 0.0625rem;
+
+    &::part(native) {
+      --min-height: auto;
+    }
+  }
+}

@@ -1,0 +1,588 @@
+<div class="flex w-full flex-col gap-ds-xs" [ngClass]="containerClasses()">
+  <div class="flex w-full items-end gap-ds-sm" [ngClass]="messageRowClasses()">
+    @if (shouldReserveSupportAvatarSpace()) {
+      @let avatar = receiverAvatar();
+      <span
+        class="flex h-12 w-12 shrink-0 items-center justify-center rounded-ds-full transition-opacity duration-150"
+        [class.bg-icon-action]="!avatar"
+        [class.text-icon-high]="!avatar"
+        [class.invisible]="!shouldShowSupportAvatar()"
+        aria-hidden="true"
+      >
+        @if (avatar) {
+          @if (avatar.icon) {
+            <span
+              class="flex h-12 w-12 items-center justify-center rounded-ds-full bg-icon-low text-icon-high"
+            >
+              <app-ds-icon
+                [icon]="avatar.icon"
+                [cssClass]="avatar.iconCssClass ?? 'text-icon-high'"
+                size="xl"
+                aria-hidden="true"
+              ></app-ds-icon>
+            </span>
+          } @else {
+            <app-ds-avatar
+              [fullName]="avatar.fullName"
+              [imageUrl]="avatar.avatarUrl ?? null"
+              [color]="avatar.avatarColor ?? defaultAvatarColor"
+              [size]="'xl'"
+              [includeBorder]="false"
+            ></app-ds-avatar>
+          }
+        } @else {
+          <app-ds-icon
+            [icon]="supportAvatarIcon"
+            size="xl"
+            cssClass="text-icon-high"
+          ></app-ds-icon>
+        }
+      </span>
+    }
+
+    <article class="text-emphasis-high" [ngClass]="bubbleClasses()">
+      @if (stageMenu(); as menu) {
+        <div class="absolute top-ds-md ltr:right-ds-md rtl:left-ds-md">
+          <ds-responsive-menu
+            [items]="menu.items"
+            [triggerType]="'button'"
+            [triggerClass]="[
+              'flex h-9 w-9 items-center justify-center rounded-ds-full',
+              menu.backgroundClass,
+              menu.iconColorClass,
+            ]"
+            [triggerAriaLabel]="menu.ariaLabel"
+            (menuOpened)="onStageMenuOpened()"
+            (itemSelected)="onStageMenuItemSelected($event)"
+          >
+            <app-ds-icon [icon]="menuIcon"></app-ds-icon>
+          </ds-responsive-menu>
+        </div>
+      }
+
+      @if (summaryStage(); as summary) {
+        <header class="flex flex-wrap items-center justify-between gap-ds-sm">
+          <div class="flex flex-wrap items-center gap-ds-sm">
+            @if (summary.statusBadge) {
+              <span
+                class="single-line-caption-mid-emphasis inline-flex items-center gap-ds-xs rounded-ds-2xl px-ds-md py-ds-sm"
+                [ngClass]="[
+                  summary.statusBadge.backgroundClass,
+                  summary.statusBadge.textClass,
+                ]"
+              >
+                @if (summary.statusBadge.icon) {
+                  <app-ds-icon
+                    [icon]="summary.statusBadge.icon"
+                    [cssClass]="
+                      summary.statusBadge.iconColorClass ??
+                      summary.statusBadge.textClass
+                    "
+                    size="sm"
+                    aria-hidden="true"
+                  ></app-ds-icon>
+                }
+                {{ summary.statusBadge.label }}
+              </span>
+            }
+            @if (summary.categoryBadge) {
+              <span
+                class="single-line-caption-mid-emphasis inline-flex items-center gap-ds-xs rounded-ds-2xl px-ds-md py-ds-sm"
+                [ngClass]="[
+                  summary.categoryBadge.backgroundClass,
+                  summary.categoryBadge.textClass,
+                ]"
+              >
+                @if (summary.categoryBadge.icon) {
+                  <app-ds-icon
+                    [icon]="summary.categoryBadge.icon"
+                    [cssClass]="
+                      summary.categoryBadge.iconColorClass ??
+                      summary.categoryBadge.textClass
+                    "
+                    size="sm"
+                    aria-hidden="true"
+                  ></app-ds-icon>
+                }
+                {{ summary.categoryBadge.label }}
+              </span>
+            }
+            @if (summary.timeAgoLabel) {
+              <span
+                class="single-line-caption-mid-emphasis text-emphasis-action"
+              >
+                {{ summary.timeAgoLabel }}
+              </span>
+            }
+          </div>
+        </header>
+
+        <div class="flex flex-col gap-ds-sm">
+          @if (summary.ticketNumber) {
+            <p class="content-sm-mid-emphasis text-emphasis-mid">
+              {{ summary.ticketNumber }}
+            </p>
+          }
+          @if (summary.title) {
+            <p class="heading-h4-high-emphasis text-emphasis-high">
+              {{ summary.title }}
+            </p>
+          }
+          @if (summary.description) {
+            <p class="content-md-default whitespace-pre-line text-emphasis-mid">
+              {{ summary.description }}
+            </p>
+          }
+        </div>
+
+        @if (summary.customFields?.length) {
+          <div class="flex flex-col gap-ds-md">
+            @for (field of summary.customFields; track field.id) {
+              <div class="flex flex-col gap-ds-xs">
+                <p class="content-sm-mid-emphasis text-emphasis-mid">
+                  {{ field.label }}
+                </p>
+                <p class="content-md-default text-emphasis-high">
+                  {{ field.value }}
+                </p>
+              </div>
+            }
+          </div>
+        }
+
+        @if (summary.students?.length) {
+          <div class="flex flex-col gap-ds-sm">
+            @for (student of summary.students; track student.id) {
+              <div class="flex items-center gap-ds-md">
+                <app-ds-avatar
+                  [fullName]="student.fullName"
+                  [imageUrl]="student.avatarUrl ?? null"
+                  [color]="student.avatarColor ?? defaultAvatarColor"
+                  [size]="'xl'"
+                  [includeBorder]="false"
+                ></app-ds-avatar>
+                <div
+                  class="gap-ds-2xs flex min-w-0 flex-col ltr:text-left rtl:text-right"
+                >
+                  <p
+                    class="single-line-sm-high-emphasis max-w-full truncate text-emphasis-high"
+                  >
+                    {{ student.fullName }}
+                  </p>
+                  <div
+                    class="content-xs-mid-emphasis flex flex-wrap gap-ds-lg text-emphasis-mid"
+                  >
+                    @if (student.levelLabel) {
+                      <span>{{ student.levelLabel }}</span>
+                    }
+                    @if (student.classLabel) {
+                      <span>{{ student.classLabel }}</span>
+                    }
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        }
+
+        @if (summary.assignees?.length) {
+          <div
+            class="flex flex-col gap-ds-sm rounded-ds-xl bg-surface-secondary px-ds-xl py-ds-lg"
+          >
+            <p class="content-sm-default text-emphasis-mid">
+              {{ summary.assigneesLabel ?? "Assignee" }}
+            </p>
+            <div class="flex flex-col gap-ds-sm">
+              @for (assignee of summary.assignees; track assignee.id) {
+                <div class="flex items-center gap-ds-md">
+                  <app-ds-avatar
+                    [fullName]="assignee.name"
+                    [color]="assignee.avatarColor ?? defaultAvatarColor"
+                    [size]="'lg'"
+                    [includeBorder]="false"
+                  ></app-ds-avatar>
+                  <div
+                    class="gap-ds-2xs flex min-w-0 flex-col ltr:text-left rtl:text-right"
+                  >
+                    <div
+                      class="single-line-sm-high-emphasis max-w-full truncate text-emphasis-high"
+                    >
+                      {{ assignee.name }}
+                    </div>
+                    @if (assignee.role) {
+                      <div
+                        class="single-line-xs-low-emphasis max-w-full truncate text-emphasis-mid"
+                      >
+                        {{ assignee.role }}
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        @if (summary.escalation?.label; as escalationLabel) {
+          <div class="my-ds-xl flex items-center justify-center">
+            <button
+              type="button"
+              class="group flex items-center justify-center gap-2 rounded-ds-md px-ds-md py-ds-sm transition-colors md:hover:bg-surface-secondary"
+              (click)="onEscalationInfoClicked()"
+            >
+              <app-ds-icon
+                [icon]="escalationLeadingIcon"
+                [cssClass]="
+                  'text-surface-color-lvl4 md:group-hover:text-emphasis-high'
+                "
+                size="sm"
+              ></app-ds-icon>
+              <div class="single-line-sm-mid-emphasis text-emphasis-high">
+                {{ escalationLabel }}
+              </div>
+              <app-ds-icon
+                [icon]="escalationTrailingIcon"
+                [cssClass]="'text-emphasis-high'"
+              ></app-ds-icon>
+            </button>
+          </div>
+        }
+
+        @if (summary.createdTimeLabel) {
+          <p
+            class="content-xs-mid-emphasis self-end text-end text-emphasis-mid"
+          >
+            {{ summary.createdTimeLabel }}
+          </p>
+        }
+      }
+
+      @if (activityStage(); as activity) {
+        <div class="flex flex-col gap-ds-sm">
+          @if (activity.actorName || activity.actorRole) {
+            <div class="gap-ds-2xs flex min-w-0 flex-col">
+              @if (activity.actorName) {
+                <p
+                  class="single-line-sm-high-emphasis max-w-full truncate text-emphasis-high"
+                >
+                  {{ activity.actorName }}
+                </p>
+              }
+              @if (activity.actorRole) {
+                <p
+                  class="single-line-sm-mid-emphasis max-w-full truncate text-emphasis-mid"
+                >
+                  {{ activity.actorRole }}
+                </p>
+              }
+            </div>
+          }
+
+          @if (activity.body) {
+            <p
+              class="content-md-default whitespace-pre-line text-emphasis-high"
+            >
+              {{ activity.body }}
+            </p>
+          }
+
+          @if (activity.timestampLabel) {
+            <p
+              class="content-xs-mid-emphasis text-emphasis-mid"
+              [ngClass]="timestampClasses()"
+            >
+              {{ activity.timestampLabel }}
+            </p>
+          }
+        </div>
+      }
+
+      @if (galleryStage(); as gallery) {
+        @if (gallery.attachments.length) {
+          <div class="flex flex-col gap-ds-sm">
+            <ds-image-gallery
+              [attachments]="gallery.attachments"
+            ></ds-image-gallery>
+            @if (gallery.timestampLabel) {
+              <p
+                class="content-xs-mid-emphasis text-emphasis-mid"
+                [ngClass]="timestampClasses()"
+              >
+                {{ gallery.timestampLabel }}
+              </p>
+            }
+          </div>
+        }
+      }
+
+      @if (documentsStage(); as documents) {
+        <div class="flex flex-col gap-ds-sm">
+          @if (documents.documents.length) {
+            @for (document of documents.documents; track document.id) {
+              <div class="flex items-center gap-2">
+                <div class="flex h-10 w-10 items-center justify-center">
+                  <app-ds-icon
+                    [icon]="getDocumentIcon(document.attachment)"
+                    [cssClass]="getDocumentIconColorClass(document.attachment)"
+                    size="xl"
+                    aria-hidden="true"
+                  ></app-ds-icon>
+                </div>
+                <button
+                  type="button"
+                  class="content-md-default offset-2 text-emphasis-high ltr:text-left rtl:text-right"
+                  (click)="onDocumentClicked(documents, document)"
+                >
+                  {{ document.label }}
+                </button>
+              </div>
+            }
+          }
+          @if (documents.timestampLabel) {
+            <p
+              class="content-xs-mid-emphasis text-emphasis-mid"
+              [ngClass]="timestampClasses()"
+            >
+              {{ documents.timestampLabel }}
+            </p>
+          }
+        </div>
+      }
+
+      @if (resolutionStatusStage(); as resolvedStage) {
+        <div [ngClass]="resolutionStatusContainerClasses()">
+          <div class="gap-ds-2xs flex gap-1">
+            <app-ds-icon
+              [icon]="resolvedIcon"
+              class="text-feedback-success"
+              size="xl"
+            ></app-ds-icon>
+            <div class="content-md-default text-emphasis-high">
+              {{
+                resolvedStage.message ??
+                  ("support.ticket.status.resolved" | dsTranslate)
+              }}
+            </div>
+          </div>
+          @if (resolvedStage.acknowledgementTime) {
+            <p class="content-xs-mid-emphasis text-end text-emphasis-mid">
+              {{ resolvedStage.acknowledgementTime }}
+            </p>
+          }
+        </div>
+      }
+
+      @if (resolutionCommentStage(); as commentStage) {
+        <div class="flex flex-col gap-ds-sm">
+          <div class="gap-ds-2xs flex min-w-0 flex-col">
+            <p
+              class="single-line-sm-high-emphasis max-w-full truncate text-emphasis-high"
+            >
+              {{ commentStage.name }}
+            </p>
+            @if (commentStage.role) {
+              <p
+                class="single-line-sm-mid-emphasis max-w-full truncate text-emphasis-mid"
+              >
+                {{ commentStage.role }}
+              </p>
+            }
+          </div>
+          <p class="content-md-default whitespace-pre-line text-emphasis-high">
+            {{ commentStage.description }}
+          </p>
+          @if (commentStage.timestampLabel) {
+            <p class="content-xs-mid-emphasis text-emphasis-mid">
+              {{ commentStage.timestampLabel }}
+            </p>
+          }
+        </div>
+      }
+
+      @if (resolutionFeedbackStage(); as feedbackStage) {
+        <div [ngClass]="resolutionFeedbackContainerClasses(feedbackStage)">
+          <div class="gap-ds-2xs flex flex-col">
+            <p class="heading-h5-high-emphasis text-feedback-success">
+              {{ feedbackStage.title }}
+            </p>
+            @if (feedbackStage.comment) {
+              <p
+                class="content-sm-default whitespace-pre-line text-emphasis-mid"
+              >
+                {{ feedbackStage.comment }}
+              </p>
+            }
+          </div>
+
+          @if ((feedbackStage.rating ?? 0) > 0) {
+            <div class="flex flex-wrap items-center gap-ds-sm">
+              <div class="flex items-center gap-1">
+                @for (star of ratingStars; track star) {
+                  <app-ds-icon
+                    [icon]="
+                      (feedbackStage.rating ?? 0) >= star
+                        ? starIconSolid
+                        : starIconRegular
+                    "
+                    [cssClass]="
+                      (feedbackStage.rating ?? 0) >= star
+                        ? 'text-icon-action'
+                        : 'text-icon-mid'
+                    "
+                    aria-hidden="true"
+                  ></app-ds-icon>
+                }
+              </div>
+              @if (feedbackStage.ratingLabel) {
+                <p class="single-line-xs-low-emphasis text-emphasis-mid">
+                  {{ feedbackStage.ratingLabel }}
+                </p>
+              }
+            </div>
+          }
+
+          @if (feedbackStage.timestampLabel) {
+            <p
+              class="single-line-caption-mid-emphasis text-emphasis-mid"
+              [ngClass]="timestampClasses()"
+            >
+              {{ feedbackStage.timestampLabel }}
+            </p>
+          }
+        </div>
+      }
+
+      @if (statusActivityStage(); as statusActivity) {
+        <div [ngClass]="statusActivityContainerClasses(statusActivity)">
+          <div class="flex items-start gap-ds-md">
+            @if (statusActivity.icon) {
+              <app-ds-icon
+                [icon]="statusActivity.icon"
+                [cssClass]="statusActivity.iconColorClass ?? 'text-icon-mid'"
+                size="lg"
+              ></app-ds-icon>
+            }
+            <div class="flex min-w-0 flex-1 flex-col gap-ds-sm">
+              <div
+                class="gap-ds-2xs flex min-w-0 flex-col ltr:text-left rtl:text-right"
+              >
+                <div
+                  [ngClass]="
+                    statusActivity.titleClass ??
+                    'single-line-sm-high-emphasis text-emphasis-high'
+                  "
+                >
+                  {{ statusActivity.title }}
+                </div>
+                @if (statusActivity.subtitle) {
+                  <div
+                    [ngClass]="
+                      statusActivity.subtitleClass ??
+                      'content-xs-mid-emphasis text-emphasis-mid'
+                    "
+                  >
+                    {{ statusActivity.subtitle }}
+                  </div>
+                }
+                @if (statusActivity.subtitleMeta) {
+                  <div
+                    class="content-xs-mid-emphasis max-w-full truncate text-emphasis-mid"
+                  >
+                    {{ statusActivity.subtitleMeta }}
+                  </div>
+                }
+              </div>
+
+              @if (statusActivity.message) {
+                <p
+                  class="content-md-default whitespace-pre-line text-emphasis-high"
+                >
+                  {{ statusActivity.message }}
+                </p>
+              }
+
+              @if (statusActivity.personnelGroups?.length) {
+                <div class="flex flex-col gap-ds-sm">
+                  @for (
+                    group of statusActivity.personnelGroups;
+                    track group.label
+                  ) {
+                    <div class="flex items-start gap-ds-md">
+                      <div
+                        class="content-sm-default shrink-0 text-emphasis-mid"
+                      >
+                        {{ group.label }}
+                      </div>
+                      <div class="flex min-w-0 flex-col gap-ds-xs">
+                        @for (
+                          personnel of group.personnels;
+                          track personnel.id
+                        ) {
+                          <div
+                            class="gap-ds-2xs flex min-w-0 flex-col ltr:text-left rtl:text-right"
+                          >
+                            <div
+                              class="single-line-sm-mid-emphasis max-w-full truncate text-emphasis-high"
+                            >
+                              {{ personnel.name }}
+                            </div>
+                            @if (personnel.role) {
+                              <div
+                                class="single-line-xs-low-emphasis max-w-full truncate text-emphasis-mid"
+                              >
+                                {{ personnel.role }}
+                              </div>
+                            }
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+
+              @if (statusActivity.recipients?.length) {
+                <div class="flex items-start gap-ds-md">
+                  <div class="content-xs-mid-emphasis text-emphasis-mid">
+                    {{ "global.to.txt" | dsTranslate }}
+                  </div>
+                  <div class="flex min-w-0 flex-col gap-ds-sm">
+                    @for (
+                      recipient of statusActivity.recipients;
+                      track recipient.id
+                    ) {
+                      <div
+                        class="gap-ds-2xs flex min-w-0 flex-col ltr:text-left rtl:text-right"
+                      >
+                        <div
+                          class="single-line-sm-mid-emphasis max-w-full truncate text-emphasis-high"
+                        >
+                          {{ recipient.name }}
+                        </div>
+                        @if (recipient.role) {
+                          <div
+                            class="single-line-xs-low-emphasis max-w-full truncate text-emphasis-mid"
+                          >
+                            {{ recipient.role }}
+                          </div>
+                        }
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+
+              <div class="flex items-center justify-end gap-ds-sm">
+                @if (statusActivity.timestampLabel) {
+                  <div class="content-xs-mid-emphasis text-emphasis-mid">
+                    {{ statusActivity.timestampLabel }}
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </article>
+  </div>
+</div>

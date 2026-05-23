@@ -1,0 +1,34 @@
+<ion-content class="ds-page-content" *transloco="let t">
+  <div class="flex flex-col items-start justify-center gap-6 bg-white p-6">
+    <div class="flex w-full items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-medium capitalize leading-7 text-gray-900">
+          {{ t('content_management.exam_result.title') }}
+        </h1>
+      </div>
+      @if (examDetails()?.submissionData?.submissionStats?.correctAnswers){
+      <div>
+        <div class="text-2xl font-medium capitalize leading-7 text-gray-900">
+          {{ t('content_management.correct_answers.txt') }} :
+          <span class="text-green-500"
+            >{{examDetails()?.submissionData?.submissionStats?.correctAnswers}}/{{examDetails()?.submissionData?.submissionStats?.totalQuestions}}</span
+          >
+        </div>
+      </div>
+      }
+    </div>
+    @if (examQuestionForm){
+    <form
+      [formGroup]="examQuestionForm"
+      class="flex w-full flex-col items-start justify-center gap-8 lg:mx-auto lg:w-auto"
+    >
+      @for (question of examQuestions(); track question.id) {
+      <app-question-form-control-generator
+        class="w-full lg:w-[50.5rem]"
+        [config]="question"
+      ></app-question-form-control-generator>
+      }
+    </form>
+    }
+  </div>
+</ion-content>

@@ -1,0 +1,43 @@
+<app-no-selected-scope-card
+  [requiredScope]="requiredScopes"
+  (onScopeUpdate)="handleDisplayContent($event)"
+>
+</app-no-selected-scope-card>
+
+@if(displayContent()){
+<ng-container *transloco="let t">
+  <ion-content class="hes-card h-full w-full">
+    <app-list-view-container
+      [columns]="columns()"
+      class="w-full"
+      [dataSource]="fetchReportCardByStudents"
+      [isFilterShow]="false"
+      [canCopy]="true"
+      [autoSizeStrategy]="{ type: 'fitGridWidth' }"
+      [rowSelection]="'multiple'"
+      [persistColumnSettings]="false"
+      (selectedRowsChange)="selectedRowsChange($event)"
+      [primaryActions]="primaryActions()"
+      (instanceReady)="onReady($event)"
+      [canCopy]="false"
+      [pageTitleTemplate]="titleRef"
+    />
+  </ion-content>
+</ng-container>
+}
+
+<ng-template #titleRef>
+  <div class="flex gap-2" *transloco="let t">
+    <div class="hidden text-2xl font-semibold md:block">
+      {{reportCardName()}}
+    </div>
+    <div class="flex gap-1 rounded-3xl bg-[#F9F9F9] px-2 py-1 text-base">
+      <span class="text-[#667085]">{{t('global.level.label')}}</span>
+      <span class="font-medium">{{levelName()}}</span>
+    </div>
+    <div class="flex gap-1 rounded-3xl bg-[#F9F9F9] px-2 py-1 text-base">
+      <span class="text-[#667085]">{{t('global.class.label')}}</span>
+      <span class="font-medium">{{className()}}</span>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,27 @@
+@switch (status()) {
+  @case ("PENDING") {
+    <div class="hes-badge pending px-3 py-1 text-sm font-normal">
+      {{ status() ?? "" | enumLang }}
+    </div>
+  }
+  @case ("IN_PROGRESS") {
+    <div class="hes-badge inProgress px-3 py-1 text-sm font-normal">
+      {{ status() ?? "" | enumLang }}
+    </div>
+  }
+  @case ("MISSED") {
+    <div class="hes-badge missed px-3 py-1 text-sm font-normal">
+      {{ status() ?? "" | enumLang }}
+    </div>
+  }
+  @case ("SUBMITTED") {
+    <div class="hes-badge submitted px-3 py-1 text-sm font-normal">
+      {{ status() ?? "" | enumLang }}
+    </div>
+  }
+  @default {
+    <div class="hes-badge px-3 py-1 text-sm font-normal">
+      {{ status() }}
+    </div>
+  }
+}

@@ -1,0 +1,36 @@
+@if (
+  requestStatus === null &&
+  isTodaysDateSelected &&
+  attendanceStatus !== _attendanceStatus.ABSENT &&
+  attendanceStatus !== _attendanceStatus.ON_LEAVE
+) {
+} @else {
+  <div *transloco="let t" class="pt-1">
+    <span
+      class="single-line-caption-mid-emphasis whitespace-nowrap rounded-ds-sm p-ds-sm"
+      [ngClass]="{
+        'bg-pastels-errorRed-200 text-pastels-errorRed-400':
+          attendanceStatus === _attendanceStatus.ABSENT,
+        'bg-pastels-brand-250 text-pastels-brand-400':
+          attendanceStatus === _attendanceStatus.ON_LEAVE,
+        'bg-pastels-cyan-250 text-pastels-cyan-400':
+          requestStatus === pickupRequestStatus.REQUESTED,
+        'bg-pastels-warnOrange-200 text-pastels-warnOrange-400':
+          requestStatus === pickupRequestStatus.IN_PROCESS,
+        'bg-pastels-green-250 text-pastels-green-400':
+          requestStatus === pickupRequestStatus.PICKED,
+        'bg-pastels-errorRed-250 text-pastels-errorRed-400':
+          requestStatus === pickupRequestStatus.DENIED,
+        'bg-pastels-purple-250 text-pastels-purple-400':
+          requestStatus === pickupRequestStatus.LEFT_SCHOOL,
+        'bg-pastels-neutralGray-250 text-pastels-neutralGray-400':
+          requestStatus === null &&
+          !isTodaysDateSelected &&
+          attendanceStatus !== _attendanceStatus.ABSENT &&
+          attendanceStatus !== _attendanceStatus.ON_LEAVE
+      }"
+    >
+      {{ getStatus() | enumLang }}
+    </span>
+  </div>
+}

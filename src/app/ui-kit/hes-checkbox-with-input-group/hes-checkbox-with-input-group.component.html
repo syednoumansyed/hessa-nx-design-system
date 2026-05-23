@@ -1,0 +1,61 @@
+<div *transloco="let t" class="checkbox-with-input-container">
+  @if (showSelectAll()) {
+    <div class="mb-3">
+      <ion-checkbox
+        hesCheckbox
+        [hesSize]="'md'"
+        labelPlacement="end"
+        justify="start"
+        class="flex-shrink-0 capitalize"
+        [checked]="selectAllChecked"
+        [indeterminate]="selectAllIndeterminate"
+        (ionChange)="handleSelectAllChange($event)"
+        [disabled]="disabled || readonly()"
+      >
+        {{ t("global.select_all.txt") }}
+      </ion-checkbox>
+    </div>
+  }
+
+  <div class="grid grid-cols-{{ noOfChild() }} gap-3">
+    @for (option of checkboxOptions(); track option.value) {
+      <div class="flex flex-col gap-2">
+        <!-- Checkbox -->
+        <div>
+          <ion-checkbox
+            hesCheckbox
+            [hesSize]="'md'"
+            labelPlacement="end"
+            justify="start"
+            class="capitalize"
+            [checked]="isCheckboxChecked(option.value)"
+            (ionChange)="handleCheckboxChange(option.value, $event)"
+            [disabled]="disabled || readonly() || option.disabled"
+          >
+            <div class="flex flex-col">
+              <span>{{ option.displayedValue }}</span>
+              @if (option.extraData?.subTitle) {
+                <span class="text-base text-emphasis-mid">
+                  {{ option.extraData?.subTitle }}
+                </span>
+              }
+            </div>
+          </ion-checkbox>
+        </div>
+
+        <!-- Input Field on next line -->
+        <div class="w-full pl-8">
+          <app-hes-input
+            [placeholder]="inputPlaceholder() ?? ''"
+            [type]="inputType()"
+            [maxLength]="maxLength()"
+            [formControl]="getInputControl(option.value)!"
+            [readonly]="readonly()"
+            [disabled]="!isCheckboxChecked(option.value) || disabled"
+            fill="solid"
+          />
+        </div>
+      </div>
+    }
+  </div>
+</div>

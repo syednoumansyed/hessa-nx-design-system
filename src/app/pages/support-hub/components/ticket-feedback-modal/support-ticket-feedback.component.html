@@ -1,0 +1,169 @@
+<div *transloco="let t" class="flex h-full flex-col">
+  @if (!showSuccessScreen()) {
+    <!-- Feedback Form View -->
+    <div class="flex flex-col gap-ds-xl text-center">
+      @if (isRatingFeedback()) {
+        <!-- Rating Feedback Mode -->
+        <!-- Mascot image -->
+        <div class="flex justify-center">
+          <ion-img
+            [src]="currentMascotPath()"
+            [alt]="ratingText() || 'Feedback mascot'"
+            class="h-[6.8rem] w-[6.8rem]"
+          />
+        </div>
+
+        <div class="flex flex-col gap-ds-md">
+          <!-- Title -->
+          <h2 class="heading-h3-high-emphasis text-emphasis-high">
+            {{ t("support.rating.question") }}
+          </h2>
+
+          <!-- Category & Sub Category Tags -->
+          <div class="flex items-center justify-center gap-ds-xl">
+            <div
+              class="flex items-center justify-center gap-ds-sm rounded-ds-sm border border-stroke-cool-black-08 bg-pastels-green-50 px-ds-lg py-ds-sm"
+              role="note"
+              aria-label="Support type"
+            >
+              @if (supportTypeIconDef(); as icon) {
+                <app-ds-icon [icon]="icon" size="xl" aria-hidden="true" />
+              }
+              <span class="Single-line-caption-mid-emphasis text-emphasis-high">
+                {{ supportType() }}
+              </span>
+            </div>
+            <div
+              class="flex items-center justify-center gap-ds-sm rounded-ds-sm border border-stroke-cool-black-08 bg-pastels-errorRed-50 px-ds-lg py-ds-sm"
+              role="note"
+              aria-label="Support category"
+            >
+              @if (supportCategoryIconDef(); as icon) {
+                <app-ds-icon [icon]="icon" size="xl" aria-hidden="true" />
+              }
+              <span class="Single-line-caption-mid-emphasis text-emphasis-high">
+                {{ supportCategory() }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Star rating -->
+          <div
+            class="flex items-center justify-center gap-ds-xl"
+            role="radiogroup"
+            [attr.aria-label]="'Rating: ' + (rating() || 'Not selected')"
+            (mouseleave)="clearHover()"
+          >
+            @for (star of stars; track star) {
+              <button
+                type="button"
+                role="radio"
+                [attr.aria-checked]="rating() === star"
+                [attr.aria-label]="star + ' out of 5 stars'"
+                (pointerdown)="setRating(star)"
+                (keydown.enter)="setRating(star)"
+                (keydown.space)="setRating(star); $event.preventDefault()"
+                (mouseenter)="setHover(star)"
+                (focus)="setHover(star)"
+                (blur)="clearHover()"
+                class="cursor-pointer border-0 bg-transparent p-1 transition-transform hover:scale-110 focus:scale-110 focus:outline-2 focus:outline-offset-2 focus:outline-primary-500"
+              >
+                <app-ds-icon
+                  [icon]="
+                    displayedRating() >= star ? 'star-solid' : 'star-regular'
+                  "
+                  size="5xl"
+                  [attr.aria-hidden]="true"
+                />
+              </button>
+            }
+          </div>
+
+          <!-- Rating text feedback -->
+          @if (rating() > 0) {
+            <div
+              class="content-lg-high-emphasis text-emphasis-mid"
+              role="status"
+              aria-live="polite"
+            >
+              {{ ratingText() }}
+            </div>
+          }
+        </div>
+
+        <!-- Feedback form for rating -->
+        @if (rating() > 0) {
+          <form [formGroup]="form">
+            <app-ds-textarea
+              [placeholder]="t('support.rating.feedback_placeholder')"
+              formControlName="feedback"
+              aria-label="Additional feedback comments"
+            />
+          </form>
+        }
+      } @else {
+        <!-- Issue Feedback Mode -->
+        @if (resolutionComment(); as comment) {
+          <div
+            class="flex flex-col gap-ds-md rounded-ds-md rounded-bl-none border-4 border-stroke-black-08 bg-pastels-neutralGray-50 px-ds-lg py-ds-md text-start"
+          >
+            <div class="flex flex-col gap-ds-sm">
+              <span class="single-line-xs-high-emphasis text-emphasis-mid">
+                {{ comment.userName }}
+              </span>
+              <span class="single-line-xs-low-emphasis text-emphasis-mid">
+                {{ comment.userRole }}
+              </span>
+            </div>
+            <p class="content-md-mid-emphasis text-emphasis-high">
+              {{ comment.description }}
+            </p>
+            <span
+              class="single-line-caption-low-emphasis block text-emphasis-mid"
+            >
+              {{ comment.time }}
+            </span>
+          </div>
+        }
+
+        <!-- Feedback form for issue -->
+        <form [formGroup]="form">
+          <div class="text-start">
+            <app-ds-textarea
+              [placeholder]="t('support.feedback.issue.placeholder')"
+              formControlName="feedback"
+              [label]="t('support.feedback.issue.label')"
+              [maxLength]="500"
+              aria-label="Your feedback"
+              [required]="true"
+            />
+          </div>
+        </form>
+      }
+    </div>
+  } @else {
+    <!-- Success Screen View -->
+    <div class="flex flex-col gap-ds-xl text-center">
+      <div class="flex flex-col items-center justify-center gap-ds-xl">
+        <!-- Success GIF -->
+        <div class="flex justify-center">
+          <ion-img
+            src="assets/gifs/request-success.gif"
+            alt="Success celebration animation"
+            class="h-[14rem] w-[14rem]"
+          />
+        </div>
+
+        <!-- Success Message -->
+        <div class="flex flex-col gap-ds-md">
+          <h2 class="heading-h3-high-emphasis text-emphasis-high">
+            {{ successTitle() }}
+          </h2>
+          <p class="content-lg-mid-emphasis text-emphasis-mid">
+            {{ successMessage() }}
+          </p>
+        </div>
+      </div>
+    </div>
+  }
+</div>

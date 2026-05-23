@@ -1,0 +1,10 @@
+.white-bg {
+  --ion-background-color: #ffffff;
+  background: #ffffff;
+}
+
+ion-popover.hes-popover {
+  --min-width: 22rem;
+  border-radius: 1rem;
+  border: 1px solid #e5e6e7;
+}

@@ -1,0 +1,115 @@
+<ion-content class="ds-page-content" *transloco="let t">
+  <div class="flex flex-col items-stretch gap-3 p-4 lg:gap-5">
+    <div
+      class="rounded-lg border border-gray-200 md:rounded-none md:border-none md:shadow-xs"
+    >
+      @if(isLoading()){
+      <app-card-list-item-skeleton></app-card-list-item-skeleton>
+      } @else if(companyDetails()) {
+      <app-profile-header
+        [fullName]="companyDetails()!.displayName"
+        [metadata]="cpmpanyMetadata()"
+        [headerHesIcon]="{src: 'assets/icons/company.svg', class:'text-[3rem]'}"
+        class="rounded-lg md:rounded-none"
+        [createdBy]="companyDetails()!.createdBy.displayName"
+        [creationDate]="companyDetails()!.createdAt"
+      ></app-profile-header
+      >}
+    </div>
+    @if(isLoading()){
+    <div
+      [ngClass]="{
+        'rounded-xl border bg-white': !isMobile
+      }"
+      class="mt-4"
+    >
+      <div
+        [ngClass]="{
+      'border-b': !isMobile,
+      'mb-3': isMobile
+    }"
+        class="flex items-center justify-between md:p-7"
+      >
+        <ion-skeleton-text
+          [animated]="true"
+          class="h-7 w-24 rounded"
+        ></ion-skeleton-text>
+
+        <ion-skeleton-text
+          [animated]="true"
+          class="h-11 w-11 rounded-lg md:w-40"
+        ></ion-skeleton-text>
+      </div>
+      <app-card-list-skeleton></app-card-list-skeleton>
+    </div>
+    } @else if (companyDetails()?.campuses?.length === 0 &&
+    companyDetails()?.subCompanies?.length === 0) {
+    <div class="mt-4">
+      <app-no-data-card
+        mainImagePath="assets/illustrations/no_data.svg"
+        title="{{ !companyDetails()?.parentId ? t('school_structure.no_sub_companies_or_campuses.title'): t('school_structure.no_campus.title') }}"
+        [description]="t('school_structure.no_campus_msg.text')"
+        [primaryButton]="noDataPrimaryButton()"
+        [secondaryButton]=" !companyDetails()?.parentId ? noDataSecondaryButton() : undefined"
+      ></app-no-data-card>
+    </div>
+    } @else {
+    <div
+      [ngClass]="{
+    'hes-card p-0 gap-6': !isMobile
+  }"
+      class="flex flex-col items-center gap-4"
+    >
+      <div class="flex w-full justify-between py-5 lg:border-b lg:px-6">
+        <div class="flex items-center justify-start gap-2">
+          <div class="text-xl font-medium text-gray-900">
+            {{ companyDetails()?.campuses?.length ?
+            t("school_structure.campuses.title"):
+            t("school_structure.sub_company.title") }}
+          </div>
+          <div class="hes-badge hes-badge--warnning">
+            {{ companyDetails()?.campuses?.length ?
+            companyDetails()?.campuses?.length:
+            companyDetails()?.subCompanies?.length }}
+          </div>
+        </div>
+        <ion-button
+          hesBtn
+          hesColor="primary"
+          [hesSize]="'lg'"
+          (click)=" companyDetails()?.campuses?.length ? onAddEditCampus(): onAddEditCompany()"
+          *hesRbac="createCompanyPermission"
+        >
+          <fa-icon
+            hesBtnIcon
+            [slot]="isMobile? 'icon-only' : 'start'"
+            [icon]="faPlus"
+            [size]="'lg'"
+          ></fa-icon>
+          @if (!isMobile) { {{ companyDetails()?.campuses?.length ?
+          t("school_structure.add_campus.btn"):
+          t("school_structure.add_new_sub_company.btn") }} }
+        </ion-button>
+      </div>
+
+      <div class="flex w-full flex-col items-start gap-3 lg:gap-6 lg:px-4">
+        @if (subCompaniesMappedList().length) { @for (item of
+        subCompaniesMappedList(); track $index; let last = $last) {
+        <app-card-list-item
+          class="w-full"
+          [config]="item"
+          [class.mb-5]="last"
+        ></app-card-list-item>
+        } } @else {@for (item of campusesMetadata(); track $index; let last =
+        $last) {
+        <app-card-list-item
+          class="w-full"
+          [config]="item"
+          [class.mb-5]="last"
+        ></app-card-list-item>
+        }}
+      </div>
+    </div>
+    }
+  </div>
+</ion-content>

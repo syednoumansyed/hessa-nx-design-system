@@ -1,0 +1,145 @@
+<ion-content>
+  <div class="p-4 md:p-6">
+    <app-demo-page-wrapper title="Form Inputs">
+      <!-- Input Demo -->
+      <h2 class="heading-h2-high-emphasis mb-4">Inputs</h2>
+      <section class="flex flex-col gap-4">
+        <h3 class="heading-h3-mid-emphasis">Without icon</h3>
+        <div class="flex flex-wrap gap-4">
+          <app-ds-input
+            label="Phone Number"
+            placeholder="Enter your phone number"
+            [formControl]="ctrl"
+            hint="+92 1234567890"
+          />
+          <app-ds-input
+            [formControl]="emailCtrl"
+            label="Email"
+            placeholder="Enter your email"
+          />
+        </div>
+      </section>
+      <section class="flex flex-col flex-wrap gap-4">
+        <h3 class="heading-h3-mid-emphasis">With icons</h3>
+        <div class="flex flex-wrap gap-4">
+          <app-ds-input
+            iconStart="ksa-flag"
+            iconEnd="saxMessage2Outline"
+            prefix="+966"
+            label="Phone number"
+            placeholder="Enter your phone number"
+            [formControl]="ctrl"
+          />
+          <app-ds-input
+            iconStart="ksa-flag"
+            prefix="+966"
+            label="Phone number"
+            placeholder="Enter your phone number"
+            [formControl]="ctrl"
+          />
+          <app-ds-input
+            [iconEnd]="messageIcon"
+            label="Phone number"
+            placeholder="Enter your phone number"
+            [formControl]="ctrl"
+          />
+        </div>
+      </section>
+      <section class="flex flex-col gap-4">
+        <h3 class="heading-h3-mid-emphasis">Loading state</h3>
+        <div class="flex flex-wrap gap-4">
+          <app-ds-input
+            iconStart="ksa-flag"
+            iconEnd="saxMessage2Outline"
+            prefix="+966"
+            label="Loading state"
+            placeholder="Enter your email"
+            [loading]="true"
+            [formControl]="loadingCtrl"
+          />
+          <app-ds-input
+            label="Loading state"
+            placeholder="Enter your email"
+            [loading]="true"
+            [formControl]="loadingCtrl"
+          />
+        </div>
+      </section>
+      <section class="flex flex-col gap-4">
+        <h3 class="heading-h3-mid-emphasis">Disabled</h3>
+        <div class="flex">
+          <app-ds-input
+            label="Disabled email"
+            placeholder="Enter your email"
+            [formControl]="disabledCtrl"
+          />
+        </div>
+      </section>
+      <section>
+        <div class="my-4 flex w-full max-w-[400px] justify-between">
+          @for(i of [1,2,3,4]; track i){
+          <app-ds-input
+            inputMode="text"
+            class="block w-[56px]"
+            maxLength="1"
+            inputClasses="text-center"
+          />
+          }
+        </div>
+      </section>
+
+      <!-- Text Area Demo -->
+      <h2 class="heading-h2-high-emphasis mb-4 mt-8">Text Area</h2>
+      <app-ds-textarea
+        [formControl]="textAreaCtrl"
+        label="About you"
+        placeholder="Tell us something cool…"
+        [maxLength]="180"
+        hintLeft="This is hint on the left"
+        hintRight="This is a hint"
+        [required]="true"
+      ></app-ds-textarea>
+
+      <!-- Search Box Demo -->
+      <h2 class="heading-h2-high-emphasis mb-4 mt-8">Search Box</h2>
+      <section class="flex flex-col gap-6">
+        <div class="flex flex-col gap-2">
+          <h3 class="heading-h3-mid-emphasis">Basic Search Box</h3>
+          <div class="max-w-md">
+            <app-search-box
+              placeholderTxt="Search..."
+              (searchChange)="onSearchChange($event)"
+            />
+          </div>
+          <p class="content-sm-mid-emphasis text-content-mid">
+            Current search value: "{{ searchBoxValue() }}"
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <h3 class="heading-h3-mid-emphasis">Search Box with Add Button</h3>
+          <div class="max-w-md">
+            <app-search-box
+              placeholderTxt="Search messages..."
+              [includeAddButton]="true"
+              (searchChange)="onSearchChange($event)"
+              (addButtonClick)="onSearchAddClick()"
+            />
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <h3 class="heading-h3-mid-emphasis">Search Box with Cancel Button</h3>
+          <div class="max-w-md">
+            <app-search-box
+              placeholderTxt="Search..."
+              [includeCancelButton]="true"
+              (searchChange)="onSearchChange($event)"
+              (cancelButtonClick)="onSearchCancelClick()"
+            />
+          </div>
+        </div>
+      </section>
+    </app-demo-page-wrapper>
+  </div>
+</ion-content>

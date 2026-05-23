@@ -1,0 +1,288 @@
+<ion-content class="ds-page-content" *transloco="let t;">
+  <div
+    class="flex flex-col overflow-hidden border bg-white shadow-lg md:h-screen md:rounded-lg"
+  >
+    <div class="p-3 md:p-6">
+      <div
+        class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between"
+      >
+        <div class="text-lg font-semibold text-gray-900 md:text-2xl">
+          {{ params().reportCardTitle }}
+        </div>
+        <div class="flex flex-col gap-3 md:flex-row md:items-center md:gap-4">
+          <div class="flex flex-wrap gap-2 text-xs md:text-sm">
+            <span
+              class="text-black rounded-full bg-gray-100 px-4 py-1 font-medium"
+              >{{params().subjectName}}</span
+            >
+            <span
+              class="text-black rounded-full bg-gray-100 px-4 py-1 font-medium"
+            >
+              <span class="me-1 text-gray-500">
+                {{ t("global.level.label") }}
+              </span>
+              {{params().levelNames}}
+            </span>
+            <span
+              class="text-black rounded-full bg-gray-100 px-4 py-1 font-medium"
+            >
+              <span class="me-1 text-gray-500">
+                {{ t("global.class.label") }}
+              </span>
+              {{params().className}}
+            </span>
+          </div>
+          <div>
+            <form [formGroup]="form">
+              <app-form-control-generator
+                class="block min-w-[200px]"
+                [control]="columnForm()"
+              ></app-form-control-generator>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="flex overflow-hidden border-y md:flex-grow"
+      style="height: calc(100vh - 21rem)"
+    >
+      <!-- Left Panel -->
+      <div class="w-[35%] overflow-y-auto border-r md:w-[30%]">
+        @if(entriesList().length){
+        <div class="text-xs text-gray-500 md:text-base">
+          @for ( entry of entriesList(); track entry.id ) {
+          <div
+            class="cursor-pointer border-b bg-white px-3 py-3 md:px-4 md:py-3"
+            [ngClass]="{
+                'flex items-center justify-between gap-x-4 border-l-4 border-l-yellow-500 bg-yellow-50': entry.isActive,
+                'hover:bg-gray-50': !entry.isActive
+            }"
+            (click)="handleSelectSubjectEntry(entry)"
+          >
+            <div class="flex flex-col">
+              @if (entry.isMarksSaved) {
+              <span
+                class="mb-1 w-fit rounded bg-[#B8ECBD4D] px-2 py-1 text-xs font-semibold text-[#0ABD1C]"
+                >{{t("global.saved.txt")}}</span
+              >
+              } @else {
+              <span
+                class="mb-1 w-fit rounded bg-[#FFBE5C4D] px-2 py-1 text-xs font-semibold text-[#BD5C0A]"
+                >{{t("global.not_saved.txt")}}</span
+              >
+              }
+              <span class="line-clamp-2">{{ entry.title }}</span>
+            </div>
+            @if (entry.isActive) {
+            <button (click)="onDeleteEntryClick(entry.id)">
+              <fa-icon
+                [icon]="removeIcon"
+                class="shrink-0 cursor-pointer text-red-600"
+              ></fa-icon>
+            </button>
+            }
+          </div>
+          }
+        </div>
+        }
+
+        <div class="p-2">
+          @if(entriesList().length !== selectedColumnDetail()?.maxEntries){
+          <ion-button
+            hesBtn
+            hesColor="primary"
+            [hesSize]="isMobile ? 'xs' : 'md'"
+            class="w-full"
+            (click)="onAddNewEntry()"
+            [disabled]="entriesList().length === selectedColumnDetail()?.maxEntries"
+          >
+            <fa-icon [icon]="plusIcon" size="lg"></fa-icon>
+          </ion-button>
+          }
+          <div class="pt-2 text-center text-xs text-gray-500 md:text-sm">
+            <div>
+              {{ t("grade_management.minimum_entries.txt", { count:
+              selectedColumnDetail()?.minEntries }) }}
+            </div>
+            <div>
+              {{ t("grade_management.maximum_entries.txt", { count:
+              selectedColumnDetail()?.maxEntries }) }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Right Panel -->
+      <div class="w-[65%] overflow-y-auto md:w-[70%]">
+        @if(loadingSkeleton()){
+        <div
+          class="mx-auto max-w-3xl animate-pulse overflow-hidden bg-white shadow"
+        >
+          <div class="bg-gray-100 px-4 py-4">
+            <div class="h-4 w-[50%] rounded bg-gray-300"></div>
+          </div>
+
+          <div class="divide-y">
+            @for(i of [0,1,2,3]; track $index){
+            <div
+              class="space-y-2 px-4 py-5 sm:flex sm:items-center sm:justify-between sm:space-y-0"
+            >
+              <div class="h-4 w-[40%] rounded bg-gray-300"></div>
+              <div
+                class="h-4 w-[100%] rounded bg-gray-300 sm:mt-0 md:w-[20%]"
+              ></div>
+            </div>
+            }
+          </div>
+        </div>
+        } @if(!studentMarksList().length && !loadingSkeleton()){
+        <!-- Content when there is no entry added -->
+        <div class="flex h-full flex-col items-center justify-center">
+          <div
+            class="relative mb-4 h-32 w-32 overflow-hidden rounded-full border shadow-lg md:h-40 md:w-40"
+          >
+            <div class="absolute inset-0 flex items-center justify-center">
+              <ion-button
+                hesBtn
+                hesColor="primary"
+                [hesSize]="isMobile ? 'sm' : 'md'"
+                class="w-full scale-110 md:scale-125"
+                (click)="onAddNewEntry()"
+              >
+                <fa-icon [icon]="plusIcon" size="lg"></fa-icon>
+              </ion-button>
+            </div>
+          </div>
+          <div class="text-center text-base text-gray-400 md:text-lg">
+            {{ t("grade_management.add_entries_empty.txt") }}
+          </div>
+        </div>
+        }@if( studentMarksList().length && !loadingSkeleton()){
+        <div
+          class="sticky top-0 z-10 bg-gray-100 px-2 py-2 text-sm text-gray-700 md:px-4 md:py-3 md:text-base"
+        >
+          {{selectedEntry()?.title}}
+
+          <button
+            class="absolute top-1/2 -translate-y-1/2 text-primary ltr:right-4 rtl:left-4"
+            (click)="onEditSubjectEntry()"
+          >
+            <fa-icon [icon]="editIcon" size="sm"></fa-icon>
+          </button>
+        </div>
+        <div>
+          @for ( student of studentMarksList(); track student.studentId ) {
+
+          <div
+            class="flex flex-col border-b md:flex-row md:items-center md:justify-between"
+          >
+            <div
+              class="p-2 text-sm text-gray-700 md:w-[65%] md:p-3 md:text-base"
+            >
+              {{ student.fullName}}
+            </div>
+            @if(student.isEditing){
+            <div
+              class="flex w-full items-center gap-2 p-2 pt-0 md:w-[35%] md:border-l md:p-3 md:pt-3"
+            >
+              <button
+                class="flex h-8 w-8 shrink-0 items-center justify-center rounded border border-yellow-500 bg-yellow-50 text-primary md:h-10 md:w-10"
+                (click)="onMarksSubtract(student.studentId)"
+              >
+                <fa-icon [icon]="minusIcon" size="lg"></fa-icon>
+              </button>
+              <ion-input
+                [id]="student.studentId"
+                [value]="student.marks ?? student.maxMarks"
+                [min]="0"
+                [max]="student.maxMarks"
+                type="number"
+                (ionInput)="onMarksInput($event, student.maxMarks)"
+                (ionChange)="onMarksChange($event, student.studentId)"
+                class="marks-input rounded border-gray-300 text-center text-sm text-gray-500 md:text-base"
+              />
+              <span
+                class="flex h-8 shrink-0 items-center justify-center rounded bg-gray-100 px-3 text-sm text-gray-500 md:h-10 md:text-base"
+              >
+                / {{ student.maxMarks }}
+              </span>
+              <button
+                class="flex h-8 w-8 shrink-0 items-center justify-center rounded bg-yellow-500 text-white md:h-10 md:w-10"
+                (click)="onMarksAdd(student.studentId)"
+              >
+                <fa-icon [icon]="plusIcon" size="lg"></fa-icon>
+              </button>
+            </div>
+            } @else {
+            <div
+              class="flex w-full items-center p-2 pt-0 md:w-[35%] md:border-l md:p-3 md:pt-3"
+            >
+              <div
+                class="relative flex h-8 w-full items-center justify-center rounded-lg bg-gray-100 px-3 md:h-10"
+              >
+                <span class="text-sm text-gray-700 md:text-base"
+                  >{{student.marks}} / {{student.maxMarks}}</span
+                >
+                <button
+                  *hesRbac="editMarksPermissionId"
+                  class="absolute right-4 top-1/2 -translate-y-1/2 text-primary"
+                  (click)="onChangeToEditing(student.studentId)"
+                >
+                  <fa-icon [icon]="editIcon" size="xl"></fa-icon>
+                </button>
+              </div>
+            </div>
+            }
+          </div>
+          }
+        </div>
+        <!-- footer btns for right panel -->
+        <div class="sticky bottom-0 z-10 shrink-0 border-t bg-white p-3 md:p-5">
+          <div class="flex flex-col justify-end gap-1 md:flex-row md:gap-3">
+            <ion-button
+              hesBtn
+              hesColor="white"
+              [hesSize]="isMobile ? 'md' : 'xl'"
+              class="w-full md:w-auto"
+              (click)="navigateBack()"
+            >
+              {{ t("global.cancel.btn") }}
+            </ion-button>
+            <ion-button
+              hesBtn
+              hesColor="primary"
+              [hesSize]="isMobile ? 'md' : 'xl'"
+              class="w-full md:w-auto"
+              (click)="onSaveMarks()"
+              [disabled]="!validateSaveBtn()"
+            >
+              {{ t("grade_management.save_report_card.btn") }}
+            </ion-button>
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+  <ng-template #columnOptionTemplate let-item="item">
+    <div class="flex items-center gap-3">
+      <span class="content-md-default text-content-high">
+        {{ item.displayedValue }}
+      </span>
+      @if (item.extraData.status === 'UPDATED') {
+      <span
+        class="single-line-caption-mid-emphasis rounded-ds-sm bg-[#E3E4F5] px-2 py-0.5 text-[#0A2EBD]"
+      >
+        {{ t('global.update.btn') }}
+      </span>
+      } @else if (item.extraData.status === 'NEW') {
+      <span
+        class="single-line-caption-mid-emphasis rounded-ds-sm bg-[#FFF9C1] px-2 py-0.5 text-[#D08700]"
+      >
+        {{ t('global.new.txt') }}
+      </span>
+      }
+    </div>
+  </ng-template>
+</ion-content>

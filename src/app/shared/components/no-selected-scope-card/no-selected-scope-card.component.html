@@ -1,0 +1,56 @@
+@if (!unSelectedScope()) {
+  <ng-content></ng-content>
+} @else {
+  <div
+    *transloco="let t"
+    class="flex h-full flex-col items-center justify-center p-8"
+  >
+    <div
+      class="flex w-full shrink-0 flex-col items-center justify-center pb-8 pt-8"
+    >
+      <ion-img
+        src="assets/illustrations/no_data.svg"
+        alt="no data found"
+        class="mb-6 h-[18rem]"
+      ></ion-img>
+      <div
+        class="content-lg-high-emphasis mb-2 self-stretch text-center text-emphasis-high"
+      >
+        {{ t("global.no_data.txt") }}
+      </div>
+      <div
+        class="content-sm-mid-emphasis mb-1 self-stretch whitespace-normal break-words text-center text-emphasis-mid"
+      >
+        {{ t(title()) }}
+      </div>
+      <div
+        class="content-sm-mid-emphasis mb-4 self-stretch whitespace-normal break-words text-center text-emphasis-mid"
+      >
+        {{ t(description()) }}
+      </div>
+      <div>
+        @if (showSchoolStructure()) {
+          <!-- Wrap button with school-selector for school-related scopes -->
+          <app-school-selector side="top" alignment="center">
+            <ds-button
+              #schoolScopeDisplayTarget
+              cssClass="min-w-56"
+              variant="primary"
+              size="lg"
+              >{{ t(btnLabel()) }}</ds-button
+            >
+          </app-school-selector>
+        } @else {
+          <!-- Regular button for other scopes -->
+          <ds-button
+            cssClass="min-w-56"
+            variant="primary"
+            size="lg"
+            (click)="handleOnClick()"
+            >{{ t(btnLabel()) }}</ds-button
+          >
+        }
+      </div>
+    </div>
+  </div>
+}

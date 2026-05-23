@@ -1,0 +1,55 @@
+<div class="group relative flex flex-row-reverse items-center gap-2">
+  <div
+    class="hover-trigger message send relative mt-4 flex max-w-[90%] flex-col border border-stone-200 p-2"
+    [ngClass]="{
+      'w-fit px-4': 'text' === messageType(),
+      'w-72': 'audio' === messageType(),
+    }"
+  >
+    @switch (messageType()) {
+      @case ("text") {
+        <app-text-message [message]="message()"></app-text-message>
+      }
+      @case ("image") {
+        @if (imageUrl()) {
+          <div
+            class="min-h-[150px] min-w-[150px] max-w-[190px] cursor-pointer overflow-hidden rounded-lg"
+          >
+            <ion-img [src]="imageUrl()" alt="" class="chat-image"></ion-img>
+          </div>
+        }
+      }
+      @case ("video") {
+        <div class="relative">
+          <app-video-message [message]="message()" #videoRef="videMessage" />
+        </div>
+      }
+      @case ("file") {
+        <div class="flex cursor-pointer gap-2 text-sm">
+          <div>
+            {{ fileName() }}
+          </div>
+          <app-hes-icon
+            class="text-primary"
+            [faIcon]="arrowDownIcon"
+          ></app-hes-icon>
+        </div>
+      }
+      @case ("audio") {
+        @defer {
+          <app-voice-message [message]="message()" />
+        }
+      }
+    }
+    @if (captionText()) {
+      <div class="mt-1 max-w-[190px] whitespace-pre-line">
+        {{ captionText() }}
+      </div>
+    }
+    @if (isLoading()) {
+      <div class="mt-2 flex w-full justify-center">
+        <ion-spinner class="h-5 w-5"></ion-spinner>
+      </div>
+    }
+  </div>
+</div>

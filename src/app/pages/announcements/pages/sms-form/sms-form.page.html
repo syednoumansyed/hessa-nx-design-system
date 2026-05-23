@@ -1,0 +1,108 @@
+<ion-content class="ds-page-content" *transloco="let t;">
+  <div class="ps-4 md:p-5">
+    <app-hes-stepper [selectedIndex]="step()" [orientation]="'vertical'">
+      <cdk-step
+        [completed]="form.controls.content.valid"
+        [label]="t('announcements.sms_details.title')"
+      >
+        <form [formGroup]="form">
+          <div class="grid grid-cols-1 gap-8 gap-y-4 self-stretch">
+            @for (control of detailConfig(); track $index) {
+            <div class="flex-1">
+              <app-form-control-generator
+                [control]="control"
+              ></app-form-control-generator>
+            </div>
+            }
+          </div>
+        </form>
+        <div
+          class="mt-3 flex justify-between text-sm text-gray-500"
+          [ngClass]="{'text-red-500': messageCount > 10}"
+        >
+          <span>{{ currentCharCount }}/{{ totalLimit }}</span>
+          <span
+            >{{ t('announcements.sms_count.txt', { count: messageCount,
+            totalCount: 10}) }}</span
+          >
+        </div>
+      </cdk-step>
+      <cdk-step
+        [completed]="form.controls.targetForm.valid"
+        [label]="t('announcements.target.title')"
+      >
+        <app-post-target-form
+          [form]="form.controls.targetForm"
+          [roleOptionsWithCount]="roleOptionsWithCount"
+          [announcementType]="'sms'"
+        ></app-post-target-form>
+        @if(showUserSearchControl()){
+        <ng-container [formGroup]="form.controls.targetForm">
+          <app-form-control-generator
+            [control]="userSearchConfig()"
+            class="my-6 block md:my-4 md:max-w-[48%]"
+          ></app-form-control-generator>
+        </ng-container>
+        } @if(smsCostMessage()){
+        <div class="mt-8">
+          <app-hes-alert
+            [title]="t('announcements.account_balance.title')"
+            [type]="smsCostMessage()!.type"
+            [message]="smsCostMessage()!.message"
+            [buttonTitle]="smsCostMessage()!.type === 'error' ? t('announcements.recharge.btn'):''"
+            (actionClick)="onRechargeClick()"
+          ></app-hes-alert>
+        </div>
+        }
+      </cdk-step>
+    </app-hes-stepper>
+    <div class="flex w-full flex-col-reverse gap-3 md:flex-row md:justify-end">
+      <ion-button
+        hesBtn
+        hesColor="secondary"
+        class="mt-4 md:w-auto"
+        (click)="onCancelClick()"
+      >
+        {{t('global.cancel.btn')}}
+      </ion-button>
+      <ion-button
+        hesBtn
+        hesColor="primary"
+        class="mt-4 md:w-auto"
+        (click)="onSubmit()"
+        [disabled]="form.invalid || !form.dirty || !isMessageCountAvailable()"
+      >
+        {{t('announcements.review_sms.btn')}}
+      </ion-button>
+    </div>
+  </div>
+</ion-content>
+
+<ng-template #customselectOption let-item="item">
+  @if (item.value === -1) { {{ item.displayedValue }} } @else {
+  <div class="flex items-start gap-2 lg:items-center">
+    <fa-duotone-icon
+      [icon]="faUserTieHair"
+      primaryColor="#1B84FF"
+      secondaryColor="#1B84FF"
+      secondaryOpacity="0.4"
+      [size]="'lg'"
+    ></fa-duotone-icon>
+    <div
+      class="flex flex-col text-[0.635rem] font-medium capitalize leading-6 text-[#7F8491] lg:flex-row"
+    >
+      <span class="text-gray-900"> {{ item.displayedValue }}, </span>
+      <span *transloco="let t"
+        >{{ t("global.national_id.title") }}:
+        <span class="text-gray-900">{{ item.nationalId }}</span>,
+      </span>
+      <div *transloco="let t" class="flex items-center">
+        <span class="me-1">{{ t("global.phone_number.title") }}:</span>
+        <div class="phone-number-dir text-gray-900">
+          +966 {{ item.phoneNumber }}
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+</ng-template>

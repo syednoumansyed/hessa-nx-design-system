@@ -1,0 +1,18 @@
+{
+  "global.welcome_to_hessa.title": "Welcome to Hessa",
+  "global.welcome.txt": "Your Education Partner!",
+  "global.phone_number.label": "Phone Number",
+  "global.enter_registered_mobile_number.txt": "Please enter the registered mobile number to login",
+  "login.or.txt": "or",
+  "global.send_otp.btn": "Send OTP",
+  "global.send_otp_to_whatsapp.btn": "Send OTP to WhatsApp",
+  "global.verification_required.title": "Verification Required",
+  "login.enter_the_code.txt": "Enter the code sent to",
+  "login.resend.btn": "Re-send in",
+  "global.cancel.btn": "Cancel",
+  "login.invalid_number.txt": "The number you entered is invalid. Please try again with a valid number.",
+  "global.multiple_profiles_detected.title": "Multiple Profiles Detected",
+  "login.associated_profile.txt": "This number {{phoneNumber}} is associated with multiple accounts. Please select from below \nthe account you want to logged in as.",
+  "admin.access_denied.title": "Access Denied",
+  "admin.access_denied.description": "You are not authorized to access the admin panel."
+}

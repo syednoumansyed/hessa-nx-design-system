@@ -1,0 +1,24 @@
+<div *transloco="let t" class="p-4">
+  <div
+    class="text-base font-semibold capitalize leading-tight text-neutral-900"
+  >
+    target schools
+  </div>
+  <div class="my-4 grid min-h-10 grid-cols-3 gap-2">
+    @for (item of selectedValue(); track $index) {
+      <div
+        (click)="onDeselect(item)"
+        class="flex h-6 max-w-[102px] items-center justify-between rounded-full bg-[#f2f4f7] px-3 text-[#344054]"
+      >
+        <p class="truncate text-xs font-medium">{{ item.name }}</p>
+        <app-hes-icon
+          class="ml-0.5 cursor-pointer"
+          [faIcon]="faXmark"
+        ></app-hes-icon>
+      </div>
+    }
+  </div>
+  <ion-button hesBtn hesColor="primary" class="mt-4 w-full" (click)="onClose()">
+    {{ t("global.ok.btn") }}
+  </ion-button>
+</div>

@@ -1,0 +1,35 @@
+<h3 class="text-xl font-semibold capitalize leading-5">
+  {{ title() }}
+</h3>
+<div class="ms-4 mt-8 flex">
+  <ul class="relative list-none space-y-8">
+    @for (step of steps(); track step.levelNumber; let last = $last) {
+      <li class="relative flex items-center ps-6">
+        <div class="ms-2">
+          <h3 class="text-sm font-semibold capitalize leading-5 text-[#141519]">
+            {{ step.title }}
+          </h3>
+          <p class="text-xs capitalize leading-5 text-[#41434A]">
+            {{ step.stepDetail }}
+          </p>
+        </div>
+        <div
+          class="absolute top-0 rounded-full"
+          [ngClass]="
+            step.levelNumber === activeLevel()
+              ? '-left-[9px] z-10  h-7 w-7 border-[6px] border-yellow-500 bg-white rtl:-right-[9px]'
+              : step.levelNumber > activeLevel()
+                ? '-left-[3px] z-0 h-4 w-4 bg-gray-200 rtl:-right-[3px]'
+                : '-left-[3px] z-0 h-4 w-4 bg-yellow-500 rtl:-right-[3px]'
+          "
+        ></div>
+
+        @if (!last) {
+          <div
+            class="absolute left-1 top-4 z-0 h-[calc(100%+1.75rem)] w-0.5 bg-gray-200 rtl:right-1"
+          ></div>
+        }
+      </li>
+    }
+  </ul>
+</div>

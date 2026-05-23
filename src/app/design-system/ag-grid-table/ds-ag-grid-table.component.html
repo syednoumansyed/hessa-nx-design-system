@@ -1,0 +1,253 @@
+<div class="ds-ag-grid-table-shell">
+  <div
+    #gridContainer
+    class="ds-ag-grid-table-body"
+    [class.is-scrolled]="isScrolled()"
+    [class.has-empty-overlay]="showGridEmptyOverlay()"
+    [class.ds-bulk-action-active]="isSelectionActive()"
+    [style.--ds-ag-grid-zoom]="zoomValue()"
+    (scroll)="onBodyScroll($event)"
+  >
+    <div class="ds-ag-grid-table-header">
+      <!-- Prefix section (search, etc.) -->
+      <div class="ds-ag-grid-table-prefix-row">
+        <ng-content select="[dsAgGridHeaderPrefix]"></ng-content>
+      </div>
+
+      <!-- Toolbar row: filters + zoom controls -->
+      <div class="ds-ag-grid-table-toolbar">
+        <div class="ds-ag-grid-table-filters max-w-[50%]">
+          @if (filters().length) {
+            <app-ds-filter-panel
+              class="ds-ag-grid-table-filter"
+              [filters]="filters()"
+              [selection]="filtersSelection()"
+              (filtersChange)="onFiltersChange($event)"
+            ></app-ds-filter-panel>
+          }
+        </div>
+        @if (showZoom()) {
+          <div class="ds-ag-grid-table-zoom">
+            <button
+              type="button"
+              class="ds-ag-grid-table-zoom__btn ds-ag-grid-table-zoom__btn--left"
+              [disabled]="isZoomAtMin()"
+              (click)="zoomOut()"
+            >
+              -A
+            </button>
+            <span
+              class="ds-ag-grid-table-zoom__level"
+              (dblclick)="resetZoom()"
+              >{{ zoomPercentage() }}</span
+            >
+            <button
+              type="button"
+              class="ds-ag-grid-table-zoom__btn ds-ag-grid-table-zoom__btn--right"
+              [disabled]="isZoomAtMax()"
+              (click)="zoomIn()"
+            >
+              +A
+            </button>
+          </div>
+        }
+      </div>
+      <ng-content select="[dsAgGridHeaderSuffix]"></ng-content>
+      @if (
+        !showEmptyState() &&
+        (bulkActions().length || showCustomizeColumns()) &&
+        !isSelectionActive()
+      ) {
+        <app-ds-ag-grid-table-header
+          [title]="title()"
+          [selectionLabel]="selectionLabel()"
+          [showSelectionCount]="showSelectionCount()"
+          [selectionCount]="selectionCount()"
+          [selectionEntityLabel]="selectionEntityLabel()"
+          [actions]="bulkActions()"
+          [showCustomizeColumns]="showCustomizeColumns()"
+          [disableAllActions]="showGridEmptyOverlay() && !hasSelectedRows()"
+          (actionClick)="onBulkActionClick($event)"
+          (closeSelection)="onCloseSelection()"
+          (customizeColumnsClick)="onCustomizeColumns()"
+        ></app-ds-ag-grid-table-header>
+      }
+    </div>
+
+    <!-- Bulk action bar: direct child of scroll container for sticky positioning -->
+    @if (
+      !showEmptyState() &&
+      (bulkActions().length || showCustomizeColumns()) &&
+      isSelectionActive()
+    ) {
+      <app-ds-ag-grid-table-header
+        #bulkActionBar
+        class="ds-bulk-action-sticky"
+        [class.is-stuck]="isBulkBarStuck()"
+        [title]="title()"
+        [selectionLabel]="selectionLabel()"
+        [showSelectionCount]="showSelectionCount()"
+        [selectionCount]="selectionCount()"
+        [selectionEntityLabel]="selectionEntityLabel()"
+        [actions]="bulkActions()"
+        [showCustomizeColumns]="showCustomizeColumns()"
+        [disableAllActions]="showGridEmptyOverlay() && !hasSelectedRows()"
+        (actionClick)="onBulkActionClick($event)"
+        (closeSelection)="onCloseSelection()"
+        (customizeColumnsClick)="onCustomizeColumns()"
+      ></app-ds-ag-grid-table-header>
+    }
+
+    @if (showEmptyState() && effectiveEmptyState(); as empty) {
+      <!-- Global empty state - shown before grid is initialized -->
+      <div class="ds-ag-grid-table-empty-state">
+        <app-no-data-card
+          [noBgStyle]="true"
+          [mainImagePath]="empty.imagePath"
+          [title]="empty.title"
+          [description]="empty.description"
+          [filteredBy]="hasActiveFilters() ? activeFilterChips() : []"
+          [filteredByLabel]="empty.filteredByLabel"
+          [clearFiltersButton]="
+            hasActiveFilters()
+              ? {
+                  label: clearFiltersLabel(),
+                  onAction: onClearFilters.bind(this),
+                }
+              : undefined
+          "
+        ></app-no-data-card>
+      </div>
+    } @else {
+      <div
+        class="ds-ag-grid-table-scroll"
+        [class.has-empty-overlay]="showGridEmptyOverlay()"
+      >
+        <div class="ds-ag-grid-table-zoom-wrapper">
+          <!-- Always show AG Grid when not in global empty state (so columns are visible) -->
+          <ag-grid-angular
+            class="ag-theme-quartz ds-ag-grid-table"
+            [class.ds-row-clickable]="rowClickable()"
+            [columnDefs]="effectiveColumnDefs()"
+            [defaultColDef]="effectiveDefaultColDef()"
+            [rowData]="isClientSide() ? paginatedRowData() : null"
+            [rowModelType]="rowModelType()"
+            [cacheBlockSize]="cacheBlockSize()"
+            [rowSelection]="selectionMode()"
+            [suppressRowClickSelection]="suppressRowClickSelection()"
+            [suppressPreventDefaultOnMouseWheel]="true"
+            [suppressDragLeaveHidesColumns]="true"
+            [suppressNoRowsOverlay]="true"
+            [autoSizeStrategy]="autoSizeStrategy()"
+            [enableRtl]="isRtl()"
+            [loadingOverlayComponent]="loadingOverlayComponent"
+            [loading]="loading()"
+            [context]="gridContext()"
+            (gridReady)="onGridReady($event)"
+            (rowClicked)="onRowClicked($event)"
+            (selectionChanged)="onSelectionChanged()"
+            (rowDataUpdated)="onRowDataUpdated()"
+            (sortChanged)="onSortChanged($event)"
+            (dragStopped)="onDragStopped($event)"
+            domLayout="autoHeight"
+          />
+        </div>
+        <!-- Empty state rendered OUTSIDE AG Grid so column headers stay intact -->
+        @if (
+          !loading() &&
+            isGridInitialized() &&
+            rowData().length === 0 &&
+            effectiveEmptyState();
+          as empty
+        ) {
+          <div class="ds-ag-grid-table-grid-empty-state">
+            <app-no-data-card
+              [noBgStyle]="true"
+              [mainImagePath]="empty.imagePath"
+              [title]="empty.title"
+              [description]="empty.description"
+              [filteredBy]="hasActiveFilters() ? activeFilterChips() : []"
+              [filteredByLabel]="empty.filteredByLabel"
+              [clearFiltersButton]="
+                hasActiveFilters()
+                  ? {
+                      label: clearFiltersLabel(),
+                      onAction: onClearFilters.bind(this),
+                    }
+                  : undefined
+              "
+            ></app-no-data-card>
+          </div>
+        }
+      </div>
+    }
+
+    @if (!showEmptyState() && effectivePagination(); as paginate) {
+      <div class="ds-ag-grid-table-footer">
+        <ng-content select="[dsAgGridFooter]"></ng-content>
+        <div class="ds-ag-grid-pagination">
+          <p class="ds-ag-grid-pagination__summary">
+            {{ paginationSummary() }}
+          </p>
+          @if (paginate.totalPages > 1) {
+            <div class="ds-ag-grid-pagination__pager">
+              <button
+                type="button"
+                class="ds-ag-grid-pagination__nav ds-ag-grid-pagination__nav--prev"
+                (click)="paginateBackward()"
+                [disabled]="paginate.pageNumber <= 1"
+              >
+                <app-ds-icon
+                  [icon]="chevronLeftIcon"
+                  size="sm"
+                  class="ds-icon-rtl-flip"
+                ></app-ds-icon>
+              </button>
+              <div class="ds-ag-grid-pagination__pages">
+                @for (page of pagesList(); track $index) {
+                  @if (page === -1) {
+                    <span class="ds-ag-grid-pagination__ellipsis">..</span>
+                  } @else {
+                    <button
+                      type="button"
+                      class="ds-ag-grid-pagination__page"
+                      [class.is-active]="page === paginate.pageNumber"
+                      (click)="paginateToPage(page)"
+                    >
+                      {{ page }}
+                    </button>
+                  }
+                }
+              </div>
+              <button
+                type="button"
+                class="ds-ag-grid-pagination__nav ds-ag-grid-pagination__nav--next"
+                (click)="paginateForward()"
+                [disabled]="paginate.pageNumber >= paginate.totalPages"
+              >
+                <app-ds-icon
+                  [icon]="chevronRightIcon"
+                  size="sm"
+                  class="ds-icon-rtl-flip"
+                ></app-ds-icon>
+              </button>
+            </div>
+          }
+          <ds-menu
+            [items]="perPageOptions"
+            [selectedValues]="selectedPerPageValue()"
+            (itemSelected)="onPerPageChange($event)"
+          >
+            <button type="button" class="ds-ag-grid-pagination__per-page">
+              <span
+                >{{ paginate.itemsPerPage }}
+                {{ "global.per_page.txt" | dsTranslate }}</span
+              >
+              <app-ds-icon [icon]="chevronDownIcon" size="sm"></app-ds-icon>
+            </button>
+          </ds-menu>
+        </div>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,40 @@
+<div class="flex w-full items-center gap-2">
+  <div
+    class="flex-1 overflow-hidden rounded-full"
+    [ngClass]="{
+      'h-[10px]': size() === 'lg',
+      'h-[4px]': size() === 'sm',
+      'bg-pastels-green-150': variant() === 'green',
+      'bg-pastels-warnOrange-150':
+        variant() === 'red' || variant() === 'orange',
+      'bg-black-20': variant() === 'blue' || variant() === 'neon-green',
+      'bg-pastels-brand-200': variant() === 'yellow',
+      'bg-pastels-indigo-150': variant() === 'indigo'
+    }"
+  >
+    <div
+      class="h-full rounded-full"
+      [ngClass]="{
+        'bg-emerald-500': variant() === 'green',
+        'bg-error-ds-400': variant() === 'red',
+        'bg-blue-400': variant() === 'blue',
+        'bg-brand-500': variant() === 'yellow',
+        'bg-indigo-400': variant() === 'indigo',
+        'bg-warn-orange-400': variant() === 'orange',
+        'bg-emerald-400': variant() === 'neon-green'
+      }"
+      [style.width.%]="animatedProgress()"
+    ></div>
+  </div>
+
+  @if (showPercentage()) {
+    <div
+      *ngIf="showPercentage()"
+      class="single-line-xs-mid-emphasis min-w-[2rem]"
+      [class.text-right]="!isRtl"
+      [class.text-left]="isRtl"
+    >
+      {{ animatedProgress() }}%
+    </div>
+  }
+</div>

@@ -1,0 +1,34 @@
+<ng-container [formGroup]="form">
+  <div *transloco="let t" class="flex flex-col gap-4 md:gap-10">
+    <app-form-control-generator
+      [control]="questionConfig()"
+    ></app-form-control-generator>
+    <app-question-images-upload></app-question-images-upload>
+    <div formArrayName="questionOptions" class="flex flex-col gap-4">
+      @for (
+        option of form.controls.questionOptions.controls;
+        track option;
+        let idx = $index
+      ) {
+        <ng-container [formGroupName]="idx">
+          <app-multi-question-item
+            [idx]="idx"
+            [form]="option"
+            class="w-full"
+            (removed)="onRemove(idx)"
+            (markAsCorrect)="onMarkAsCorrect(idx)"
+          ></app-multi-question-item>
+        </ng-container>
+      }
+    </div>
+    @if ((isViewState$ | async) === false) {
+      <div
+        (click)="addNewQuestion()"
+        class="cursor-pointer font-medium text-[#7F8491]"
+      >
+        <fa-icon [icon]="faPlus"></fa-icon>
+        {{ t("content_management.add_new_answer.btn") }}
+      </div>
+    }
+  </div>
+</ng-container>

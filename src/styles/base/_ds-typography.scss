@@ -1,0 +1,197 @@
+@use "sass:map";
+@use "sass:list";
+
+// =============================================================================
+// Typography System
+// =============================================================================
+
+:root {
+  /* Global Font Properties */
+  --font-weight-extrabold: 800;
+  --font-weight-semibold: 600;
+  --font-weight-medium: 500;
+  --font-weight-regular: 400;
+
+  /* Base Line Heights (direct pixel values) */
+  --font-line-height-xs: 16px;
+  --font-line-height-sm: 20px;
+  --font-line-height-base: 20px;
+  --font-line-height-lg: 24px;
+  --font-line-height-xl: 24px;
+  --font-line-height-2xl: 28px;
+  --font-line-height-3xl: 36px;
+  --font-line-height-4xl: 44px;
+  --font-line-height-xs-tight: 14px;
+  --font-line-height-single: 1;
+
+  /* Mobile Font Sizes (Tailwind variables) */
+  --font-size-xs: var(--tailwind-text-xs);
+  --font-size-sm: var(--tailwind-text-xs);
+  --font-size-base: var(--tailwind-text-sm);
+  --font-size-lg: var(--tailwind-text-base);
+  --font-size-xl: var(--tailwind-text-lg);
+  --font-size-2xl: var(--tailwind-text-xl);
+  --font-size-3xl: var(--tailwind-text-3xl);
+  --font-size-4xl: var(--tailwind-text-4xl);
+}
+
+@media (min-width: 768px) {
+  /* Tablet */
+  :root {
+    /* Tablet Font Sizes */
+    --font-size-sm: var(--tailwind-text-sm);
+    --font-size-base: var(--tailwind-text-base);
+    --font-size-lg: var(--tailwind-text-lg);
+    --font-size-xl: var(--tailwind-text-xl);
+    --font-size-2xl: var(--tailwind-text-2xl);
+    --font-size-3xl: var(--tailwind-text-4xl);
+    --font-size-4xl: var(--tailwind-text-6xl);
+
+    /* Tablet Line Heights */
+    --font-line-height-lg: 28px;
+    --font-line-height-xl: 28px;
+    --font-line-height-2xl: 28px;
+    --font-line-height-3xl: 40px;
+    --font-line-height-4xl: 48px;
+  }
+}
+
+@media (min-width: 1024px) {
+  /* Desktop */
+  :root {
+    /* Desktop Font Sizes */
+    --font-size-base: var(--tailwind-text-base);
+    --font-size-lg: var(--tailwind-text-xl);
+    --font-size-xl: var(--tailwind-text-2xl);
+    --font-size-2xl: var(--tailwind-text-3xl);
+    --font-size-3xl: var(--tailwind-text-5xl);
+    --font-size-4xl: var(--tailwind-text-8xl);
+
+    /* Desktop Line Heights */
+    --font-line-height-xs: 18px;
+    --font-line-height-lg: 28px;
+    --font-line-height-xl: 28px;
+    --font-line-height-2xl: 28px;
+    --font-line-height-3xl: 44px;
+    --font-line-height-4xl: 56px;
+    --font-line-height-xs-tight: 16px;
+  }
+}
+
+// =============================================================================
+// Text Style Mixins
+// =============================================================================
+
+@mixin text-style($size, $line-height-type, $weight) {
+  font-size: var(--font-size-#{$size});
+  line-height: var(--font-line-height-#{$line-height-type});
+  font-weight: var(--font-weight-#{$weight});
+}
+
+// =============================================================================
+// Generated Styles
+// =============================================================================
+
+// Headings
+$headingSize: (
+  h1: 4xl,
+  h2: 3xl,
+  h3: 2xl,
+  h4: lg,
+  h5: base,
+);
+
+// Headings
+@for $i from 1 through 5 {
+  $level: h#{$i};
+  $size: map.get($headingSize, $level);
+
+  .heading-#{$level}-high-emphasis {
+    @include text-style($size, $size, extrabold);
+  }
+
+  .heading-#{$level}-mid-emphasis {
+    @include text-style($size, $size, semibold);
+  }
+}
+
+// Content Styles
+$content-sizes: (
+  lg: (
+    lg,
+    lg,
+  ),
+  md: (
+    base,
+    base,
+  ),
+  sm: (
+    sm,
+    sm,
+  ),
+  xs: (
+    xs,
+    xs-tight,
+  ),
+);
+
+@each $size, $props in $content-sizes {
+  .content-#{$size}-high-emphasis {
+    @include text-style(list.nth($props, 1), list.nth($props, 2), extrabold);
+  }
+
+  .content-#{$size}-mid-emphasis {
+    @include text-style(list.nth($props, 1), list.nth($props, 2), semibold);
+  }
+
+  .content-#{$size}-default {
+    @include text-style(list.nth($props, 1), list.nth($props, 2), regular);
+  }
+}
+
+// Single Line Styles
+$single-line-sizes: (
+  lg: 2xl,
+  md: lg,
+  sm: base,
+  xs: sm,
+);
+
+@each $size, $value in $single-line-sizes {
+  .single-line-#{$size}-high-emphasis {
+    @include text-style($value, single, extrabold);
+  }
+
+  .single-line-#{$size}-mid-emphasis {
+    @include text-style($value, single, semibold);
+  }
+
+  .single-line-#{$size}-low-emphasis {
+    @include text-style($value, single, regular);
+  }
+}
+
+// Captions
+.single-line-caption {
+  &-high-emphasis {
+    @include text-style(
+      xs,
+      single,
+      extrabold
+    ); // Single line/Caption/high-emphasis
+  }
+  &-mid-emphasis {
+    @include text-style(
+      xs,
+      single,
+      semibold
+    ); //Single line/Caption/mid-emphasis
+  }
+  &-low-emphasis {
+    @include text-style(
+      xs,
+      single,
+      regular
+    ); // Single line/Caption/low-emphasis
+  }
+}

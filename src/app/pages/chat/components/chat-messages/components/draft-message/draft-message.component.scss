@@ -1,0 +1,13 @@
+.message {
+  border-top-left-radius: 0.75rem;
+  border-top-right-radius: 0.75rem;
+  &.send {
+    background-color: #efefef;
+    &:dir(ltr) {
+      border-bottom-left-radius: 0.75rem;
+    }
+    &:dir(rtl) {
+      border-bottom-right-radius: 0.75rem;
+    }
+  }
+}

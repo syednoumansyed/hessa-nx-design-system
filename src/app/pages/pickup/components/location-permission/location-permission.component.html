@@ -1,0 +1,28 @@
+<div
+  *transloco="let t"
+  class="mx-auto flex h-[calc(100vh-12rem)] items-center justify-center px-6"
+>
+  <div class="text-center">
+    <ion-img
+      [src]="'assets/illustrations/location.png'"
+      class="mx-auto h-16 w-16 object-cover"
+    ></ion-img>
+    <div class="mb-2 mt-4 text-xl font-medium text-gray-900">
+      {{ t("dismissal.location_permission_needed.title") }}
+    </div>
+    <div class="text-base text-gray-500">
+      {{ t("dismissal.location_permission_needed.txt") }}
+    </div>
+    @if (isNativePlatform) {
+      <ion-button
+        hesBtn
+        hesColor="primary"
+        hesSize="md"
+        class="mt-4 w-full text-base"
+        (click)="openSettings()"
+      >
+        {{ t("dismissal.open_settings.btn") }}
+      </ion-button>
+    }
+  </div>
+</div>

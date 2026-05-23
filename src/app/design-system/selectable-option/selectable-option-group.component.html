@@ -1,0 +1,23 @@
+<div class="flex flex-col gap-ds-md" role="radiogroup">
+  <ng-container *ngIf="config()?.options as options">
+    @for (option of options; track option.value; let i = $index) {
+      <div [attr.data-index]="i" class="flex items-center gap-ds-md">
+        <div
+          class="single-line-sm-mid-emphasis rounded-ds-full border-2 border-stroke-black-08 bg-surface-primary px-ds-lg py-ds-sm"
+        >
+          {{ i + 1 }}
+        </div>
+        <ds-selectable-option
+          [value]="option.value"
+          [display]="option.display"
+          [mode]="config().mode"
+          [selectedValue]="selectedValue()"
+          [correctOptionValue]="config().correctOptionValue"
+          [revealAnswer]="!!config().revealAnswer"
+          (selected)="selectOption(option.value)"
+          class="flex-1"
+        ></ds-selectable-option>
+      </div>
+    }
+  </ng-container>
+</div>

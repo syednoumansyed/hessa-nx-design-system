@@ -1,0 +1,37 @@
+@if (isLoading$ | async) {
+  <div>Question loading....</div>
+} @else {
+  @if (questions$ | async; as questions) {
+    @if (questions.length > 0) {
+      @for (question of questions; track $index) {
+        <app-question-list-item
+          [question]="question"
+          [idx]="$index"
+        ></app-question-list-item>
+      }
+      @if (isMobile) {
+        <div *transloco="let t" class="my-5 px-6">
+          <ion-button
+            (click)="onAddQuestion()"
+            class="hes-btn--primary w-full"
+            hesBtn
+            hesSize="lg"
+            expand="block"
+            >{{ t("content_management.add_questions.btn") }}</ion-button
+          >
+        </div>
+      }
+    } @else {
+      <app-no-data-card
+        *transloco="let t"
+        class="px-4"
+        mainImagePath="assets/illustrations/no_data.svg"
+        [title]="t('content_management.no_questions_added.title')"
+        [description]="t('content_management.adding_questions.txt')"
+        [primaryButton]="(noDataBtnConfig$ | async)!"
+        [noBgStyle]="true"
+      >
+      </app-no-data-card>
+    }
+  }
+}

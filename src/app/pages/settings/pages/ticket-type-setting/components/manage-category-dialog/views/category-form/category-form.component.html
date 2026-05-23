@@ -1,0 +1,77 @@
+<form
+  *transloco="let t"
+  [formGroup]="form"
+  class="flex flex-1 flex-col gap-ds-xl overflow-y-auto"
+>
+  <!-- Dynamic Form Controls -->
+  <app-ds-form-renderer [controls]="formConfig" gap="2xl" />
+
+  <!-- Custom Field Section -->
+  <div class="flex flex-col gap-ds-md">
+    <div class="single-line-md-mid-emphasis text-emphasis-high">
+      {{ t("support.custom_field.section") }}
+    </div>
+
+    @if (!hasExistingCustomFields && selectedCustomFields.length === 0) {
+      <!-- Empty State - No custom fields exist -->
+      <div
+        class="flex flex-col items-center justify-center gap-ds-md rounded-ds-xl bg-pastels-neutralGray-50 px-ds-xl py-ds-2xl"
+      >
+        <div class="flex flex-col items-center gap-ds-sm">
+          <div class="single-line-md-high-emphasis text-emphasis-high">
+            {{ t("support.custom_field.ask.title") }}
+          </div>
+          <div
+            class="content-xs-default w-full text-center text-emphasis-mid md:w-[60%]"
+          >
+            {{ t("support.custom_field.ask.helper") }}
+          </div>
+        </div>
+        <ds-button
+          variant="primary"
+          size="md"
+          [iconStart]="faPlus"
+          (click)="goToAddField()"
+        >
+          {{ t("support.custom_field.new.action") }}
+        </ds-button>
+      </div>
+    } @else {
+      <!-- State with custom fields or when custom fields exist globally -->
+      <div class="flex flex-col gap-ds-md">
+        <!-- Search and Add Button Row -->
+        <div class="flex items-center gap-ds-md">
+          <div class="flex-1 cursor-pointer" (click)="goToSearchFields()">
+            <app-ds-input
+              [placeholder]="t('support.custom_field.search.placeholder')"
+              [iconEnd]="faMagnifyingGlass"
+              [readOnly]="true"
+              class="pointer-events-none"
+            />
+          </div>
+          <ds-button
+            variant="primary"
+            size="md"
+            [iconStart]="faPlus"
+            (click)="goToAddField()"
+          >
+            {{ t("support.custom_field.new.action") }}
+          </ds-button>
+        </div>
+
+        <!-- Selected Custom Fields List -->
+        @if (selectedCustomFields.length > 0) {
+          <div class="flex flex-col gap-ds-sm">
+            @for (field of selectedCustomFields; track field.id) {
+              <app-custom-field-card
+                [field]="field"
+                mode="remove"
+                (remove)="removeCustomField($event)"
+              />
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+</form>

@@ -1,0 +1,44 @@
+<!-- Action container for the session action -->
+<div class="flex items-center justify-center" *transloco="let t">
+  <ng-container [ngSwitch]="sessionAction">
+    <!-- Join enabled button -->
+    <ng-container *ngSwitchCase="'JOIN_ENABLED'">
+      <div
+        *hesRbac="joinPermissionId"
+        class="h-9 w-full cursor-pointer items-center justify-center gap-2 rounded-lg border border-[#fefcf1] bg-[#fefcf1] px-3.5 py-2 text-center text-center text-sm font-semibold leading-tight text-[#ecad01] shadow"
+        (click)="onJoinClick()"
+      >
+        {{ t("virtual_classrooms.join.btn") }}
+      </div>
+    </ng-container>
+
+    <!-- View recording button -->
+    <ng-container *ngSwitchCase="'VIEW_RECORDING'">
+      <div
+        *hesRbac="viewRecrodingPermissionId"
+        class="flex h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-lg border border-[#fefcf1] bg-[#fefcf1] px-2 py-2 text-center text-sm font-semibold leading-tight text-[#ecad01] shadow"
+        (click)="onViewRecordingClick()"
+      >
+        {{ t("virtual_classrooms.view_recording.btn") }}
+      </div>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'NO_RECORDING'">
+      <div
+        *hesRbac="viewRecrodingPermissionId"
+        class="flex h-11 w-full cursor-not-allowed items-center justify-center gap-2 rounded-lg border border-[#fefcf1] bg-[#fefcf1] px-3.5 py-2 text-center text-sm font-semibold leading-tight text-[#ecad01] opacity-50 shadow"
+      >
+        {{ "No recordings" }}
+      </div>
+    </ng-container>
+    <!-- Disabled JOIN button -->
+    <ng-container *ngSwitchCase="'JOIN_DISABLED'">
+      <div
+        *hesRbac="joinPermissionId"
+        class="h-9 w-full cursor-not-allowed items-center justify-center gap-2 rounded-lg border border-[#fefcf1] bg-[#fefcf1] px-3.5 py-2 text-center text-sm font-semibold leading-tight text-[#ecad01] opacity-50 shadow"
+      >
+        {{ t("virtual_classrooms.join.btn") }}
+      </div>
+    </ng-container>
+  </ng-container>
+</div>

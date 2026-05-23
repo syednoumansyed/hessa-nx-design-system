@@ -1,0 +1,87 @@
+<!-- ds-school-structure-nav-item.component.html -->
+<li
+  class="tree-rail tree-container"
+  [class.first-level]="firstLevel"
+  [class.active]="isScopeSelected()"
+  [class.last-sibling]="isLastSibling"
+>
+  <!-- header row -->
+  <div class="tree-content">
+    <!-- chevron / spacer -->
+    @if (
+      scopeSelection
+        ? item.children.length &&
+          !(
+            item.type === "level" ||
+            item.type === "class" ||
+            item.type === "school"
+          )
+        : item.children.length
+    ) {
+      <button
+        class="toggle-box bg-white text-gray-500 hover:text-gray-700 disabled:opacity-60"
+        (click)="toggleChildren($event)"
+        aria-label="Toggle children"
+        [attr.aria-expanded]="showChildren()"
+      >
+        <ng-icon
+          [name]="showChildren() ? 'chevron-down' : 'chevron-right'"
+          color="currentColor"
+          class="text-lg rtl:rotate-180"
+        ></ng-icon>
+      </button>
+    } @else {
+      <div class="h-6 w-6 shrink-0"></div>
+    }
+
+    <!-- badge + label (clickable area for selection) -->
+    <div
+      class="flex h-full min-h-6 flex-1 items-center justify-start"
+      [ngClass]="{
+        'cursor-pointer': !disabled && item.hasAccess,
+        'select-disabled cursor-not-allowed opacity-50':
+          disabled || !item.hasAccess,
+      }"
+      (click)="handleClick()"
+    >
+      <ng-icon [name]="item.icon ?? ''" class="text-lg"></ng-icon>
+      <span
+        class="tree-label ms-2"
+        [ngClass]="isScopeSelected() ? '!font-bold text-emphasis-high' : ''"
+      >
+        {{ item.name }}
+      </span>
+    </div>
+  </div>
+
+  <!-- children -->
+  @if (
+    scopeSelection
+      ? item.children.length &&
+        showChildren() &&
+        !(item.type === "level" || item.type === "class")
+      : item.children.length && showChildren()
+  ) {
+    <ul class="tree-children relative" [@expandCollapse]>
+      @for (
+        child of item.children;
+        track child.id;
+        let idx = $index;
+        let isLast = $last
+      ) {
+        <app-ds-school-structure-nav-item
+          [item]="child"
+          [scopeSelection]="scopeSelection"
+          [isNavItem]="isNavItem"
+          [isCollapsed]="isCollapsed"
+          [onClickItem]="onClickItem"
+          [disabled]="childDisabled(child)"
+          [isLastSibling]="isLast"
+          (selectionComplete)="selectionComplete.emit($event)"
+          (close)="close.emit()"
+        >
+        </app-ds-school-structure-nav-item>
+      }
+    </ul>
+  }
+</li>

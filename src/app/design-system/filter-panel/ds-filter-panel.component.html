@@ -1,0 +1,222 @@
+<form [formGroup]="formGroup()" class="flex items-center gap-3">
+  @if (resolvedExposedFilters().length) {
+    <div
+      class="flex flex-1 flex-wrap items-center gap-3"
+      [ngClass]="hasExpandableExposedFilter() ? '' : 'md:flex-none'"
+    >
+      @for (filter of resolvedExposedFilters(); track filter.key) {
+        <div
+          class="flex flex-1 items-center gap-2"
+          [ngClass]="{
+            'md:w-[180px] md:flex-none': filter.type === 'date',
+            'md:w-[220px] md:flex-none': filter.type === 'date-range',
+            'md:min-w-[30%] md:flex-1': filter.type === 'search',
+            'md:flex-none':
+              filter.type !== 'date' &&
+              filter.type !== 'date-range' &&
+              filter.type !== 'search',
+          }"
+        >
+          <div class="min-w-0 flex-1">
+            @switch (filter.type) {
+              @case ("date") {
+                <app-ds-form-control-generator
+                  [control]="filterControl(filter, true)"
+                />
+              }
+              @case ("date-range") {
+                <app-ds-form-control-generator
+                  [control]="filterControl(filter, true)"
+                />
+              }
+              @case ("select") {
+                <app-ds-form-control-generator
+                  [control]="filterControl(filter, true)"
+                />
+              }
+              @case ("chip-selector") {
+                <app-ds-form-control-generator
+                  [control]="filterControl(filter, true)"
+                />
+              }
+              @case ("search") {
+                <app-search-box
+                  [placeholderTxt]="filter.placeholder"
+                  [manageBottomBarVisibility]="false"
+                  [value]="formGroup().get(filter.key)?.value ?? ''"
+                  (searchChange)="
+                    formGroup()
+                      .get(filter.key)
+                      ?.setValue($event ?? '')
+                  "
+                />
+              }
+              @case ("school-structure") {
+                <app-ds-school-structure-control
+                  [formControlName]="filter.key"
+                  [placeholder]="filter.placeholder"
+                  [isMultiSelect]="filter.isMultiSelect"
+                  [depth]="filter.depth"
+                  [allowedSelections]="filter.allowedSelections"
+                />
+              }
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Slot for extra buttons (e.g., sort button) before filter modal button -->
+  <ng-content select="[dsFilterPanelExtraButtons]"></ng-content>
+
+  @if (resolvedModalFilters().length) {
+    <div class="relative">
+      <ds-button
+        [size]="'lg'"
+        [variant]="'secondary'"
+        [iconStart]="filterIcon"
+        [title]="'Filters'"
+        (click)="openModal()"
+      ></ds-button>
+      @if (selectedCount() > 0) {
+        <span
+          class="-rtl:left-[6px] single-line-sm-high-emphasis absolute -right-[6px] -top-[6px] flex min-w-[20px] items-center justify-center rounded-full bg-surface-info px-1 py-0.5 font-bold text-surface-on-notification-badge"
+        >
+          {{ selectedCount() }}
+        </span>
+      }
+    </div>
+  }
+</form>
+
+<ng-template #filtersDialog let-observer let-completeWith="completeWith">
+  <div
+    class="ds-filter-panel-shell flex max-h-[90vh] w-full flex-col overflow-hidden rounded-ds-2xl bg-surface-primary"
+  >
+    <div class="flex items-start justify-between gap-ds-xl border-b p-ds-xl">
+      <div class="single-line-lg-high-emphasis truncate text-emphasis-high">
+        {{ "global.filters.title" | dsTranslate }}
+      </div>
+      <button
+        type="button"
+        class="rounded-ful flex h-6 w-6 items-center justify-center"
+        (click)="observer.complete()"
+        aria-label="Close"
+      >
+        <app-ds-icon [icon]="closeIcon" cssClass="text-[#B3B3B3]"></app-ds-icon>
+      </button>
+    </div>
+
+    <div
+      class="flex min-h-0 flex-1 flex-col gap-ds-xl overflow-y-auto p-ds-xl pt-4"
+      [formGroup]="formGroup()"
+    >
+      @if (activeModalChips().length) {
+        <div class="flex flex-wrap items-center gap-ds-sm">
+          @for (chip of activeModalChips(); track chip.label + chip.key) {
+            <app-ds-chip
+              [text]="chip.label"
+              variant="primary"
+              [removable]="true"
+              (remove)="removeModalChip(chip)"
+            />
+          }
+          <ds-button
+            variant="tertiary"
+            size="sm"
+            (click)="clearAllModalFilters()"
+          >
+            {{ "global.clear_filters.btn" | dsTranslate }}
+          </ds-button>
+        </div>
+      }
+      @for (filter of resolvedModalFilters(); track filter.key) {
+        @if (!filter.hidden && filter.type !== "search") {
+          @switch (filter.type) {
+            @case ("date") {
+              <div class="flex flex-col gap-ds-xs">
+                <span class="heading-h5-mid-emphasis text-content-high">
+                  {{ filter.label }}
+                </span>
+                <app-ds-form-control-generator
+                  [control]="filterControl(filter, true)"
+                />
+              </div>
+            }
+            @case ("date-range") {
+              <div class="flex flex-col gap-ds-xs">
+                <span class="heading-h5-mid-emphasis text-content-high">
+                  {{ filter.label }}
+                </span>
+                <app-ds-form-control-generator
+                  [control]="filterControl(filter, true)"
+                />
+              </div>
+            }
+            @case ("select") {
+              <div class="flex flex-col gap-ds-xs">
+                <span class="heading-h5-mid-emphasis text-content-high">
+                  {{ filter.label }}
+                </span>
+                <app-ds-form-control-generator
+                  [control]="filterControl(filter, true)"
+                />
+              </div>
+            }
+            @case ("chip-selector") {
+              <div class="flex flex-col gap-ds-xs">
+                <span class="heading-h5-mid-emphasis text-content-high">
+                  {{ filter.label }}
+                </span>
+                <app-ds-form-control-generator
+                  [control]="filterControl(filter, true)"
+                />
+              </div>
+            }
+            @case ("school-structure") {
+              <div class="flex flex-col gap-ds-xs">
+                <span class="heading-h5-mid-emphasis text-content-high">
+                  {{ filter.label }}
+                </span>
+                <app-ds-school-structure-control
+                  [formControlName]="filter.key"
+                  [placeholder]="filter.placeholder"
+                  [isMultiSelect]="filter.isMultiSelect"
+                  [depth]="filter.depth"
+                  [allowedSelections]="filter.allowedSelections"
+                />
+              </div>
+            }
+          }
+        }
+      }
+    </div>
+
+    <div
+      class="sticky bottom-0 flex w-full flex-row gap-ds-md border-t bg-surface-primary p-ds-xl pt-ds-xl md:static md:justify-end md:gap-ds-xl"
+    >
+      <ds-button
+        [variant]="'secondary'"
+        [size]="'lg'"
+        cssClass="flex-1 md:flex-none"
+        (click)="completeWith(false)"
+        [fullWidth]="true"
+        class="flex-1 md:flex-none"
+      >
+        {{ "global.cancel.btn" | dsTranslate }}
+      </ds-button>
+      <ds-button
+        [variant]="'primary'"
+        [size]="'lg'"
+        cssClass="flex-1 md:flex-none"
+        (click)="applyFilters(); completeWith(true)"
+        [fullWidth]="true"
+        [disabled]="isApplyDisabled()"
+        class="flex-1 md:flex-none"
+      >
+        {{ "global.apply.txt" | dsTranslate }}
+      </ds-button>
+    </div>
+  </div>
+</ng-template>

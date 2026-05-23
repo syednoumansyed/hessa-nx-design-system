@@ -1,0 +1,22 @@
+<div class="px-2 pb-2 pt-2">
+  <ul class="flex flex-col gap-1">
+    @for (
+      node of nodes();
+      track node.id + "-" + node.type;
+      let first = $first;
+      let last = $last
+    ) {
+      <app-ds-school-structure-node
+        [item]="node"
+        [helper]="helper()"
+        [firstLevel]="true"
+        [isFirstSibling]="first"
+        [isLastSibling]="last"
+        [readOnly]="readOnly()"
+        class="[&.active>.tree-content>.toggle-box]:ml-[-1rem] [&.active]:ps-4 rtl:[&.active]:pe-4"
+        (nodeSelected)="nodeSelected.emit($event)"
+        (nodeToggled)="nodeToggled.emit($event)"
+      ></app-ds-school-structure-node>
+    }
+  </ul>
+</div>

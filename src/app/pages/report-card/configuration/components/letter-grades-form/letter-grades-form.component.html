@@ -1,0 +1,40 @@
+<ng-container *transloco="let t">
+  <form [formGroup]="gradeForm()">
+    @if (!isMobile) {
+      <div class="mb-2 grid grid-cols-4 rounded-lg border text-center">
+        <div class="py-4 font-semibold">
+          {{ t("grade_management.grade_letter.title") }}
+        </div>
+        <div class="border-l py-4 font-semibold">
+          {{ t("grade_management.numeric_grade.title") }}
+        </div>
+        <div class="border-l py-4 font-semibold">
+          {{ t("grade_management.minimum_value.title") }}
+        </div>
+        <div class="border-l py-4 font-semibold">
+          {{ t("grade_management.maximum_value.title") }}
+        </div>
+      </div>
+    }
+
+    <div formArrayName="grades">
+      @for (
+        control of gradeControls;
+        track control;
+        let last = $last;
+        let first = $first
+      ) {
+        <ng-container [formGroupName]="$index">
+          <app-letter-grade-item-form
+            [form]="control"
+            [isLastItem]="last"
+            [isFirst]="first"
+            (removed)="removeLastGrade()"
+            [totalItemLength]="gradeControls.length"
+            [isView]="isView()"
+          ></app-letter-grade-item-form>
+        </ng-container>
+      }
+    </div>
+  </form>
+</ng-container>

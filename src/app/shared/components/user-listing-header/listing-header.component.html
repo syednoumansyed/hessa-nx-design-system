@@ -1,0 +1,157 @@
+<div
+  class="flex flex-1 items-center justify-between gap-4 self-stretch px-6 py-4 pb-2"
+>
+  <!-- Title -->
+  <div class="flex items-center justify-start gap-2">
+    @if (loading()) {
+      <ion-skeleton-text
+        [animated]="true"
+        class="h-7 w-24 rounded"
+      ></ion-skeleton-text>
+    } @else {
+      <div class="text-lg font-medium leading-7 text-gray-900">
+        {{ title }}
+      </div>
+    }
+    @if (loading()) {
+      <ion-skeleton-text
+        [animated]="true"
+        class="h-5 w-9 rounded-lg md:w-24"
+      ></ion-skeleton-text>
+    } @else {
+      @if (countTitle && countValue !== undefined) {
+        <div class="Badge flex items-start justify-start mix-blend-multiply">
+          <div
+            class="BadgeBase flex items-center justify-center rounded-2xl bg-yellow-50 px-2 py-0.5"
+          >
+            <div
+              class="Text text-center text-xs font-medium leading-[18px] text-yellow-500"
+            >
+              {{ countValue }}
+              <span class="hidden md:inline-block">{{ countTitle }}</span>
+            </div>
+          </div>
+        </div>
+      }
+    }
+  </div>
+  <!-- Primary and Secondary Actions -->
+
+  <div class="flex items-center justify-start gap-3">
+    @if (loading()) {
+      <ion-skeleton-text
+        [animated]="true"
+        class="h-11 w-11 rounded-lg md:w-40"
+      ></ion-skeleton-text>
+      <ion-skeleton-text
+        [animated]="true"
+        class="h-11 w-11 rounded-lg md:w-40"
+      ></ion-skeleton-text>
+    } @else {
+      @if (primaryBtnTitle() && !showPrimaryBtnInFilterRow()) {
+        <ng-container *hesRbacSome="primaryBtnPermissionId()">
+          <ion-button
+            class="hes-btn--primary flex-1 md:flex-none"
+            [disabled]="primaryBtnDisabled()"
+            (click)="onPrimaryBtnClick.emit()"
+            [routerLink]="primaryBtnHref()"
+          >
+            <span
+              [ngClass]="{
+                'hidden md:inline-block': !ShowPrimaryBtnTitleMobile(),
+              }"
+            >
+              {{ primaryBtnTitle() }}
+            </span>
+            <fa-icon
+              [icon]="primaryBtnIcon() ?? faPlus"
+              class="text-base md:hidden"
+              [ngClass]="{
+                hidden: ShowPrimaryBtnTitleMobile(),
+              }"
+            ></fa-icon>
+          </ion-button>
+        </ng-container>
+      }
+      @if (secondaryBtnTitle()) {
+        <ng-container *hesRbacSome="secondaryBtnPermissionId()">
+          <ion-button
+            hesColor="secondary"
+            class="hes-btn--white flex-1 md:flex-none"
+            [disabled]="secondaryBtnDisabled()"
+            (click)="onSecondaryBtnClick.emit()"
+            [routerLink]="secondaryBtnHref()"
+          >
+            <span class="hidden md:inline-block">
+              {{ secondaryBtnTitle() }}
+            </span>
+            <fa-icon
+              [icon]="secondaryBtnIcon() ?? faPlus"
+              class="text-base md:hidden"
+            ></fa-icon>
+          </ion-button>
+        </ng-container>
+      }
+    }
+  </div>
+</div>
+@if (showDateFilter() || filterControls()?.length) {
+  <div
+    class="flex flex-1 flex-wrap items-center justify-end gap-4 self-stretch px-6 py-4"
+    [ngClass]="{ 'min-w-full': showDateFilter() && filterControls()?.length }"
+  >
+    @if (filtersForm?.controls && filtersForm) {
+      <ng-container *hesRbacSome="filtersPermissionId()">
+        <form
+          [formGroup]="filtersForm"
+          class="flex w-full flex-wrap items-center gap-6 lg:w-auto lg:flex-nowrap"
+        >
+          @for (control of modifiedFilterControls(); track $index) {
+            <app-form-control-generator
+              [control]="control"
+            ></app-form-control-generator>
+          }
+        </form>
+      </ng-container>
+    }
+    @if (showDateFilter()) {
+      <div class="flex w-full items-center justify-end gap-3 lg:ms-auto">
+        <tui-input-date
+          [formControl]="dateControl"
+          tuiTextfieldSize="s"
+          [readOnly]="this.readonlyFilters()"
+          [max]="maxDate()"
+        >
+          Date
+          <input tuiTextfield />
+        </tui-input-date>
+
+        @if (showPrimaryBtnInFilterRow() && primaryBtnTitle()) {
+          <ng-container *hesRbacSome="primaryBtnPermissionId()">
+            <ion-button
+              class="hes-btn--primary flex-shrink-0"
+              [disabled]="primaryBtnDisabled()"
+              (click)="onPrimaryBtnClick.emit()"
+              [routerLink]="primaryBtnHref()"
+            >
+              <span
+                [ngClass]="{
+                  'hidden md:inline-block': !ShowPrimaryBtnTitleMobile(),
+                }"
+              >
+                {{ primaryBtnTitle() }}
+              </span>
+              <fa-icon
+                [icon]="primaryBtnIcon() ?? faPlus"
+                class="text-base md:hidden"
+                [ngClass]="{
+                  hidden: ShowPrimaryBtnTitleMobile(),
+                }"
+              ></fa-icon>
+            </ion-button>
+          </ng-container>
+        }
+      </div>
+    }
+  </div>
+}

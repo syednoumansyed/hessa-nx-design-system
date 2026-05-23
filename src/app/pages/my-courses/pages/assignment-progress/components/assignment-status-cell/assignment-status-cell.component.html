@@ -1,0 +1,17 @@
+<div *transloco="let t; read: 'enum'">
+  <div
+    class="flex h-5 w-fit items-center justify-center rounded-2xl px-3 py-2 text-xs font-medium leading-none"
+    [ngClass]="{
+      'bg-success-50 text-success-700 ':
+        statusValue === StudentSubmissionStatus.SUBMITTED,
+      'bg-warning-50 text-warning-700':
+        statusValue === StudentSubmissionStatus.PENDING,
+      'bg-[#fff6ed] text-[#C4320A]':
+        statusValue === StudentSubmissionStatus.IN_PROGRESS,
+      'bg-[#FEF3F2] text-[#B42318]':
+        statusValue === StudentSubmissionStatus.MISSED
+    }"
+  >
+    {{ statusValue ? t(statusValue) : "-" }}
+  </div>
+</div>

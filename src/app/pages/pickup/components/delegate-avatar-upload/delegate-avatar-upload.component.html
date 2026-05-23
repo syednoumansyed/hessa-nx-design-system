@@ -1,0 +1,34 @@
+@if (displayImageUrl) {
+  <!-- With Image State -->
+  <div class="relative w-full cursor-pointer" (click)="pickImage()">
+    <img
+      [src]="displayImageUrl"
+      class="h-[200px] w-full rounded-ds-xl object-cover"
+      alt="Delegate photo"
+    />
+    <!-- Edit Button - Top Right -->
+    <button
+      class="absolute end-ds-md top-ds-md flex h-10 w-10 items-center justify-center rounded-full bg-brand"
+      type="button"
+    >
+      <app-ds-icon [icon]="pencil" size="md" class="text-white"></app-ds-icon>
+    </button>
+  </div>
+} @else {
+  <!-- Empty State -->
+  <div
+    class="flex h-[210px] w-full cursor-pointer flex-col items-center justify-center gap-[15px] rounded-ds-xl border-2 border-dashed border-stroke-black-08"
+    (click)="pickImage()"
+  >
+    <!-- Camera Icon in Circle -->
+    <div
+      class="flex h-14 w-14 items-center justify-center rounded-full bg-brand"
+    >
+      <app-ds-icon [icon]="camera" size="xl" class="text-white"></app-ds-icon>
+    </div>
+    <!-- Label -->
+    <p class="single-line-xs-mid-emphasis">
+      {{ label }}
+    </p>
+  </div>
+}

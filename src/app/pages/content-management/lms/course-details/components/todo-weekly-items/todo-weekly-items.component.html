@@ -1,0 +1,23 @@
+<div *transloco="let t">
+  @if (todoWorkItems().length === 0) {
+    <div class="mt-5 flex flex-col items-center justify-center gap-2">
+      <app-ds-icon [icon]="'mascot-empty-todo'" size="100%" />
+      <div class="heading-h4-high-emphasis mt-4 text-emphasis-high">
+        {{ t("content_management.todo_empty.title") }}
+      </div>
+      <div class="content-md-mid-emphasis text-emphasis-mid">
+        {{ t("content_management.todo_empty.txt") }}
+      </div>
+    </div>
+  } @else {
+    <div
+      class="mt-3 grid w-full grid-cols-2 place-items-center gap-x-ds-lg gap-y-ds-lg sm:flex sm:flex-wrap"
+    >
+      @for (workItem of todoWorkItems(); track workItem.id) {
+        <div class="md:min-w-[148px]">
+          <app-course-work-item [workItem]="workItem" />
+        </div>
+      }
+    </div>
+  }
+</div>

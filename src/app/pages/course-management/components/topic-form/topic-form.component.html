@@ -1,0 +1,344 @@
+<ng-container *transloco="let t">
+  <div class="flex flex-col gap-4 overflow-hidden bg-white lg:gap-8">
+    <button
+      class="z-10 flex items-center justify-between rounded-lg bg-[#F6F7F9] px-6 py-4 shadow-xs"
+      (click)="this.topic() && toggleIsExpanded()"
+    >
+      <div class="flex w-full flex-col items-start justify-center gap-2">
+        <div class="w-full">
+          @if (isLMS()) {
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <h2 class="text-lg font-semibold text-gray-800">
+                  {{ topicForm.controls.title.value }}
+                </h2>
+                @if (isNew()) {
+                  <span
+                    class="rounded bg-[#ECFDF3] px-3 py-0.5 text-xs font-medium text-[#027A48]"
+                  >
+                    <span class="h-2 w-2 rounded-full bg-[#027A48]"></span>
+                    {{ t("global.new.txt") }}
+                  </span>
+                }
+              </div>
+            </div>
+            <div
+              class="mt-3 grid grid-cols-2 gap-4 md:flex md:flex-wrap md:gap-4"
+            >
+              <!-- Videos -->
+              <div class="flex items-center space-x-1 text-sm text-gray-600">
+                <ion-icon
+                  class="text-base text-[#12B76A] lg:text-xl"
+                  src="assets/icons/video-square.svg"
+                ></ion-icon>
+                <span>
+                  {{ topic()?.viewedVideoCount ?? 0 }}/{{
+                    videosContent()?.length ?? 0
+                  }}
+                  {{ t("content_management.videos.title") }}
+                </span>
+              </div>
+
+              <!-- Attachments -->
+              <div class="flex items-center space-x-1 text-sm text-gray-600">
+                <ion-icon
+                  class="lg:text-xxl text-base text-[#1570EF]"
+                  src="assets/icons/attachments.svg"
+                ></ion-icon>
+                <span>
+                  {{ topic()?.viewedAttachmentCount ?? 0 }}/
+                  {{ attachmentsContent()?.length ?? 0 }}
+                  {{ t("global.attachments.title") }}
+                </span>
+              </div>
+
+              <!-- Assignments -->
+              <div class="flex items-center space-x-1 text-sm text-gray-600">
+                <ion-icon
+                  class="text-base text-[#1570EF] lg:text-xl"
+                  src="assets/icons/task-square.svg"
+                ></ion-icon>
+                <span>
+                  {{ topic()?.viewedAssignmentCount ?? 0 }}/{{
+                    assignmentsContent()?.length ?? 0
+                  }}
+                  {{ t("content_management.assignments.title") }}
+                </span>
+              </div>
+
+              <!-- Exams -->
+              <div class="flex items-center space-x-1 text-sm text-gray-600">
+                <ion-icon
+                  class="text-base text-[#7F56D9] lg:text-xl"
+                  src="assets/icons/exam.svg"
+                ></ion-icon>
+                <span>
+                  {{ topic()?.viewedExamCount ?? 0 }}/{{
+                    examsContent()?.length ?? 0
+                  }}
+                  {{ t("content_management.exams.title") }}
+                </span>
+              </div>
+            </div>
+          } @else {
+            <input
+              class="w-full border-none bg-transparent p-0 text-lg font-medium capitalize leading-5 text-gray-900 placeholder:font-light placeholder:text-[#838799] lg:text-2xl lg:leading-7"
+              [placeholder]="t('content_management.topic_name.placeholder')"
+              [value]="topicForm.controls.title.value"
+              readonly
+            />
+          }
+        </div>
+        @if (!isLMS()) {
+          <div
+            class="rounded-2xl bg-primary-25 px-[0.625rem] py-[0.125rem] text-center text-sm font-medium text-primary"
+          >
+            {{ displayedWeek() }}
+          </div>
+        }
+      </div>
+      @if (topic() && !isLMS()) {
+        <app-hes-action-sheet
+          [actions]="TopicActions"
+          [forceActionSheet]="true"
+        ></app-hes-action-sheet>
+      }
+    </button>
+    <div
+      #topicDetails
+      [formGroup]="topicForm"
+      class="flex-col gap-4 lg:gap-8 lg:p-6"
+      [ngClass]="{
+        'hidden opacity-0': !isExpanded(),
+        flex: isExpanded(),
+      }"
+    >
+      @for (control of topicFormConfig(); track $index) {
+        <div class="flex-1">
+          <app-form-control-generator
+            [control]="control"
+          ></app-form-control-generator>
+        </div>
+      }
+      @if (topic()) {
+        <!-- Videos -->
+        <ng-container>
+          <div class="flex flex-1 items-center justify-between">
+            <div
+              class="text-base font-semibold leading-5 text-gray-900 lg:text-xl lg:font-medium"
+            >
+              {{ t("content_management.videos.title") }}
+            </div>
+            @if (!isLMS()) {
+              <ion-button
+                *hesRbac="addVideoPermissionId"
+                hesBtn
+                [hesSize]="isMobile() ? 'xs' : 'md'"
+                hesColor="gray"
+                (click)="openAddVideoDialog()"
+              >
+                <fa-icon
+                  hesBtnIcon
+                  [icon]="faPlus"
+                  class="hidden lg:block"
+                ></fa-icon>
+                <span
+                  class="text-sm font-medium leading-5 text-[#283148] lg:text-xs"
+                >
+                  {{ t("content_management.add_video.btn") }}
+                </span>
+              </ion-button>
+            }
+          </div>
+          @if (topicForm.value.videos?.length) {
+            <div
+              class="flex flex-wrap items-center justify-start gap-4 lg:gap-6"
+            >
+              @for (
+                item of videosContent();
+                track item.id;
+                let index = $index
+              ) {
+                <app-topic-item
+                  [content]="item"
+                  (removed)="removeVideo(index)"
+                  [isCMS]="!isLMS()"
+                  (onTopicUpdate)="refreshTopicDetails()"
+                ></app-topic-item>
+              }
+            </div>
+          }
+        </ng-container>
+        <div class="h-[0.0625rem] w-full bg-gray-200 lg:hidden"></div>
+        <!-- Attachments -->
+        <ng-container>
+          <div class="flex flex-1 items-center justify-between">
+            <div
+              class="text-base font-semibold leading-5 text-gray-900 lg:text-xl lg:font-medium"
+            >
+              {{ t("global.attachments.title") }}
+            </div>
+            @if (!isLMS()) {
+              <ion-button
+                *hesRbac="addAttachmentPermissionId"
+                hesBtn
+                hesColor="gray"
+                [hesSize]="isMobile() ? 'xs' : 'md'"
+                (click)="openAddAttachmentDialog()"
+              >
+                <fa-icon
+                  hesBtnIcon
+                  [icon]="faPlus"
+                  class="hidden lg:block"
+                ></fa-icon>
+                <span
+                  class="text-sm font-medium leading-5 text-[#283148] lg:text-xs"
+                >
+                  {{ t("content_management.add_attachment.btn") }}
+                </span>
+              </ion-button>
+            }
+          </div>
+          @if (topicForm.value.attachments?.length) {
+            <div
+              class="flex flex-wrap items-center justify-start gap-4 lg:gap-6"
+            >
+              @for (
+                item of attachmentsContent();
+                track item.id;
+                let index = $index
+              ) {
+                <app-topic-item
+                  [content]="item"
+                  (removed)="removeAttachment(index)"
+                  (onTopicUpdate)="refreshTopicDetails()"
+                  [isCMS]="!isLMS()"
+                ></app-topic-item>
+              }
+            </div>
+          }
+        </ng-container>
+        <div class="h-[0.0625rem] w-full bg-gray-200 lg:hidden"></div>
+        <!-- Assignments -->
+        <ng-container>
+          <div class="flex flex-1 items-center justify-between">
+            <div
+              class="text-base font-semibold leading-5 text-gray-900 lg:text-xl lg:font-medium"
+            >
+              {{ t("content_management.assignments.title") }}
+            </div>
+            @if (!isLMS()) {
+              <ion-button
+                *hesRbac="assignmentAddPermission"
+                (click)="onAddAssignment()"
+                hesBtn
+                hesColor="gray"
+                [hesSize]="isMobile() ? 'xs' : 'md'"
+              >
+                <fa-icon
+                  hesBtnIcon
+                  [icon]="faPlus"
+                  class="hidden lg:block"
+                ></fa-icon>
+                <span
+                  class="text-sm font-medium leading-5 text-[#283148] lg:text-xs"
+                >
+                  {{ t("content_management.add_assignment.btn") }}
+                </span>
+              </ion-button>
+            }
+          </div>
+          @if (topicForm.value.assignments?.length) {
+            <div
+              class="flex flex-wrap items-center justify-start gap-4 lg:gap-6"
+            >
+              @for (
+                item of assignmentsContent();
+                track index;
+                let index = $index
+              ) {
+                <app-topic-item
+                  [content]="item"
+                  [isCMS]="!isLMS()"
+                  (removedAssignment)="removeAssignment(item)"
+                  (onTopicUpdate)="refreshTopicDetails()"
+                ></app-topic-item>
+              }
+            </div>
+          }
+        </ng-container>
+        <div class="h-[0.0625rem] w-full bg-gray-200 lg:hidden"></div>
+        <!-- Exams -->
+        <ng-container>
+          <div class="flex flex-1 items-center justify-between">
+            <div
+              class="text-base font-semibold leading-5 text-gray-900 lg:text-xl lg:font-medium"
+            >
+              {{ t("content_management.exams.title") }}
+            </div>
+            @if (!isLMS()) {
+              <ion-button
+                hesBtn
+                (click)="onAddExam()"
+                hesColor="gray"
+                [hesSize]="isMobile() ? 'xs' : 'md'"
+              >
+                <fa-icon
+                  hesBtnIcon
+                  [icon]="faPlus"
+                  class="hidden lg:block"
+                ></fa-icon>
+                <span
+                  class="text-sm font-medium leading-5 text-[#283148] lg:text-xs"
+                >
+                  {{ t("content_management.add_exam.btn") }}
+                </span>
+              </ion-button>
+            }
+          </div>
+          @if (topicForm.value.exams?.length) {
+            <div
+              class="flex flex-wrap items-center justify-start gap-4 lg:gap-6"
+            >
+              @for (item of examsContent(); track index; let index = $index) {
+                <app-topic-item
+                  [content]="item"
+                  (removed)="refreshTopicDetails()"
+                  [isCMS]="!isLMS()"
+                  (onTopicUpdate)="refreshTopicDetails()"
+                ></app-topic-item>
+              }
+            </div>
+          }
+        </ng-container>
+        <div class="h-[0.0625rem] w-full bg-gray-200 lg:hidden"></div>
+      }
+      <!-- Form buttons -->
+      @if (showFormButtons()) {
+        <div
+          *transloco="let t"
+          class="grid grid-cols-1 gap-8 gap-y-4 self-stretch md:grid-cols-2"
+        >
+          <ion-button
+            (click)="onCancel()"
+            hesBtn
+            hesColor="secondary"
+            hesSize="xl"
+          >
+            {{ t("global.cancel.btn") }}
+          </ion-button>
+          <ion-button
+            [disabled]="topicForm.invalid || isLoading()"
+            hesBtn
+            hesColor="primary"
+            hesSize="xl"
+            class="order-first md:order-none"
+            (click)="onSave()"
+          >
+            {{ t("global.save.btn") }}
+          </ion-button>
+        </div>
+      }
+    </div>
+  </div>
+</ng-container>

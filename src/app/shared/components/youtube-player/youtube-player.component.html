@@ -1,0 +1,51 @@
+<div class="flex flex-col items-stretch gap-8 px-4 py-4 lg:p-8">
+  <!-- header -->
+  <div class="flex items-center justify-between gap-2">
+    <div class="text-lg font-semibold leading-7 lg:text-xl">{{ title }}</div>
+    <app-hes-icon
+      class="cursor-pointer"
+      [faIcon]="faXmark"
+      (click)="close()"
+    ></app-hes-icon>
+  </div>
+
+  <div class="h-px w-full bg-gray-200"></div>
+
+  <!-- responsive player -->
+  <div class="flex grow items-center justify-center">
+    <div class="w-full sm:max-w-[900px]">
+      <!-- give it as much height as the viewport, keep 16:9 *unless* video is taller -->
+      <div class="relative w-full" style="max-height: 80vh">
+        <!-- Angular YouTube player for web and Android -->
+        @if (!isIosNative) {
+          <youtube-player
+            class="block h-full w-full rounded-2xl"
+            [videoId]="videoId"
+            [playerVars]="playerConfig"
+            loadApi="true"
+            (stateChange)="onPlayerStateChange($event)"
+          >
+          </youtube-player>
+        }
+
+        <!-- Iframe proxy for iOS native - bypasses capacitor:// origin issue -->
+        @if (isIosNative && iframeUrl) {
+          <iframe
+            [src]="iframeUrl"
+            class="block h-full w-full rounded-2xl bg-[#212121]"
+            style="aspect-ratio: 16/9; border: none"
+            allow="
+              accelerometer;
+              autoplay;
+              clipboard-write;
+              encrypted-media;
+              gyroscope;
+              picture-in-picture;
+            "
+            allowfullscreen
+          ></iframe>
+        }
+      </div>
+    </div>
+  </div>
+</div>

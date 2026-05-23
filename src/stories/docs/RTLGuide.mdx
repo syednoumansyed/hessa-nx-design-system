@@ -1,0 +1,103 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Design System/RTL & Translation" />
+
+# RTL & Translation Integration Guide
+
+The Hessa educational platform is fully bi-directional. It natively supports Left-to-Right (LTR) in English and Right-to-Left (RTL) in Arabic. 
+
+To deliver a premium, seamless user experience, layout layouts are mirrored, padding/margins are dynamically swapped, and fonts change on language switches.
+
+---
+
+## 🧭 Directionality Controls
+
+Bi-directionality is governed by two root-level properties on the `<html>` node:
+
+1. **`dir` (Direction):** Governs element layout alignment and flex direction.
+   * `dir="ltr"` for English
+   * `dir="rtl"` for Arabic
+2. **`lang` (Language):** Triggers font swaps and localized hyphenation rules.
+   * `lang="en"` for English
+   * `lang="ar"` for Arabic
+
+---
+
+## 🔠 Font Switching Mechanism
+
+Font swapping is tied specifically to the `lang` attribute on the `html` tag (not the direction `dir` attribute). This is because the app must display Arabic characters in the correct local font regardless of individual text alignments.
+
+* **LTR/English font:** `Nunito`
+* **RTL/Arabic font:** `Lama Rounded` (loaded locally from local assets)
+
+### Scss Variables Setup
+
+```scss
+html {
+  --ion-font-family: "Nunito", sans-serif;
+  --hes-text-font: "Nunito", sans-serif;
+
+  &[lang="ar"] {
+    --ion-font-family: "Lama Rounded", sans-serif;
+    --hes-text-font: "Lama Rounded", sans-serif;
+  }
+}
+```
+
+---
+
+## 🔄 Layout Mirroring Guidelines
+
+Layout mirroring should be implemented using **CSS logical properties** or Tailwind CSS bi-directional prefixes. Avoid hardcoding left or right positioning.
+
+### 1. Tailwind Logical Property Mappings
+
+Always use Tailwind's logical property shorthand selectors. These automatically invert themselves depending on whether `dir="ltr"` or `dir="rtl"` is set on the document tree.
+
+| Legacy Class | Logical Replacement | LTR Behavior | RTL Behavior |
+| :--- | :--- | :--- | :--- |
+| `pl-4` | `ps-4` | `padding-left: 16px` | `padding-right: 16px` |
+| `pr-2` | `pe-2` | `padding-right: 8px` | `padding-left: 8px` |
+| `ml-6` | `ms-6` | `margin-left: 24px` | `margin-right: 24px` |
+| `mr-auto` | `me-auto` | `margin-right: auto` | `margin-left: auto` |
+| `left-0` | `start-0` | `left: 0` | `right: 0` |
+| `right-4` | `end-4` | `right: 16px` | `left: 16px` |
+| `border-l` | `border-s` | `border-left-width` | `border-right-width` |
+
+---
+
+## 🧩 Component Mirroring Specifications
+
+Several key components implement specialized, automated mirroring patterns when `dir="rtl"` is activated:
+
+### 1. Form Inputs (`ds-input`, `ds-textarea`, `ds-picker-select`)
+* **Mirroring:** Floating label text, input text cursor alignment, icon prefixes/suffixes, and character counts all mirror positions.
+* **Arrow Icons:** Search loupe icons and dropdown arrows automatically migrate to the left side of the input box in RTL mode.
+
+### 2. Selection Lists (`ds-select`)
+* The dropdown select dialog triggers in RTL format.
+* The select option lists align text to the right, and checkmarks shift to the left side.
+
+### 3. Date & Time Picker (`ds-time-picker`)
+* **Time Columns:** Standard LTR rendering is `[Hours] : [Minutes]`. In RTL mode, layout columns mirror their indices automatically to match Arabic reading direction.
+
+### 4. Interactive Calendars (`ds-calendar`)
+* **Day Grids:** Week columns reverse order (starting with Sunday on the far right in RTL).
+* **Navigation Arrows:** Next/Previous month arrows reverse their target behaviors. In RTL, clicking the left arrow navigates to the *future* month, while the right arrow moves to the *previous* month.
+* **Taiga UI Adjustments:** Global CSS handles pagination ordering for Taiga calendar controllers when inside an RTL element:
+  ```css
+  html[dir="rtl"] tui-primitive-year-month-pagination {
+    display: flex !important;
+    flex-direction: row-reverse !important;
+  }
+  ```
+
+---
+
+## 💡 Developer Best Practices
+
+> [!IMPORTANT]
+> **Use translation pipes:** Tab labels, input hints, table header text, and alert descriptions must pass through the translation layer (`ds-translate` or the `Transloco` pipe) to ensure they load the correct local JSON translations.
+
+> [!TIP]
+> **Simulating RTL in Storybook:** To check RTL visual behaviors, toggle the **Direction** toolbar picker in Storybook to **RTL (Arabic)**. This wraps the story content in a container specifying `dir="rtl" lang="ar"` and automatically activates the local `Lama Rounded` font stack.

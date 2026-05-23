@@ -1,0 +1,13 @@
+@if (isLoading()) {
+<div class="flex h-64 items-center justify-center">
+  <tui-loader></tui-loader>
+</div>
+} @else if (hasJournals()) {
+<ds-journal-feed
+  [allJournals]="journals()"
+  [weeklyJournals]="weeklyJournalsData()"
+  [dailyJournals]="dailyJournalsData()"
+  [showNewChip]="hasNewJournals()"
+  (journalClicked)="onJournalClick($event)"
+></ds-journal-feed>
+}

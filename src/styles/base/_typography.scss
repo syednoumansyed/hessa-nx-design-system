@@ -1,0 +1,104 @@
+@use "../abstracts" as *;
+
+h1,
+.h1 {
+  font-size: var(--h-typography-h1-font-size);
+  font-style: var(--h-typography-h1-font-style);
+  font-weight: var(--h-typography-h1-font-weight);
+  line-height: var(--h-typography-h1-line-height);
+  letter-spacing: var(--h-typography-h1-letter-spacing);
+}
+h2,
+.h2 {
+  font-size: var(--h-typography-h2-font-size);
+  font-style: var(--h-typography-h2-font-style);
+  font-weight: var(--h-typography-h2-font-weight);
+  line-height: var(--h-typography-h2-line-height);
+  letter-spacing: var(--h-typography-h2-letter-spacing);
+}
+h3,
+.h3 {
+  font-size: var(--h-typography-h3-font-size);
+  font-style: var(--h-typography-h3-font-style);
+  font-weight: var(--h-typography-h3-font-weight);
+  line-height: var(--h-typography-h3-line-height);
+  letter-spacing: var(--h-typography-h3-letter-spacing);
+}
+h4,
+.h4 {
+  font-size: var(--h-typography-h4-font-size);
+  font-style: var(--h-typography-h4-font-style);
+  font-weight: var(--h-typography-h4-font-weight);
+  line-height: var(--h-typography-h4-line-height);
+  letter-spacing: var(--h-typography-h4-letter-spacing);
+}
+h5,
+.h5 {
+  font-size: var(--h-typography-h5-font-size);
+  font-style: var(--h-typography-h5-font-style);
+  font-weight: var(--h-typography-h5-font-weight);
+  line-height: var(--h-typography-h5-line-height);
+  letter-spacing: var(--h-typography-h5-letter-spacing);
+}
+h6,
+.h6 {
+  font-size: var(--h-typography-h6-font-size);
+  font-style: var(--h-typography-h6-font-style);
+  font-weight: var(--h-typography-h6-font-weight);
+  line-height: var(--h-typography-h6-line-height);
+  letter-spacing: var(--h-typography-h6-letter-spacing);
+}
+
+p {
+  &,
+  &.body-main {
+    font-size: var(--h-typography-body-main-font-size);
+    font-style: var(--h-typography-body-main-font-style);
+    font-weight: var(--h-typography-body-main-font-weight);
+    line-height: var(--h-typography-body-main-line-height);
+    letter-spacing: var(--h-typography-body-main-letter-spacing);
+  }
+
+  &.body-lg {
+    font-size: var(--h-typography-body-lg-font-size);
+    font-style: var(--h-typography-body-lg-font-style);
+    font-weight: var(--h-typography-body-lg-font-weight);
+    line-height: var(--h-typography-body-lg-line-height);
+    letter-spacing: var(--h-typography-body-lg-letter-spacing);
+  }
+  &.body-sm {
+    font-size: var(--h-typography-body-sm-font-size);
+    font-style: var(--h-typography-body-sm-font-style);
+    font-weight: var(--h-typography-body-sm-font-weight);
+    line-height: var(--h-typography-body-sm-line-height);
+    letter-spacing: var(--h-typography-body-sm-letter-spacing);
+  }
+  &.body-xs {
+    font-size: var(--h-typography-body-xs-font-size);
+    font-style: var(--h-typography-body-xs-font-style);
+    font-weight: var(--h-typography-body-xs-font-weight);
+    line-height: var(--h-typography-body-xs-line-height);
+    letter-spacing: var(--h-typography-body-xs-letter-spacing);
+  }
+}
+
+a {
+  @include link-large;
+  .link-lg,
+  &.ling-lg {
+    @include link-large;
+  }
+  .link-sm,
+  &.ling-sm {
+    @include link-small;
+  }
+}
+
+.btn-text {
+  &-lg {
+    @include btn-text-large;
+  }
+  &-sm {
+    @include btn-text-small;
+  }
+}

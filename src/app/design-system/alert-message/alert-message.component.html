@@ -1,0 +1,55 @@
+<div
+  class="flex max-w-xl items-start gap-4 rounded-2xl border-b-8 border-l-2 border-r-2 border-t-2 p-ds-xl pt-ds-lg text-gray-700"
+  [ngClass]="cssClass()"
+>
+  <!-- info icon -->
+  <div class="flex h-6 w-6 shrink-0 items-center justify-start text-2xl">
+    @switch (type()) {
+      @case ("success") {
+        <ng-icon
+          name="saxTickCircleOutline"
+          [color]="'var(--colors-emerald-500)'"
+        ></ng-icon>
+      }
+      @case ("error") {
+        <ng-icon
+          name="saxCloseCircleOutline"
+          [color]="'var(--colors-error-red-500)'"
+        ></ng-icon>
+      }
+      @case ("warning") {
+        <ng-icon
+          name="saxWarning2Outline"
+          [color]="'var(--colors-warn-orange-500)'"
+        ></ng-icon>
+      }
+      @case ("info") {
+        <ng-icon
+          name="saxInfoCircleOutline"
+          [color]="'var(--colors-blue-500)'"
+        ></ng-icon>
+      }
+      @case ("exciting") {
+        <ng-icon name="exciting" [color]="'var(--stroke-exciting)'"></ng-icon>
+      }
+    }
+  </div>
+
+  <!-- copy -->
+  <div class="flex flex-col">
+    <p class="content-sm-high-emphasis text-emphasis-high">{{ title() }}</p>
+    <p class="content-sm-default text-emphasis-mid">
+      {{ message() }}
+    </p>
+  </div>
+  @if (showCloseButton()) {
+    <!-- close button -->
+    <button
+      (click)="close.emit()"
+      type="button"
+      class="ml-auto flex h-12 w-12 justify-end self-start text-2xl"
+    >
+      <ng-icon name="saxCloseCircleBold"></ng-icon>
+    </button>
+  }
+</div>

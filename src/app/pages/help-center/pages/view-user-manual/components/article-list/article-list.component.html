@@ -1,0 +1,32 @@
+@if (isLoading()) {
+  <div class="me-2 mt-4 flex flex-col gap-4">
+    @for (item of skeletonRepeat; track $index) {
+      <div>
+        <ion-skeleton-text
+          [animated]="true"
+          class="h-8 rounded-sm"
+        ></ion-skeleton-text>
+        <div class="flex flex-col">
+          @for (temp of [1, 2, 3, 4]; track $index) {
+            <ion-skeleton-text
+              [animated]="true"
+              class="h-6 rounded-sm"
+            ></ion-skeleton-text>
+          }
+        </div>
+      </div>
+    }
+  </div>
+} @else {
+  @if (userManuals(); as manuals) {
+    @for (userManual of manuals; track $index) {
+      @if (userManual.articles && userManual.articles.length) {
+        <app-article-list-item
+          [userManual]="userManual"
+          [language]="language()!"
+          [expended]="isSearch() || $index === 0"
+        ></app-article-list-item>
+      }
+    }
+  }
+}

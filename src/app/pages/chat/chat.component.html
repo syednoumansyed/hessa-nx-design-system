@@ -1,0 +1,40 @@
+@if (!isMobile) {
+  <ion-content class="!pb-0 !pt-0" *transloco="let t">
+    @if (!hasConversations() && !selectedChat()) {
+      <!-- Full width when no conversations and no chat selected -->
+      <div class="h-full overflow-hidden">
+        <app-chat-conversations />
+      </div>
+    } @else {
+      <!-- Split layout when conversations exist -->
+      <div class="flex h-full overflow-hidden">
+        <div class="w-1/3 border-r">
+          <app-chat-conversations />
+        </div>
+        <div class="w-2/3">
+          @if (selectedChat()) {
+            <app-chat-messages [participantData]="selectedChat()!" />
+          } @else {
+            <div class="flex h-full items-center justify-center">
+              <app-no-data-card
+                mainImagePath="assets/illustrations/no_chats_data.svg"
+                title="{{ t('chat.start_new_chat.title') }}"
+                [description]="t('chat.reach_new_chats.txt')"
+                [noBgStyle]="true"
+              />
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </ion-content>
+} @else {
+  @if (!selectedChat()) {
+    <ion-content class="!pb-0 !pt-0">
+      <app-chat-conversations />
+    </ion-content>
+  } @else {
+    <!-- On mobile, when chat is selected, remove outer ion-content to avoid nested scrolling -->
+    <app-chat-messages [participantData]="selectedChat()!" />
+  }
+}

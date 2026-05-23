@@ -1,0 +1,148 @@
+<div
+  *transloco="let t"
+  class="mt-0 flex flex-wrap items-center justify-between gap-y-3 md:mt-6 md:px-6"
+>
+  @if (!isMobile && (title() || pageTitleTemplate())) {
+    <div class="flex">
+      <div class="flex items-center gap-4">
+        @if (pageTitleTemplate()) {
+          <ng-container *ngTemplateOutlet="pageTitleTemplate()!"></ng-container>
+        } @else {
+          <div class="text-2xl font-medium leading-7 text-gray-900">
+            {{ title() }}
+          </div>
+        }
+        @if (countValue()) {
+          <div
+            class="flex items-center justify-center rounded-2xl bg-[#FFFCE7] px-2 py-0.5 text-center text-xs font-medium text-[#ECAD01]"
+          >
+            {{ countValue() }} {{ countTitle() }}
+          </div>
+        }
+      </div>
+      @if (canCopy() && rowData().length) {
+        <div
+          class="flex cursor-pointer items-center justify-center p-4"
+          [ngClass]="{ 'text-[#1A7F37]': isCopy() }"
+          (click)="onCopyToClipboard()"
+        >
+          <fa-icon [icon]="isCopy() ? checkIcon : copyIcon" size="lg" />
+        </div>
+      }
+    </div>
+  }
+  <div class="flex w-full flex-col md:w-auto md:flex-row">
+    @if (showSearchInput()) {
+      <div class="search-wrapper md:me-2">
+        <label class="search-icon" for="search-input">
+          <fa-icon [icon]="searchIcon" size="lg"></fa-icon>
+        </label>
+        <input
+          class="search-input h-10 w-full md:max-w-56"
+          type="search"
+          [placeholder]="t('global.search.placeholder')"
+          id="search-input"
+          [formControl]="searchTextControl()"
+          title="global search"
+        />
+      </div>
+    }
+    <div
+      class="me-4 ms-4 flex items-start justify-end gap-2 py-2 md:me-0 md:ms-0 md:py-0"
+    >
+      @if (inlineFilterConfig()) {
+        @if (inlineFilterConfig()!.type === "date") {
+          <tui-input-date
+            class="w-[160px]"
+            [readOnly]="inlineFilterConfig()?.readonly ?? false"
+            [formControl]="dateControl()"
+            [tuiTextfieldCleaner]="inlineFilterConfig()?.clear ?? true"
+            [max]="inlineFilterConfig()?.datePickerConfig?.max ?? null"
+            tuiTextfieldSize="s"
+            [focusable]="false"
+          >
+            {{
+              inlineFilterConfig()?.placeholder ??
+                t("global.select_date.placeholder")
+            }}
+            <input
+              tuiTextfield
+              [placeholder]="
+                inlineFilterConfig()?.placeholder ??
+                t('global.select_date.placeholder')
+              "
+              title="filter date"
+              autoOpenDatePicker
+            />
+          </tui-input-date>
+        } @else if (inlineFilterConfig()!.type === "date-range") {
+          <div class="w-72 text-[10px]">
+            <tui-input-date-range
+              [formControl]="dateRageControl()"
+              [tuiTextfieldLabelOutside]="true"
+              [tuiTextfieldCleaner]="inlineFilterConfig()?.clear ?? true"
+              class="text-[10px]"
+              [style.font-size]="'10px'"
+              [focusable]="false"
+              [max]="inlineFilterConfig()?.datePickerConfig?.max ?? null"
+              [min]="inlineFilterConfig()?.datePickerConfig?.min ?? null"
+            >
+              {{
+                inlineFilterConfig()?.placeholder ??
+                  t("deactivation_paused_user.date_range.dropdown")
+              }}
+              <input tuiTextfield title="date-rage" autoOpenDatePicker />
+            </tui-input-date-range>
+          </div>
+        }
+      }
+      @if (isFilterShow()) {
+        <div
+          class="flex h-10 cursor-pointer items-center justify-center rounded-md border border-gray-300 bg-white px-4"
+          (click)="onFilterClick()"
+        >
+          <fa-icon class="text-md me-0 md:me-2" [icon]="filterIcon"></fa-icon>
+          @if (!isMobile) {
+            <div>{{ t("global.filters.btn") }}</div>
+          }
+        </div>
+      }
+      @if (isVisiblePrimaryActions()) {
+        <div class="flex items-center gap-2">
+          @for (action of visiblePrimaryActions(); track action) {
+            <button
+              type="button"
+              class="flex h-10 cursor-pointer items-center justify-center rounded-md border px-4 font-semibold outline-none disabled:cursor-default disabled:border-[#fef8c3] disabled:bg-[#fef8c3] disabled:text-[#d3af8b]"
+              [ngClass]="{
+                'border-[#d0d5dd] bg-white text-[#344054]':
+                  action.hesColor === 'secondary',
+                'border-gray-300 bg-primary text-white':
+                  action.hesColor !== 'secondary'
+              }"
+              (click)="action.onClick()"
+              [disabled]="action.isDisabled ?? false"
+            >
+              @if (action.iconProps) {
+                <fa-icon
+                  class="text-md md:me-2"
+                  [icon]="action.iconProps.icon"
+                ></fa-icon>
+              }
+              @if (!isMobile || !action.iconProps) {
+                <div class="min-w-0 max-w-full truncate">
+                  {{ action.text }}
+                </div>
+              }
+            </button>
+          }
+          @if (hiddenPrimaryActions().length) {
+            <app-hes-action-sheet
+              [actions]="hiddenPrimaryActions()"
+              [forceActionSheet]="true"
+            ></app-hes-action-sheet>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>

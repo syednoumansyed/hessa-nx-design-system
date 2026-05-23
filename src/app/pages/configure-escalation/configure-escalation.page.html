@@ -1,0 +1,83 @@
+<ion-content class="ds-page-content" *transloco="let t;">
+  <app-no-selected-scope-card [requiredScope]="requiredScopes">
+    <div
+      class="hes-card flex h-full w-full flex-col items-start justify-start p-0 md:p-8"
+    >
+      <div class="shadow-t-lg w-full rounded-t-lg border p-6 md:p-8">
+        <h3 class="mb-3 text-xl text-gray-900 md:text-2xl">
+          {{
+          t("support_ticket.configure_escalation_levels_by_ticket_types.title")
+          }}
+        </h3>
+        <p class="text-sm text-gray-400 md:text-lg">
+          {{ t("global.school_name.txt") }}
+          <span class="ms-1 text-gray-800 md:inline">
+            @if(selectedSchool() !== null) { {{selectedSchool()?.name}} } @else
+            { {{ t("global.none.txt") }} }
+          </span>
+        </p>
+      </div>
+
+      <div
+        class="shadow-b-lg h-full w-full overflow-y-auto rounded-b-lg border-x border-b p-0 md:p-8"
+      >
+        @if(selectedSchool() === null){
+        <app-no-escalation />
+        } @if(!isLoading()){ @for (escalation of escalationTypesDetail(); track
+        escalation) {
+        <div
+          class="mb-0 border-b p-6 md:mb-6 md:flex md:items-center md:rounded-md md:border md:p-8 md:p-8"
+        >
+          <div class="flex-grow">
+            <div class="mb-2 text-xl font-semibold md:mb-4">
+              {{escalation.supportType.displayName}}
+            </div>
+
+            <div class="flex flex-row items-center">
+              <app-hes-icon
+                class="mt-1 text-2xl"
+                [hesIcon]="{ src: 'assets/icons/clock.svg' }"
+              ></app-hes-icon>
+              <span class="me-2 ms-2 text-gray-500">
+                {{t("support_ticket.escalation_levels.txt")}}
+              </span>
+              <span class="text-gray-900">
+                {{getLevelsCount(escalation)}}
+              </span>
+            </div>
+
+            <div
+              class="flex flex-col md:flex-row md:items-center md:text-start"
+            >
+              <div class="flex flex-row items-center">
+                <app-hes-icon
+                  class="mt-1 text-2xl"
+                  [hesIcon]="{ src: 'assets/icons/user.svg' }"
+                ></app-hes-icon>
+                <span class="ms-2 text-gray-500 md:me-2 md:ms-2">
+                  {{t("support_ticket.default_assignee.txt")}}
+                </span>
+              </div>
+              <span class="mt-2 text-gray-900 md:mt-0">
+                {{ getDefaultPersonnelList(escalation) }}
+              </span>
+            </div>
+          </div>
+          <ion-button
+            hesBtn
+            *hesRbac="viewEscalationDetailPermission"
+            class="hes-btn--gray mt-6 w-full md:mt-0 md:w-auto"
+            hesColor="secondary"
+            (click)="navigateToTypeDetailPage(escalation.supportType.id)"
+          >
+            {{t("global.view_details.btn")}}
+          </ion-button>
+        </div>
+
+        } } @if(isLoading()){
+        <app-escalation-skeleton />
+        }
+      </div>
+    </div>
+  </app-no-selected-scope-card>
+</ion-content>

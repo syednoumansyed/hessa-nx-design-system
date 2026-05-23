@@ -1,0 +1,57 @@
+<div *transloco="let t" class="p-8">
+  <div class="mb-4 flex justify-between border-b pb-4 text-2xl font-semibold">
+    {{ t("support_ticket.add_ticket.title") }}
+    <app-hes-icon
+      [faIcon]="cancelIcon"
+      class="cursor-pointer"
+      (click)="closeModal(false)"
+    ></app-hes-icon>
+  </div>
+  <form [formGroup]="form">
+    <div class="grid grid-cols-1 gap-8 gap-y-4 self-stretch">
+      @for (control of formConfig(); track $index) {
+        <div class="flex-1">
+          <app-form-control-generator
+            [control]="control"
+          ></app-form-control-generator>
+          @if (
+            control.charLimit !== undefined && control.charCount !== undefined
+          ) {
+            <div
+              class="mt-1 flex justify-end text-sm text-gray-500"
+              [ngClass]="{
+                'text-red-500': control.charCount > control.charLimit
+              }"
+            >
+              <span>{{ control.charCount }}/{{ control.charLimit }}</span>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </form>
+  <div class="mt-4 flex flex-col-reverse gap-4 md:flex-row">
+    <ion-button
+      class="flex-1"
+      hesBtn
+      hesColor="secondary"
+      hesSize="xl"
+      (click)="closeModal(false)"
+    >
+      {{ t("global.cancel.btn") }}
+    </ion-button>
+    <ion-button
+      class="flex-1"
+      hesBtn
+      hesSize="xl"
+      (click)="onSave()"
+      [disabled]="form.invalid || loading()"
+    >
+      @if (loading()) {
+        <ion-spinner class="h-5 w-5"></ion-spinner>
+      } @else {
+        {{ t("global.submit.btn") }}
+      }
+    </ion-button>
+  </div>
+</div>

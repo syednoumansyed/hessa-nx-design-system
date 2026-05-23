@@ -1,0 +1,33 @@
+<ng-container>
+  <app-no-selected-scope-card class="h-full" [requiredScope]="requiredScopes">
+    @if(isLoading()){
+    <div class="lg:hes-card bg-white">
+      <app-card-list-skeleton class="w-full"></app-card-list-skeleton>
+    </div>
+    } @else if(topicDetails()){
+    <div class="lg:hes-card mb-12 h-full overflow-y-auto bg-white">
+      <ion-content
+        class="ds-page-content"
+        [ngStyle]="{'--background': 'white'}"
+      >
+        <div class="flex flex-col gap-4 bg-white lg:gap-6">
+          <app-topic-form
+            [topic]="topicDetails()!"
+            (onTopicUpdate)="getTopicDetails()"
+            [isExpanded]="true"
+            (onRemoved)="onTopicRemoved()"
+          >
+          </app-topic-form>
+        </div>
+      </ion-content>
+    </div>
+    }@else {
+    <app-no-data-card
+      [mainImagePath]="noDataCardConfig().mainImagePath"
+      [title]="noDataCardConfig().title"
+      [description]="noDataCardConfig().description"
+      [primaryButton]="noDataCardConfig().primaryButton"
+    ></app-no-data-card>
+    }
+  </app-no-selected-scope-card>
+</ng-container>

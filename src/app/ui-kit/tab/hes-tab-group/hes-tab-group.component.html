@@ -1,0 +1,17 @@
+<div class="mb-3 flex justify-center">
+  @for (tab of tabs; track $index; let first = $first; let last = $last) {
+    <button
+      class="border px-[14px] py-[10px] text-sm"
+      (click)="selectTab(tab)"
+      [ngClass]="{
+        'bg-primary font-medium text-white': tab.active,
+        'border-[##7F8491] bg-[#F9FAFB] text-[#7F8491] ': !tab.active,
+        'rounded-bl rounded-tl': first,
+        'rounded-br rounded-tr': last
+      }"
+    >
+      {{ tab.tabTitle }}
+    </button>
+  }
+</div>
+<ng-content></ng-content>

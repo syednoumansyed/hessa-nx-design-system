@@ -1,0 +1,211 @@
+<ng-container *transloco="let t">
+  <div
+    class="Table hes-card flex flex-1 flex-col items-start justify-start gap-4 bg-white p-6 lg:gap-0 lg:rounded-lg lg:p-0"
+  >
+    <div
+      class="CardHeader flex items-center justify-between self-stretch bg-white lg:rounded-t-lg lg:px-6 lg:pb-[19px] lg:pt-5"
+    >
+      <ion-label
+        class="text-sm font-semibold uppercase leading-7 text-[#AEAFB8] lg:text-lg lg:normal-case lg:text-gray-900"
+        >{{ header }}</ion-label
+      >
+      <!-- In std: we have to show : Linked Guardians
+      While in Guardina: we have to show: Linked Students -->
+    </div>
+    <!-- Desktop list -->
+    <div
+      class="Content hidden items-start justify-start self-stretch border-t border-gray-200 bg-white lg:flex lg:rounded-b-lg"
+    >
+      <div
+        class="Column flex w-[292px] flex-1 flex-col items-start justify-start"
+      >
+        @for (item of linkedProfiles; track item.id) {
+          <div
+            class="TableCell inline-flex h-[72px] items-center justify-start gap-3 self-stretch border-b border-gray-200 px-6 py-4"
+          >
+            <app-ds-avatar
+              [fullName]="item.fullName"
+              [imageUrl]="item.imageUrl"
+              [color]="item.profileColor"
+            />
+            <div class="Text text-sm font-medium leading-tight text-gray-900">
+              {{ item.fullName }}
+            </div>
+          </div>
+        }
+      </div>
+      <div class="Column flex flex-1 flex-col items-start justify-start">
+        @for (item of linkedProfiles; track item.id) {
+          <div
+            class="TableCell inline-flex h-[72px] items-center justify-start self-stretch border-b border-gray-200 px-6 py-4"
+          >
+            <div
+              class="TextAndSupportingText inline-flex flex-col items-start justify-start self-stretch"
+            >
+              <div class="Text text-sm font-medium leading-tight text-gray-900">
+                {{ item.relationship | enumLang }}
+              </div>
+              <div
+                class="SupportingText text-sm font-normal leading-tight text-gray-500"
+              >
+                {{ t("global.relationship.label") }}
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+      <div
+        class="Column flex w-44 flex-1 flex-col items-start justify-start px-2"
+      >
+        @for (item of linkedProfiles; track item.id) {
+          <div
+            class="TableCell inline-flex h-[72px] items-center justify-start self-stretch border-b border-gray-200 px-6 py-4"
+          >
+            <div
+              class="TextAndSupportingText inline-flex flex-col items-start justify-start self-stretch"
+            >
+              <div class="Text text-sm font-medium leading-tight text-gray-900">
+                {{ item.nationalId }}
+              </div>
+              <div
+                class="SupportingText text-sm font-normal leading-tight text-gray-500"
+              >
+                {{ t("global.national_id.label") }}
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+      <div
+        class="Column flex flex-1 shrink grow basis-0 flex-col items-start justify-start"
+      >
+        @for (item of linkedProfiles; track item.id) {
+          <div
+            class="TableCell phone-number-dir inline-flex h-[72px] items-center justify-start self-stretch border-b border-gray-200 px-6 py-4"
+          >
+            <div
+              class="OliviaUntitleduiCom text-sm font-normal leading-tight text-gray-500"
+            >
+              {{ item.mobileNumber }}
+            </div>
+          </div>
+        }
+      </div>
+      <div class="Column flex w-10 flex-col items-center justify-start">
+        @for (item of linkedProfiles; track item.id) {
+          <div
+            class="TableCell flex h-[72px] w-10 items-center justify-center border-b border-gray-200"
+          >
+            @if (
+              item.status === UserStatus.INACTIVE ||
+              item.status === UserStatus.PAUSED
+            ) {
+              <img
+                src="assets/icons/warning-icon.svg"
+                alt="warning"
+                class="h-5 w-5 flex-shrink-0"
+              />
+            }
+          </div>
+        }
+      </div>
+      <div class="Column flex shrink-0 flex-col items-end justify-start">
+        @for (item of linkedProfiles; track item.id) {
+          <div
+            class="TableCell flex h-[72px] items-center justify-end gap-ds-md self-stretch border-b border-gray-200 px-6 py-4"
+          >
+            <ds-button
+              *hesRbac="viewProfilePermissionId"
+              variant="secondary"
+              size="sm"
+              hesAuth
+              [roles]="viewProfileRoles"
+              (click)="item.onViewProfile()"
+            >
+              {{ t("global.view_profile.btn") }}
+            </ds-button>
+            <ds-button
+              *hesRbac="unLinkProfilePermissionId"
+              variant="secondary"
+              size="sm"
+              hesAuth
+              [roles]="unlinkProfileRoles"
+              (click)="item.onUnlinkProfile()"
+            >
+              {{ t("user_management.unlink.btn") }}
+            </ds-button>
+          </div>
+        }
+      </div>
+    </div>
+    <!-- Mobile listing -->
+    <div class="flex w-full flex-col items-start justify-start gap-4 lg:hidden">
+      @for (item of linkedProfiles; track item.id; let last = $last) {
+        <div class="flex w-full flex-wrap items-start justify-between gap-4">
+          <div class="Frame25063 flex items-start justify-start gap-4">
+            <app-ds-avatar
+              [fullName]="item.fullName"
+              [imageUrl]="item.imageUrl"
+              [color]="item.profileColor"
+            />
+            <div class="flex flex-col items-start justify-start">
+              <div
+                class="Text text-base font-semibold leading-tight text-gray-900"
+              >
+                {{ item.fullName }}
+              </div>
+              <div class="flex flex-col items-start justify-center">
+                <div class="flex-1">
+                  <div class="text-sm font-normal text-gray-500">
+                    {{ item.relationship | enumLang }}
+                  </div>
+                </div>
+                <div class="text-sm font-normal text-gray-500">
+                  {{ item.mobileNumber }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="Frame25065 inline-flex items-center justify-start gap-2 self-stretch"
+          >
+            @if (
+              item.status === UserStatus.INACTIVE ||
+              item.status === UserStatus.PAUSED
+            ) {
+              <img
+                src="assets/icons/warning-icon.svg"
+                alt="warning"
+                class="h-4 w-4 flex-shrink-0"
+              />
+            }
+            <ds-button
+              *hesRbac="unLinkProfilePermissionId"
+              variant="secondary"
+              size="sm"
+              hesAuth
+              [roles]="unlinkProfileRoles"
+              (click)="item.onUnlinkProfile()"
+            >
+              {{ t("user_management.unlink.btn") }}
+            </ds-button>
+            <ds-button
+              *hesRbac="viewProfilePermissionId"
+              variant="secondary"
+              size="sm"
+              hesAuth
+              [roles]="viewProfileRoles"
+              (click)="item.onViewProfile()"
+            >
+              {{ t("global.view_profile.btn") }}
+            </ds-button>
+          </div>
+        </div>
+        @if (!last) {
+          <div class="w-full border border-slate-200"></div>
+        }
+      }
+    </div>
+  </div>
+</ng-container>

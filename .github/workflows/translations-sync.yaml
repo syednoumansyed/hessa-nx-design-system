@@ -1,0 +1,94 @@
+name: Sync i18n JSON files from Google Sheets
+
+on:
+  schedule:
+    - cron: "0 */4 * * *" # Run every 4 hours
+  workflow_dispatch:
+    inputs:
+      sync_mode:
+        description: "Sync mode for translations"
+        required: true
+        default: "merge"
+        type: choice
+        options:
+          - merge
+          - replace
+
+jobs:
+  sync-translations:
+    name: Sync translations from Google Sheets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate token
+        id: generate_token
+        uses: tibdex/github-app-token@v1
+        with:
+          app_id: ${{ secrets.GH_ACTIONS_APP_ID }}
+          private_key: ${{ secrets.GH_ACTIONS_PRIVATE_KEY }}
+
+      - name: Checkout repository to development branch
+        uses: actions/checkout@v4
+        with:
+          token: ${{ steps.generate_token.outputs.token }}
+          fetch-depth: 0
+          ref: development
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+
+      - name: Install dependencies
+        env:
+          NPM_FONTAWESOME_AUTH_TOKEN: ${{ secrets.NPM_FONTAWESOME_AUTH_TOKEN }}
+        run: npm install googleapis glob
+
+      - name: Create service account credentials file
+        run: |
+          mkdir -p credentials
+          echo "${{ secrets.I18N_GOOGLE_SERVICE_ACCOUNT_JSON_BASE64 }}" > credentials/google-service-account.json.base64
+          xxd -r -p credentials/google-service-account.json.base64 > credentials/google-service-account.json
+
+      - name: Sync translations from Google Sheets
+        env:
+          I18N_GOOGLE_SHEET_ID: ${{ secrets.I18N_GOOGLE_SHEET_ID }}
+          I18N_GOOGLE_SHEET_NAME: ${{ vars.GOOGLE_SHEET_NAME || 'Translations' }}
+        run: |
+          npx tsx scripts/translations/i18n-google-sheets-sync.ts --${{ inputs.sync_mode || 'merge' }}
+
+      - name: Cleanup credentials
+        if: always()
+        run: rm -rf credentials
+
+      - name: Push changes to development branch
+        env:
+          GH_TOKEN: ${{ steps.generate_token.outputs.token }}
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Actions"
+
+          # Commit changes to the current branch
+          git add src/assets/i18n/en.json src/assets/i18n/ar.json
+          git diff --cached --quiet && echo "No changes to commit" || (git commit -m "Update locale files" && git push origin development && echo "Changes committed and pushed")
+
+      - name: Push changes to deployment branches and active sprint branch
+        env:
+          GH_TOKEN: ${{ steps.generate_token.outputs.token }}
+        run: |
+          # Reset package-lock.json changes from npm install step
+          git checkout -- package-lock.json
+
+          # Stash any auto-generated files (e.g., mockServiceWorker.js) to prevent checkout conflicts
+          git stash --include-untracked || true
+
+          branches=("sprint/stable" "staging" "main" "production")
+
+          for branch in "${branches[@]}"; do
+            echo "Processing branch: $branch"
+            git fetch origin "$branch"
+            git checkout -B "$branch" "origin/$branch"
+            git checkout origin/development -- src/assets/i18n/en.json src/assets/i18n/ar.json
+
+            git add src/assets/i18n/en.json src/assets/i18n/ar.json
+            git diff --cached --quiet && echo "No changes to commit" || (git commit -m "Update locale files" && git push origin "$branch" && echo "Changes committed and pushed")
+          done

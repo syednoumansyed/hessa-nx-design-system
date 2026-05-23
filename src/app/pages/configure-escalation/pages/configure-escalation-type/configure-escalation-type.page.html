@@ -1,0 +1,118 @@
+<ion-content class="ds-page-content" *transloco="let t;">
+  <app-no-selected-scope-card [requiredScope]="requiredScopes">
+    <div
+      class="hes-card flex h-full w-full flex-col items-start justify-start p-0 md:p-8"
+    >
+      @if(!isLoading()){
+      <div
+        class="shadow-t-lg flex w-full flex-col border-b p-6 md:flex-row md:items-center md:rounded-t-lg md:border md:p-8 md:text-start"
+      >
+        <div class="flex-grow">
+          <h3 class="mb-3 text-xl text-gray-900 md:text-2xl">
+            {{ escalationType()?.supportType?.displayName }}
+          </h3>
+          <p class="text-sm text-gray-400 md:text-lg">
+            {{ t("global.school_name.txt") }}
+            <span class="ms-1 text-gray-800">
+              @if(selectedSchool() !== null) { {{selectedSchool()?.name}} }
+              @else { {{ t("global.none.txt") }} }
+            </span>
+          </p>
+        </div>
+        <div
+          *hesRbac="addEscalationPermission"
+          class="mt-6 w-full md:ml-auto md:mt-0 md:w-auto"
+        >
+          <ds-button
+            variant="primary"
+            size="sm"
+            [iconStart]="faPlus"
+            [fullWidth]="isMobile"
+            (click)="handleAddEscalationLevel()"
+          >
+            {{t("support_ticket.add_escalation_level.btn")}}
+          </ds-button>
+        </div>
+      </div>
+      }
+
+      <div
+        class="shadow-b-lg h-full w-full overflow-y-auto rounded-b-lg border-x border-b p-0 md:p-8"
+      >
+        @if(selectedSchool() === null){
+        <app-no-escalation />
+        } @if(!isLoading()){ @for (level of escalationType()?.escalations; track
+        level) {
+        <div
+          class="mb-0 border-b p-6 md:mb-6 md:flex md:items-center md:rounded-md md:border md:p-8"
+        >
+          <div class="flex-grow">
+            <div class="mb-2 text-xl font-semibold md:mb-4">
+              {{determineLevelTxt(level)}}
+            </div>
+
+            <div class="flex flex-row items-start md:items-center">
+              <app-hes-icon
+                class="mt-0 text-2xl md:mt-1"
+                [hesIcon]="{ src: 'assets/icons/user.svg' }"
+              ></app-hes-icon>
+              <span class="me-2 ms-2 text-gray-700">
+                {{getPersonnelList(level)}}
+              </span>
+            </div>
+
+            @if(level.levelNumber !== 0){
+            <div class="mt-2 flex flex-row items-center">
+              <app-hes-icon
+                class="mt-1 text-2xl"
+                [hesIcon]="{ src: 'assets/icons/clock.svg' }"
+              ></app-hes-icon>
+              <span class="me-2 ms-2 text-gray-700">
+                {{t("support_ticket.auto_escalationـtime.txt")}} {{ level.days
+                }}
+              </span>
+            </div>
+            }
+          </div>
+          <div
+            class="flex gap-2"
+            [ngClass]="isMobile ? 'mt-4 self-stretch' : 'flex-shrink-0'"
+          >
+            <div
+              *hesRbac="updateEscalationPermission"
+              [class]="isMobile ? 'flex-1' : ''"
+            >
+              <ds-button
+                variant="secondary"
+                size="sm"
+                [fullWidth]="isMobile"
+                (click)="handleUpdateEscalationLevel(level)"
+              >
+                {{ t("global.edit.btn") }}
+              </ds-button>
+            </div>
+            @if(level.levelNumber !== 0){
+            <div
+              *hesRbac="deleteEscalationPermission"
+              [class]="isMobile ? 'flex-1' : ''"
+            >
+              <ds-button
+                variant="dangerStroke"
+                size="sm"
+                [fullWidth]="isMobile"
+                (click)="handleDeleteEscalationLevel(level.id)"
+              >
+                {{ t("global.delete.btn") }}
+              </ds-button>
+            </div>
+            }
+          </div>
+        </div>
+
+        } } @if(isLoading()){
+        <app-escalation-skeleton />
+        }
+      </div>
+    </div>
+  </app-no-selected-scope-card>
+</ion-content>

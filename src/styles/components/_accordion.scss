@@ -1,0 +1,13 @@
+.faq {
+  ion-item::part(native) {
+    border-color: #eaecf0;
+  }
+}
+
+div[slot="content"] {
+  background: #fff;
+}
+
+ion-item[slot="header"] {
+  background-color: #fff;
+}

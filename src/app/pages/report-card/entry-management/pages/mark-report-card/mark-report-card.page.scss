@@ -1,0 +1,35 @@
+/* Base styling for all platforms */
+ion-input.marks-input.sc-ion-input-md-h,
+ion-input.marks-input.sc-ion-input-ios-h {
+  min-height: 2rem !important; /* h-8 equivalent (32px) */
+  height: 2rem !important;
+  min-width: 0 !important;
+  --padding-top: 0 !important;
+  --padding-bottom: 0 !important;
+  --padding-start: 0.5rem !important;
+  --padding-end: 0.5rem !important;
+}
+
+/* Target the internal elements as well */
+ion-input.marks-input.sc-ion-input-md-h .native-input,
+ion-input.marks-input.sc-ion-input-ios-h .native-input {
+  min-height: 2rem !important;
+  height: 2rem !important;
+  line-height: 2rem !important;
+}
+
+/* Media query for desktop */
+@media (min-width: 768px) {
+  ion-input.marks-input.sc-ion-input-md-h,
+  ion-input.marks-input.sc-ion-input-ios-h {
+    min-height: 2.5rem !important; /* h-10 equivalent (40px) */
+    height: 2.5rem !important;
+  }
+
+  ion-input.marks-input.sc-ion-input-md-h .native-input,
+  ion-input.marks-input.sc-ion-input-ios-h .native-input {
+    min-height: 2.5rem !important;
+    height: 2.5rem !important;
+    line-height: 2.5rem !important;
+  }
+}

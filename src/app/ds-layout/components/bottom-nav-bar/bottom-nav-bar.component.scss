@@ -1,0 +1,93 @@
+/* ──────────────────────────────────────────────
+   MOBILE/TABLET  BOTTOM NAV  (stand-alone)
+   ────────────────────────────────────────────── */
+
+:host {
+  --nav-active: var(--colors-brand-600, #f59e0b);
+  --nav-inactive: #6b7280;
+}
+
+/* Bottom nav container with drop shadow */
+.bottom-nav-container {
+  box-shadow: 0 -4px 20px 0 var(--colors-brand-35, rgba(245, 158, 11, 0.35));
+}
+
+/* Active / inactive tint */
+.bottom-nav-active,
+.bottom-nav-active span {
+  color: var(--nav-active) !important;
+  font-weight: 600;
+}
+.bottom-nav-inactive {
+  color: var(--nav-inactive);
+}
+.bottom-nav-inactive:hover {
+  color: var(--nav-active);
+  background-color: rgba(245, 158, 11, 0.05);
+}
+
+/* Make inactive icons grayscale */
+.bottom-nav-inactive ds-animated-icon,
+.bottom-nav-inactive ng-lottie {
+  filter: grayscale(1) opacity(0.7);
+  transition: filter 0.2s ease;
+}
+
+.bottom-nav-inactive:hover ds-animated-icon,
+.bottom-nav-inactive:hover ng-lottie {
+  filter: grayscale(0) opacity(1);
+}
+
+/* Lottie filter tweaks for active icons */
+.bottom-nav-active ng-lottie {
+  filter: hue-rotate(25deg) saturate(1.3) brightness(1.1);
+}
+
+/* Yellow rectangle - bottom layer */
+.yellow-rect {
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 30px;
+  background: var(--colors-brand-500);
+  border-radius: 30px 30px 0 0; /* Much more rounded - semicircle */
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* White rectangle - top layer (slightly lower) */
+.white-rect {
+  position: absolute;
+  top: 2px; /* 4px lower than yellow rect */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 30px;
+  background: white;
+  border-radius: 30px 30px 0 0; /* Much more rounded - semicircle */
+  z-index: 1;
+  pointer-events: none;
+}
+
+.bottom-nav-active .z-10 {
+  z-index: 10;
+} /* lift icon + label above rectangles */
+
+/* Tap "squish" */
+.bottom-nav-click-animation {
+  animation: bottomNavClick 0.15s ease-out;
+}
+
+@keyframes bottomNavClick {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

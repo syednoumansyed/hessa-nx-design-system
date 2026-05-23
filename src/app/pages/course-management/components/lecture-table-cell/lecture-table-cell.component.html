@@ -1,0 +1,20 @@
+<div class="flex flex-nowrap items-center gap-1.5" *transloco="let t">
+  @for (lecture of lectures; track lecture.id) {
+    <div
+      (click)="onViewLecture($event, lecture)"
+      class="flex-shrink-0 cursor-pointer rounded-md border border-gray-200 bg-white px-2.5 py-1 transition-colors hover:border-primary-200 hover:bg-primary-50"
+    >
+      <div
+        class="whitespace-nowrap text-xs font-semibold capitalize text-neutral-900"
+      >
+        {{ lecture.dayOfWeek | dayOfWeek }}
+      </div>
+      <div class="whitespace-nowrap text-[0.625rem] leading-4 text-gray-400">
+        {{ t("enum.PERIOD") }} {{ lecture.periodNumber }} ({{
+          lecture.startTime | time12hr
+        }}
+        - {{ lecture.endTime | time12hr }})
+      </div>
+    </div>
+  }
+</div>

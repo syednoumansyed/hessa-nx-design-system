@@ -1,0 +1,26 @@
+<div *transloco="let t" class="flex h-full flex-col gap-ds-xl">
+  <!-- Search Bar and Add Button -->
+  <app-search-box
+    [placeholderTxt]="t('support.custom_field.search.placeholder')"
+    [includeAddButton]="true"
+    [manageBottomBarVisibility]="false"
+    (searchChange)="onSearchChange($event)"
+    (addButtonClick)="addNewField()"
+  />
+
+  <!-- Custom Fields List -->
+  <div class="flex flex-1 flex-col gap-ds-xl overflow-y-auto">
+    @for (field of filteredFields(); track field.id) {
+      <app-custom-field-card
+        [field]="field"
+        mode="select"
+        [isSelected]="isSelected(field)"
+        (select)="toggleSelection($event)"
+      />
+    } @empty {
+      <div class="flex flex-1 items-center justify-center text-gray-500">
+        {{ t("support.custom_field.no_results") }}
+      </div>
+    }
+  </div>
+</div>

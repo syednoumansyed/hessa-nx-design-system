@@ -1,0 +1,1829 @@
+<div
+  class="ion-padding overflow-y-auto p-4"
+  style="--background: #faf8f4"
+  cdkScrollable
+>
+  <div class="mb-6 flex items-center gap-ds-sm">
+    <ds-responsive-menu
+      [items]="iconContainerMenuItems"
+      triggerAriaLabel="Open responsive menu"
+    ></ds-responsive-menu>
+    <span class="content-md-mid-emphasis">Responsive menu (default)</span>
+  </div>
+  <ng-container *ngTemplateOutlet="filterPanelDemo"></ng-container>
+  <ng-container *ngTemplateOutlet="schoolStructureControlDemo"></ng-container>
+  <ng-container *ngTemplateOutlet="timePickerDemo"></ng-container>
+  <ng-container *ngTemplateOutlet="datePickerDemo"></ng-container>
+  <ng-container *ngTemplateOutlet="feedbackModal"></ng-container>
+  <ng-container *ngTemplateOutlet="inputDemo"></ng-container>
+  <ng-container *ngTemplateOutlet="searchBoxDemo"></ng-container>
+  <ng-container *ngTemplateOutlet="creatorDemo"></ng-container>
+  <ng-container *ngTemplateOutlet="listItemDemo"></ng-container>
+  <ng-container *ngTemplateOutlet="tooltipDemo"></ng-container>
+  <ng-container *ngTemplateOutlet="progressBarDemo"></ng-container>
+  <ng-container *ngTemplateOutlet="tabsDemo"></ng-container>
+  <ng-container *ngTemplateOutlet="attachmentFormControl"></ng-container>
+  <ng-container *ngTemplateOutlet="selectableDemo"></ng-container>
+  <h2 class="heading-h2-high-emphasis mb-2 mt-8">Calendar Demo</h2>
+  <app-calendar-demo />
+
+  <ds-button class="fixed bottom-4 end-4 z-50" (click)="toggleView()">
+    {{isTeacherView()? 'Teacher View' : 'Student View'}}
+  </ds-button>
+  <ng-container *ngTemplateOutlet="carousalDemo"></ng-container>
+  <ng-container *ngTemplateOutlet="studentSelector"></ng-container>
+  <ng-container *ngTemplateOutlet="buttonDemo"></ng-container>
+  <ng-container *ngTemplateOutlet="selectDemo"></ng-container>
+  <ng-container *ngTemplateOutlet="icons"></ng-container>
+
+  <ng-container *ngTemplateOutlet="chipsDemo"></ng-container>
+  <ng-container *ngTemplateOutlet="switchDemo"></ng-container>
+  <ng-container *ngTemplateOutlet="checkboxDemo"></ng-container>
+  <ng-container *ngTemplateOutlet="radioDemo"></ng-container>
+  <ng-container *ngTemplateOutlet="textAreaDemo"></ng-container>
+  <ng-container *ngTemplateOutlet="avatar"></ng-container>
+  <ng-container *ngTemplateOutlet="popupDemo"></ng-container>
+  <ng-container *ngTemplateOutlet="iconContainerDemo"></ng-container>
+  <ng-container *ngTemplateOutlet="formRendererDemo"></ng-container>
+
+  <div class="hidden ltr:block">
+    <ng-container *ngTemplateOutlet="typographyDemo"></ng-container>
+  </div>
+
+  <div class="hidden rtl:block">
+    <ng-container *ngTemplateOutlet="typographyDemoArabic"></ng-container>
+  </div>
+</div>
+<ng-template #timePickerDemo>
+  <h1 class="heading-h1-high-emphasis mb-4">Time Picker</h1>
+  <form [formGroup]="timeForm" class="flex max-w-[340px] flex-col gap-4">
+    <ds-time-picker-control
+      formControlName="time"
+      [label]="'Start Time'"
+    ></ds-time-picker-control>
+    <ds-time-picker-control
+      formControlName="endTime"
+      [label]="'End Time'"
+    ></ds-time-picker-control>
+    <ds-time-picker-control
+      formControlName="disabledField"
+      [label]="'Disabled Field'"
+    ></ds-time-picker-control>
+    <div class="content-sm-mid-emphasis">
+      Start time: {{ timeForm.value.time | json }} End time: {{
+      timeForm.value.endTime | json }}
+    </div>
+  </form>
+</ng-template>
+<ng-template #datePickerDemo>
+  <h1 class="heading-h1-high-emphasis mb-4">Date Picker</h1>
+  <form [formGroup]="datePickerForm" class="flex max-w-[340px] flex-col gap-4">
+    <app-ds-form-control-generator
+      [control]="datePickerControl"
+    ></app-ds-form-control-generator>
+    <app-ds-form-control-generator
+      [control]="dateRangePickerControl"
+    ></app-ds-form-control-generator>
+    <div class="content-sm-mid-emphasis">
+      Selected date: {{ datePickerForm.value.selectedDate | json }}
+    </div>
+    <div class="content-sm-mid-emphasis">
+      Date range: {{ datePickerForm.value.dateRange | json }}
+    </div>
+  </form>
+</ng-template>
+<ng-template #creatorDemo>
+  <app-option-creator-demo></app-option-creator-demo>
+</ng-template>
+
+<ng-template #selectDemo>
+  <h1 class="heading-h1-high-emphasis">Select</h1>
+  <app-select-testing />
+</ng-template>
+
+<ng-template #buttonDemo>
+  <div class="mt-2 flex flex-wrap gap-4">
+    <div class="flex flex-col flex-wrap items-center gap-4">
+      <div class="text-2xl personnel:text-blue-500 student:text-red-500">
+        Primary
+      </div>
+      <ds-button variant="primary" size="lg" [disabled]="true">
+        Disabled
+      </ds-button>
+      <ds-button variant="primary" size="lg"> Button </ds-button>
+      <ds-button
+        variant="primary"
+        size="lg"
+        iconStart="saxHome2Outline"
+        iconEnd="saxBuildings2Outline"
+        (click)="openToast('warning')"
+      >
+        Warning Toast
+      </ds-button>
+      <ds-button variant="primary" size="md">primary md </ds-button>
+      <ds-button
+        variant="primary"
+        size="md"
+        iconStart="saxHome2Outline"
+        iconEnd="saxBuildings2Outline"
+        (click)="openToast('warning')"
+      >
+        md primary
+      </ds-button>
+      <ds-button
+        variant="primary"
+        size="md"
+        iconStart="saxHome2Outline"
+      ></ds-button>
+      <ds-button variant="primary" size="md" [disabled]="true">
+        Primary md disable
+      </ds-button>
+      <ds-button variant="primary" size="sm"> Primary sm </ds-button>
+      <ds-button
+        variant="primary"
+        size="sm"
+        iconStart="saxHome2Outline"
+        iconEnd="saxBuildings2Outline"
+      >
+        Primary sm
+      </ds-button>
+      <ds-button variant="primary" size="sm" [disabled]="true">
+        Primary sm disable
+      </ds-button>
+    </div>
+    <div class="flex flex-col items-center gap-4">
+      <div class="text-2xl personnel:text-blue-500 student:text-red-500">
+        secondary
+      </div>
+      <ds-button variant="secondary" size="lg" [disabled]="true">
+        Disabled
+      </ds-button>
+      <ds-button variant="secondary" size="lg"> Button </ds-button>
+      <ds-button
+        variant="secondary"
+        size="lg"
+        iconStart="saxHome2Outline"
+        iconEnd="saxBuildings2Outline"
+        (click)="openToast('info')"
+      >
+        Info Toast
+      </ds-button>
+      <ds-button variant="secondary" size="md">md secondary</ds-button>
+      <ds-button
+        variant="secondary"
+        size="md"
+        iconStart="saxHome2Outline"
+        iconEnd="saxBuildings2Outline"
+        (click)="openToast('info')"
+      >
+        md secondary
+      </ds-button>
+      <ds-button
+        variant="secondary"
+        size="md"
+        iconStart="saxHome2Outline"
+      ></ds-button>
+      <ds-button variant="secondary" size="md" [disabled]="true">
+        md secondary disable
+      </ds-button>
+      <ds-button variant="secondary" size="sm"> secondary sm </ds-button>
+      <ds-button
+        variant="secondary"
+        size="sm"
+        iconStart="saxHome2Outline"
+        iconEnd="saxBuildings2Outline"
+      >
+        secondary sm
+      </ds-button>
+      <ds-button variant="secondary" size="sm" [disabled]="true">
+        secondary sm disable
+      </ds-button>
+    </div>
+    <div class="flex flex-col items-center gap-4">
+      <div class="text-2xl personnel:text-blue-500 student:text-red-500">
+        Tertiary
+      </div>
+      <ds-button variant="tertiary" size="lg" [disabled]="true">
+        Disabled
+      </ds-button>
+      <ds-button variant="tertiary" size="lg"> Button </ds-button>
+      <ds-button
+        variant="tertiary"
+        size="lg"
+        iconStart="saxHome2Outline"
+        iconEnd="saxBuildings2Outline"
+        (click)="openToast('error')"
+      >
+        Error Toast
+      </ds-button>
+      <ds-button variant="tertiary" size="md">md Button </ds-button>
+      <ds-button
+        variant="tertiary"
+        size="md"
+        iconStart="saxHome2Outline"
+        iconEnd="saxBuildings2Outline"
+        (click)="openToast('error')"
+      >
+        md tertiary
+      </ds-button>
+      <ds-button
+        variant="tertiary"
+        size="md"
+        iconStart="saxHome2Outline"
+      ></ds-button>
+      <ds-button variant="tertiary" size="md" [disabled]="true">
+        tertiary sm disable
+      </ds-button>
+      <ds-button variant="tertiary" size="sm"> secondary sm </ds-button>
+      <ds-button
+        variant="tertiary"
+        size="sm"
+        iconStart="saxHome2Outline"
+        iconEnd="saxBuildings2Outline"
+      >
+        tertiary sm
+      </ds-button>
+      <ds-button variant="tertiary" size="sm" [disabled]="true">
+        tertiary sm disable
+      </ds-button>
+    </div>
+    <div class="flex flex-col items-center gap-4">
+      <div class="text-2xl personnel:text-blue-500 student:text-red-500">
+        danger Stroke
+      </div>
+      <ds-button variant="dangerStroke" size="lg" [disabled]="true">
+        Disabled
+      </ds-button>
+      <ds-button variant="dangerStroke" size="lg"> Button </ds-button>
+      <ds-button
+        variant="dangerStroke"
+        size="lg"
+        iconStart="saxHome2Outline"
+        iconEnd="saxBuildings2Outline"
+        (click)="openToast('success')"
+      >
+        Success Toast
+      </ds-button>
+      <ds-button variant="dangerStroke" size="md"> danger Stroke md </ds-button>
+      <ds-button
+        variant="dangerStroke"
+        size="md"
+        iconStart="saxHome2Outline"
+        iconEnd="saxBuildings2Outline"
+        (click)="openToast('success')"
+      >
+        Success md Toast
+      </ds-button>
+      <ds-button
+        variant="dangerStroke"
+        size="md"
+        iconStart="saxHome2Outline"
+      ></ds-button>
+      <ds-button variant="dangerStroke" size="md" [disabled]="true">
+        danger Stroke md disable
+      </ds-button>
+      <ds-button variant="dangerStroke" size="sm"> danger Stroke sm </ds-button>
+      <ds-button
+        variant="dangerStroke"
+        size="sm"
+        iconStart="saxHome2Outline"
+        iconEnd="saxBuildings2Outline"
+      >
+        danger Stroke sm
+      </ds-button>
+      <ds-button variant="dangerStroke" size="sm" [disabled]="true">
+        danger Stroke sm disable
+      </ds-button>
+    </div>
+    <div class="flex flex-col items-center gap-4">
+      <div class="text-2xl personnel:text-blue-500 student:text-red-500">
+        danger Fill
+      </div>
+      <ds-button variant="dangerFill" size="lg" [disabled]="true">
+        Disabled
+      </ds-button>
+      <ds-button variant="dangerFill" size="lg"> Button </ds-button>
+      <ds-button
+        variant="dangerFill"
+        size="lg"
+        iconStart="saxHome2Outline"
+        iconEnd="saxBuildings2Outline"
+        (click)="openToast('success')"
+      >
+        Success Toast
+      </ds-button>
+      <ds-button variant="dangerFill" size="md"> danger Fill md </ds-button>
+      <ds-button
+        variant="dangerFill"
+        size="md"
+        iconStart="saxHome2Outline"
+        iconEnd="saxBuildings2Outline"
+        (click)="openToast('success')"
+      >
+        Success md Toast
+      </ds-button>
+      <ds-button
+        variant="dangerFill"
+        size="md"
+        iconStart="saxHome2Outline"
+      ></ds-button>
+      <ds-button variant="dangerFill" size="md" [disabled]="true">
+        danger Fill md disable
+      </ds-button>
+      <ds-button variant="dangerFill" size="sm"> danger Fill sm </ds-button>
+      <ds-button
+        variant="dangerFill"
+        size="sm"
+        iconStart="saxHome2Outline"
+        iconEnd="saxBuildings2Outline"
+      >
+        danger Fill sm
+      </ds-button>
+      <ds-button variant="dangerFill" size="sm" [disabled]="true">
+        danger Fill sm disable
+      </ds-button>
+    </div>
+    <div class="flex flex-col items-center gap-4">
+      <div class="text-2xl personnel:text-blue-500 student:text-red-500">
+        Ghost
+      </div>
+      <ds-button variant="ghost" size="lg" [disabled]="true">
+        Disabled
+      </ds-button>
+      <ds-button variant="ghost" size="lg"> Button </ds-button>
+      <ds-button
+        variant="ghost"
+        size="lg"
+        iconStart="saxHome2Outline"
+        iconEnd="saxBuildings2Outline"
+        (click)="openToast('success')"
+      >
+        Success Toast
+      </ds-button>
+      <ds-button variant="ghost" size="md"> Ghost md </ds-button>
+      <ds-button
+        variant="ghost"
+        size="md"
+        iconStart="saxHome2Outline"
+        iconEnd="saxBuildings2Outline"
+        (click)="openToast('success')"
+      >
+        Success md Toast
+      </ds-button>
+      <ds-button
+        variant="ghost"
+        size="md"
+        iconStart="saxHome2Outline"
+      ></ds-button>
+      <ds-button variant="ghost" size="md" [disabled]="true">
+        Ghost md disable
+      </ds-button>
+      <ds-button variant="ghost" size="sm"> Ghost sm </ds-button>
+      <ds-button
+        variant="ghost"
+        size="sm"
+        iconStart="saxHome2Outline"
+        iconEnd="saxBuildings2Outline"
+      >
+        Ghost sm
+      </ds-button>
+      <ds-button variant="ghost" size="sm" [disabled]="true">
+        Ghost sm disable
+      </ds-button>
+    </div>
+    <div class="flex flex-col items-center gap-4">
+      <div class="text-2xl personnel:text-blue-500 student:text-red-500">
+        Loading
+      </div>
+      <ds-button
+        variant="primary"
+        size="lg"
+        [loading]="loading()"
+        (click)="onClick()"
+      >
+        loading
+      </ds-button>
+      <ds-button variant="primary" size="md" [loading]="loading()">
+        loading
+      </ds-button>
+      <ds-button variant="primary" size="sm" [loading]="loading()">
+        loading
+      </ds-button>
+      <ds-button variant="secondary" size="lg" [loading]="loading()">
+        loading
+      </ds-button>
+      <ds-button variant="secondary" size="md" [loading]="loading()">
+        loading
+      </ds-button>
+      <ds-button variant="secondary" size="sm" [loading]="loading()">
+        loading
+      </ds-button>
+      <ds-button variant="tertiary" size="lg" [loading]="loading()">
+        loading
+      </ds-button>
+      <ds-button variant="tertiary" size="md" [loading]="loading()">
+        loading
+      </ds-button>
+      <ds-button variant="tertiary" size="sm" [loading]="loading()">
+        loading
+      </ds-button>
+      <ds-button variant="dangerStroke" size="lg" [loading]="loading()">
+        loading
+      </ds-button>
+      <ds-button variant="dangerStroke" size="md" [loading]="loading()">
+        loading
+      </ds-button>
+      <ds-button variant="dangerStroke" size="sm" [loading]="loading()">
+        loading
+      </ds-button>
+      <ds-button variant="dangerFill" size="lg" [loading]="loading()">
+        loading
+      </ds-button>
+      <ds-button variant="dangerFill" size="md" [loading]="loading()">
+        loading
+      </ds-button>
+      <ds-button variant="dangerFill" size="sm" [loading]="loading()">
+        loading
+      </ds-button>
+      <ds-button variant="ghost" size="lg" [loading]="loading()">
+        loading
+      </ds-button>
+      <ds-button variant="ghost" size="md" [loading]="loading()">
+        loading
+      </ds-button>
+      <ds-button variant="ghost" size="sm" [loading]="loading()">
+        loading
+      </ds-button>
+    </div>
+  </div>
+</ng-template>
+<ng-template #inputDemo>
+  <h1 class="heading-h1-high-emphasis">Inputs</h1>
+  <section class="flex flex-col gap-4">
+    <h1 class="heading-h3-mid-emphasis">Widthout icon</h1>
+    <div class="flex flex-wrap gap-4">
+      <app-ds-input
+        label="Phone Number"
+        placeholder="Enter your phone number"
+        [formControl]="ctrl"
+        hint="+92 1234567890"
+      />
+      <app-ds-input
+        [formControl]="emailCtrl"
+        label="Email"
+        placeholder="Enter your email"
+      />
+    </div>
+  </section>
+  <section class="flex flex-col flex-wrap gap-4">
+    <h1 class="heading-h3-mid-emphasis">with icons</h1>
+    <div class="flex flex-wrap gap-4">
+      <app-ds-input
+        iconStart="ksa-flag"
+        iconEnd="saxMessage2Outline"
+        prefix="+966"
+        label="Phone number"
+        placeholder="Enter your phone number"
+        [formControl]="ctrl"
+      />
+      <app-ds-input
+        iconStart="ksa-flag"
+        prefix="+966"
+        label="Phone number"
+        placeholder="Enter your phone number"
+        [formControl]="ctrl"
+      />
+      <app-ds-input
+        [iconEnd]="messageIcon"
+        label="Phone number"
+        placeholder="Enter your phone number"
+        [formControl]="ctrl"
+      />
+    </div>
+  </section>
+  <section class="flex flex-col gap-4">
+    <h1 class="heading-h3-mid-emphasis">Loading state</h1>
+    <div class="flex flex-wrap gap-4">
+      <app-ds-input
+        iconStart="ksa-flag"
+        iconEnd="saxMessage2Outline"
+        prefix="+966"
+        label="Loading state"
+        placeholder="Enter your email"
+        [loading]="true"
+        [formControl]="loadingCtrl"
+      />
+      <app-ds-input
+        label="Loading state"
+        placeholder="Enter your email"
+        [loading]="true"
+        [formControl]="loadingCtrl"
+      />
+    </div>
+  </section>
+  <section class="flex flex-col gap-4">
+    <h1 class="heading-h3-mid-emphasis">dislabled</h1>
+    <div class="flex">
+      <app-ds-input
+        label="Disabled email"
+        placeholder="Enter your email"
+        [formControl]="disabledCtrl"
+      />
+    </div>
+  </section>
+  <section>
+    <div class="my-4 flex w-full max-w-[400px] justify-between">
+      @for(i of [1,2,3,4]; track i){
+      <app-ds-input
+        inputMode="text"
+        class="block w-[56px]"
+        maxLength="1"
+        inputClasses="text-center"
+      />
+      }
+    </div>
+  </section>
+</ng-template>
+<ng-template #typographyDemo>
+  <h1>Typography Demo</h1>
+  <div class="flex flex-col gap-4">
+    <!-- Headings -->
+    <div class="section">
+      <h2>Headings</h2>
+      <div class="heading-h1-high-emphasis">Heading H1 High Emphasis</div>
+      <div class="heading-h1-mid-emphasis">Heading H1 Mid Emphasis</div>
+      <div class="heading-h2-high-emphasis">Heading H2 High Emphasis</div>
+      <div class="heading-h2-mid-emphasis">Heading H2 Mid Emphasis</div>
+      <div class="heading-h3-high-emphasis">Heading H3 High Emphasis</div>
+      <div class="heading-h3-mid-emphasis">Heading H3 Mid Emphasis</div>
+      <div class="heading-h4-high-emphasis">Heading H4 High Emphasis</div>
+      <div class="heading-h4-mid-emphasis">Heading H4 Mid Emphasis</div>
+      <div class="heading-h5-high-emphasis">Heading H5 High Emphasis</div>
+      <div class="heading-h5-mid-emphasis">Heading H5 Mid Emphasis</div>
+    </div>
+
+    <!-- Content -->
+    <div class="section">
+      <h2>Content</h2>
+      <div class="content-lg-high-emphasis">Content LG High Emphasis</div>
+      <div class="content-lg-mid-emphasis">Content LG Mid Emphasis</div>
+      <div class="content-lg-default">Content LG Default</div>
+      <div class="content-md-high-emphasis">Content MD High Emphasis</div>
+      <div class="content-md-mid-emphasis">Content MD Mid Emphasis</div>
+      <div class="content-md-default">Content MD Default</div>
+      <div class="content-sm-high-emphasis">Content SM High Emphasis</div>
+      <div class="content-sm-mid-emphasis">Content SM Mid Emphasis</div>
+      <div class="content-sm-default">Content SM Default</div>
+      <div class="content-xs-high-emphasis">Content XS High Emphasis</div>
+      <div class="content-xs-mid-emphasis">Content XS Mid Emphasis</div>
+      <div class="content-xs-default">Content XS Default</div>
+    </div>
+
+    <!-- Single Line -->
+    <div class="section">
+      <h2>Single Line</h2>
+      <div class="single-line-lg-high-emphasis">
+        Single Line LG High Emphasis
+      </div>
+      <div class="single-line-lg-mid-emphasis">Single Line LG Mid Emphasis</div>
+      <div class="single-line-lg-low-emphasis">Single Line LG Low Emphasis</div>
+      <div class="single-line-md-high-emphasis">
+        Single Line MD High Emphasis
+      </div>
+      <div class="single-line-md-mid-emphasis">Single Line MD Mid Emphasis</div>
+      <div class="single-line-md-low-emphasis">Single Line MD Low Emphasis</div>
+      <div class="single-line-sm-high-emphasis">
+        Single Line SM High Emphasis
+      </div>
+      <div class="single-line-sm-mid-emphasis">Single Line SM Mid Emphasis</div>
+      <div class="single-line-sm-low-emphasis">Single Line SM Low Emphasis</div>
+      <div class="single-line-xs-high-emphasis">
+        Single Line XS High Emphasis
+      </div>
+      <div class="single-line-xs-mid-emphasis">Single Line XS Mid Emphasis</div>
+      <div class="single-line-xs-low-emphasis">Single Line XS Low Emphasis</div>
+    </div>
+
+    <!-- Captions -->
+    <div class="section">
+      <h2>Captions</h2>
+      <div class="single-line-caption-high-emphasis">Caption High Emphasis</div>
+      <div class="single-line-caption-mid-emphasis">Caption Mid Emphasis</div>
+      <div class="single-line-caption-low-emphasis">Caption Low Emphasis</div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #typographyDemoArabic>
+  <h1 class="mb-6 text-right text-4xl font-bold">عرض الطباعة (عربي)</h1>
+  <div class="flex flex-col gap-4 text-right">
+    <!-- Headings -->
+    <div class="section">
+      <h2 class="mb-4 text-2xl font-semibold">العناوين</h2>
+      <div class="heading-h1-high-emphasis mb-2">عنوان H1 تأكيد عالي</div>
+      <div class="heading-h1-mid-emphasis mb-2">عنوان H1 تأكيد متوسط</div>
+      <div class="heading-h2-high-emphasis mb-2">عنوان H2 تأكيد عالي</div>
+      <div class="heading-h2-mid-emphasis mb-2">عنوان H2 تأكيد متوسط</div>
+      <div class="heading-h3-high-emphasis mb-2">عنوان H3 تأكيد عالي</div>
+      <div class="heading-h3-mid-emphasis mb-2">عنوان H3 تأكيد متوسط</div>
+      <div class="heading-h4-high-emphasis mb-2">عنوان H4 تأكيد عالي</div>
+      <div class="heading-h4-mid-emphasis mb-2">عنوان H4 تأكيد متوسط</div>
+      <div class="heading-h5-high-emphasis mb-2">عنوان H5 تأكيد عالي</div>
+      <div class="heading-h5-mid-emphasis mb-2">عنوان H5 تأكيد متوسط</div>
+    </div>
+
+    <!-- Content -->
+    <div class="section">
+      <h2 class="mb-4 text-2xl font-semibold">المحتوى</h2>
+      <div class="content-lg-high-emphasis mb-2">محتوى LG تأكيد عالي</div>
+      <div class="content-lg-mid-emphasis mb-2">محتوى LG تأكيد متوسط</div>
+      <div class="content-lg-default mb-2">محتوى LG افتراضي</div>
+      <div class="content-md-high-emphasis mb-2">محتوى MD تأكيد عالي</div>
+      <div class="content-md-mid-emphasis mb-2">محتوى MD تأكيد متوسط</div>
+      <div class="content-md-default mb-2">محتوى MD افتراضي</div>
+      <div class="content-sm-high-emphasis mb-2">محتوى SM تأكيد عالي</div>
+      <div class="content-sm-mid-emphasis mb-2">محتوى SM تأكيد متوسط</div>
+      <div class="content-sm-default mb-2">محتوى SM افتراضي</div>
+      <div class="content-xs-high-emphasis mb-2">محتوى XS تأكيد عالي</div>
+      <div class="content-xs-mid-emphasis mb-2">محتوى XS تأكيد متوسط</div>
+      <div class="content-xs-default mb-2">محتوى XS افتراضي</div>
+    </div>
+
+    <!-- Single Line -->
+    <div class="section">
+      <h2 class="mb-4 text-2xl font-semibold">سطر واحد</h2>
+      <div class="single-line-lg-high-emphasis mb-2">
+        سطر واحد LG تأكيد عالي
+      </div>
+      <div class="single-line-lg-mid-emphasis mb-2">
+        سطر واحد LG تأكيد متوسط
+      </div>
+      <div class="single-line-lg-low-emphasis mb-2">
+        سطر واحد LG تأكيد منخفض
+      </div>
+      <div class="single-line-md-high-emphasis mb-2">
+        سطر واحد MD تأكيد عالي
+      </div>
+      <div class="single-line-md-mid-emphasis mb-2">
+        سطر واحد MD تأكيد متوسط
+      </div>
+      <div class="single-line-md-low-emphasis mb-2">
+        سطر واحد MD تأكيد منخفض
+      </div>
+      <div class="single-line-sm-high-emphasis mb-2">
+        سطر واحد SM تأكيد عالي
+      </div>
+      <div class="single-line-sm-mid-emphasis mb-2">
+        سطر واحد SM تأكيد متوسط
+      </div>
+      <div class="single-line-sm-low-emphasis mb-2">
+        سطر واحد SM تأكيد منخفض
+      </div>
+      <div class="single-line-xs-high-emphasis mb-2">
+        سطر واحد XS تأكيد عالي
+      </div>
+      <div class="single-line-xs-mid-emphasis mb-2">
+        سطر واحد XS تأكيد متوسط
+      </div>
+      <div class="single-line-xs-low-emphasis mb-2">
+        سطر واحد XS تأكيد منخفض
+      </div>
+    </div>
+
+    <!-- Captions -->
+    <div class="section">
+      <h2 class="mb-4 text-2xl font-semibold">التسميات</h2>
+      <div class="single-line-caption-high-emphasis mb-2">تسمية تأكيد عالي</div>
+      <div class="single-line-caption-mid-emphasis mb-2">تسمية تأكيد متوسط</div>
+      <div class="single-line-caption-low-emphasis mb-2">تسمية تأكيد منخفض</div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #switchDemo>
+  <!-- Section: Switches -->
+  <div class="section">
+    <h3>Switches</h3>
+    <div class="flex flex-row items-start gap-8">
+      <div class="flex flex-col items-center gap-2">
+        <h2 class="text-lg font-semibold">Language Switch (two way)</h2>
+        <!-- Two-way (default) -->
+        <app-ds-switch
+          [option1]="'En'"
+          [option2]="'Ar'"
+          type="two-way"
+          [selectedOption]="'En'"
+        >
+        </app-ds-switch>
+      </div>
+
+      <div class="flex flex-col items-center gap-2">
+        <h2 class="text-lg font-semibold">One way boolean switch</h2>
+        <!-- Boolean toggle -->
+        <app-ds-switch type="boolean"> </app-ds-switch>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #chipsDemo>
+  <h1>Chips</h1>
+  <div class="flex items-center gap-3">
+    <app-ds-chip text="Simple"></app-ds-chip>
+    <app-ds-chip variant="primary" text="Simple"></app-ds-chip>
+    <app-ds-chip text="Simple" [removable]="true"></app-ds-chip>
+    <app-ds-chip
+      variant="primary"
+      text="Simple"
+      [removable]="true"
+    ></app-ds-chip>
+    <app-ds-chip
+      text="Simple"
+      [startIcon]="checkIcon"
+      [removable]="true"
+    ></app-ds-chip>
+    <app-ds-chip
+      variant="primary"
+      text="Simple"
+      [startIcon]="checkIcon"
+      [removable]="true"
+    ></app-ds-chip>
+    <app-ds-chip text="Simple" [startIcon]="checkIcon"></app-ds-chip>
+    <app-ds-chip
+      variant="primary"
+      text="Simple"
+      [startIcon]="checkIcon"
+    ></app-ds-chip>
+    <app-ds-chip text="New" variant="red"></app-ds-chip>
+  </div>
+</ng-template>
+
+<ng-template #icons>
+  <h1>Fontawesome icons</h1>
+  <div class="my-4">
+    <h5>default</h5>
+    <app-ds-icon [icon]="homeIcon"></app-ds-icon>
+  </div>
+  <div class="flex flex-wrap items-end gap-1">
+    <app-ds-icon [icon]="homeIcon" size="2xl"></app-ds-icon>
+    <app-ds-icon [icon]="homeIcon" size="xl"></app-ds-icon>
+    <app-ds-icon [icon]="homeIcon" size="lg"></app-ds-icon>
+    <app-ds-icon [icon]="homeIcon" size="sm"></app-ds-icon>
+    <app-ds-icon [icon]="homeIcon" size="xs"></app-ds-icon>
+    <app-ds-icon [icon]="homeIcon" size="2xs"></app-ds-icon>
+  </div>
+  <h1>Ng icons</h1>
+  <div class="my-4">
+    <h5>default</h5>
+    <app-ds-icon icon="saxHome2Outline"></app-ds-icon>
+  </div>
+  <div class="flex flex-wrap items-end gap-1">
+    <app-ds-icon icon="saxHome2Outline" size="2xl"></app-ds-icon>
+    <app-ds-icon icon="saxHome2Outline" size="xl"></app-ds-icon>
+    <app-ds-icon icon="saxHome2Outline" size="lg"></app-ds-icon>
+    <app-ds-icon icon="saxHome2Outline" size="sm"></app-ds-icon>
+    <app-ds-icon icon="saxHome2Outline" size="xs"></app-ds-icon>
+    <app-ds-icon icon="saxHome2Outline" size="2xs"></app-ds-icon>
+  </div>
+  <h1>ng icons local</h1>
+  <div class="my-4">
+    <h5>default</h5>
+    <app-ds-icon icon="ksa-flag"></app-ds-icon>
+  </div>
+  <div class="flex flex-wrap items-end gap-1">
+    <app-ds-icon icon="ksa-flag" size="2xl"></app-ds-icon>
+    <app-ds-icon icon="ksa-flag" size="xl"></app-ds-icon>
+    <app-ds-icon icon="ksa-flag" size="lg"></app-ds-icon>
+    <app-ds-icon icon="ksa-flag" size="sm"></app-ds-icon>
+    <app-ds-icon icon="ksa-flag" size="xs"></app-ds-icon>
+    <app-ds-icon icon="ksa-flag" size="2xs"></app-ds-icon>
+  </div>
+</ng-template>
+<!-- checkbox demo -->
+<ng-template #checkboxDemo>
+  <div class="section">
+    <h3>Checkboxes</h3>
+    <div class="mt-8 flex flex-col-reverse flex-wrap gap-6 md:flex-row">
+      <div class="flex flex-col gap-4">
+        <div class="text-2xl personnel:text-blue-500 student:text-red-500">
+          Checkbox Samples
+        </div>
+        <app-ds-checkbox title="This is un-checked" />
+        <app-ds-checkbox title="This is checked" [defaultValue]="true" />
+        <app-ds-checkbox
+          [title]="'This is disabled un-checked'"
+          [disabled]="true"
+        />
+        <app-ds-checkbox
+          [title]="'This is disabled checked'"
+          [defaultValue]="true"
+          [disabled]="true"
+        />
+        <app-ds-checkbox
+          [title]="'This is checked'"
+          [defaultValue]="true"
+          variantInput="indeterminate"
+        />
+        <app-ds-checkbox
+          [title]="'This is small size checkbox'"
+          [defaultValue]="true"
+          size="sm"
+        />
+        <app-ds-checkbox
+          [title]="'This is small size indeterminate checkbox'"
+          [defaultValue]="true"
+          variantInput="indeterminate"
+          size="sm"
+        />
+      </div>
+      <div class="flex flex-col gap-4">
+        <div class="text-2xl personnel:text-blue-500 student:text-red-500">
+          Checkbox used with reactive forms
+        </div>
+
+        <form [formGroup]="checkboxForm" (ngSubmit)="onSubmit()">
+          <app-ds-checkbox
+            formControlName="agree"
+            title="I agree to the terms"
+          ></app-ds-checkbox>
+          <br />
+          <br />
+
+          <app-ds-checkbox
+            formControlName="disagree"
+            title="This is disabled example"
+          ></app-ds-checkbox>
+          <br />
+          <br />
+
+          <ds-button
+            variant="primary"
+            type="submit"
+            class="mt-3"
+            [disabled]="checkboxForm.invalid"
+          >
+            Submit un-grouped
+          </ds-button>
+        </form>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <div class="text-2xl personnel:text-blue-500 student:text-red-500">
+          Group Checkboxes with reactive forms
+        </div>
+
+        <form [formGroup]="checkboxGroupForm" (ngSubmit)="onGroupSubmit()">
+          <div class="text-xl">Group 1</div>
+          <br />
+          <app-ds-checkbox-group formControlName="selectedOptions">
+            <app-ds-checkbox
+              title="Select All"
+              [value]="'SELECT_ALL'"
+            ></app-ds-checkbox>
+            <br />
+            <br />
+
+            <app-ds-checkbox
+              title="Option 1"
+              [value]="'option1'"
+            ></app-ds-checkbox>
+            <br />
+            <br />
+
+            <app-ds-checkbox
+              title="Option 2"
+              [value]="'option2'"
+            ></app-ds-checkbox>
+            <br />
+            <br />
+
+            <app-ds-checkbox
+              title="Option 3"
+              [value]="'option3'"
+            ></app-ds-checkbox>
+          </app-ds-checkbox-group>
+          <br />
+          <br />
+
+          <div class="text-xl">Group 2</div>
+          <br />
+          <app-ds-checkbox-group formControlName="selectedOptions2">
+            <app-ds-checkbox
+              title="Select All"
+              [value]="'SELECT_ALL'"
+            ></app-ds-checkbox>
+            <br />
+            <br />
+
+            <app-ds-checkbox
+              title="Option 1"
+              [value]="'option1'"
+            ></app-ds-checkbox>
+            <br />
+            <br />
+
+            <app-ds-checkbox
+              title="Option 2"
+              [value]="'option2'"
+            ></app-ds-checkbox>
+            <br />
+            <br />
+
+            <app-ds-checkbox
+              title="Option 3"
+              [value]="'option3'"
+            ></app-ds-checkbox>
+          </app-ds-checkbox-group>
+          <br />
+          <br />
+
+          <ds-button type="submit" [disabled]="checkboxGroupForm.invalid"
+            >Submit Group</ds-button
+          >
+        </form>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #radioDemo>
+  <h3 class="mt-5">Radio Button Demo</h3>
+  <form [formGroup]="form" class="mb-2 mt-3 flex flex-col gap-4">
+    <app-ds-radio-group formControlName="radioCtrl" [required]="true">
+      <app-ds-radio value="upi" title="UPI" class="m-3"></app-ds-radio>
+      <app-ds-radio
+        value="cod"
+        title="Cash on Delivery"
+        class="m-3"
+      ></app-ds-radio>
+      <app-ds-radio
+        value="card"
+        title="Card (Shows Disable Item)"
+        [disabled]="true"
+        class="m-3"
+      ></app-ds-radio>
+    </app-ds-radio-group>
+  </form>
+  <h5 class="mb-3">Selected Value : {{form.value.radioCtrl}}</h5>
+</ng-template>
+
+<ng-template #textAreaDemo>
+  <app-ds-textarea
+    [formControl]="textAreaCtrl"
+    label="About you"
+    placeholder="Tell us something cool…"
+    [maxLength]="180"
+    hintLeft="This is hint on the left"
+    hintRight="This is a hint"
+    [required]="true"
+  ></app-ds-textarea>
+</ng-template>
+
+<ng-template #avatar>
+  <h1 class="heading-h1-high-emphasis">Avatar Demo</h1>
+
+  <div class="my-6 flex flex-col gap-8">
+    <!-- Row 1: Profile Pictures Avatar -->
+    <div class="flex justify-start gap-6">
+      <app-ds-avatar
+        [fullName]="'Sid'"
+        [imageUrl]="imageUrl"
+        size="sm"
+      ></app-ds-avatar>
+      <app-ds-avatar
+        [fullName]="'Sid'"
+        [imageUrl]="imageUrl"
+        size="md"
+      ></app-ds-avatar>
+      <app-ds-avatar
+        [fullName]="'Sid'"
+        [imageUrl]="imageUrl"
+        size="lg"
+      ></app-ds-avatar>
+    </div>
+
+    <!-- Row 2: Animated Avatar Demo -->
+    <div class="flex justify-start gap-6">
+      <app-ds-avatar
+        [fullName]="'Kishan Singh'"
+        [imageUrl]="avatarUrl"
+        size="sm"
+      ></app-ds-avatar>
+      <app-ds-avatar
+        [fullName]="'Aamir Khan'"
+        [imageUrl]="avatarUrl"
+        size="md"
+      ></app-ds-avatar>
+      <app-ds-avatar
+        [fullName]="'Sid'"
+        [imageUrl]="avatarUrl"
+        size="lg"
+      ></app-ds-avatar>
+    </div>
+
+    <!-- Row 3: Avatar with initials and background color -->
+    <div class="flex justify-start gap-6">
+      <app-ds-avatar [fullName]="'Khushal Gupta'" size="sm"></app-ds-avatar>
+      <app-ds-avatar [fullName]="'Asif Ahmed'" size="md"></app-ds-avatar>
+      <app-ds-avatar [fullName]="'Sid'" size="lg"></app-ds-avatar>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #carousalDemo>
+  <h1 class="heading-h1-high-emphasis">Carousel Demo</h1>
+  <ds-carousal
+    [slides]="carouselSlides"
+    [isContentLoading]="isContentLoading"
+    [skeletonTemplate]="skeletonTemplate"
+    (slideChange)="onSlideChange($event)"
+  >
+    <div class="p-4">
+      <h3 class="mb-2 text-xl font-bold">
+        This is a slide # {{currentSlideId}} data
+      </h3>
+      <div class="mb-6">
+        <h4 class="text-black mb-2 text-lg font-semibold">Description</h4>
+        <p class="leading-relaxed text-gray-600">
+          Figma design and FigJam are two products that, when used together,
+          support your entire design process. While you might begin your design
+          process in FigJam, you'll likely find yourself moving to Figma to
+          develop your designs further.
+        </p>
+      </div>
+      <div class="mb-6">
+        <h4 class="text-black mb-2 text-lg font-semibold">Description</h4>
+        <p class="leading-relaxed text-gray-600">
+          Figma design and FigJam are two products that, when used together,
+          support your entire design process. While you might begin your design
+          process in FigJam, you'll likely find yourself moving to Figma to
+          develop your designs further.
+        </p>
+      </div>
+      <div class="mb-6">
+        <h4 class="text-black mb-2 text-lg font-semibold">Description</h4>
+        <p class="leading-relaxed text-gray-600">
+          Figma design and FigJam are two products that, when used together,
+          support your entire design process. While you might begin your design
+          process in FigJam, you'll likely find yourself moving to Figma to
+          develop your designs further.
+        </p>
+      </div>
+    </div>
+    <!-- skeleton div -->
+    <ng-template #skeletonTemplate>
+      <div class="animate-pulse space-y-6 p-6">
+        <!-- Header -->
+        <div class="h-6 w-3/4 rounded-ds-lg bg-gray-300"></div>
+        <div class="h-4 w-1/3 rounded-ds-lg bg-gray-300"></div>
+        <div class="h-4 w-full rounded-ds-lg bg-gray-300"></div>
+        <div class="h-4 w-full rounded-ds-lg bg-gray-300"></div>
+        <div class="h-4 w-5/6 rounded-ds-lg bg-gray-300"></div>
+        <div class="h-4 w-1/4 rounded-ds-lg bg-gray-300"></div>
+
+        <!-- Tabs -->
+        <div class="my-4 h-12 w-full rounded-2xl bg-gray-300"></div>
+
+        <!-- Filter Pills -->
+        <div class="flex flex-wrap gap-4">
+          <div class="h-10 w-20 rounded-full bg-gray-300"></div>
+          <div class="h-10 w-36 rounded-full bg-gray-300"></div>
+          <div class="h-10 w-36 rounded-full bg-gray-300"></div>
+          <div class="h-10 w-20 rounded-full bg-gray-300"></div>
+        </div>
+
+        <div class="flex gap-6 overflow-x-auto">
+          <div class="w-[180px] flex-shrink-0 space-y-4">
+            <div class="h-40 w-full rounded-3xl bg-gray-300"></div>
+            <div class="h-4 w-full rounded bg-gray-300"></div>
+            <div class="h-4 w-full rounded bg-gray-300"></div>
+          </div>
+
+          <div class="w-[180px] flex-shrink-0 space-y-4">
+            <div class="h-40 w-full rounded-3xl bg-gray-300"></div>
+            <div class="h-4 w-full rounded bg-gray-300"></div>
+            <div class="h-4 w-full rounded bg-gray-300"></div>
+          </div>
+
+          <div class="w-[180px] flex-shrink-0 space-y-4">
+            <div class="h-40 w-full rounded-3xl bg-gray-300"></div>
+            <div class="h-4 w-full rounded bg-gray-300"></div>
+            <div class="h-4 w-full rounded bg-gray-300"></div>
+          </div>
+
+          <div class="w-[180px] flex-shrink-0 space-y-4">
+            <div class="h-40 w-full rounded-3xl bg-gray-300"></div>
+            <div class="h-4 w-full rounded bg-gray-300"></div>
+            <div class="h-4 w-full rounded bg-gray-300"></div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </ds-carousal>
+</ng-template>
+
+<ng-template #studentSelector>
+  <div
+    [ngClass]="{
+      'grid grid-cols-2': !isMobile
+    }"
+    class="mb-10 mt-10"
+  >
+    <app-ds-student-selector
+      [students]="studentSelectorList"
+      (studentSelected)="onStudentSelected($event)"
+      [enableAllOption]="false"
+    />
+  </div>
+</ng-template>
+
+<ng-template #schoolStructureControlDemo>
+  <h1 class="heading-h1-high-emphasis mb-4">School Structure Control</h1>
+  <ds-button variant="primary" size="lg"> Button </ds-button>
+  <form
+    [formGroup]="schoolStructureForm"
+    class="flex max-w-[480px] flex-col gap-6"
+  >
+    <!-- Single Selection -->
+    <div>
+      <h3 class="heading-h3-mid-emphasis mb-2">Single Selection</h3>
+      <app-ds-school-structure-control
+        formControlName="singleStructure"
+        [label]="'School Structure'"
+        [placeholder]="'Select a structure'"
+        [isMultiSelect]="false"
+      ></app-ds-school-structure-control>
+      <div class="content-sm-mid-emphasis mt-2">
+        Value: {{ schoolStructureForm.value.singleStructure | json }}
+      </div>
+    </div>
+
+    <!-- Multi Selection -->
+    <div>
+      <h3 class="heading-h3-mid-emphasis mb-2">Multi Selection</h3>
+      <app-ds-school-structure-control
+        formControlName="multiStructure"
+        [label]="'Multiple Structures'"
+        [placeholder]="'Select structures'"
+        [isMultiSelect]="true"
+      ></app-ds-school-structure-control>
+      <div class="content-sm-mid-emphasis mt-2">
+        Value: {{ schoolStructureForm.value.multiStructure | json }}
+      </div>
+    </div>
+
+    <!-- Depth-limited to School -->
+    <div>
+      <h3 class="heading-h3-mid-emphasis mb-2">Depth: School</h3>
+      <app-ds-school-structure-control
+        formControlName="schoolDepthStructure"
+        [label]="'School-Level Only'"
+        [placeholder]="'Select a school'"
+        [depth]="structureDepth.SCHOOL"
+        [isMultiSelect]="true"
+      ></app-ds-school-structure-control>
+      <div class="content-sm-mid-emphasis mt-2">
+        Value: {{ schoolStructureForm.value.schoolDepthStructure | json }}
+      </div>
+    </div>
+
+    <!-- Allowed selections (schools only) -->
+    <div>
+      <h3 class="heading-h3-mid-emphasis mb-2">Allowed: Schools Only</h3>
+      <app-ds-school-structure-control
+        formControlName="schoolAllowedStructure"
+        [label]="'School-Scoped Selection'"
+        [placeholder]="'Select a school'"
+        [depth]="structureDepth.SCHOOL"
+        [allowedSelections]="schoolOnlySelections"
+        [isMultiSelect]="true"
+      ></app-ds-school-structure-control>
+      <div class="content-sm-mid-emphasis mt-2">
+        Value: {{ schoolStructureForm.value.schoolAllowedStructure | json }}
+      </div>
+    </div>
+
+    <!-- Required Field -->
+    <div>
+      <h3 class="heading-h3-mid-emphasis mb-2">Required Field</h3>
+      <app-ds-school-structure-control
+        formControlName="requiredStructure"
+        [label]="'Required Structure'"
+        [placeholder]="'Please select'"
+        [required]="true"
+        [isMultiSelect]="true"
+      ></app-ds-school-structure-control>
+      @if ( schoolStructureForm.get('requiredStructure')?.invalid &&
+      schoolStructureForm.get('requiredStructure')?.touched ) {
+      <div class="mt-1 text-sm text-red-600">This field is required</div>
+      }
+    </div>
+
+    <!-- Selection Modal -->
+    <div>
+      <h3 class="heading-h3-mid-emphasis mb-2">Selection Modal</h3>
+      <ds-button variant="secondary" (click)="openSchoolStructureSelection()">
+        Open selection modal
+      </ds-button>
+      <div class="content-sm-mid-emphasis mt-2">
+        Value: {{ selectionModalValue() | json }}
+      </div>
+    </div>
+
+    <!-- School Only Selection Modal -->
+    <div>
+      <h3 class="heading-h3-mid-emphasis mb-2">
+        School Only Selection (Depth: SCHOOL)
+      </h3>
+      <p class="content-sm-low-emphasis mb-2">
+        This modal uses depth=SCHOOL and allowedSelections=['school'] - only
+        schools are selectable.
+      </p>
+      <ds-button variant="secondary" (click)="openSchoolOnlySelection()">
+        Select School Only
+      </ds-button>
+      <div class="content-sm-mid-emphasis mt-2">
+        Value: {{ schoolOnlyModalValue() | json }}
+      </div>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #filterPanelDemo>
+  <h1 class="heading-h1-high-emphasis mb-4">Filter Panel</h1>
+  <div class="flex flex-col gap-4">
+    <app-ds-filter-panel
+      [filters]="filterPanelFilters"
+      [selection]="filterPanelSelection()"
+      (filtersChange)="onFilterPanelChange($event)"
+    ></app-ds-filter-panel>
+    <div class="content-sm-mid-emphasis">
+      Selection: {{ filterPanelSelection() | json }}
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #selectableDemo>
+  <app-selectable-demo></app-selectable-demo>
+</ng-template>
+
+<ng-template #tabsDemo>
+  <h1 class="heading-h1-high-emphasis">Tabs Demo</h1>
+
+  <!-- Basic Tabs (fits in space) -->
+  <h2 class="heading-h2-mid-emphasis mb-2 mt-4">Basic Tabs (3 tabs)</h2>
+  <app-ds-tabs
+    [tabs]="tabsData"
+    activeTabId="messages"
+    (tabChange)="onTabChanged($event)"
+  >
+  </app-ds-tabs>
+  <div>
+    <h3 class="heading-h3-high-emphasis mb-4 mt-3">
+      Active Tab: {{ activeTab().label }}
+    </h3>
+  </div>
+
+  <!-- Tabs with API Integration Example -->
+  <div class="mb-[20px] max-w-[600px]">
+    <h2 class="heading-h2-mid-emphasis mb-2 mt-8">
+      Tabs with API Integration (Students Pagination)
+    </h2>
+    <p class="content-sm-mid-emphasis mb-3">
+      Real-world example: Each tab fetches a different page of students from the
+      API. Swipe or click tabs to load data.
+    </p>
+
+    <ds-tabs-with-swipe
+      [tabs]="studentsTabs"
+      [activeTabId]="activeStudentsPage()"
+      [isLoading]="isLoadingStudents()"
+      [skeletonComponent]="TabsSkeletonComponent"
+      (tabChange)="onStudentsTabChanged($event)"
+      variant="secondary"
+      contentClass="mt-4 block h-[420px] select-none overflow-y-auto rounded-ds-lg border border-stroke-cool-black-04 bg-white p-ds-lg"
+    >
+      <!-- Content template - displays students data from signal -->
+      <ng-template #content>
+        <h3 class="heading-h3-high-emphasis mb-4">
+          Page {{ activeStudentsPage() }} - Students
+        </h3>
+
+        @if (studentsData().length > 0) {
+        <div class="flex flex-col gap-3">
+          @for (student of studentsData(); track student.id) {
+          <div
+            class="bg-cool-black-02 rounded-ds-md border border-stroke-cool-black-04 p-ds-md"
+          >
+            <p class="single-line-md-high-emphasis">
+              {{ student.displayName }}
+            </p>
+            <p class="content-sm-mid-emphasis">
+              ID: {{ student.id }} • Gender: {{ student.gender }}
+            </p>
+            @if (student.nationalId) {
+            <p class="content-sm-low-emphasis">
+              National ID: {{ student.nationalId }}
+            </p>
+            }
+          </div>
+          }
+        </div>
+        } @else {
+        <div class="flex h-[200px] items-center justify-center">
+          <p class="content-md-mid-emphasis">No students found on this page</p>
+        </div>
+        }
+      </ng-template>
+    </ds-tabs-with-swipe>
+  </div>
+</ng-template>
+
+<ng-template #attachmentFormControl>
+  <div class="mb-4 flex flex-col gap-4">
+    <ds-attachment-form-control
+      [formControl]="attachmentControl"
+      [isMultiple]="true"
+    ></ds-attachment-form-control>
+    <ds-attachment-form-control
+      [formControl]="attachmentControl"
+      [acceptFileTypes]="['IMAGES']"
+    ></ds-attachment-form-control>
+    <ds-attachment-form-control
+      [formControl]="attachmentControl"
+      [acceptFileTypes]="['VIDEOS']"
+    ></ds-attachment-form-control>
+    <ds-attachment-form-control
+      [formControl]="attachmentControl"
+      [acceptFileTypes]="['FILES']"
+    ></ds-attachment-form-control>
+  </div>
+</ng-template>
+
+<ng-template #tooltipDemo>
+  <h1 class="heading-h1-high-emphasis mb-4 mt-8">Tooltip Demo</h1>
+  <div class="flex flex-col items-start gap-6">
+    <div class="mb-8">
+      <div class="my-4 flex flex-col gap-4 text-lg">
+        <div class="flex justify-center">
+          <div
+            dsTooltip
+            [dsTooltipTitle]="'Below Tooltip'"
+            [dsTooltipContent]="'Alghaidaa reached the school late with excuse'"
+            [dsTooltipFooter]="'Mon 7 May 2025'"
+            [dsTooltipPosition]="'below'"
+            [dsTooltipIcon]="circleInfoIcon"
+            class="rounded-md bg-brand-600 p-2 text-emphasis-high text-white"
+          >
+            Below
+          </div>
+        </div>
+        <div class="flex items-center justify-between">
+          <div
+            dsTooltip
+            [dsTooltipTitle]="'Right Tooltip'"
+            [dsTooltipContent]="'Alghaidaa reached the school late'"
+            [dsTooltipFooter]="'Mon 7 May 2025'"
+            [dsTooltipPosition]="'right'"
+            [dsTooltipIcon]="circleInfoIcon"
+            class="max-h-[44px] rounded-md bg-brand-600 p-2 text-emphasis-high text-white"
+          >
+            Right
+          </div>
+          <div class="flex flex-col items-end justify-end gap-8">
+            <div
+              dsTooltip
+              [dsTooltipTitle]="'Left Tooltip'"
+              [dsTooltipContent]="'Alghaidaa reached the school'"
+              [dsTooltipFooter]="'Mon 7 May 2025'"
+              [dsTooltipPosition]="'left'"
+              [dsTooltipIcon]="circleInfoIcon"
+              class="flex w-fit items-center justify-center rounded-md bg-brand-600 p-2 text-emphasis-high text-white"
+            >
+              Left
+            </div>
+            <div
+              dsTooltip
+              [dsTooltipTitle]="'fallback Tooltip'"
+              [dsTooltipContent]="'Alghaidaa reached the school late with excuse'"
+              [dsTooltipFooter]="'Mon 7 May 2025'"
+              [dsTooltipPosition]="'right'"
+              [dsTooltipIcon]="circleInfoIcon"
+              class="rounded-md bg-brand-600 p-2 text-emphasis-high text-white"
+            >
+              Right (auto-fallback)
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-center">
+          <div
+            dsTooltip
+            [dsTooltipTitle]="'Late with Excuse'"
+            [dsTooltipContent]="'Alghaidaa reached the school late with excuse'"
+            [dsTooltipFooter]="'Mon 7 May 2025'"
+            [dsTooltipIcon]="circleInfoIcon"
+            class="rounded-md bg-brand-600 p-2 text-emphasis-high text-white"
+          >
+            Default
+          </div>
+        </div>
+      </div>
+      <p>
+        Hi
+        <span
+          dsTooltip
+          [dsTooltipContent]="'Alghaidaa reached the school late with excuse'"
+          ><app-ds-icon [icon]="circleInfoIcon" size="16"></app-ds-icon></span
+        >Long tool tip in span
+
+        <span
+          class="inline-block text-blue-500 underline"
+          dsTooltip
+          [dsTooltipTitle]="'Tooltip'"
+          [dsTooltipContent]="'Alghaidaa reached the school late with excuse'"
+          [dsTooltipFooter]="'Mon 7 May 2025'"
+          >Hover</span
+        >
+        here
+        <span
+          dsTooltip
+          [dsTooltipContent]="'Alghaidaa reached the school late with excuse'"
+          ><app-ds-icon [icon]="circleInfoIcon" size="16"></app-ds-icon
+        ></span>
+        <span
+          class="inline-block text-blue-500 underline"
+          dsTooltip
+          [dsTooltipContent]="'Alghaidaa reached the school late with excuse'"
+          >gain text</span
+        >
+        and this is a long text to test the tooltip
+        <span
+          dsTooltip
+          [dsTooltipContent]="'1 Alghaidaa reached the school late with excuse'"
+          >functionality</span
+        >. This is a long text to test the tooltip functionality. This is a long
+        text to test the tooltip functionality. This is a long text
+        <span
+          class="inline-block text-blue-500 underline"
+          dsTooltip
+          [dsTooltipContent]="'Alghaidaa reached the school late with excuse'"
+          [dsTooltipFooter]="'footer here'"
+          >to test
+        </span>
+        functionality. This is a long text to test the
+      </p>
+    </div>
+
+    <h2 class="heading-h2-high-emphasis mb-2">Custom Template Tooltip</h2>
+
+    <div class="my-4 flex w-full flex-col items-center justify-center gap-4">
+      <div
+        dsTooltip
+        [tooltipTemplate]="customTooltip"
+        class="flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 px-5 py-3 text-lg font-semibold text-white shadow-lg hover:from-blue-600 hover:to-indigo-700 focus:outline-none"
+      >
+        Show Custom Tooltip
+      </div>
+    </div>
+    <ng-template #customTooltip>
+      <div class="max-w-xs rounded-lg text-white shadow-lg">
+        <div class="mb-2 flex items-center gap-2">
+          <span class="text-base font-bold">Advanced Tooltip Example</span>
+        </div>
+        <div class="mb-2 text-sm text-blue-200">
+          <span class="font-semibold">Tip:</span> You can use
+          <span class="text-yellow-200">any Angular template</span> here,
+          including icons, lists, and more!
+        </div>
+        <ul class="mb-2 list-inside list-disc text-xs text-blue-100">
+          <li>
+            Supports <span class="font-semibold text-white">rich content</span>
+          </li>
+          <li>Arrow always points to the trigger</li>
+          <li>Responsive and accessible</li>
+        </ul>
+        <div
+          class="mt-2 flex items-center justify-between text-xs text-blue-300"
+        >
+          <span>Last updated: <span class="font-mono">23 Jul 2025</span></span>
+          <span class="italic">Custom footer</span>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+</ng-template>
+
+<ng-template #popupDemo>
+  <div class="app-container">
+    <h1>Dynamic Popup Component Demo</h1>
+    <p>
+      Click any trigger element to open the popup. Hover over items with arrows
+      to see nested menus.
+    </p>
+    <app-popup-usage-example></app-popup-usage-example>
+  </div>
+</ng-template>
+
+<ng-template #iconContainerDemo>
+  <div class="app-container">
+    <h1>Icon Container Demo</h1>
+    <div class="flex justify-start gap-10">
+      <ds-icon-container
+        [config]="{
+          icon: 'play',
+          chip: {
+            text: 'New',
+            variant: 'primary'
+          },
+          menu: {
+            items: iconContainerMenuItems
+          },
+          label: 'Math Video Lesson'
+        }"
+      >
+      </ds-icon-container>
+
+      <ds-icon-container [config]="{ icon: 'file' }"> </ds-icon-container>
+
+      <ds-icon-container
+        [config]="{
+          icon: 'picture',
+          chip: {
+            text: 'Submitted',
+            variant: '#0F7B3D'
+          },
+          hasIndicator: true,
+          label: 'Math Video Lesson'
+        }"
+      >
+      </ds-icon-container>
+
+      <ds-icon-container
+        [config]="{
+          icon: 'correct-file',
+          chip: {
+            text: 'Correct',
+            variant: 'default'
+          },
+          label: 'Final Exam Results'
+        }"
+      >
+      </ds-icon-container>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #progressBarDemo>
+  <h1 class="heading-h1-high-emphasis">Progress Bar</h1>
+  <div class="flex flex-col gap-4">
+    <app-ds-progress-bar [progress]="50" [showPercentage]="false" />
+    <app-ds-progress-bar [progress]="90" variant="green" />
+    <app-ds-progress-bar [progress]="30" variant="red" />
+    <app-ds-progress-bar [progress]="60" variant="blue" />
+    <app-ds-progress-bar [progress]="80" variant="yellow" />
+    <app-ds-progress-bar [progress]="50" variant="indigo" />
+    <app-ds-progress-bar [progress]="20" variant="orange" />
+    <app-ds-progress-bar [progress]="20" variant="neon-green" />
+    <app-ds-progress-bar [progress]="20" variant="neon-green" size="sm" />
+    <app-ds-progress-bar [progress]="90" variant="green" size="sm" />
+    <app-ds-progress-bar [progress]="30" variant="red" size="sm" />
+    <app-ds-progress-bar
+      [progress]="60"
+      [showPercentage]="false"
+      variant="blue"
+      size="sm"
+    />
+    <app-ds-progress-bar [progress]="80" variant="yellow" size="sm" />
+    <app-ds-progress-bar
+      [progress]="50"
+      [showPercentage]="false"
+      variant="indigo"
+      size="sm"
+    />
+    <app-ds-progress-bar [progress]="20" variant="orange" size="sm" />
+
+    <h5>Downloading Progress Bar</h5>
+    <app-ds-progress-bar [progress]="progressBarValue()" />
+    <app-ds-progress-bar
+      [progress]="progressBarValue()"
+      variant="indigo"
+      size="sm"
+    />
+  </div>
+</ng-template>
+
+<ng-template #listItemDemo>
+  <h1 class="heading-h1-high-emphasis mb-6">List Item Demo</h1>
+
+  <!-- List Item Selector Demo -->
+  <div class="mb-8">
+    <h2 class="heading-h2-high-emphasis mb-4">List Item Selector Service</h2>
+    <p class="content-md-mid-emphasis mb-4 text-gray-600">
+      Simple list selector that shows items in a bottom sheet on mobile and
+      modal on desktop. Click any item to select and close automatically.
+    </p>
+    <div class="flex flex-wrap gap-4">
+      <ds-button (click)="showUserSelectionDemo()" variant="secondary">
+        User Selection Demo
+      </ds-button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #feedbackModal>
+  <h1>Modal variants</h1>
+  <div class="mb-4 flex flex-wrap gap-2">
+    <ds-button (click)="openFeedback('success')" variant="primary">
+      Success Feedback modal
+    </ds-button>
+    <ds-button (click)="openFeedback('error')" variant="primary">
+      Error Feedback modal
+    </ds-button>
+    <ds-button (click)="openFeedback('warning')" variant="primary">
+      Info Feedback modal
+    </ds-button>
+  </div>
+
+  <h1 class="heading-h1-high-emphasis mb-4 mt-8">Modal Component</h1>
+  <p class="content-md-mid-emphasis mb-4">
+    Unified modal component with configurable header, footer, and content.
+  </p>
+  <app-modal-demo />
+</ng-template>
+
+<ng-template #searchBoxDemo>
+  <h1 class="heading-h1-high-emphasis mb-4 mt-8">Search Box</h1>
+  <section class="flex flex-col gap-6">
+    <div class="flex flex-col gap-2">
+      <h3 class="heading-h3-mid-emphasis">Basic Search Box</h3>
+      <div class="max-w-md">
+        <app-search-box
+          placeholderTxt="Search..."
+          (searchChange)="onSearchChange($event)"
+        />
+      </div>
+      <p class="content-sm-mid-emphasis text-content-mid">
+        Current search value: "{{ searchBoxValue() }}"
+      </p>
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <h3 class="heading-h3-mid-emphasis">Search Box with Add Button</h3>
+      <div class="max-w-md">
+        <app-search-box
+          placeholderTxt="Search messages..."
+          [includeAddButton]="true"
+          (searchChange)="onSearchChange($event)"
+          (addButtonClick)="onSearchAddClick()"
+        />
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <h3 class="heading-h3-mid-emphasis">Search Box with Cancel Button</h3>
+      <div class="max-w-md">
+        <app-search-box
+          placeholderTxt="Search..."
+          [includeCancelButton]="true"
+          (searchChange)="onSearchChange($event)"
+          (cancelButtonClick)="onSearchCancelClick()"
+        />
+      </div>
+    </div>
+  </section>
+</ng-template>
+
+<ng-template #formRendererDemo>
+  <h1 class="heading-h1-high-emphasis mb-4">Form Renderer</h1>
+  <p class="content-md-mid-emphasis mb-6 text-gray-600">
+    A reusable component that renders form controls from a configuration array.
+    Supports multi-column rows using the
+    <code class="rounded bg-gray-100 px-1">row</code> property, helper text, and
+    various control types.
+  </p>
+
+  <div class="mb-8 rounded-lg border border-gray-200 bg-white p-6">
+    <h2 class="heading-h2-high-emphasis mb-4">Example Form</h2>
+    <form [formGroup]="formRendererDemoForm" class="max-w-2xl">
+      <app-ds-form-renderer [controls]="formRendererConfig" gap="lg" />
+      <div class="mt-6">
+        <ds-button
+          variant="primary"
+          size="lg"
+          [fullWidth]="true"
+          [disabled]="formRendererDemoForm.invalid"
+        >
+          Submit
+        </ds-button>
+      </div>
+    </form>
+
+    <div class="mt-6 border-t pt-4">
+      <h3 class="heading-h3-mid-emphasis mb-2">Form Value:</h3>
+      <pre class="overflow-x-auto rounded bg-gray-100 p-3 text-sm">
+{{ formRendererDemoForm.value | json }}</pre
+      >
+    </div>
+  </div>
+
+  <!-- Localized Pair Demo -->
+  <div class="mb-8 rounded-lg border border-gray-200 bg-white p-6">
+    <h2 class="heading-h2-high-emphasis mb-2">Localized Pair Validation</h2>
+    <p class="content-md-mid-emphasis mb-4 text-gray-600">
+      Use the
+      <code class="rounded bg-gray-100 px-1">localizedPair</code> property to
+      create cross-field validation for bilingual fields. If one field has a
+      value, the paired field becomes required.
+    </p>
+
+    <form [formGroup]="localizedPairDemoForm" class="max-w-2xl">
+      <app-ds-form-renderer [controls]="localizedPairConfig" gap="lg" />
+    </form>
+
+    <div class="mt-6 border-t pt-4">
+      <h3 class="heading-h3-mid-emphasis mb-2">Form Value:</h3>
+      <pre class="overflow-x-auto rounded bg-gray-100 p-3 text-sm">
+{{ localizedPairDemoForm.value | json }}</pre
+      >
+    </div>
+
+    <div class="mt-4 border-t pt-4">
+      <h3 class="heading-h3-mid-emphasis mb-2">Usage</h3>
+      <pre class="overflow-x-auto rounded bg-gray-100 p-3 text-sm">
+{{ '{' }}
+  type: 'input',
+  formControlName: 'enDescription',
+  label: 'Description (English)',
+  localizedPair: 'arDescription'  // Points to the paired control
+{{ '}' }},
+{{ '{' }}
+  type: 'input',
+  formControlName: 'arDescription',
+  label: 'Description (Arabic)',
+  localizedPair: 'enDescription'  // Points back to complete the pair
+{{ '}' }}</pre
+      >
+      <p class="content-sm-mid-emphasis mt-2 text-gray-500">
+        Note: Control names must start with
+        <code class="rounded bg-gray-100 px-1">en</code> or
+        <code class="rounded bg-gray-100 px-1">ar</code> for automatic error
+        message generation.
+      </p>
+    </div>
+  </div>
+
+  <div class="mb-8 rounded-lg border border-gray-200 bg-white p-6">
+    <h2 class="heading-h2-high-emphasis mb-4">Usage</h2>
+    <div class="flex flex-col gap-4">
+      <div>
+        <h3 class="heading-h3-mid-emphasis mb-2">1. Import the component</h3>
+        <pre class="overflow-x-auto rounded bg-gray-100 p-3 text-sm">
+import {{ '{' }} DsFormRendererComponent, FormControlConfig {{ '}' }} from '&#64;shared/components/ds-form-control-generator/ds-form-renderer/ds-form-renderer.component';</pre
+        >
+      </div>
+
+      <div>
+        <h3 class="heading-h3-mid-emphasis mb-2">2. Define your config</h3>
+        <pre class="overflow-x-auto rounded bg-gray-100 p-3 text-sm">
+formConfig: FormControlConfig[] = [
+  // Multi-column row (same 'row' value groups them)
+  {{ '{' }} type: 'input', formControlName: 'firstName', label: 'First Name', row: 'name' {{ '}' }},
+  {{ '{' }} type: 'input', formControlName: 'lastName', label: 'Last Name', row: 'name' {{ '}' }},
+
+  // Single column (no 'row' property)
+  {{ '{' }} type: 'input', formControlName: 'email', label: 'Email', helperText: 'Your email address' {{ '}' }},
+
+  // Checkbox with icon
+  {{ '{' }}
+    type: 'checkbox',
+    formControlName: 'privacy',
+    selectValues: [{{ '{' }} value: 'privacy', displayedValue: 'Enable Privacy', icon: {{ '{' }} name: faShieldCheck, placement: 'end' {{ '}' }} {{ '}' }}]
+  {{ '}' }}
+];</pre
+        >
+      </div>
+
+      <div>
+        <h3 class="heading-h3-mid-emphasis mb-2">3. Use in template</h3>
+        <pre class="overflow-x-auto rounded bg-gray-100 p-3 text-sm">
+&lt;form [formGroup]="form"&gt;
+  &lt;app-ds-form-renderer [controls]="formConfig" gap="lg" /&gt;
+&lt;/form&gt;</pre
+        >
+      </div>
+
+      <div>
+        <h3 class="heading-h3-mid-emphasis mb-2">Gap Sizes</h3>
+        <p class="content-sm-mid-emphasis">
+          Available gap sizes: <code class="rounded bg-gray-100 px-1">xs</code>,
+          <code class="rounded bg-gray-100 px-1">sm</code>,
+          <code class="rounded bg-gray-100 px-1">md</code>,
+          <code class="rounded bg-gray-100 px-1">lg</code>,
+          <code class="rounded bg-gray-100 px-1">xl</code>,
+          <code class="rounded bg-gray-100 px-1">2xl</code>,
+          <code class="rounded bg-gray-100 px-1">3xl</code>
+        </p>
+      </div>
+    </div>
+  </div>
+</ng-template>

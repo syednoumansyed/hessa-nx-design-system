@@ -1,0 +1,92 @@
+@use "tokens";
+@use "spacing";
+@use "components";
+@use "themes";
+@use "abstracts";
+@use "base";
+
+/* Custom Toastr Styles (refactored to use DS tokens) */
+.toast-container .ngx-toastr.toast-base {
+  width: 100%;
+  min-width: 296px; /* enforce minimum width */
+  max-width: 32rem; /* ~512px matches design max-w-xl */
+  padding: var(--ds-spacing-md) var(--ds-spacing-lg);
+  border-radius: var(--ds-radius-xl, 16px);
+  box-shadow: none;
+  border-left-width: 2px;
+  border-right-width: 2px;
+  border-top-width: 2px;
+  border-bottom-width: 4px;
+  border-style: solid;
+  opacity: 1 !important;
+  background-image: none !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  gap: var(--ds-spacing-sm, 5px);
+}
+
+.toast-container .ngx-toastr.toast-base:hover {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.06);
+}
+
+/* Title */
+.toast-title {
+  font-weight: 700;
+  font-size: 16px;
+  margin: 0 0 var(--ds-spacing-xs, 4px) 0;
+  /* color handled by utility class text-emphasis-high */
+}
+
+/* Message */
+.toast-message {
+  font-size: 14px;
+  line-height: 1.4;
+  /* color handled by utility class text-emphasis-mid */
+}
+
+.toast-close-button:hover {
+  opacity: 1;
+}
+
+/* Ensure close button centers properly with flex container */
+.toast-close-button.self-center {
+  align-self: center;
+}
+
+/* Variant tokens: expose --toast-border-color and use semantic surface tokens */
+.toast-success {
+  --toast-border-color: var(--colors-emerald-500);
+  background-color: var(--colors-emerald-50, #e8f5e9);
+  border-color: var(--toast-border-color);
+}
+.toast-error {
+  --toast-border-color: var(--colors-error-red-500);
+  background-color: var(--colors-error-red-50, #fff0f0);
+  border-color: var(--toast-border-color);
+}
+.toast-warning {
+  --toast-border-color: var(--colors-warn-orange-500);
+  background-color: var(--colors-warn-orange-50, #fff8e1);
+  border-color: var(--toast-border-color);
+}
+.toast-info {
+  --toast-border-color: var(--colors-blue-500);
+  background-color: var(--colors-blue-50, #eaf4ff);
+  border-color: var(--toast-border-color);
+}
+
+/* Progress bar inherits border color variable */
+.toast-progress {
+  background-color: var(--toast-border-color);
+}
+
+/* Icon sizing for toast */
+.toast-container ng-icon {
+  font-size: 24px !important;
+  width: 24px !important;
+  height: 24px !important;
+  min-width: 24px !important;
+  min-height: 24px !important;
+}

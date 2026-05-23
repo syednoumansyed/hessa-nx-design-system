@@ -1,0 +1,57 @@
+<div
+  class="grid grid-cols-1 gap-ds-lg pb-24 md:grid-cols-2 md:pb-ds-lg 2xl:grid-cols-3 3xl:grid-cols-4"
+>
+  @for (item of [1, 2, 3, 4, 5]; track item) {
+    <div
+      class="flex animate-pulse flex-col gap-ds-lg overflow-hidden rounded-ds-xl border-2 border-stroke-black-08 bg-white p-ds-xl"
+    >
+      <!-- Header: Avatar + Student Info -->
+      <div class="flex items-center gap-ds-md">
+        <!-- Avatar skeleton -->
+        <div
+          class="h-[56px] w-[56px] flex-shrink-0 rounded-full bg-gray-200"
+        ></div>
+        <div class="flex flex-1 flex-col gap-ds-md">
+          <!-- Student name skeleton -->
+          <div class="h-5 w-3/4 rounded bg-gray-200"></div>
+          <!-- Level & Class skeleton -->
+          <div class="h-4 w-1/2 rounded bg-gray-200"></div>
+        </div>
+      </div>
+
+      <!-- Contact Info Section -->
+      <div
+        class="grid grid-cols-[auto_1fr] items-center gap-x-ds-xl gap-y-ds-md rounded-ds-lg border-2 border-stroke-black-08 bg-pastels-neutralGray-50 px-ds-lg py-ds-md"
+      >
+        <!-- Picked By -->
+        <div class="h-3 w-[100px] rounded bg-gray-200"></div>
+        <div class="h-4 w-20 rounded bg-gray-200"></div>
+
+        <!-- Type -->
+        <div class="h-3 w-[100px] rounded bg-gray-200"></div>
+        <div class="h-4 w-32 rounded bg-gray-200"></div>
+
+        <!-- Contact Guardian -->
+        <div class="h-3 w-[100px] rounded bg-gray-200"></div>
+        <div class="flex items-center gap-ds-md">
+          <!-- Call Button skeleton -->
+          <div class="h-9 w-9 rounded-ds-lg bg-gray-200"></div>
+          <!-- Copy Button skeleton -->
+          <div class="h-9 w-9 rounded-ds-lg bg-gray-200"></div>
+        </div>
+      </div>
+
+      <!-- Action Area: Buttons skeleton -->
+      <div class="flex w-full items-center gap-ds-md">
+        <div class="h-10 flex-1 rounded-ds-lg bg-gray-200"></div>
+        <div class="h-10 flex-1 rounded-ds-lg bg-gray-200"></div>
+      </div>
+
+      <!-- Footer: Date and Time skeleton -->
+      <div class="flex items-center justify-end gap-ds-md">
+        <div class="h-3 w-16 rounded bg-gray-200"></div>
+        <div class="h-3 w-12 rounded bg-gray-200"></div>
+      </div>
+    </div>
+  }
+</div>

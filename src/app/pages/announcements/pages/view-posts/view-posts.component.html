@@ -1,0 +1,61 @@
+<ion-content *transloco="let t" class="ds-page-content bottom-bar-spacing">
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  @if (isGuardianUser() && layoutService.isMobileOrTablet()) {
+    <journal-feed-wrapper
+      #journalFeedWrapper
+      class="my-2 w-full bg-brand-35 px-2 py-2"
+      [studentId]="selectedStudent()?.id"
+    ></journal-feed-wrapper>
+  }
+
+  @if (feeds().length) {
+    <div class="flex flex-col items-center px-ds-xl">
+      @for (feed of feeds(); track $index) {
+        <!-- ─── VIEWED DIVIDER ─── -->
+        @if ($index > 0 && !feeds()[$index - 1].viewed && feed.viewed) {
+          <div
+            class="flex w-full items-center justify-center gap-4 md:w-[550px]"
+            [ngClass]="$index > 0 ? 'my-6' : 'mb-6'"
+          >
+            <div class="h-px flex-grow bg-gray-300"></div>
+            <span class="text-sm font-semibold text-gray-600">
+              {{ t("enum.VIEWED") }}
+            </span>
+            <div class="h-px flex-grow bg-gray-300"></div>
+          </div>
+        }
+
+        <!-- ─── POST CARD ─── -->
+        <div
+          class="w-full md:w-[700px]"
+          [ngClass]="{
+            'mt-4': !($index > 0 && !feeds()[$index - 1].viewed && feed.viewed),
+            'md:mt-0': $index === 0,
+          }"
+        >
+          <app-preview-post-card [post]="feed"></app-preview-post-card>
+        </div>
+      }
+    </div>
+    <ion-infinite-scroll
+      (ionInfinite)="loadMoreData($event)"
+      class="mt-5 md:mt-0"
+    >
+      <ion-infinite-scroll-content loadingSpinner="bubbles">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  } @else {
+    @if (isLoading()) {
+      <tui-loader></tui-loader>
+    } @else {
+      <app-no-data-card
+        class="w-full"
+        mainImagePath="assets/illustrations/no_data.svg"
+        [title]="t('announcements.no_posts_added.txt')"
+      ></app-no-data-card>
+    }
+  }
+</ion-content>

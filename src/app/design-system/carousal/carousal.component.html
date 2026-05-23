@@ -1,0 +1,118 @@
+<div class="w-full">
+  <div
+    class="overflow-hidden rounded-ds-lg border-2 border-stroke-black-04 bg-brand-100 p-ds-xs"
+  >
+    <div class="flex items-center gap-ds-md">
+      <div
+        (click)="previousSlide()"
+        class="z-10 inline-flex flex-shrink-0 cursor-pointer items-center justify-center p-ds-xs"
+        [ngClass]="{
+          'cursor-not-allowed opacity-50':
+            currentIndex === 0 || isAnimating || isContentLoading()
+        }"
+      >
+        <app-ds-icon
+          [icon]="isRTL ? 'faSolidChevronRight' : 'faSolidChevronLeft'"
+          size="lg"
+        >
+        </app-ds-icon>
+      </div>
+
+      <div class="relative min-w-0 flex-1">
+        <div
+          #headerContainer
+          class="flex gap-[3rem] will-change-transform"
+          [style.transform]="'translateX(' + getHeaderTransform() + ')'"
+        >
+          @for (slide of slides(); track slide.id) {
+            <div class="min-w-full flex-shrink-0">
+              <div
+                class="flex w-full max-w-full items-center justify-center gap-ds-xs rounded-xl p-ds-md text-center"
+                [ngClass]="{
+                  'bg-brand-500': slide.isHighlighted
+                }"
+              >
+                <span
+                  class="single-line-xs-high-emphasis flex-shrink-0 text-emphasis-high"
+                >
+                  {{ slide.boldTitle }}
+                </span>
+                <span
+                  class="single-line-caption-low-emphasis min-w-0 truncate text-emphasis-high"
+                >
+                  {{ slide.regularTitle }}
+                </span>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div
+        (click)="nextSlide()"
+        class="z-10 inline-flex flex-shrink-0 cursor-pointer items-center justify-center p-ds-xs"
+        [ngClass]="{
+          'cursor-not-allowed opacity-50':
+            currentIndex === slides().length - 1 ||
+            isAnimating ||
+            isContentLoading()
+        }"
+      >
+        <app-ds-icon
+          [icon]="isRTL ? 'faSolidChevronLeft' : 'faSolidChevronRight'"
+          size="lg"
+        >
+        </app-ds-icon>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="relative overflow-hidden"
+    (touchstart)="onTouchStart($event)"
+    (touchmove)="onTouchMove($event)"
+    (touchend)="onTouchEnd($event)"
+    (mousedown)="onMouseDown($event)"
+    (mousemove)="onMouseMove($event)"
+    (mouseup)="onMouseUp($event)"
+    (mouseleave)="onMouseLeave($event)"
+  >
+    <!-- Main content with drag animation -->
+    <div
+      #contentContainer
+      class="will-change-transform"
+      [style.transform]="getContentTransform()"
+    >
+      @if (isContentLoading() && skeletonTemplate() && !shouldShowSkeleton()) {
+        <ng-container [ngTemplateOutlet]="skeletonTemplate()"></ng-container>
+      } @else {
+        <ng-content></ng-content>
+      }
+    </div>
+
+    <!-- Skeleton overlay for animations -->
+    @if (shouldShowSkeleton() && skeletonTemplate()) {
+      <div
+        class="absolute inset-0 z-10 bg-white will-change-transform"
+        [style.transform]="getSkeletonTransform()"
+        [style.transition]="
+          isCompletingAnimation
+            ? 'transform 300ms cubic-bezier(0.4, 0.0, 0.2, 1)'
+            : 'none'
+        "
+      >
+        <ng-container [ngTemplateOutlet]="skeletonTemplate()"></ng-container>
+      </div>
+    }
+
+    <!-- Visual feedback overlay -->
+    @if (isDragging && hasMoved) {
+      <div
+        class="bg-black z-5 pointer-events-none absolute inset-0 opacity-5"
+        [style.opacity]="
+          Math.min((Math.abs(dragOffset) / containerWidth) * 0.05, 0.02)
+        "
+      ></div>
+    }
+  </div>
+</div>

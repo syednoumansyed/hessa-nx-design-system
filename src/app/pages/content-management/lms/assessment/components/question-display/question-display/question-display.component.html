@@ -1,0 +1,70 @@
+@if (isNotAttempted()) {
+  <ng-container *transloco="let t">
+    <app-ds-chip
+      variant="none"
+      customClasses="border-icon-error bg-[var(--surface-pastel-background-red-rich)] my-2"
+      class=""
+      >{{ t("content_management.question.not.attempted") }}</app-ds-chip
+    >
+  </ng-container>
+}
+@if (imageUrl()) {
+  <div
+    class="relative aspect-[345/98] w-full overflow-hidden rounded-lg"
+    (click)="onOpenImageSlider()"
+  >
+    <img
+      [src]="imageUrl()"
+      class="question-image h-full w-full object-cover"
+      alt="Question Image"
+    />
+    <div
+      class="absolute bottom-[10px] rounded-ds-sm bg-[#131517] text-icon-high-invert opacity-60 ltr:right-[10px] rtl:left-[10px]"
+    >
+      <app-ds-icon
+        icon="maximize"
+        class="cursor-pointer p-ds-sm"
+        size="16px"
+      ></app-ds-icon>
+    </div>
+  </div>
+}
+<div class="content-lg-high-emphasis mb-ds-lg mt-1 text-emphasis-high">
+  {{ questionText() }}
+</div>
+@if (modelAnswer()) {
+  <div
+    class="my-ds-lg rounded-ds-lg border-2 border-stroke-black-08 bg-surface-pastel-background-blue p-ds-md text-emphasis-mid"
+    *transloco="let t"
+  >
+    <div class="single-line-xs-mid-emphasis">
+      {{ t("content_management.model_answer.title") }}
+    </div>
+    <div class="content-md-mid-emphasis mt-2">{{ modelAnswer() }}</div>
+  </div>
+}
+<div>
+  @switch (question()?.type) {
+    @case (questionType.MCQ) {
+      <app-mcqs-display
+        [question]="question()"
+        [form]="form()"
+        [config]="selectableConfig()"
+      ></app-mcqs-display>
+    }
+    @case (questionType.TRUE_OR_FALSE) {
+      <app-true-false-display
+        [question]="question()"
+        [form]="form()"
+        [config]="selectableConfig()"
+      ></app-true-false-display>
+    }
+    @case (questionType.ESSAY) {
+      <app-easy-display
+        [question]="question()"
+        [isViewMode]="isViewMode()"
+        [form]="form()"
+      ></app-easy-display>
+    }
+  }
+</div>

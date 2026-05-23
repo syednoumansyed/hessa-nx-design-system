@@ -1,0 +1,44 @@
+<div *transloco="let t" class="flex h-full flex-col bg-surface-secondary">
+  <!-- Content - Permission Denied State -->
+  <div class="flex flex-1 flex-col items-center justify-center p-ds-xl">
+    <div class="flex w-full max-w-[311px] flex-col items-center gap-ds-xl">
+      <div class="flex items-center justify-center rounded-ds-lg">
+        <app-ds-icon
+          [icon]="cameraIcon"
+          size="4em"
+          class="text-emphasis-mid"
+        ></app-ds-icon>
+      </div>
+
+      <div class="flex flex-col items-center gap-ds-md text-center">
+        <p class="heading-h4-high-emphasis text-emphasis-high">
+          {{ t('general.camera_access_required.title') }}
+        </p>
+        <p class="content-md-mid-emphasis text-emphasis-mid">
+          {{ t('general.camera_access_required.txt') }}
+        </p>
+
+        <!-- Web-specific instructions -->
+        @if (isWeb()) {
+        <p class="content-sm-mid-emphasis mt-ds-sm text-emphasis-low">
+          {{ t('general.camera_permission.msg') }}
+        </p>
+        }
+      </div>
+
+      <!-- Native: Open Settings button -->
+      @if (isNative()) {
+      <ds-button [fullWidth]="true" (click)="openSettings()">
+        {{ t('dismissal.open_settings.btn') }}
+      </ds-button>
+      }
+
+      <!-- Web: Go Back button -->
+      @if (isWeb()) {
+      <ds-button [fullWidth]="true" (click)="goBack()">
+        {{ t('global.go_back.btn') }}
+      </ds-button>
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,70 @@
+<ion-content class="ds-page-content bg-[#f0f0f0]">
+  @if (student()){
+  <div *transloco="let t">
+    <div class="hes-card p-4">
+      <!-- Top section with avatar and basic info -->
+      <div
+        class="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between"
+      >
+        <!-- Avatar or initials -->
+        <div class="flex items-center gap-3">
+          <app-ds-avatar
+            [fullName]="student()?.displayFullName ?? ''"
+            [color]="student()?.profileColor"
+          />
+
+          <h2 class="whitespace-nowrap text-lg font-semibold">
+            {{ student()?.displayFullName }}
+          </h2>
+        </div>
+        <!-- Person details -->
+        <div>
+          <div
+            class="flex flex-col text-base md:flex-row md:items-center md:gap-6"
+          >
+            <p class="text-base text-gray-500">
+              {{t('global.national_id.label')}}
+              <span class="font-medium text-gray-700"
+                >{{ student()?.nationalId }}</span
+              >
+            </p>
+            <p class="text-base text-gray-500">
+              {{ t('global.level.title') }}
+              <span class="font-medium text-gray-700"
+                >{{ student()?.level }}</span
+              >
+            </p>
+            <p class="text-base text-gray-500">
+              {{ t('course_management.class.title') }}
+              <span class="font-medium text-gray-700"
+                >{{student()?.className}}</span
+              >
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    @if (reportCards().length > 0) { @for (card of reportCards(); track card.id)
+    {
+    <div class="hes-card mt-4 flex items-center justify-between">
+      <span class="text-base font-medium text-gray-700">{{ card.title }}</span>
+      <a
+        (click)="openPDF(card)"
+        class="cursor-pointer font-semibold text-yellow-600 no-underline"
+        >{{ t('global.view.btn') }}</a
+      >
+    </div>
+    } } @else {
+    <div class="pt-5 text-center">
+      <app-no-data-card
+        class="w-full"
+        mainImagePath="assets/illustrations/no_data.svg"
+        [title]="t('grade_management.no_report_card.title')"
+        [description]="t('grade_management.no_report_card_yet.txt')"
+      ></app-no-data-card>
+    </div>
+    }
+  </div>
+  }
+</ion-content>

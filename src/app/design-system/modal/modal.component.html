@@ -1,0 +1,32 @@
+<div
+  class="flex flex-col items-start gap-ds-xl self-stretch overflow-auto p-ds-xl"
+>
+  <!-- Header -->
+  <div class="flex items-center gap-ds-lg self-stretch">
+    <div class="single-line-lg-high-emphasis flex-1 text-gray-900">
+      {{ title() }}
+    </div>
+    @if (showCloseButton()) {
+      <button
+        type="button"
+        (click)="onClose()"
+        class="h-6 w-6 flex-shrink-0 cursor-pointer"
+        aria-label="Close modal"
+      >
+        <app-ds-icon
+          icon="saxCloseCircleBold"
+          class="text-[#B3B3B3]"
+          size="2xl"
+        ></app-ds-icon>
+      </button>
+    }
+  </div>
+
+  <!-- Body Content -->
+  <ng-content></ng-content>
+
+  <!-- Footer Actions -->
+  <div class="flex items-center justify-end gap-5 self-stretch">
+    <ng-content select="[slot=footer]"></ng-content>
+  </div>
+</div>

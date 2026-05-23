@@ -1,0 +1,20 @@
+<div class="text-sm text-gray-900">
+  @switch (format()) {
+    @case ("date") {
+      {{ formattedDate() }}
+    }
+    @case ("time") {
+      {{ formattedTime() }}
+    }
+    @case ("dateTime") {
+      <div class="font-medium">
+        {{ formattedDate() }}
+      </div>
+      <div class="text-gray-500">{{ formattedTime() }}</div>
+    }
+    @case ("dateDay") {
+      <div class="font-medium">{{ formattedDate() }}</div>
+      <div class="text-gray-500">{{ formattedDay() }}</div>
+    }
+  }
+</div>

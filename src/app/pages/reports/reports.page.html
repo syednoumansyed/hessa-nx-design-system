@@ -1,0 +1,50 @@
+<ion-content class="ds-page-content">
+  <ng-container *transloco="let t">
+    <div class="flex h-full flex-col">
+      <div class="hes-card flex flex-col gap-4">
+        <div>
+          <form [formGroup]="reportForm">
+            <app-form-control-generator
+              [control]="reportTypeConfig"
+            ></app-form-control-generator>
+          </form>
+
+          @if(reportType()){
+          <div class="my-4 flex w-full items-center justify-between">
+            <div class="text-xl font-bold">{{t('reports.filters.title')}}</div>
+            <div>
+              <ion-button hesColor="link" (click)="clearFilterForm()">
+                {{t('global.clear_filters.btn')}}
+              </ion-button>
+            </div>
+          </div>
+          @switch (reportType()) { @case (ReportTypeEnum.SMS_AT_CLASS_LEVEL) {
+          <app-sms-class-level-report></app-sms-class-level-report>
+          } @default { @if(filterForm && reportFiltersConfig()?.length ){
+          <app-report-filter
+            [form]="filterForm"
+            [config]="reportFiltersConfig()"
+          />
+          } }} }
+        </div>
+        <div class="mr-6 flex justify-end">
+          <ion-button
+            (click)="generateReport()"
+            [disabled]="!reportType() || filterForm?.invalid || reportExportContextService.invalidForm || isLoading()"
+          >
+            @if(isLoading()){
+            <ion-spinner
+              name="crescent"
+              slot="start"
+              class="h-4 w-4 text-white"
+            ></ion-spinner>
+            } @else{ {{t('report.generate_report.btn')}} }
+          </ion-button>
+        </div>
+      </div>
+      <app-report-history
+        class="mt-4 block h-full min-h-[65vh]"
+      ></app-report-history>
+    </div>
+  </ng-container>
+</ion-content>

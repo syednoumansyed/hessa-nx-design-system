@@ -1,0 +1,47 @@
+<ion-content class="ds-page-content" *transloco="let t">
+  <div class="w-full">
+    @if(isLoading()){
+    <div class="flex w-full justify-between px-4 py-5 lg:border-b lg:px-6">
+      <ion-skeleton-text
+        [animated]="true"
+        class="h-7 w-24 rounded"
+      ></ion-skeleton-text>
+      <ion-skeleton-text
+        [animated]="true"
+        class="h-11 w-11 rounded-lg md:w-40"
+      ></ion-skeleton-text>
+    </div>
+    <app-card-list-skeleton class="w-full px-4"></app-card-list-skeleton>
+    } @else {
+    <div class="flex w-full justify-between px-4 py-5 lg:border-b lg:px-6">
+      <div class="flex items-center justify-start gap-2">
+        <div class="text-xl font-medium text-gray-900">
+          {{ t("school_structure.company.title") }}
+        </div>
+        <div class="hes-badge hes-badge--warnning">{{companies().length}}</div>
+      </div>
+      <ion-button
+        *hesRbac="addCompanyPermission"
+        hesBtn
+        hesColor="primary"
+        [hesSize]="'lg'"
+        (click)="onAddEditCompany()"
+      >
+        <fa-icon
+          hesBtnIcon
+          [slot]="isMobile()? 'icon-only' : 'start'"
+          [icon]="faPlus"
+          [size]="'lg'"
+        ></fa-icon>
+        @if (!isMobile()) { {{ t("school_structure.add_company.btn") }} }
+      </ion-button>
+    </div>
+
+    <div class="flex w-full flex-col gap-4 px-4 lg:gap-6 lg:px-6">
+      @for (item of companiesMappedList(); track $index) {
+      <app-card-list-item class="w-full" [config]="item"></app-card-list-item>
+      }
+    </div>
+    }
+  </div>
+</ion-content>

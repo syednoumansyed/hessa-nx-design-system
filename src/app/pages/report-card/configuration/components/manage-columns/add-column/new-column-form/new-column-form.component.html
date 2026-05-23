@@ -1,0 +1,55 @@
+<div class="flex flex-col gap-5 py-8" *transloco="let t">
+  <div>
+    <form [formGroup]="form" class="flex flex-col gap-7">
+      @for (control of formConfig(); track $index) {
+        <app-form-control-generator
+          [control]="control"
+        ></app-form-control-generator>
+      }
+    </form>
+  </div>
+  <div>
+    @if (isCalculated()) {
+      <app-calculated-column-form
+        [parentForm]="form"
+        [subjectList]="subjectList()"
+      ></app-calculated-column-form>
+    } @else if (isHorizentalCalculated()) {
+      <app-horizental-calculated-form
+        [parentForm]="form"
+        [currentColumn]="column()"
+        [subjectList]="subjectList()"
+        [reportCard]="reportCard()"
+      ></app-horizental-calculated-form>
+    } @else {
+      <app-single-entry-form
+        [parentForm]="form"
+        [subjectList]="subjectList()"
+      ></app-single-entry-form>
+    }
+    @if (subjectList().length === 0) {
+      <div
+        class="flex h-32 flex-col items-center justify-center rounded-lg border border-gray-200 bg-[#ffffff] text-sm text-slate-500 md:h-60"
+        [innerHTML]="t('grade_management.no_subject_found.title')"
+      ></div>
+    }
+  </div>
+
+  <div
+    class="grid grid-cols-1 gap-2 gap-y-2 self-stretch md:grid-cols-2 md:gap-y-10"
+  >
+    <ion-button hesBtn hesColor="white" hesSize="xl" (click)="onCloseModal()">
+      {{ t("global.cancel.btn") }}
+    </ion-button>
+    <ion-button
+      [disabled]="form.invalid"
+      (click)="onSave()"
+      hesBtn
+      hesColor="primary"
+      hesSize="xl"
+      >{{
+        t(column() ? "global.update.btn" : "grade_management.create_column.btn")
+      }}</ion-button
+    >
+  </div>
+</div>

@@ -1,0 +1,83 @@
+<ng-container *transloco="let t">
+  @if (isLoading()) {
+    <div class="flex min-h-[30vh] items-center justify-center">
+      <ion-spinner></ion-spinner>
+    </div>
+  } @else if (recordingsData().length > 0) {
+    <div
+      class="flex min-h-[30vh] flex-col items-stretch gap-8 px-4 py-8 lg:p-14"
+    >
+      <div class="flex flex-col items-stretch gap-5">
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-2 whitespace-nowrap">
+            <div
+              class="h-7 text-lg font-semibold leading-7 text-gray-900 lg:w-[132px] lg:text-2xl"
+            >
+              {{ t("virtual_classrooms.recordings.title") }}
+            </div>
+            @if (subjectName) {
+              <div
+                class="h-6 w-[95px] rounded-[16px] bg-blue-200 text-center text-sm font-medium leading-5 text-[#3538CD]"
+              >
+                {{ subjectName }}
+              </div>
+            }
+          </div>
+          <app-hes-icon
+            (click)="cancel()"
+            class="absolute end-5 top-5 cursor-pointer"
+            [faIcon]="faXmark"
+          ></app-hes-icon>
+        </div>
+        <div class="h-[0.0625rem] w-full bg-gray-200"></div>
+
+        <div class="flex flex-col gap-8">
+          @for (recording of recordingsData(); track $index) {
+            <div class="flex flex-col gap-4">
+              <div class="text-sm font-semibold text-[#141519] md:text-base">
+                <span>{{ recording.date | hesDate }}</span>
+              </div>
+              <div class="flex flex-wrap gap-8">
+                @for (
+                  attachment of recording.attachments;
+                  track attachment.id
+                ) {
+                  <div
+                    class="hes-card relative flex w-[9.5rem] cursor-pointer flex-col items-center rounded-lg p-2 lg:h-52 lg:w-60 lg:p-3 lg:pb-[13rem]"
+                  >
+                    <app-hes-action-sheet
+                      class="self-end"
+                      [actions]="attachmentActions()"
+                      [forceActionSheet]="true"
+                      [data]="{ attachment, lectureId: recording.id }"
+                    ></app-hes-action-sheet>
+
+                    <div
+                      (click)="onClickVideo(attachment)"
+                      class="flex w-full flex-col items-center gap-3"
+                    >
+                      <ion-icon
+                        src="assets/icons/video.svg"
+                        alt="recording"
+                        class="h-[7rem] w-[7rem] pr-2 md:h-[8rem] md:w-[8rem]"
+                      ></ion-icon>
+                      <div class="text-base font-semibold">
+                        {{ attachment.name || attachment.title }}
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  } @else {
+    <app-no-data-card
+      mainImagePath="assets/illustrations/no_data.svg"
+      [title]="t('virtual_classrooms.no_recordings_found.txt')"
+      [description]="t('virtual_classrooms.no_recordings_uploaded_yet.txt')"
+    ></app-no-data-card>
+  }
+</ng-container>

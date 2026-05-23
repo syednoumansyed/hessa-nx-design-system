@@ -1,0 +1,20 @@
+<app-no-selected-scope-card
+  [requiredScope]="requiredScopes"
+  (onScopeUpdate)="handleDisplayContent($event)"
+/>
+@if(displayContent()){
+<ion-content class="ds-page-content" *transloco="let t">
+  <app-list-view-container
+    [columns]="columns"
+    class="w-full"
+    [primaryActions]="[primaryBtnConfig]"
+    [dataSource]="fetchTimePeriods"
+    [noDataConfig]="noDataConfig"
+    [mobileVisibleFieldsLimit]="5"
+    [pageTitle]="t('time_period.time_periods.title')"
+    [showSearchInput]="false"
+    [canCopy]="true"
+    [persistColumnSettings]="false"
+  />
+</ion-content>
+}

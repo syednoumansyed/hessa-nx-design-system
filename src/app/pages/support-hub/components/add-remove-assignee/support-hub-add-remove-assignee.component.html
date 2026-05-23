@@ -1,0 +1,99 @@
+<div
+  *transloco="let t"
+  class="flex max-h-[90vh] flex-col"
+  [ngClass]="{
+    'h-[90vh]': isMobile(),
+    'h-[80vh]': !isMobile(),
+  }"
+>
+  <!-- Fixed Header: Search Box + School Info + Selected Assignees -->
+  <div class="shrink-0 border-b bg-white px-ds-xl pt-ds-2xl">
+    <app-search-box
+      [placeholderTxt]="t('support.assignee.search_placeholder')"
+      [includeCancelButton]="true"
+      (searchChange)="onSearchChange($event)"
+      (cancelButtonClick)="onCancelClick()"
+    />
+
+    <div class="py-ds-lg">
+      <app-support-ticket-school-info [school]="schoolInfo()" />
+    </div>
+
+    <div class="flex flex-col gap-ds-sm pb-ds-md">
+      <p class="single-line-xs-mid-emphasis text-emphasis-mid">
+        {{ t("support.assignee.selected.label") }}
+      </p>
+      <div class="no-scrollbar flex gap-ds-md overflow-x-auto">
+        @for (assignee of selectedAssignees(); track assignee.userId) {
+          <app-user-info-pill
+            [user]="assignee"
+            [showCloseButton]="!isCurrentUser(assignee.id)"
+            (closeClick)="onRemoveAssignee(assignee)"
+          />
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Scrollable Content: Available Users List -->
+  <ion-content class="white-bg min-h-0 flex-1">
+    <div class="flex flex-col divide-neutral-cool-100 px-ds-xl">
+      @for (user of availableUsers(); track user.userId) {
+        <div
+          class="flex cursor-pointer items-center justify-between gap-ds-md py-ds-sm"
+          (click)="
+            !(isCurrentUser(user.id) && wasInitiallySelected(user.id)) &&
+              onToggleUser(user, !isUserSelected(user.id))
+          "
+        >
+          <div class="flex min-w-0 flex-1 items-center gap-ds-md">
+            <app-ds-avatar
+              [fullName]="user.fullName"
+              [imageUrl]="user.imageUrl"
+              [color]="user.color ?? defaultColor"
+              size="2xl"
+              [includeBorder]="false"
+            />
+            <div class="flex min-w-0 flex-col gap-ds-sm">
+              <span
+                class="heading-h4-high-emphasis truncate text-emphasis-high"
+              >
+                {{ user.fullName }}
+              </span>
+              <span class="single-line-caption-mid-emphasis text-emphasis-mid">
+                {{ user.subtitle }}
+              </span>
+            </div>
+          </div>
+          <app-ds-checkbox
+            size="sm"
+            [ngModel]="isUserSelected(user.id)"
+            [disabled]="isCurrentUser(user.id) && wasInitiallySelected(user.id)"
+            (ngModelChange)="onToggleUser(user, $event)"
+          />
+        </div>
+      }
+    </div>
+
+    <ion-infinite-scroll
+      [disabled]="!hasMorePages()"
+      (ionInfinite)="onLoadMore($event)"
+    >
+      <ion-infinite-scroll-content loadingSpinner="bubbles">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </ion-content>
+
+  <!-- Fixed Footer: Update Button -->
+  <div class="shrink-0 border-t bg-white px-ds-xl py-ds-xl">
+    <ds-button
+      variant="primary"
+      [fullWidth]="true"
+      [loading]="isUpdating()"
+      [disabled]="isUpdating() || !hasChanges()"
+      (click)="onUpdateAssignees()"
+    >
+      {{ t("support.assignee.update.btn") }}
+    </ds-button>
+  </div>
+</div>

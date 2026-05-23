@@ -1,0 +1,32 @@
+@if (previewImage()) {
+  <div
+    class="flex h-full w-full items-center justify-center overflow-hidden p-4"
+  >
+    <img
+      [src]="previewImage()"
+      title="preview post image"
+      class="max-w-full object-contain"
+      style="max-height: 70vh"
+    />
+  </div>
+}
+@if (previewVideo()) {
+  <div
+    class="flex h-full w-full items-center justify-center overflow-hidden p-4"
+  >
+    <video controls class="max-w-full object-contain" style="max-height: 70vh">
+      <source [src]="previewVideo()" />
+    </video>
+  </div>
+}
+
+@if (previewDoc()) {
+  <div class="flex h-full w-full items-center justify-center overflow-hidden">
+    <app-ds-pdf-viewer
+      [src]="previewDoc()!"
+      [previewMode]="true"
+      height="65vh"
+      (pdfLoadSuccess)="onPdfSuccess()"
+    />
+  </div>
+}

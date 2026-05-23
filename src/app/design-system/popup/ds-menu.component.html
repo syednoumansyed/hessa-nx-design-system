@@ -1,0 +1,117 @@
+<!-- Trigger content -->
+<div
+  [cdkMenuTriggerFor]="mainMenu"
+  [cdkMenuPosition]="menuPosition!"
+  class="inline-block cursor-pointer"
+  class="w-full"
+>
+  <ng-content></ng-content>
+</div>
+
+<!-- Main Menu Template -->
+<ng-template #mainMenu>
+  <div
+    class="z-[1000] min-w-[234px] gap-ds-xs rounded-ds-lg bg-neutral-cool-100 px-ds-xs pb-ds-sm pt-ds-xs shadow-lg"
+    cdkMenu
+    cdkMenuTargetAim
+  >
+    <div
+      class="gap-ds-xs rounded-ds-lg bg-white px-ds-md pb-ds-lg pt-ds-lg shadow-lg"
+    >
+      <!-- Added inner container -->
+      @for (item of visibleItems; track trackByFn($index, item)) {
+        @if (hasChildren(item)) {
+          <!-- Item with children (submenu trigger) -->
+          <button
+            cdkMenuItem
+            [cdkMenuTriggerFor]="submenuRefs.get(item.id!)"
+            [cdkMenuPosition]="overlayPosition"
+            class="relative block w-full cursor-pointer gap-ds-xl rounded-ds-sm border-none bg-transparent px-ds-sm py-ds-sm text-start text-content-high outline-none transition-all duration-150 ease-in-out hover:bg-surface-hover"
+            [class]="getItemClass(item)"
+          >
+            <div class="flex w-full items-center gap-ds-md">
+              <app-ds-icon
+                class="min-w-[20px]"
+                [icon]="item.icon!"
+                [size]="'md'"
+                [ngClass]="getIconClasses(item)"
+              ></app-ds-icon>
+              <div class="min-w-0 flex-1">
+                <div class="content-sm-default leading-5">
+                  {{ item.title | dsTranslate }}
+                </div>
+                @if (item.subtitle) {
+                  <div
+                    class="single-line-caption-mid-emphasis leading-3 text-content-mid"
+                  >
+                    {{ item.subtitle | dsTranslate }}
+                  </div>
+                }
+              </div>
+              <app-ds-icon
+                class="h-[20px] w-[20px] text-icon-high rtl:rotate-180"
+                [icon]="arrowIcon"
+                [fixedWidth]="true"
+                [size]="'md'"
+              ></app-ds-icon>
+            </div>
+          </button>
+        } @else {
+          <!-- Leaf item (no children) -->
+          <button
+            cdkMenuItem
+            class="relative block w-full cursor-pointer gap-ds-xl rounded-ds-sm border-none bg-transparent px-ds-sm py-ds-sm text-start text-content-high outline-none transition-all duration-150 ease-in-out hover:bg-surface-hover"
+            [class]="getItemClass(item)"
+            (cdkMenuItemTriggered)="onItemSelected(item)"
+          >
+            <div class="flex w-full items-center gap-ds-md">
+              <app-ds-icon
+                class="min-w-[20px]"
+                [ngClass]="getIconClasses(item)"
+                [icon]="item.icon!"
+                [size]="'md'"
+              ></app-ds-icon>
+              <div class="min-w-0 flex-1">
+                <div
+                  class="content-sm-default leading-5"
+                  [ngClass]="getTextClasses(item)"
+                >
+                  {{ item.title | dsTranslate }}
+                </div>
+                @if (item.subtitle) {
+                  <div
+                    class="single-line-caption-mid-emphasis leading-3 text-content-mid"
+                  >
+                    {{ item.subtitle | dsTranslate }}
+                  </div>
+                }
+              </div>
+              @if (item.selected && item.selectable) {
+                <app-ds-icon
+                  class="h-[16px] w-[16px] text-icon-high"
+                  [icon]="checkIcon"
+                  [fixedWidth]="true"
+                ></app-ds-icon>
+              }
+            </div>
+          </button>
+        }
+      }
+    </div>
+    <!-- End inner container -->
+  </div>
+</ng-template>
+
+<!-- Dynamic submenu templates with proper references -->
+@for (item of visibleItems; track trackByFn($index, item)) {
+  @if (hasChildren(item)) {
+    <ng-template #submenuTemplate>
+      <ds-submenu
+        [items]="item.children!"
+        [selectedValues]="selectedValues"
+        (itemSelected)="onItemSelected($event)"
+      >
+      </ds-submenu>
+    </ng-template>
+  }
+}

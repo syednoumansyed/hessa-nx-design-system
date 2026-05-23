@@ -1,0 +1,12 @@
+<div
+  [ngClass]="{ 'px-2': collapsed(), 'lg:w-100': !collapsed() }"
+  class="flex h-10 cursor-pointer items-center justify-center rounded py-2 lg:h-auto"
+>
+  @if (!collapsed()) {
+    <span class="text-[0.8125rem] font-medium uppercase text-gray-900">
+      {{ selectedSemester()?.name }} {{ selectedAcademicYear()?.name }}
+    </span>
+  } @else {
+    <ng-icon class="text-2xl text-[#20243A]" name="saxCalendarBulk"></ng-icon>
+  }
+</div>

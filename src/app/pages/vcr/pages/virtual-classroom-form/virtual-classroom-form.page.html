@@ -1,0 +1,115 @@
+<ion-content class="ds-page-content" *transloco="let t">
+  @if(isLoading()) {
+  <div
+    class="absolute bottom-0 left-0 right-0 top-0 z-10 flex items-center justify-center bg-[rgba(0,0,0,0.5)]"
+  >
+    <ion-spinner></ion-spinner>
+  </div>
+  }
+  <div
+    class="hes-card flex h-full w-full flex-col items-start justify-start p-0"
+  >
+    <div
+      class="flex h-auto w-full flex-col items-start justify-start gap-8 bg-white px-4 py-8 md:bg-transparent md:p-0"
+    >
+      <form
+        [formGroup]="virtualClassRoomForm"
+        class="flex w-full flex-col items-end justify-start gap-8"
+      >
+        <div
+          class="Frame23 md:shadow-[0_1px_2px_0_rgba(0, 0, 0, 0.05)] flex w-full flex-col items-start justify-start bg-white md:rounded-lg md:border md:border-[#F1F1F4]"
+        >
+          <div
+            class="md:shadow-[0_1px_2px_0_rgba(0, 0, 0, 0.05)] flex w-full flex-col items-start justify-start gap-10 bg-white md:rounded-lg md:border md:border-[#F1F1F4] md:p-8"
+          >
+            <div class="text-lg font-semibold leading-7">
+              {{t('virtual_classrooms.virtual_classroom_details.title')}}
+            </div>
+            <div
+              class="grid grid-cols-1 gap-8 gap-y-10 self-stretch md:grid-cols-2"
+            >
+              @for(control of virtualClassRoomDetailsFormConfig(); track
+              control.formControlName; let i = $index;) {
+              <div
+                class="flex-1"
+                [ngClass]="{'flex gap-2 justify-center items-end w-full':i ===4}"
+              >
+                <app-form-control-generator
+                  [control]="control"
+                  class="flex-1"
+                ></app-form-control-generator>
+                @if (i === 4 && isMeetingLinkLoading()) {
+                <ion-spinner class="mb-4 h-5 w-5"></ion-spinner>
+                }
+              </div>
+              }
+            </div>
+            <div
+              class="Line1 h-[0px] self-stretch border border-slate-200"
+            ></div>
+            <div
+              class="Frame25035 inline-flex w-full items-center justify-between"
+            >
+              <div class="whitespace-nowrap text-lg font-semibold">
+                {{t('virtual_classrooms.link_lecture.title')}}
+              </div>
+            </div>
+            <div
+              class="mt-0 grid grid-cols-1 gap-8 self-stretch md:grid-cols-2"
+            >
+              @for(control of linkLectureFormConfig(); track
+              control.formControlName) {
+              <div class="flex-1">
+                <app-form-control-generator
+                  [control]="control"
+                ></app-form-control-generator>
+              </div>
+              }
+            </div>
+          </div>
+          <div
+            class="flex w-full flex-col-reverse gap-3 pb-8 pr-1 pt-8 md:flex-row md:justify-end md:pr-8"
+          >
+            <ion-button
+              hesBtn
+              hesColor="white"
+              hesSize="xl"
+              (click)="onCancelClick()"
+              class="w-full md:w-auto md:min-w-[150px] lg:min-w-[200px]"
+            >
+              {{ t("global.cancel.btn") }}
+            </ion-button>
+            <ion-button
+              hesBtn
+              hesSize="xl"
+              [disabled]="virtualClassRoomForm.invalid"
+              class="w-full md:w-auto md:min-w-[150px] lg:min-w-[200px]"
+              (click)="onSave()"
+            >
+              {{t('global.save.btn')}}
+            </ion-button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ion-content>
+
+<ng-template #customSelectOption let-item="item">
+  @if (item.value === -1) { {{ item.displayedValue }} } @else {
+  <div class="flex items-center justify-between p-4">
+    <!-- Left Section -->
+    <div class="flex items-center">
+      <!-- Text -->
+      <span class="font-medium text-gray-900"
+        >{{ getDayInfo(item.value).day }}</span
+      >
+    </div>
+
+    <!-- Right Section -->
+    <div class="pl-3 text-right">
+      <div class="text-gray-700">{{ getDayInfo(item.value).text }}</div>
+    </div>
+  </div>
+  }
+</ng-template>

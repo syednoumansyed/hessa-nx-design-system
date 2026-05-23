@@ -1,0 +1,52 @@
+<div
+  *transloco="let t"
+  class="Modal flex flex-col justify-start gap-4 rounded-xl bg-white"
+>
+  <div class="mb-3 flex justify-between border-b pb-4">
+    <div class="text-xl font-semibold text-gray-900">
+      {{ t("attendance.extend_time.title") }}
+    </div>
+    <fa-icon
+      class="mt-1 cursor-pointer text-[#929CB5] hover:text-[#0000008a]"
+      [icon]="faClose"
+      size="xl"
+      (click)="closeModal()"
+    ></fa-icon>
+  </div>
+  <form
+    [formGroup]="form"
+    class="flex w-full flex-col items-end justify-start gap-4"
+  >
+    <div class="grid grid-cols-1 gap-8 gap-y-4 self-stretch">
+      @for (control of formConfig(); track $index) {
+        <div class="flex-1">
+          <app-form-control-generator
+            [control]="control"
+          ></app-form-control-generator>
+        </div>
+      }
+    </div>
+    <div
+      class="mb-2 mt-2 grid grid-cols-1 gap-y-1 self-stretch md:grid-cols-2 md:gap-8 md:gap-y-10"
+    >
+      <ion-button
+        hesBtn
+        hesColor="secondary"
+        hesSize="xl"
+        (click)="closeModal()"
+      >
+        {{ t("global.cancel.btn") }}
+      </ion-button>
+      <ion-button
+        [disabled]="form.invalid"
+        hesBtn
+        hesColor="primary"
+        hesSize="xl"
+        (click)="onSave()"
+        class="order-first md:order-none"
+      >
+        {{ t("global.save.btn") }}
+      </ion-button>
+    </div>
+  </form>
+</div>

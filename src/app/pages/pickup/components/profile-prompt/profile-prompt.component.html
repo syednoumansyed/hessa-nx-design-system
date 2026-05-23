@@ -1,0 +1,36 @@
+<div
+  *transloco="let t"
+  class="flex flex-col items-center gap-ds-xl text-center"
+>
+  <div class="flex items-center justify-center gap-ds-xl">
+    <div class="relative flex flex-col items-center">
+      <app-ds-avatar [fullName]="''" [imageUrl]="profilePic" size="lg" />
+      <app-ds-icon
+        icon="add-with-border"
+        class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 transform"
+        size="3xl"
+      ></app-ds-icon>
+    </div>
+
+    <app-ds-icon
+      [icon]="isRtl ? 'saxArrowLeft1Outline' : 'saxArrowRight1Outline'"
+      size="2xl"
+    ></app-ds-icon>
+
+    <div class="flex flex-col items-center">
+      <app-ds-avatar
+        [fullName]="''"
+        imageUrl="assets/illustrations/dummy-profile.png"
+        size="lg"
+      />
+    </div>
+  </div>
+  <div class="flex flex-col items-center gap-ds-sm">
+    <div class="heading-h4-high-emphasis">
+      {{ t("dismissal.process_your_request_faster.title") }}
+    </div>
+    <div class="content-md-default">
+      {{ t("dismissal.process_your_request_faster.txt") }}
+    </div>
+  </div>
+</div>

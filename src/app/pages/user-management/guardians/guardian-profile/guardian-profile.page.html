@@ -1,0 +1,62 @@
+<ion-content class="ds-page-content" *transloco="let t">
+  <div class="flex w-full flex-col gap-4 bg-white p-2 md:gap-8 lg:bg-inherit">
+    <div
+      class="-mx-4 shadow-xs md:m-0 md:rounded-lg md:border md:border-[#F1F1F4]"
+    >
+      <app-profile-header
+        [fullName]="guardian()?.displayName ?? ''"
+        [profileColor]="guardian()?.profileColor ?? userProfileColors.NEUTRAL"
+        [metadata]="metadata()"
+        [createdBy]="guardian()?.createdBy?.displayName ?? ''"
+        [creationDate]="guardian()?.createdAt?.toString()"
+        [lastActiveDate]="guardian()?.userEvent?.[0]?.createdAt ?? null"
+        class="rounded-lg"
+      ></app-profile-header>
+    </div>
+
+    @if (guardian()?.status === 'INACTIVE') {
+    <app-hes-alert
+      hesAuth
+      [roles]="[]"
+      type="warning"
+      [title]="t('user_management.account_deactivated.title')"
+      [message]="t('user_management.account_deactivated.txt')"
+      [buttonTitle]="t('global.activate_account.btn')"
+      [showButton]="isActivateProfilePermission"
+      (actionClick)="onActivateGuardian()"
+    ></app-hes-alert>
+    }
+
+    <app-profile-details
+      [profileDetails]="profileDetails()"
+      [onUpdateProfile]="goToUpdateGuardianPage"
+      [updatePermissionId]="updateGuardianPermissionId"
+    ></app-profile-details>
+
+    <app-linked-profiles
+      [header]="t('user_management.student_details.title')"
+      [linkedProfiles]="linkedStudents()"
+      [unlinkProfileRoles]="[]"
+      [viewProfileRoles]="[]"
+      [unLinkProfilePermissionId]="unlinkStudentPermissionId"
+    ></app-linked-profiles>
+
+    <app-profile-login-methods
+      [phoneNumber]="guardian()?.phoneNumber!"
+      [deactivateRoles]="[]"
+      [userType]="userType"
+      [ownProfile]="guardian()?.id === auth.user()?.userTypeId && auth.user()?.type === UserType.GUARDIAN"
+      [onDeactivate]="onDeactivateGuardian"
+      [showDeactivateBtn]="guardian()?.status === 'ACTIVE'"
+      [updatePhoneNumberPermissionId]="changePhoneNumberPermissionId"
+      [deactivatePermissionId]="activateDeactiveProfilePermissionId"
+      [onUpdateSuccess]="onRefreshProfile"
+    ></app-profile-login-methods>
+    @if(guardian()){
+    <app-connected-profile
+      [data]="guardian()"
+      [userType]="userType"
+    ></app-connected-profile>
+    }
+  </div>
+</ion-content>

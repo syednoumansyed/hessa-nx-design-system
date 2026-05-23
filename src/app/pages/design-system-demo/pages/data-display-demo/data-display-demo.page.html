@@ -1,0 +1,173 @@
+<ion-content>
+  <div class="p-4 md:p-6">
+    <app-demo-page-wrapper title="Data Display">
+      <!-- List Item -->
+      <h2 class="heading-h2-high-emphasis mb-4">List Item</h2>
+      <div class="mb-8">
+        <h3 class="heading-h3-high-emphasis mb-4">
+          List Item Selector Service
+        </h3>
+        <p class="content-md-mid-emphasis mb-4 text-gray-600">
+          Simple list selector that shows items in a bottom sheet on mobile and
+          modal on desktop. Click any item to select and close automatically.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <ds-button (click)="showUserSelectionDemo()" variant="secondary">
+            User Selection Demo
+          </ds-button>
+        </div>
+      </div>
+
+      <!-- Student Selector -->
+      <h2 class="heading-h2-high-emphasis mb-4 mt-8">Student Selector</h2>
+      <div
+        [ngClass]="{
+      'grid grid-cols-2': !isMobile
+    }"
+        class="mb-10"
+      >
+        <app-ds-student-selector
+          [students]="studentSelectorList"
+          (studentSelected)="onStudentSelected($event)"
+          [enableAllOption]="false"
+        />
+      </div>
+
+      <!-- Avatar -->
+      <h2 class="heading-h2-high-emphasis mb-4 mt-8">Avatar</h2>
+      <div class="my-6 flex flex-col gap-8">
+        <div class="flex justify-start gap-6">
+          <app-ds-avatar
+            [fullName]="'Sid'"
+            [imageUrl]="imageUrl"
+            size="sm"
+          ></app-ds-avatar>
+          <app-ds-avatar
+            [fullName]="'Sid'"
+            [imageUrl]="imageUrl"
+            size="md"
+          ></app-ds-avatar>
+          <app-ds-avatar
+            [fullName]="'Sid'"
+            [imageUrl]="imageUrl"
+            size="lg"
+          ></app-ds-avatar>
+        </div>
+
+        <div class="flex justify-start gap-6">
+          <app-ds-avatar
+            [fullName]="'Kishan Singh'"
+            [imageUrl]="avatarUrl"
+            size="sm"
+          ></app-ds-avatar>
+          <app-ds-avatar
+            [fullName]="'Aamir Khan'"
+            [imageUrl]="avatarUrl"
+            size="md"
+          ></app-ds-avatar>
+          <app-ds-avatar
+            [fullName]="'Sid'"
+            [imageUrl]="avatarUrl"
+            size="lg"
+          ></app-ds-avatar>
+        </div>
+
+        <div class="flex justify-start gap-6">
+          <app-ds-avatar [fullName]="'Khushal Gupta'" size="sm"></app-ds-avatar>
+          <app-ds-avatar [fullName]="'Asif Ahmed'" size="md"></app-ds-avatar>
+          <app-ds-avatar [fullName]="'Sid'" size="lg"></app-ds-avatar>
+        </div>
+      </div>
+
+      <!-- Icon Container -->
+      <h2 class="heading-h2-high-emphasis mb-4 mt-8">Icon Container</h2>
+      <div class="flex justify-start gap-10">
+        <ds-icon-container
+          [config]="{
+        icon: 'play',
+        chip: {
+          text: 'New',
+          variant: 'primary'
+        },
+        menu: {
+          items: iconContainerMenuItems
+        },
+        label: 'Math Video Lesson'
+      }"
+        >
+        </ds-icon-container>
+
+        <ds-icon-container [config]="{ icon: 'file' }"> </ds-icon-container>
+
+        <ds-icon-container
+          [config]="{
+        icon: 'picture',
+        chip: {
+          text: 'Submitted',
+          variant: '#0F7B3D'
+        },
+        hasIndicator: true,
+        label: 'Math Video Lesson'
+      }"
+        >
+        </ds-icon-container>
+
+        <ds-icon-container
+          [config]="{
+        icon: 'correct-file',
+        chip: {
+          text: 'Correct',
+          variant: 'default'
+        },
+        label: 'Final Exam Results'
+      }"
+        >
+        </ds-icon-container>
+      </div>
+
+      <!-- Icons -->
+      <h2 class="heading-h2-high-emphasis mb-4 mt-8">Icons</h2>
+      <h3 class="heading-h3-mid-emphasis">Fontawesome icons</h3>
+      <div class="my-4">
+        <h5>default</h5>
+        <app-ds-icon [icon]="homeIcon"></app-ds-icon>
+      </div>
+      <div class="flex flex-wrap items-end gap-1">
+        <app-ds-icon [icon]="homeIcon" size="2xl"></app-ds-icon>
+        <app-ds-icon [icon]="homeIcon" size="xl"></app-ds-icon>
+        <app-ds-icon [icon]="homeIcon" size="lg"></app-ds-icon>
+        <app-ds-icon [icon]="homeIcon" size="sm"></app-ds-icon>
+        <app-ds-icon [icon]="homeIcon" size="xs"></app-ds-icon>
+        <app-ds-icon [icon]="homeIcon" size="2xs"></app-ds-icon>
+      </div>
+
+      <h3 class="heading-h3-mid-emphasis mt-4">Ng icons</h3>
+      <div class="my-4">
+        <h5>default</h5>
+        <app-ds-icon icon="saxHome2Outline"></app-ds-icon>
+      </div>
+      <div class="flex flex-wrap items-end gap-1">
+        <app-ds-icon icon="saxHome2Outline" size="2xl"></app-ds-icon>
+        <app-ds-icon icon="saxHome2Outline" size="xl"></app-ds-icon>
+        <app-ds-icon icon="saxHome2Outline" size="lg"></app-ds-icon>
+        <app-ds-icon icon="saxHome2Outline" size="sm"></app-ds-icon>
+        <app-ds-icon icon="saxHome2Outline" size="xs"></app-ds-icon>
+        <app-ds-icon icon="saxHome2Outline" size="2xs"></app-ds-icon>
+      </div>
+
+      <h3 class="heading-h3-mid-emphasis mt-4">Ng icons local</h3>
+      <div class="my-4">
+        <h5>default</h5>
+        <app-ds-icon icon="ksa-flag"></app-ds-icon>
+      </div>
+      <div class="flex flex-wrap items-end gap-1">
+        <app-ds-icon icon="ksa-flag" size="2xl"></app-ds-icon>
+        <app-ds-icon icon="ksa-flag" size="xl"></app-ds-icon>
+        <app-ds-icon icon="ksa-flag" size="lg"></app-ds-icon>
+        <app-ds-icon icon="ksa-flag" size="sm"></app-ds-icon>
+        <app-ds-icon icon="ksa-flag" size="xs"></app-ds-icon>
+        <app-ds-icon icon="ksa-flag" size="2xs"></app-ds-icon>
+      </div>
+    </app-demo-page-wrapper>
+  </div>
+</ion-content>

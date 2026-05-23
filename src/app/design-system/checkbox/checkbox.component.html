@@ -1,0 +1,83 @@
+<label
+  class="group relative"
+  [ngClass]="{
+    'inline-flex': title() || helperText() || labelIcon(),
+    'cursor-not-allowed': isDisabled(),
+    'cursor-pointer': !isDisabled(),
+    'items-center': !helperText(),
+    'items-start': helperText(),
+  }"
+>
+  <input
+    type="checkbox"
+    class="peer sr-only"
+    [checked]="checked()"
+    (change)="toggleCheck()"
+    [disabled]="isDisabled()"
+    [indeterminate]="variant() === 'indeterminate'"
+  />
+  <div
+    class="flex flex-shrink-0 items-center justify-center rounded-lg border border-b-2 transition-colors duration-200"
+    [ngClass]="{
+      'border-brand-600 bg-brand-100': checked() && !isDisabled(),
+      'border-gray-400 group-hover:border-brand-600 group-hover:bg-brand-100':
+        !checked() && !isDisabled(),
+      'border-gray-300 bg-gray-200': isDisabled(),
+      'h-8 w-8': size() === 'lg',
+      'h-6 w-6': size() === 'sm',
+    }"
+  >
+    <ng-icon
+      [name]="iconName"
+      class="transition-opacity duration-200"
+      [ngClass]="{
+        'text-brand-600 opacity-100': checked() && !isDisabled(),
+        'text-gray-300 opacity-100': checked() && isDisabled(),
+        'text-transparent opacity-0': !checked(),
+        'text-ds-2xl': size() === 'lg',
+        'text-ds-lg': size() === 'sm',
+      }"
+    ></ng-icon>
+  </div>
+
+  @if (title() || helperText() || labelIcon()) {
+    <div
+      class="flex flex-col"
+      [ngClass]="{
+        'ms-3': size() === 'lg',
+        'ms-2': size() === 'sm',
+      }"
+    >
+      <span
+        class="flex items-center gap-1 font-semibold"
+        [ngClass]="{
+          'text-gray-400': isDisabled(),
+          'text-black-500': !isDisabled(),
+          'text-ds-lg': size() === 'lg',
+          'text-ds-base': size() === 'sm',
+          'flex-row': labelIconPlacement() === 'end',
+          'flex-row-reverse': labelIconPlacement() === 'start',
+        }"
+      >
+        {{ title() }}
+        @if (labelIcon()) {
+          <app-ds-icon
+            [icon]="labelIcon()!"
+            [size]="size() === 'lg' ? 'lg' : 'base'"
+            class="text-content-mid"
+          />
+        }
+      </span>
+      @if (helperText()) {
+        <span
+          class="text-base text-[#838799]"
+          [ngClass]="{
+            'text-gray-400': isDisabled(),
+          }"
+        >
+          {{ helperText() }}
+        </span>
+      }
+    </div>
+  }
+</label>

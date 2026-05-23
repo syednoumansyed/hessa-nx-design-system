@@ -1,0 +1,14 @@
+ion-item::part(native) {
+  background: #ffffff !important;
+}
+
+ion-item {
+  --inner-padding-end: 0px;
+  --padding-start: 0px;
+}
+
+ion-item {
+  .item-inner {
+    border: none;
+  }
+}

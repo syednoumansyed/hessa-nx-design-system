@@ -1,0 +1,108 @@
+<div class="group relative" (mouseenter)="onFiltersHover()">
+  <div #filtersScroller class="no-scrollbar overflow-x-auto scroll-smooth">
+    <div #filtersRow class="flex flex-nowrap gap-ds-xs">
+      @if (showCreatedByYou()) {
+        <div class="flex-shrink-0">
+          <div class="gap-ds-2xs flex flex-col gap-2 px-ds-sm pt-[2px]">
+            <div class="w-[180px]">
+              <button
+                type="button"
+                class="flex h-[48px] w-full items-center gap-ds-sm rounded-ds-lg border px-ds-lg transition-colors md:h-[60px]"
+                [ngClass]="
+                  isInitiatedSelected()
+                    ? 'border-brand-500 bg-brand-100 text-emphasis-high'
+                    : 'border-stroke-black-08 bg-surface-primary text-emphasis-mid md:hover:border-neutral-cool-200'
+                "
+                [attr.aria-pressed]="isInitiatedSelected()"
+                (click)="toggleTicketView()"
+              >
+                <span
+                  class="flex h-4 w-4 items-center justify-center rounded-full border-2"
+                  [ngClass]="
+                    isInitiatedSelected()
+                      ? 'border-brand-600 bg-brand-600'
+                      : 'border-stroke-black-20 bg-transparent'
+                  "
+                >
+                  @if (isInitiatedSelected()) {
+                    <app-ds-icon
+                      [icon]="checkIcon"
+                      size="2xs"
+                      class="text-content-high-inverse"
+                    />
+                  }
+                </span>
+                <span
+                  [ngClass]="
+                    isInitiatedSelected()
+                      ? 'content-md-mid-emphasis text-emphasis-high'
+                      : 'content-md-default text-content-low'
+                  "
+                >
+                  {{ "global.created.by.you" | dsTranslate }}
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+      @if (hasMultipleSchools()) {
+        <div class="w-[250px] flex-shrink-0">
+          <app-ds-school-structure-control
+            [formControl]="schoolControl"
+            [placeholder]="'global.all_schools.label' | dsTranslate"
+            [depth]="3"
+          />
+        </div>
+      }
+      <div class="w-[200px] flex-shrink-0">
+        <app-ds-select
+          [config]="assignedToSelectConfig()"
+          [formControl]="assignedToControl"
+        />
+      </div>
+      <div class="w-[150px] flex-shrink-0">
+        <app-ds-select
+          [config]="statusSelectConfig()"
+          [formControl]="statusControl"
+        />
+      </div>
+    </div>
+  </div>
+
+  @if (canScrollLeft()) {
+    <div
+      class="pointer-events-none absolute top-1/2 hidden -translate-y-[60%] items-center lg:flex lg:opacity-0 lg:transition-opacity lg:group-hover:opacity-100"
+      [ngClass]="leftButtonPositionClass()"
+    >
+      <ds-button
+        class="pointer-events-auto"
+        variant="tertiary"
+        size="sm"
+        [iconStart]="leftButtonIcon()"
+        title="Scroll left"
+        (click)="scrollFilters('left')"
+      >
+        <span class="sr-only">Scroll left</span>
+      </ds-button>
+    </div>
+  }
+
+  @if (canScrollRight()) {
+    <div
+      class="pointer-events-none absolute top-1/2 hidden -translate-y-[60%] items-center lg:flex lg:opacity-0 lg:transition-opacity lg:group-hover:opacity-100"
+      [ngClass]="rightButtonPositionClass()"
+    >
+      <ds-button
+        class="pointer-events-auto"
+        variant="tertiary"
+        size="sm"
+        [iconStart]="rightButtonIcon()"
+        title="Scroll right"
+        (click)="scrollFilters('right')"
+      >
+        <span class="sr-only">Scroll right</span>
+      </ds-button>
+    </div>
+  }
+</div>

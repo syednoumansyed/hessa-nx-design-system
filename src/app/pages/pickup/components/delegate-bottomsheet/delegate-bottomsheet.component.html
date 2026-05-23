@@ -1,0 +1,127 @@
+<div
+  *transloco="let t"
+  class="flex flex-col gap-ds-xl rounded-t-ds-2xl bg-surface-primary p-ds-xl"
+>
+  <!-- Header -->
+  <div class="flex items-center gap-ds-lg">
+    <div class="flex flex-1 flex-col gap-ds-xs">
+      <h3 class="heading-h3-high-emphasis text-emphasis-high">
+        {{ delegateInfo.displayName }}
+      </h3>
+      @if (delegateInfo.validTill) {
+        <span class="content-sm-mid-emphasis text-emphasis-mid">
+          {{
+            t("global.valid_till_with_date.txt", {
+              date: delegateInfo.validTill,
+            })
+          }}
+        </span>
+      }
+    </div>
+
+    <!-- Close Button -->
+    <button
+      type="button"
+      class="flex items-center justify-center self-stretch"
+      (click)="close()"
+      aria-label="Close"
+    >
+      <app-ds-icon
+        [icon]="faCircleXmark"
+        size="xl"
+        class="text-neutral-cool-300"
+      ></app-ds-icon>
+    </button>
+  </div>
+
+  <!-- Content -->
+  <div class="flex flex-col gap-ds-xl">
+    <!-- Inactive Alert -->
+    @if (delegateInfo.isInactive) {
+      <div
+        class="flex flex-col gap-ds-sm rounded-ds-md bg-surface-danger-subtle p-ds-md"
+      >
+        <p class="content-md-mid-emphasis text-content-error">
+          {{ t("general.qr_deactivated_on_with_date.lbl") }}
+        </p>
+      </div>
+    }
+
+    <!-- Expiry Alert -->
+    @if (
+      !delegateInfo.isInactive &&
+      delegateInfo.isExpiringSoon &&
+      delegateInfo.expiryDate
+    ) {
+      <div
+        class="flex flex-col gap-ds-sm rounded-ds-md bg-surface-danger-subtle p-ds-md"
+      >
+        <p class="content-md-mid-emphasis text-content-error">
+          {{
+            t("general.your_qr_will_with_date.msg", {
+              Date: delegateInfo.expiryDate,
+            })
+          }}
+        </p>
+      </div>
+    }
+
+    <!-- Delegate Photo -->
+    @if (delegateInfo.imageUrl) {
+      <div
+        class="relative h-[191px] w-full cursor-pointer overflow-hidden rounded-ds-md"
+        (click)="expandImage()"
+      >
+        <img
+          [src]="delegateInfo.imageUrl"
+          [alt]="delegateInfo.displayName"
+          class="h-full w-full object-cover"
+        />
+
+        <!-- Expand Button -->
+        <div
+          class="absolute bottom-ds-sm right-ds-sm flex items-center rounded-ds-sm bg-surface-contrast-over-color-lvl4 p-ds-sm"
+        >
+          <app-ds-icon
+            [icon]="maximise"
+            size="16px"
+            class="text-white"
+          ></app-ds-icon>
+        </div>
+      </div>
+    }
+
+    <!-- Students Section -->
+    <div class="flex flex-col gap-ds-lg pt-ds-lg">
+      <!-- Section Header -->
+      <div class="flex flex-col">
+        <span class="content-sm-high-emphasis text-emphasis-mid">
+          {{ t("general.allowed_for_pickup.txt") }}
+        </span>
+      </div>
+
+      <!-- Student Cards -->
+      <div class="flex flex-col gap-ds-sm">
+        @for (student of delegateInfo.students; track student.id) {
+          <app-delegate-student-card
+            [student]="student"
+            (selectionChange)="onStudentSelectionChange(student.id, $event)"
+          />
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <ds-button
+    [fullWidth]="true"
+    variant="tertiary"
+    size="lg"
+    [iconStart]="faCheck"
+    [disabled]="!canSubmit()"
+    [loading]="isSubmitting()"
+    (click)="submitRequest()"
+  >
+    {{ t("global.request.btn") }}
+  </ds-button>
+</div>

@@ -1,0 +1,7 @@
+.env
+**.json
+**.mobileprovision
+**.base64
+**.original
+**.p12
+**.p8

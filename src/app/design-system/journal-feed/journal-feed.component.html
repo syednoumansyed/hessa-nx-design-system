@@ -1,0 +1,78 @@
+@if (isMobile()) {
+  <!-- Mobile Horizontal Cards -->
+  @if (weeklyJournals().length || dailyJournals().length) {
+    <div class="flex gap-ds-md overflow-x-auto px-ds-sm py-ds-sm">
+      @for (journal of allJournals(); track journal.studentId) {
+        <ds-journal-mobile-card
+          [journal]="journal"
+          [showNewChip]="shouldShowNewChipForMobile(journal)"
+          (cardClicked)="onJournalClick($event)"
+        ></ds-journal-mobile-card>
+      }
+    </div>
+  }
+} @else {
+  <div class="mt-ds-sm">
+    <div
+      class="rounded-ds-2xl border-4 border-stroke-mid bg-surface-primary p-ds-lg"
+    >
+      <!-- Chips Section -->
+      <div class="my-ds-sm">
+        <div class="flex items-center gap-ds-sm">
+          @if (showNewChip()) {
+            <!--            todo : Commented temporarily until new design received for it-->
+            <!--            <app-ds-chip-->
+            <!--              variant="default"-->
+            <!--              startIcon="star-journals-new-feed"-->
+            <!--              text="New"-->
+            <!--            ></app-ds-chip>-->
+          }
+          <app-ds-chip
+            startIcon="journals-feed"
+            variant="primary"
+            text="Journals"
+          ></app-ds-chip>
+        </div>
+      </div>
+
+      <!-- Weekly Journals Section -->
+      @if (weeklyJournals().length) {
+        <div class="mb-ds-lg">
+          <p class="heading-h4-high-emphasis mb-ds-md mt-ds-sm p-ds-sm">
+            {{ "journals.weekly_journals.title" | dsTranslate }}
+          </p>
+
+          <div class="space-y-ds-sm">
+            @for (journal of weeklyJournals(); track journal.studentId) {
+              <ds-journal-card
+                [journal]="journal"
+                (cardClicked)="onJournalClick($event)"
+              ></ds-journal-card>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Daily Journals Section -->
+      @if (dailyJournals().length) {
+        <div>
+          @if (weeklyJournals().length) {
+            <p class="heading-h4-high-emphasis mb-ds-md mt-ds-lg p-ds-sm">
+              {{ "journals.daily.title" | dsTranslate }}
+              {{ "journals.journals.title" | dsTranslate }}
+            </p>
+          }
+
+          <div class="space-y-ds-sm">
+            @for (journal of dailyJournals(); track journal.studentId) {
+              <ds-journal-card
+                [journal]="journal"
+                (cardClicked)="onJournalClick($event)"
+              ></ds-journal-card>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}

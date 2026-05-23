@@ -1,0 +1,51 @@
+<div class="px-6 py-4" *transloco="let t">
+  <div class="text-center">
+    <div
+      class="FeaturedIcon mx-auto flex h-12 w-12 items-center justify-center rounded-[1.75rem] border-[0.5rem] border-[#FFFAEB] bg-[#FEF0C7] p-3"
+    >
+      <div class="CheckCircle flex h-6 w-6 flex-col items-start justify-start">
+        <fa-icon
+          class="text-[#ECAD01]"
+          [icon]="faCircleExclamation"
+          size="lg"
+        />
+      </div>
+    </div>
+    <div class="bold black mt-3 text-base">
+      {{ t("content_management.select_recipient_publish.title") }}
+      {{ contentTypeText() }}
+    </div>
+    <div class="mb-4 mt-2 text-gray-400">
+      {{ t("content_management.select_recipient_publish.txt") }}
+      {{ contentTypeText() }}
+      {{ t("content_management.select_recipient_publish_to_students.txt") }}
+    </div>
+  </div>
+  <form [formGroup]="publishForm">
+    @for (control of formConfig(); track $index) {
+      <div class="mt-4 flex-1">
+        <app-form-control-generator
+          [control]="control"
+        ></app-form-control-generator>
+      </div>
+    }
+    <div class="mt-4 text-right">
+      <ion-button
+        hesBtn
+        [hesColor]="'gray'"
+        [hesSize]="'md'"
+        (click)="cancel()"
+        class="mr-4"
+        >{{ t("global.cancel.btn") }}</ion-button
+      >
+      <ion-button
+        hesBtn
+        hesColor="primary"
+        (click)="submit()"
+        [disabled]="publishForm.invalid"
+      >
+        {{ t("global.submit.btn") }}
+      </ion-button>
+    </div>
+  </form>
+</div>

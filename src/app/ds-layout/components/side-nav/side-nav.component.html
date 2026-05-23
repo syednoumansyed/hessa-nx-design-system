@@ -1,0 +1,149 @@
+<ion-menu
+  menuId="main-menu"
+  contentId="main-content"
+  class="layout-bg hidden h-full lg:block"
+  [ngClass]="isSideNavCollapsed() ? 'w-24' : 'w-64'"
+  *transloco="let t"
+>
+  <!-- Desktop Header -->
+  <ion-header id="desktop-header" class="flex-shrink-0 shadow-none">
+    <ion-toolbar
+      class="flex h-full min-h-[88px] items-center"
+      [ngClass]="
+        isSideNavCollapsed()
+          ? 'side-menu-toolbar-collapsed'
+          : 'side-menu-toolbar'
+      "
+    >
+      <!-- Desktop Logo (shown when expanded) -->
+      @if (!isSideNavCollapsed()) {
+        <ion-title class="flex items-center gap-3 pl-4">
+          <img
+            src="assets/logos/nx-logo-black.svg"
+            alt="nx"
+            class="h-6 w-auto"
+          />
+        </ion-title>
+      }
+
+      <!-- Desktop Menu Toggle Button -->
+      <ion-buttons
+        slot="end"
+        [ngClass]="{ 'w-full justify-center': isSideNavCollapsed() }"
+      >
+        <button
+          (click)="layoutService.toggleSideNav()"
+          class="cursor-pointer rounded-lg p-2 text-2xl transition-colors hover:bg-brand-35"
+          [class.mx-auto]="isSideNavCollapsed()"
+        >
+          <ng-icon name="menu"></ng-icon>
+        </button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+
+  <!-- Desktop Menu Content -->
+  <ion-content
+    [ngClass]="isSideNavCollapsed() ? 'menu-content-collapsed' : 'menu-content'"
+  >
+    <!-- School & Academic Year Selectors (Desktop only) -->
+    @if (!isSideNavCollapsed()) {
+      <ng-content></ng-content>
+    }
+
+    <!-- Desktop Menu Items -->
+    <div id="menu-items" class="flex flex-col gap-2 px-2 py-3">
+      @for (item of allMenuItems(); track item.path) {
+        <!-- Tooltip keeps menu labels discoverable when the navigation is collapsed -->
+        <div
+          [ngClass]="isActive(item.path) ? 'active-menu-item' : ''"
+          class="my-2 flex cursor-pointer items-center gap-2 rounded-lg p-2 transition-colors hover:bg-surface-hover"
+          [class.justify-center]="isSideNavCollapsed()"
+          [attr.data-menu-path]="item.path"
+          [id]="`menu-item-${item.path}`"
+          dsTooltip
+          dsTooltipPosition="right"
+          [dsTooltipTitle]="t(item?.titleI18nKey ?? '')"
+          [dsTooltipEnabled]="isSideNavCollapsed()"
+          (click)="sendClickEvent(item, `menu-item-${item.path}`, $event)"
+          (mouseenter)="playLottieAnimation($event, item.path)"
+          (mouseleave)="stopLottieAnimation($event, item.path)"
+        >
+          @if (item.iconName) {
+            <ds-animated-icon
+              [icon]="item.iconName"
+              [loop]="false"
+              [autoplay]="isActive(item.path)"
+              [size]="'lg'"
+              (animationReady)="savePlayFunctionForItem($event, item)"
+              class="flex-shrink-0 transition-transform duration-200"
+              [ngClass]="{ 'scale-110': isActive(item.path) }"
+            ></ds-animated-icon>
+          }
+          @if (!isSideNavCollapsed()) {
+            <span class="ml-2 text-base text-emphasis-high">
+              {{ t(item?.titleI18nKey ?? "") }}
+            </span>
+            @if (item?.isShowNavIcon) {
+              <ng-icon
+                name="chevron-right"
+                class="ml-auto text-2xl rtl:rotate-180"
+              ></ng-icon>
+            }
+            @if (item.path === "chat" && unreadChatCount() > 0) {
+              <div
+                class="single-line-caption-low-emphasis inline-flex h-[20px] w-[20px] items-center justify-center rounded-full bg-error-ds-400 text-white"
+              >
+                {{ unreadChatCount() }}
+              </div>
+            }
+          }
+        </div>
+      }
+    </div>
+  </ion-content>
+
+  @if (!isSideNavCollapsed()) {
+    <div class="bg-brand-40 px-2 py-4">
+      <div class="text-sm text-emphasis-mid">v{{ appVersion() }}</div>
+      <div class="text-sm text-emphasis-mid">
+        {{ t("global.copyright.txt") }} {{ copyRightYear }}
+        {{ t("global.app_name.txt") }}
+      </div>
+    </div>
+  }
+
+  <!-- Desktop User Card -->
+  <ds-menu
+    [items]="userMenuItems"
+    [menuPosition]="userMenuPosition"
+    (menuOpened)="onUserMenuOpened()"
+    (menuClosed)="onUserMenuClosed()"
+  >
+    @if (!isSideNavCollapsed() && isShowBottomUserCard()) {
+      <div
+        class="flex items-center gap-3 border-t border-gray-200 bg-brand-40 px-4 py-3"
+      >
+        <app-ds-avatar [fullName]="username() ?? ''"></app-ds-avatar>
+        <div class="min-w-0 flex-1">
+          <p class="truncate text-sm font-medium">
+            {{ username() ?? "" }}
+          </p>
+          <p class="text-xs text-gray-500">
+            {{ typeDisplay() }}
+          </p>
+        </div>
+        <app-ds-icon
+          [icon]="arrowIconForMenu"
+          [class.rotate-180]="isUserMenuOpen"
+        ></app-ds-icon>
+      </div>
+    } @else {
+      <div
+        class="flex justify-center border-t border-gray-200 bg-surface-primary px-2 py-3"
+      >
+        <app-ds-avatar [fullName]="username() ?? ''" size="sm"></app-ds-avatar>
+      </div>
+    }
+  </ds-menu>
+</ion-menu>

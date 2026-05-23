@@ -1,0 +1,107 @@
+ion-checkbox.hes-checkbox {
+  --border-color: #d0d5dd;
+  --border-color-checked: var(--h-color-primary-400);
+  --border-radius: 0.35rem;
+  --border-style: solid;
+  --border-width: 1px;
+
+  --checkbox-background: #fff;
+  --checkbox-background-checked: var(--h-color-primary-25);
+
+  --size: 1.25rem;
+
+  &:hover {
+    --border-color: var(--border-color-checked);
+    --checkbox-background: var(--checkbox-background-checked);
+  }
+
+  &:focus,
+  &:active {
+    --border-color: var(--h-color-primary-100);
+    &::part(container) {
+      box-shadow: 0px 0px 0px 4px var(--h-color-primary-25);
+    }
+  }
+
+  &.checkbox-indeterminate::part(container) {
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Pro 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2024 Fonticons, Inc.--><path fill="%23ecad01" d="M432 256c0 13.3-10.7 24-24 24L40 280c-13.3 0-24-10.7-24-24s10.7-24 24-24l368 0c13.3 0 24 10.7 24 24z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 0.75rem;
+  }
+
+  &.checkbox-checked::part(container) {
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="%23ecad01" d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 0.75rem;
+  }
+
+  &::part(mark) {
+    display: none;
+  }
+
+  &.hes-checkbox--sm {
+    --size: 1rem;
+    --border-radius: 0.25rem;
+    color: #344054;
+
+    /* Text sm/Medium */
+    font-size: 0.875rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 1.25rem; /* 142.857% */
+    &.checkbox-checked::part(container) {
+      background-size: 0.75rem;
+    }
+    &::part(label) {
+      margin-inline: 0.5rem 0;
+    }
+  }
+  &.hes-checkbox--md {
+    --size: 1.25rem;
+    --border-radius: 0.35rem;
+    color: #344054;
+
+    /* Text md/Medium */
+
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 1.5rem; /* 150% */
+    &.checkbox-checked::part(container) {
+      background-size: 0.875rem;
+    }
+    &::part(label) {
+      margin-inline: 0.75rem 0;
+    }
+  }
+
+  &.checkbox-disabled {
+    --checkmark-color: #212121;
+    --border-color: #d0d5dd;
+    --border-color-checked: var(--h-color-primary-400);
+    opacity: 1;
+    &.checkbox-checked::part(container) {
+      //todo: Remove the comment once we are satisfied with look in all over of application
+      //background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="%23eaecf0" d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>');
+    }
+    &.checkbox-indeterminate::part(container) {
+      background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="%23eaecf0" d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg>');
+    }
+    &::part(label) {
+      color: #212121 !important;
+      opacity: 0.6 !important;
+    }
+    &::part(container) {
+      opacity: 0.7;
+    }
+  }
+
+  &.checkbox-checked.view-state {
+    &::part(label) {
+      color: #344054 !important;
+      opacity: 1 !important;
+    }
+  }
+}

@@ -1,0 +1,26 @@
+@switch (type()) {
+  @case ("select") {
+    <app-hes-searchable-select
+      class="w-full"
+      [placeholder]="params.placeholder"
+      [condensed]="true"
+      [data]="controlListing()"
+      [formControl]="filterValue"
+      [searchable]="false"
+      [fill]="'outline'"
+    ></app-hes-searchable-select>
+  }
+  @case ("date") {
+    <tui-input-date [formControl]="dateControl" tuiTextfieldSize="s">
+      {{ params.placeholder }}
+      <input tuiTextfield />
+    </tui-input-date>
+  }
+  @default {
+    <input
+      [formControl]="filterValue"
+      [placeholder]="params.placeholder"
+      class="me-4 flex h-8 w-full items-center justify-start gap-2 rounded-lg border border-gray-300 bg-white px-3.5 py-1 text-xs font-normal leading-normal text-gray-500 shadow-xs outline-0 placeholder:text-gray-500"
+    />
+  }
+}

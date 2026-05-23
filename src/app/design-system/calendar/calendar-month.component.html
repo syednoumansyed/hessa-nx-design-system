@@ -1,0 +1,96 @@
+<div class="w-full max-w-[446px]">
+  <!-- month name and switcher-->
+  <div class="mb-5 flex items-center justify-between gap-2 text-content-high">
+    <span class="heading-h4-high-emphasis">
+      {{ monthName() }} {{ year() }}
+    </span>
+    <div class="flex items-center gap-ds-lg">
+      <button
+        class="flex h-8 w-8 items-center justify-center rtl:rotate-180"
+        (click)="prevMonth()"
+        aria-label="Previous Month"
+        [disabled]="isPrevMonthDisabled()"
+        [ngClass]="{
+          'opacity-50': isPrevMonthDisabled()
+        }"
+      >
+        <app-ds-icon [icon]="arrowleft" size="xl"></app-ds-icon>
+      </button>
+      <button
+        class="flex h-8 w-8 items-center justify-center rounded rtl:rotate-180"
+        (click)="nextMonth()"
+        aria-label="Next Month"
+        [disabled]="isNextMonthDisabled()"
+        [ngClass]="{
+          'opacity-50': isNextMonthDisabled()
+        }"
+      >
+        <app-ds-icon [icon]="arrowRight" size="xl"></app-ds-icon>
+      </button>
+    </div>
+  </div>
+  @if (showSummary()) {
+    <ds-calendar-summary
+      [summaryConfig]="summaryConfig()"
+    ></ds-calendar-summary>
+  }
+  <div
+    class="flex w-full flex-col gap-ds-2xl rounded-3xl border-2 border-stroke-mid bg-white px-ds-lg py-ds-md"
+  >
+    <div class="flex justify-between">
+      @for (d of effectiveDayLabels(); track d; let i = $index) {
+        <ds-calendar-cell [label]="d" [isWeekLabel]="true" [dayIndex]="i" />
+      }
+    </div>
+    @if (showPlaceholder()) {
+      <div
+        class="flex w-full flex-col items-center justify-center gap-ds-md"
+        data-calendar-placeholder
+      >
+        <app-ds-icon icon="calender-placeholder" size="100%"></app-ds-icon>
+
+        @if (placeholderConfig()?.title) {
+          <h3 class="single-line-md-high-emphasis text-emphasis-high">
+            {{ placeholderConfig()!.title }}
+          </h3>
+        }
+        @if (placeholderConfig()?.subtitle) {
+          <p class="content-sm-default text-emphasis-mid">
+            {{ placeholderConfig()!.subtitle }}
+          </p>
+        }
+      </div>
+    } @else {
+      @for (week of weeks(); track week) {
+        <div class="flex justify-between">
+          @for (day of week; track day; let i = $index) {
+            <ds-calendar-cell
+              [date]="day.date"
+              [isWeekLabel]="false"
+              [dayIndex]="i"
+              [event]="day.event"
+              [isOutOfMonth]="day.date.getMonth() !== month()"
+            />
+          }
+        </div>
+      }
+    }
+    @if (alert()) {
+      <div>
+        <alert-message
+          [title]="alert()!.title"
+          [message]="alert()!.message"
+          [showCloseButton]="false"
+          [type]="'exciting'"
+        ></alert-message>
+      </div>
+    }
+  </div>
+  <div>
+    <div calendar-status class="mt-ds-sm flex justify-center">
+      @if (status()) {
+        <span class="content-xs-mid-emphasis" [innerHTML]="status()"></span>
+      }
+    </div>
+  </div>
+</div>

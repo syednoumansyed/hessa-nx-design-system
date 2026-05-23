@@ -1,0 +1,13 @@
+<ng-lottie
+  #lottieComponent
+  [options]="{
+    path: iconPath(),
+    loop: loop(),
+    autoplay: autoplay(),
+    renderer: 'svg'
+  }"
+  [width]="resolvedWidth()"
+  [height]="resolvedHeight()"
+  class="flex-shrink-0 transition-transform duration-200"
+  (animationCreated)="onAnimationCreated($event, lottieComponent)"
+></ng-lottie>

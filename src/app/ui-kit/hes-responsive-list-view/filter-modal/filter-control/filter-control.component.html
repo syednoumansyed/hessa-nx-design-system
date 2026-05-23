@@ -1,0 +1,62 @@
+@if (isEmptyList()) {
+  <div class="border-b border-[#EAECF0] pb-5">
+    <div
+      (click)="onToggleCollapsed()"
+      [class.cursor-pointer]="isCollapsedEnable()"
+      class="mb-4 flex items-center justify-between text-lg font-semibold text-[#272525]"
+    >
+      {{ params()?.headerName }}
+      @if (isCollapsedEnable()) {
+        <div class="cursor-pointer p-2" [class.rotate-180]="contentShown()">
+          <fa-icon
+            class="cursor-pointer text-[#272525]"
+            [icon]="angalDownIcon"
+          />
+        </div>
+      }
+    </div>
+    @if (contentShown()) {
+      <div>
+        @switch (type()) {
+          @case ("select") {
+            <app-hes-searchable-select
+              class="w-full md:max-w-[300px]"
+              [placeholder]="params()?.filterPlaceholder"
+              [condensed]="true"
+              [data]="controlListing()"
+              [formControl]="filterValue"
+              [searchable]="false"
+              [fill]="'outline'"
+            ></app-hes-searchable-select>
+          }
+          @case ("date") {
+            <tui-input-date
+              class="w-full md:max-w-[250px]"
+              [formControl]="filterValue"
+              tuiTextfieldSize="s"
+            >
+              {{ params()?.filterPlaceholder }}
+              <input tuiTextfield title="{{ params()?.filterPlaceholder }}" />
+            </tui-input-date>
+          }
+          @case ("chip-selector") {
+            <app-hes-chip-selector
+              [formControl]="filterValue"
+              [options]="controlListing()"
+              [multiple]="params()?.isMultpleFilterSelect ?? false"
+            />
+          }
+
+          @default {
+            <input
+              [formControl]="filterValue"
+              [placeholder]="params()?.filterPlaceholder"
+              class="me-4 flex h-8 w-full items-center justify-start gap-2 rounded-lg border border-gray-300 bg-white px-3.5 py-1 text-xs font-normal leading-normal text-gray-500 shadow-xs outline-0 placeholder:text-gray-500"
+              title="{{ params()?.filterPlaceholder }}"
+            />
+          }
+        }
+      </div>
+    }
+  </div>
+}

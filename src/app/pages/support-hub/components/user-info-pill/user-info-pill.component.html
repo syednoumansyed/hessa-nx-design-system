@@ -1,0 +1,32 @@
+<div
+  class="flex w-fit items-center gap-ds-sm rounded-full bg-neutral-cool-50 p-ds-sm pr-ds-lg"
+>
+  <app-ds-avatar
+    [fullName]="user().fullName"
+    [imageUrl]="user().imageUrl"
+    [color]="user().color ?? defaultColor"
+    size="xl"
+    [includeBorder]="false"
+  />
+
+  <div class="flex flex-col whitespace-nowrap">
+    <span class="single-line-sm-mid-emphasis text-emphasis-high">
+      {{ user().fullName }}
+    </span>
+    @if (user().subtitle) {
+      <span class="single-line-xs-low-emphasis text-emphasis-mid">
+        {{ user().subtitle }}
+      </span>
+    }
+  </div>
+
+  @if (showCloseButton()) {
+    <button
+      type="button"
+      class="ms-ds-sm flex items-center justify-center text-emphasis-mid hover:text-emphasis-high"
+      (click)="onCloseClick()"
+    >
+      <app-ds-icon [icon]="closeIcon" size="2xl" />
+    </button>
+  }
+</div>

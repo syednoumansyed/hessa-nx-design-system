@@ -1,0 +1,12 @@
+<div
+  *transloco="let t"
+  class="flex items-center justify-center gap-ds-md bg-surface-secondary px-ds-xl py-ds-md"
+>
+  <app-hes-icon [faIcon]="snoozeIcon" class="text-emphasis-mid"></app-hes-icon>
+  <span class="content-md-default text-emphasis-high">
+    <span>{{ displayName() }} </span>
+    <span class="content-md-high-emphasis">{{
+      t("chats.paused_notifications.txt")
+    }}</span>
+  </span>
+</div>

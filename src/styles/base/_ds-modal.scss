@@ -1,0 +1,44 @@
+// =============================================================================
+// Modal Utilities
+// =============================================================================
+
+.ds-modal-title {
+  // Single line/lg/high-emphasis
+  font-size: var(--font-size-2xl);
+  line-height: var(--font-line-height-single);
+  font-weight: var(--font-weight-extrabold);
+  // content/highEmphasis
+  color: var(--content-high-emphasis);
+  margin-top: 4px;
+}
+
+.ds-modal-subtitle {
+  // content/sm/mid-emphasis
+  font-size: var(--font-size-sm);
+  line-height: var(--font-line-height-sm);
+  font-weight: var(--font-weight-semibold);
+  // content/midEmphasis
+  color: var(--content-mid-emphasis);
+}
+
+.ds-modal-close-btn {
+  position: absolute;
+  top: 1rem;
+  inset-inline-end: 1rem;
+  display: none;
+  height: 24px;
+  width: 24px;
+  padding: 0;
+  border-radius: 9999px;
+  background-color: var(--surface-secondary);
+  color: var(--content-high-emphasis);
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: var(--surface-tertiary);
+  }
+
+  @media (min-width: 768px) {
+    display: block;
+  }
+}

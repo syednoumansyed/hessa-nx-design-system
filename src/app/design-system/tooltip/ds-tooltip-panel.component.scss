@@ -1,0 +1,74 @@
+.ds-tooltip-panel {
+  position: relative;
+  --ds-tooltip-arrow-size: 12px;
+  --ds-tooltip-arrow-size-half: calc(var(--ds-tooltip-arrow-size) / 2);
+  --ds-tooltip-arrow-radius: 3px;
+}
+
+.ds-tooltip-panel.above::after,
+.ds-tooltip-panel.below::after,
+.ds-tooltip-panel.left::after,
+.ds-tooltip-panel.right::after,
+.ds-tooltip-panel.above-left::after,
+.ds-tooltip-panel.above-right::after {
+  content: "";
+  position: absolute;
+  width: var(--ds-tooltip-arrow-size);
+  height: var(--ds-tooltip-arrow-size);
+  background: inherit;
+  z-index: -1;
+}
+
+.ds-tooltip-panel.above::after {
+  left: 50%;
+  top: calc(100% - var(--ds-tooltip-arrow-size-half));
+  transform: translateX(-50%) rotate(45deg);
+  border-bottom-right-radius: var(--ds-tooltip-arrow-radius);
+}
+.ds-tooltip-panel.below::after {
+  left: 50%;
+  bottom: calc(100% - var(--ds-tooltip-arrow-size-half));
+  transform: translateX(-50%) rotate(45deg);
+  border-top-left-radius: var(--ds-tooltip-arrow-radius);
+}
+
+.ds-tooltip-panel.above-left::after {
+  left: var(--ds-tooltip-arrow-offset, 16px);
+  top: calc(100% - var(--ds-tooltip-arrow-size-half));
+  transform: rotate(45deg);
+  border-bottom-right-radius: var(--ds-tooltip-arrow-radius);
+}
+
+.ds-tooltip-panel.above-right::after {
+  right: var(--ds-tooltip-arrow-offset, 16px);
+  top: calc(100% - var(--ds-tooltip-arrow-size-half));
+  transform: rotate(45deg);
+  border-bottom-right-radius: var(--ds-tooltip-arrow-radius);
+}
+
+.ds-tooltip-panel:dir(ltr).left::after {
+  top: 50%;
+  right: calc(-1 * var(--ds-tooltip-arrow-size-half));
+  transform: translateY(-50%) rotate(45deg);
+  border-top-right-radius: var(--ds-tooltip-arrow-radius);
+}
+.ds-tooltip-panel:dir(ltr).right::after {
+  top: 50%;
+  left: calc(-1 * var(--ds-tooltip-arrow-size-half));
+  transform: translateY(-50%) rotate(45deg);
+  border-bottom-left-radius: var(--ds-tooltip-arrow-radius);
+}
+
+.ds-tooltip-panel:dir(rtl).right::after {
+  top: 50%;
+  right: calc(-1 * var(--ds-tooltip-arrow-size-half));
+  transform: translateY(-50%) rotate(45deg);
+  border-top-right-radius: var(--ds-tooltip-arrow-radius);
+}
+
+.ds-tooltip-panel:dir(rtl).left::after {
+  top: 50%;
+  left: calc(-1 * var(--ds-tooltip-arrow-size-half));
+  transform: translateY(-50%) rotate(45deg);
+  border-bottom-left-radius: var(--ds-tooltip-arrow-radius);
+}

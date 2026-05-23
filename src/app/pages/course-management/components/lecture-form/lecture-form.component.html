@@ -1,0 +1,46 @@
+<ng-container *transloco="let t">
+  <form
+    [formGroup]="form"
+    class="flex w-full flex-col items-start justify-start gap-4"
+  >
+    @if (isFormShow()) {
+      <div class="grid w-full grid-cols-1 gap-8 gap-y-4">
+        @for (control of formConfig(); track $index) {
+          <div class="flex-1">
+            <app-ds-form-control-generator
+              [control]="control"
+            ></app-ds-form-control-generator>
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="w-full gap-8 gap-y-10">
+        @for (control of viewformConfig(); track control.formControlName) {
+          <div class="flex-1">
+            <app-ds-form-control-generator
+              [control]="control"
+            ></app-ds-form-control-generator>
+          </div>
+        }
+      </div>
+      <div class="mb-2 mt-2 grid w-full gap-8 gap-y-4">
+        <div>
+          <p class="text-base font-semibold">
+            {{ lecture!.dayOfWeek | dayOfWeek }}
+          </p>
+          <div class="flex items-center">
+            <p class="mr-2 text-sm text-slate-500">
+              <fa-icon
+                class="text-[#667085]"
+                [icon]="faClock"
+                size="sm"
+              ></fa-icon>
+              {{ lecture!.startTime | time12hr }} -
+              {{ lecture!.endTime | time12hr }}
+            </p>
+          </div>
+        </div>
+      </div>
+    }
+  </form>
+</ng-container>

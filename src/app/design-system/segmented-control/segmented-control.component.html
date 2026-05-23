@@ -1,0 +1,24 @@
+<div
+  class="inline-flex items-center gap-ds-sm rounded-ds-xl border border-[var(--stroke-color-black-04)] bg-[var(--surface-brand-subtle)] px-ds-sm py-ds-xs"
+  role="tablist"
+>
+  @for (option of options(); track option.id) {
+    <button
+      type="button"
+      role="tab"
+      class="inline-flex max-h-6 items-center justify-center rounded-ds-lg px-[10px] py-ds-md transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--surface-action)]"
+      [attr.aria-selected]="isActive(option.id)"
+      [attr.aria-disabled]="option.disabled || null"
+      [disabled]="option.disabled"
+      [ngClass]="{
+        'single-line-xs-mid-emphasis bg-[var(--surface-action)] text-emphasis-high':
+          isActive(option.id),
+        'single-line-xs-low-emphasis text-emphasis-high': !isActive(option.id),
+        'cursor-not-allowed opacity-60': option.disabled,
+      }"
+      (click)="onSelect(option)"
+    >
+      {{ option.label }}
+    </button>
+  }
+</div>

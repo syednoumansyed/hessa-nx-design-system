@@ -1,0 +1,60 @@
+<div *transloco="let t" class="flex h-[80vh] max-h-[80vh] flex-col">
+  <!-- Fixed Header -->
+  <div class="shrink-0 border-b border-neutral-200 bg-white p-4">
+    <h2 class="heading-h3-high-emphasis mb-4">
+      {{ t("support.icon.select.label") }}
+    </h2>
+    <app-ds-input
+      [formControl]="searchControl"
+      [placeholder]="t('support.icon_chooser.search.placeholder')"
+      [iconEnd]="searchIcon"
+    />
+  </div>
+
+  <!-- Scrollable Content -->
+  <ion-content class="white-bg min-h-0 flex-1">
+    <div class="grid grid-cols-[repeat(auto-fill,minmax(48px,1fr))] gap-3 p-4">
+      @for (iconOption of filteredIcons(); track iconOption.name) {
+        <button
+          type="button"
+          class="flex h-12 w-12 items-center justify-center rounded-lg border-2 transition-all hover:bg-neutral-100"
+          [class.border-brand-500]="selectedIcon() === iconOption.name"
+          [class.bg-brand-50]="selectedIcon() === iconOption.name"
+          [class.border-neutral-200]="selectedIcon() !== iconOption.name"
+          (click)="selectIcon(iconOption)"
+          [title]="iconOption.name"
+        >
+          <app-ds-icon [icon]="iconOption.icon" size="xl" />
+        </button>
+      }
+    </div>
+    @if (filteredIcons().length === 0) {
+      <div class="flex h-32 items-center justify-center text-content-mid">
+        {{ t("support.icon_chooser.no_results") }}
+      </div>
+    }
+  </ion-content>
+
+  <!-- Fixed Footer -->
+  <div
+    class="grid shrink-0 grid-cols-2 gap-ds-lg border-t border-neutral-200 bg-white p-4"
+  >
+    <ds-button
+      variant="secondary"
+      size="md"
+      [fullWidth]="true"
+      (click)="cancel()"
+    >
+      {{ t("global.cancel.btn") }}
+    </ds-button>
+    <ds-button
+      variant="primary"
+      size="md"
+      [fullWidth]="true"
+      (click)="confirm()"
+      [disabled]="!selectedIcon()"
+    >
+      {{ t("global.select.btn") }}
+    </ds-button>
+  </div>
+</div>

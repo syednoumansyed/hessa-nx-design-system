@@ -1,0 +1,83 @@
+import { JournalType, UserProfileColors } from '@shared/enums';
+import { IPaginatedResponse } from '@shared/interfaces';
+
+export interface JournalEntryDTO {
+  id: number | null;
+  type: JournalType;
+  journalDate: string;
+  journalEndDate: string;
+  status: string;
+  publishDate: string | null;
+  acknowledgementComment: string | null;
+  guardianId: number | null;
+  viewedByGuardian: boolean | null;
+  updatedAt: string | null;
+  createdAt: string | null;
+  semesterId: number | null;
+  semesterName: string | null;
+  classId: number;
+  classArName: string;
+  classEnName: string;
+  levelId: number;
+  levelArName: string;
+  levelEnName: string;
+  roleId: number;
+  roleArName: string;
+  roleEnName: string;
+  studentId: number;
+  arFullName: string;
+  enFullName: string;
+  userId: number;
+  nationalId: string;
+  phoneNumber: string | null;
+  countryCode: string | null;
+  gender: string;
+  dateOfBirth: string;
+  pioneerId: string;
+  registrationDate: string;
+  needGuardianAttention: boolean | null;
+  avatar?: string;
+  profileColor?: UserProfileColors;
+}
+
+export interface LatestJournalEntryDTO {
+  id: number;
+  studentId: number;
+  semesterId: number | null;
+  journalDate: string;
+  journalEndDate: string | null;
+  publishDate: string | null;
+  type: JournalType;
+  status: string;
+  taskDone: string | null;
+  meal: string | null;
+  lunch: string | null;
+  snack: string | null;
+  skillClubs: string | null;
+  healthAndCare: string | null;
+  healthAndCareCreatedBy: number | null;
+  englishTeacherNote: string | null;
+  englishTeacherNoteCreatedBy: number | null;
+  scienceTeacherNote: string | null;
+  scienceTeacherNoteCreatedBy: number | null;
+  arabicTeacherNote: string | null;
+  arabicTeacherNoteCreatedBy: number | null;
+  islamicTeacherNote: string | null;
+  islamicTeacherNoteCreatedBy: number | null;
+  acknowledgementComment: string | null;
+  guardianId: number | null;
+  viewedByGuardian: boolean;
+  needGuardianAttention: boolean;
+  createdAt: string;
+  updatedAt: string;
+  createdBy: number;
+  updatedBy: number;
+  tenantId: number;
+  isRead: boolean;
+  arFullName: string;
+  enFullName: string;
+  profileColor?: UserProfileColors;
+  imageUrl?: string;
+}
+
+export type JournalResponseDTO = IPaginatedResponse<JournalEntryDTO[]>;

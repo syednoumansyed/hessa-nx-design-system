@@ -1,0 +1,120 @@
+<div
+  *transloco="let t"
+  class="flex flex-col gap-ds-xl overflow-hidden rounded-ds-xl border-4 border-stroke-black-08 bg-white p-ds-lg"
+>
+  <!-- Status Badge -->
+  <div
+    class="inline-flex w-fit items-center rounded-ds-sm border border-stroke-black-08 px-ds-lg py-ds-xs"
+    [ngClass]="statusBadgeClasses"
+  >
+    <span class="single-line-xs-semibold" [ngClass]="statusTextClasses">
+      {{ isActive ? t("enum.ACTIVE") : t("enum.INACTIVE") }}
+    </span>
+  </div>
+
+  <!-- Delegate Photo -->
+  <div
+    class="relative flex h-[191px] w-full items-center justify-center overflow-hidden rounded-ds-md bg-pastels-neutralGray-50"
+  >
+    @if (delegate.url) {
+      <img
+        [src]="delegate.url"
+        [alt]="delegate.displayName"
+        class="h-full w-full object-cover"
+      />
+    } @else {
+      <app-ds-icon
+        icon="user"
+        size="xl"
+        class="text-emphasis-mid"
+      ></app-ds-icon>
+    }
+    <!-- Expand Icon -->
+    <button
+      class="expand-btn-bg absolute bottom-1 right-1 flex items-center rounded-ds-sm p-ds-sm text-white"
+      (click)="handleExpandImage()"
+    >
+      <app-ds-icon [icon]="expand"></app-ds-icon>
+    </button>
+  </div>
+
+  <!-- Content Section -->
+  <div class="flex flex-col gap-ds-lg">
+    <!-- Header: Name and Menu -->
+    <div class="flex flex-col gap-ds-sm">
+      <div class="flex items-center justify-between gap-ds-md">
+        <p class="heading-h4-high-emphasis flex-1 truncate text-emphasis-high">
+          {{ delegate.displayName }}
+        </p>
+        <ds-responsive-menu
+          [items]="menuItems"
+          [triggerClass]="[
+            'flex',
+            'h-8',
+            'w-8',
+            'items-center',
+            'justify-center',
+            'rounded-full',
+            'border',
+            'border-white',
+            'bg-brand',
+            'text-black-0',
+          ]"
+          [defaultTriggerIcon]="overflow"
+          (itemSelected)="handleMenuItemSelected($event)"
+        ></ds-responsive-menu>
+      </div>
+      <p class="single-line-caption-mid-emphasis text-emphasis-mid">
+        {{ delegate.expiryDate | hesDate }}
+      </p>
+    </div>
+
+    <!-- Student Chips -->
+    <div class="flex flex-wrap items-center gap-ds-sm">
+      @for (student of delegate.students; track student.id; let i = $index) {
+        <span
+          class="inline-flex items-center rounded-full border border-stroke-black-08 px-ds-lg py-ds-sm"
+          [ngClass]="getStudentChipColor(i)"
+        >
+          <span class="single-line-sm-mid-emphasis text-emphasis-high">
+            {{ student.displayName }}
+          </span>
+        </span>
+      }
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="flex w-full items-center gap-ds-md">
+    @if (isActive) {
+      <ds-button
+        [variant]="'dangerStroke'"
+        [size]="'md'"
+        class="flex-1"
+        [fullWidth]="true"
+        (click)="handleToggleStatus()"
+      >
+        {{ t("global.de_activate.btn") }}
+      </ds-button>
+      <ds-button
+        [variant]="'primary'"
+        [size]="'md'"
+        class="flex-1"
+        [fullWidth]="true"
+        (click)="handleShowQr()"
+      >
+        {{ t("global.show_qr.txt") }}
+      </ds-button>
+    } @else if (!isExpired) {
+      <ds-button
+        [variant]="'secondary'"
+        [size]="'md'"
+        class="w-full"
+        [fullWidth]="true"
+        (click)="handleToggleStatus()"
+      >
+        {{ t("global.activate_now.txt") }}
+      </ds-button>
+    }
+  </div>
+</div>

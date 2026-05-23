@@ -1,0 +1,11 @@
+<form [formGroup]="form">
+  <div class="grid grid-cols-1 gap-8 gap-y-4 self-stretch">
+    @for (control of formConfig(); track $index) {
+      <div class="flex-1">
+        <app-form-control-generator
+          [control]="control"
+        ></app-form-control-generator>
+      </div>
+    }
+  </div>
+</form>

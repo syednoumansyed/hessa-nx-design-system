@@ -1,0 +1,12 @@
+<div *transloco="let t">
+  @if (status === StudentSubmissionStatus.SUBMITTED) {
+    <div
+      (click)="navigateToSubmission()"
+      class="cursor-pointer font-semibold text-primary underline decoration-yellow-500"
+    >
+      {{ translate("content_management.view_submission.btn") }}
+    </div>
+  } @else {
+    <div>-</div>
+  }
+</div>

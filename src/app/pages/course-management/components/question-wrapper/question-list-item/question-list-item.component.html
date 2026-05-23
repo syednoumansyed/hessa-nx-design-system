@@ -1,0 +1,65 @@
+@if (isMobile) {
+  <div
+    (click)="onToggle()"
+    class="inline-flex w-full cursor-pointer items-start px-8 pt-5 text-sm font-normal"
+  >
+    <div class="me-2 p-[0.625rem]">{{ idx() + 1 }}.</div>
+    <div
+      class="h-auto flex-1 break-words rounded bg-[#F6F7F9] px-[0.875rem] py-[0.625rem]"
+    >
+      {{ question()?.text }}
+    </div>
+  </div>
+} @else {
+  <div
+    class="inline-flex w-full items-center gap-1 truncate border-b border-[#D0D5DD] px-8 py-7 text-lg font-semibold"
+    [ngClass]="
+      (isActive$ | async)
+        ? 'bg-yellow-500 text-white'
+        : 'bg-white text-[#6B6F80]'
+    "
+  >
+    <div
+      (click)="onToggle()"
+      class="flex max-w-[100%] flex-1 cursor-pointer flex-col items-start justify-center gap-1"
+    >
+      <div class="max-w-[90%] truncate">
+        {{ idx() + 1 }}.{{ question()?.text }}
+      </div>
+    </div>
+    @if (canModifyQuestions$ | async) {
+      <div>
+        <app-hes-icon
+          [id]="'popover-question-item' + idx()"
+          class="cursor-pointer text-[#A5A9B2]"
+          [faIcon]="ellipsisVertical"
+        ></app-hes-icon>
+      </div>
+    }
+  </div>
+}
+
+<ng-container *transloco="let t">
+  <ion-popover
+    class="hes-action-sheet"
+    [trigger]="'popover-question-item' + idx()"
+    [dismissOnSelect]="true"
+  >
+    <ng-template>
+      <ion-list class="ion-no-padding">
+        <ion-item
+          [button]="true"
+          [detail]="false"
+          [lines]="'none'"
+          (click)="onDeleteQuestionClick()"
+        >
+          <div
+            class="text-sm font-medium capitalize leading-tight text-gray-700"
+          >
+            {{ t("global.delete.btn") }}
+          </div>
+        </ion-item>
+      </ion-list>
+    </ng-template>
+  </ion-popover>
+</ng-container>

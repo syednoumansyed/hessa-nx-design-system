@@ -1,0 +1,20 @@
+export const SENTRY_CONFIG = {
+  ENABLED: true,
+  ORG: 'ncle-edu',
+  PROJECT: 'hessa-fe',
+  TRACES_SAMPLE_RATE: 0.1,
+  REPLAYS_SESSION_SAMPLE_RATE: 0,
+  REPLAYS_ON_ERROR_SAMPLE_RATE: 0.05,
+  ENABLE_REPLAY: true,
+  MASK_ALL_TEXT: true,
+  BLOCK_ALL_MEDIA: true,
+  SENSITIVE_HEADERS: ['authorization', 'refreshToken', 'cookie', 'set-cookie'],
+  SENSITIVE_BODY_KEYS: [
+    'password',
+    'accessToken',
+    'refreshToken',
+    'token',
+    'secret',
+    'creditCard',
+  ],
+} as const;

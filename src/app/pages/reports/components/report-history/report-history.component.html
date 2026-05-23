@@ -1,0 +1,18 @@
+<div class="h-full" *transloco="let t">
+  <app-list-view-container
+    [columns]="reportHistoryColumns"
+    [dataSource]="fetchReportHistory"
+    class="w-full"
+    pageTitle="{{ t('report.report_history.title') }}"
+    [mobileVisibleFieldsLimit]="5"
+    [showSearchInput]="false"
+    [isFilterShow]="true"
+    [canCopy]="false"
+    [shouldFetchData]="true"
+    [persistColumnSettings]="false"
+    [inlineFilterConfig]="inlineFilterConfig"
+    [enablePolling]="true"
+    [shouldPoll]="shouldPoll"
+    [pausePolling]="pausePolling()"
+  />
+</div>

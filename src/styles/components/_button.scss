@@ -1,0 +1,243 @@
+ion-button {
+  &.hes-btn {
+    --background: var(--h-color-primary);
+    --background-activated-opacity: 0;
+    --background-hover-opacity: 0;
+    --background-focused-opacity: 0;
+
+    --box-shadow: var(--h-shadow-xs);
+    --color: var(--h-white);
+    --color-activated: var(--h-white);
+    --color-hover: var(--h-white);
+    --color-focused: var(--h-white);
+
+    .hes-btn-icon {
+      &--start {
+        margin-inline-end: 0.5rem;
+      }
+      &--end {
+        margin-inline-start: 0.5rem;
+      }
+    }
+
+    &--primary {
+      --background: var(--h-color-primary);
+
+      --border-radius: 0.5rem;
+      --border-style: solid;
+      --border-width: 1px;
+      --border-color: var(--h-color-primary);
+
+      --color: var(--h-white);
+      --color-activated: var(--h-white);
+      --color-hover: var(--h-white);
+      --color-focused: var(--h-white);
+      &:hover {
+        --background: var(--h-color-primary-500);
+      }
+      &:active,
+      &:focus {
+        --background: var(--h-color-primary-600);
+      }
+      &.hes-btn--disabled {
+        opacity: 1;
+        --background: #fef8c3;
+        --border-color: #fef8c3;
+        --color: #d3af8b;
+      }
+      &.hes-btn--outline {
+        --background: #fff;
+        --border-color: var(--h-color-primary);
+        --color: var(--h-color-primary);
+        &:hover {
+          --background: var(--h-color-primary);
+          color: #fff;
+        }
+      }
+    }
+    &--secondary {
+      --background: var(--h-white);
+
+      --border-radius: 0.5rem;
+      --border-style: solid;
+      --border-width: 1px;
+      --border-color: var(--h-color-primary-600);
+
+      --color: var(--h-color-primary-600);
+      --color-activated: var(--h-color-primary-600);
+      --color-hover: var(--h-color-primary-600);
+      --color-focused: var(--h-color-primary-600);
+
+      &:hover {
+        --background: var(--h-color-primary-25);
+      }
+      &:active {
+        --background: var(--h-color-primary-50);
+      }
+      &.hes-btn--disabled {
+        opacity: 1;
+        --background: #fff;
+        --border-color: #d3af8b;
+        --color: #d3af8b;
+      }
+    }
+    &--gray {
+      --border-radius: 0.5rem;
+
+      --background: #f1f1f4;
+      color: #283148;
+      --border-color: #f1f1f4;
+    }
+    &--outline {
+      --background: #fff;
+      --color: var(--h-color-gray-700);
+      --border-color: #d0d5dd;
+      --color-activated: #d0d5dd;
+      --color-hover: #d0d5dd;
+      --color-focused: #d0d5dd;
+      button {
+        @apply h-9 px-3 py-2 text-sm font-medium;
+      }
+      &:hover {
+        --background: #fff;
+      }
+      &:active {
+        --background: #fff;
+      }
+    }
+    &--error {
+      --background: #d92d20;
+      --border-color: #d92d20;
+      &:hover {
+        --background: #9e170e;
+      }
+    }
+    &--info {
+      --background: #2e90fa;
+      --border-color: #2e90fa;
+    }
+    &--white {
+      --background: #fff;
+      --border-color: var(--h-color-gray-300);
+      color: var(--h-color-gray-700);
+      --border-width: 1px;
+      --border-style: solid;
+      --border-radius: 0.5rem;
+    }
+    &--link {
+      --background: transparent;
+
+      --border-radius: 0;
+      --border-style: none;
+      --border-width: 0;
+      --border-color: none;
+
+      --color: var(--h-color-primary);
+      --color-hover: var(--h-color-primary);
+      --color-activated: var(--h-color-primary);
+      --color-focused: var(--h-color-primary);
+
+      &:hover {
+        --color: var(--h-color-primary-500);
+        --color-hover: var(--h-color-primary-500);
+      }
+      &:active,
+      &:focus {
+        --color: var(--h-color-primary-600);
+        --color-hover: var(--h-color-primary-600);
+        --color-activated: var(--h-color-primary-600);
+        --color-focused: var(--h-color-primary-600);
+      }
+      &.hes-btn--disabled {
+        opacity: 1;
+        --color: #d3af8b;
+      }
+      --box-shadow: none;
+    }
+    &--xs {
+      min-height: unset;
+      --border-radius: 0.5rem;
+      --padding-top: var(--h-spacing-2);
+      --padding-bottom: var(--h-spacing-2);
+      --padding-start: 0.375rem;
+      --padding-end: 0.375rem;
+
+      /* Text sm/Semibold */
+
+      font-size: 0.875rem;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 1.25rem; /* 142.857% */
+    }
+    &--sm {
+      --padding-top: var(--h-spacing-2);
+      --padding-bottom: var(--h-spacing-2);
+      --padding-start: var(--h-spacing-3);
+      --padding-end: var(--h-spacing-3);
+
+      /* Text sm/Semibold */
+
+      font-size: 0.875rem;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 1.25rem; /* 142.857% */
+    }
+    &--md {
+      --padding-top: var(--h-spacing-3);
+      --padding-bottom: var(--h-spacing-3);
+      --padding-start: var(--h-spacing-4);
+      --padding-end: var(--h-spacing-4);
+
+      /* Text sm/Semibold */
+
+      font-size: 0.875rem;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 1.25rem; /* 142.857% */
+    }
+    &--lg {
+      --padding-top: var(--h-spacing-3);
+      --padding-bottom: var(--h-spacing-3);
+      --padding-start: var(--h-spacing-5);
+      --padding-end: var(--h-spacing-5);
+
+      /* Text md/Semibold */
+
+      font-size: 1rem;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 1.5rem; /* 150% */
+    }
+    &--xl {
+      --padding-top: var(--h-spacing-4);
+      --padding-bottom: var(--h-spacing-4);
+      --padding-start: var(--h-spacing-5);
+      --padding-end: var(--h-spacing-5);
+
+      /* Text md/Semibold */
+
+      font-size: 1rem;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 1.5rem; /* 150% */
+    }
+    &--2xl {
+      --padding-top: var(--h-spacing-4);
+      --padding-bottom: var(--h-spacing-4);
+      --padding-start: var(--h-spacing-6);
+      --padding-end: var(--h-spacing-6);
+
+      /* Text lg/Semibold */
+
+      font-size: 1.125rem;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 1.75rem; /* 155.556% */
+    }
+  }
+
+  text-transform: none;
+}
+.button-shadow-none {
+  --box-shadow: none !important;
+}

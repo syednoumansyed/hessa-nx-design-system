@@ -1,0 +1,93 @@
+/* ──────────────────────────────────────────────
+   DESKTOP SIDE-NAV  (stand-alone component)
+   ────────────────────────────────────────────── */
+
+:host {
+  /* tweak here if your design token names change */
+  --sidebar-active-bg: var(--colors-brand-300);
+  --sidebar-active-border: var(--colors-brand-600);
+  --sidebar-bg-collapsed: #ffffff;
+  display: block; /* make the wrapper participate as a block in the flex layout */
+  height: 100%; /* critical – let split-pane flex it full height */
+}
+
+/* Active menu item highlight */
+.active-menu-item {
+  background-color: var(--sidebar-active-bg);
+  border: 1px solid var(--sidebar-active-border);
+  border-radius: 8px;
+}
+
+/* Smooth width transition */
+ion-menu {
+  transition: width 0.3s ease-in-out;
+}
+
+/* Collapsed  (96 px = w-24) */
+ion-menu.w-24 {
+  width: 6rem !important;
+  min-width: 6rem !important;
+  max-width: 6rem !important;
+
+  /* padding + overflow tweaks */
+  #menu-items {
+    padding-inline: 0.5rem !important;
+  }
+  .menu-content {
+    overflow-x: hidden;
+  }
+  ion-title img {
+    display: none;
+  }
+}
+
+/* Expanded  (256 px = w-64) */
+ion-menu.w-64 {
+  width: 16rem !important;
+  min-width: 16rem !important;
+  max-width: 16rem !important;
+}
+
+/* Toolbar colour per state */
+ion-toolbar.side-menu-toolbar {
+  --background: var(--colors-brand-40);
+}
+ion-toolbar.side-menu-toolbar-collapsed {
+  --background: var(--surface-primary);
+}
+
+ion-content.menu-content {
+  --background: var(--colors-brand-40); /* default background */
+}
+
+ion-content.menu-collapsed {
+  --background: var(--surface-primary);
+}
+
+ion-menu.w-24 .active-menu-item {
+  background: transparent !important;
+  border: none !important;
+  position: relative;
+  justify-content: center;
+}
+
+ion-menu.w-24 .active-menu-item::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10rem; /* wider arc */
+  height: 4rem;
+  background: url("/assets/images/arc-bg.svg") center/contain no-repeat;
+  pointer-events: none;
+  z-index: 0;
+}
+
+ion-menu.w-24 .active-menu-item > * {
+  position: relative;
+  z-index: 1; /* lift icon & text over arc */
+}
+
+ion-content.menu-content-collapsed {
+  --background: var(--surface-primary);
+}

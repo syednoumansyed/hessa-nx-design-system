@@ -1,0 +1,8 @@
+<span
+  class="flex w-fit items-center justify-center rounded-2xl px-2 py-[2px] text-xs font-medium"
+  [ngClass]="{
+    'bg-[#FDF2FA] text-[#C11574]': accessLevel() === 'INTERNAL',
+    'bg-[#EFF8FF] text-[#175CD3]': accessLevel() === 'PUBLIC'
+  }"
+  >{{ accessLevel() ?? "" | enumLang }}</span
+>

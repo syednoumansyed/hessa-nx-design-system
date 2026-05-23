@@ -1,0 +1,36 @@
+<div class="flex items-stretch justify-between gap-ds-md" *transloco="let t">
+  <div class="relative flex-1">
+    <app-ds-input
+      #searchInputRef
+      [placeholder]="placeholderTxt()"
+      [iconEnd]="searchValue() ? faClose : faSearch"
+      [inputValue]="searchValue()"
+      (valueChanged)="onSearchInput($event)"
+      (focusEvent)="onInputFocus()"
+      (blurEvent)="onInputBlur()"
+      (iconEndClick)="searchValue() ? clearSearch() : null"
+      inputMode="search"
+    />
+  </div>
+  @if (includeAddButton()) {
+    <div
+      class="w-[56px] cursor-pointer self-stretch rounded-ds-md bg-brand-200 p-ds-xs pb-ds-sm"
+      (click)="onAddButtonClick()"
+    >
+      <div
+        class="flex h-full w-full items-center justify-center rounded-ds-md bg-brand-500"
+      >
+        <app-ds-icon [icon]="faAdd" size="xl" />
+      </div>
+    </div>
+  }
+  @if (includeCancelButton()) {
+    <button
+      type="button"
+      class="single-line-sm-high-emphasis cursor-pointer self-center text-content-high"
+      (click)="onCancelButtonClick()"
+    >
+      {{ t("global.cancel.btn") }}
+    </button>
+  }
+</div>

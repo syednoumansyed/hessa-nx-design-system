@@ -1,0 +1,58 @@
+<div
+  [formGroup]="form"
+  class="relative flex items-center gap-ds-md"
+  [ngClass]="{ 'mb-5': isSelected }"
+>
+  @if (isMultSelect()) {
+    <app-ds-checkbox
+      formControlName="isCorrect"
+      [size]="'sm'"
+    ></app-ds-checkbox>
+  } @else {
+    <app-ds-radio
+      formControlName="isCorrect"
+      [value]="true"
+      (change)="onSelectRadio()"
+    ></app-ds-radio>
+  }
+  <div class="flex flex-grow flex-col gap-1">
+    @if (isTrueOrFalse()) {
+      <div
+        class="rounded-2xl border p-ds-lg text-emphasis-high"
+        [class]="
+          form.get('text')?.value === falseValue
+            ? 'border-surface-danger bg-surface-danger-subtle'
+            : 'border-surface-success bg-surface-success-subtle'
+        "
+      >
+        {{ form.get("text")?.value }}
+      </div>
+    } @else {
+      <app-ds-input
+        formControlName="text"
+        class="flex-grow"
+        [outerContainerClass]="
+          isSelected ? 'border-surface-success bg-surface-success-subtle' : ''
+        "
+      />
+    }
+  </div>
+  @if (removeEnabled()) {
+    <app-ds-icon
+      [icon]="removeIcon"
+      size="xl"
+      class="cursor-pointer"
+      (click)="onRemove()"
+    ></app-ds-icon>
+  }
+  @if (isSelected) {
+    <div
+      class="single-line-xs-mid-emphasis absolute -bottom-5 text-end text-content-success"
+      [class]="
+        isTrueOrFalse() ? 'ltr:right-0 rtl:left-0' : 'ltr:right-9 rtl:left-9'
+      "
+    >
+      Correct Answer
+    </div>
+  }
+</div>

@@ -1,0 +1,107 @@
+<div *transloco="let t">
+  <div class="safe-area-top flex flex-col gap-ds-2xl">
+    <div class="sticky top-0 z-10 flex items-center justify-between bg-white">
+      <div class="flex flex-col gap-ds-md">
+        <div class="heading-h4-high-emphasis text-emphasis-high">
+          <span>{{ semesterData()?.name }}</span>
+          <sup class="text-sm">{{
+            academicYearUtils.getOrdinalSuffix(semesterData()?.name)
+          }}</sup>
+          {{ t("global.semester.title") }}
+        </div>
+        <div class="flex items-center gap-ds-md text-emphasis-mid">
+          <span class="single-line-caption-low-emphasis">
+            {{ semesterData()?.startDate | hesDate }}
+            - {{ semesterData()?.endDate | hesDate }}
+          </span>
+          @if (!isViewOnly()) {
+            <div
+              class="cursor-pointer"
+              (click)="onEditSemester()"
+              *hesRbac="editSemesterPermission"
+            >
+              <app-ds-icon [icon]="faPen" size="sm" />
+            </div>
+          }
+        </div>
+      </div>
+      <div class="flex items-center gap-ds-lg">
+        @if (isDeleteAllowed() && !isViewOnly()) {
+          <div
+            class="flex h-[40px] w-[40px] cursor-pointer items-center justify-center"
+            (click)="onDeleteSemester()"
+            *hesRbac="deleteSemesterPermission"
+          >
+            <app-ds-icon [icon]="faTrash" size="xl" />
+          </div>
+        }
+        <div
+          (click)="onClose()"
+          class="flex h-[40px] w-[40px] cursor-pointer items-center justify-center"
+        >
+          <app-ds-icon [icon]="'saxCloseCircleBold'" size="2xl" />
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-ds-md">
+      @for (week of weeksListData(); track week.id) {
+        <div
+          [ngClass]="{
+            'border-indigo-400': week.isCurrentWeek,
+            'border-stroke-black-08': !week.isCurrentWeek,
+            'bg-pastels-errorRed-50': week.weekDays.length
+          }"
+          class="flex flex-col gap-ds-xl rounded-ds-2xl border-2 px-ds-xl py-ds-lg"
+        >
+          <div class="flex items-center gap-ds-sm">
+            <div
+              [ngClass]="{
+                'text-indigo-400': week.isCurrentWeek,
+                'text-emphasis-mid': !week.isCurrentWeek
+              }"
+              class="flex h-[24px] w-[24px] items-center justify-center"
+            >
+              <app-ds-icon [icon]="faCalendar" size="lg" />
+            </div>
+            <div class="flex flex-col gap-ds-xs">
+              <div class="content-lg-high-emphasis text-emphasis-high">
+                <span>{{ week.weekNumber }}</span>
+                <sup class="text-sm">{{
+                  academicYearUtils.getOrdinalSuffix(week.weekNumber)
+                }}</sup>
+                {{ t("global.week") }}
+              </div>
+              <div class="single-line-caption-low-emphasis text-emphasis-mid">
+                {{ week.startDate | hesDate }}
+                - {{ week.endDate | hesDate }}
+              </div>
+            </div>
+          </div>
+          <div
+            [ngClass]="{
+              'bg-white text-error-ds-600': week.weekDays.length,
+              'bg-pastels-neutralGray-50 text-emphasis-mid':
+                !week.weekDays.length
+            }"
+            class="flex items-center gap-ds-md rounded-ds-md px-ds-xl py-ds-md"
+          >
+            <app-ds-icon
+              [icon]="week.weekDays.length ? faTree : faComment"
+              size="md"
+            />
+            <span class="content-md-default">
+              {{
+                week.weekOff
+                  ? t("academic_calendar.week_off.txt")
+                  : week.weekDays.length
+                    ? week.weekDays.join(", ")
+                    : t("academic_year.no_holidays.txt")
+              }}
+            </span>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

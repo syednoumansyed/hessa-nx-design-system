@@ -1,0 +1,122 @@
+<section class="mt-ds-2xl flex flex-col gap-ds-xl md:mt-0 md:gap-0">
+  @if (heading() || showSearch() || showFilters()) {
+    <div class="flex flex-col gap-ds-md">
+      @if (heading()) {
+        <div class="heading-h4-high-emphasis text-emphasis-high">
+          {{ heading() }}
+        </div>
+      }
+
+      @if (showSearch()) {
+        <app-ds-input
+          [placeholder]="searchPlaceholder()"
+          [iconEnd]="searchIcon()"
+          [inputMode]="'search'"
+          (valueChanged)="handleSearchChange($event)"
+        ></app-ds-input>
+      }
+
+      @if (showFilters()) {
+        <app-support-hub-filters
+          (filtersChanged)="handleFiltersChanged($event)"
+        ></app-support-hub-filters>
+      }
+    </div>
+  }
+
+  <div class="flex flex-col gap-ds-xl md:gap-0">
+    @if (loading()) {
+      @for (placeholder of skeletonPlaceholders; track placeholder) {
+        <ng-container [ngTemplateOutlet]="ticketSkeleton"></ng-container>
+      }
+    } @else {
+      @for (
+        ticket of tickets();
+        track ticket.ticketNumber;
+        let index = $index
+      ) {
+        @if (firstResolvedIndex() === index) {
+          <div class="my-[5px] flex items-center gap-ds-md">
+            <span class="flex-1 border-t border-stroke-high"></span>
+            <span class="content-sm-mid-emphasis text-emphasis-high">{{
+              "support.resolved_tickets.txt" | dsTranslate
+            }}</span>
+            <span class="flex-1 border-t border-stroke-high"></span>
+          </div>
+        }
+        <app-support-ticket-card
+          [ticket]="ticket"
+          [selectable]="true"
+          [selected]="selectedTicketId() === ticket.ticketNumber"
+          (ticketSelected)="handleTicketSelected($event)"
+          (menuItemSelected)="handleTicketMenuItemSelected($event)"
+        ></app-support-ticket-card>
+      }
+    }
+  </div>
+</section>
+
+<ng-template #ticketSkeleton>
+  <article
+    class="relative flex w-full flex-col gap-ds-xl rounded-ds-xl border border-stroke-black-08 bg-surface-primary p-ds-xl md:rounded-none"
+    aria-hidden="true"
+  >
+    <header class="flex items-center justify-between">
+      @for (skeleton of skeletonCardSections.header; track $index) {
+        <ion-skeleton-text class="{{ skeleton.classes }}"></ion-skeleton-text>
+      }
+    </header>
+
+    <div class="flex flex-wrap items-start justify-between gap-ds-md">
+      <div class="flex flex-col gap-ds-sm">
+        <ion-skeleton-text
+          class="{{ skeletonCardSections.meta.title.classes }}"
+        ></ion-skeleton-text>
+        <div class="flex flex-wrap items-center gap-ds-sm">
+          @for (badge of skeletonCardSections.meta.badges; track $index) {
+            <ion-skeleton-text class="{{ badge.classes }}"></ion-skeleton-text>
+          }
+        </div>
+      </div>
+      <ion-skeleton-text
+        class="{{ skeletonCardSections.meta.trailing.classes }}"
+      ></ion-skeleton-text>
+    </div>
+
+    <div
+      class="rounded-ds-md bg-surface-pastel-background-blue px-ds-lg py-ds-md"
+    >
+      <div class="flex flex-col gap-ds-sm">
+        @for (row of skeletonCardSections.body; track $index) {
+          <ion-skeleton-text class="{{ row.classes }}"></ion-skeleton-text>
+        }
+      </div>
+      <div
+        class="border-icon-low-emphasis mt-ds-md flex items-center gap-ds-md border-t pt-ds-sm"
+      >
+        <ion-skeleton-text
+          class="{{ skeletonCardSections.school.icon.classes }}"
+        ></ion-skeleton-text>
+        <div class="flex flex-1 flex-col gap-ds-sm">
+          @for (line of skeletonCardSections.school.lines; track $index) {
+            <ion-skeleton-text class="{{ line.classes }}"></ion-skeleton-text>
+          }
+        </div>
+      </div>
+    </div>
+
+    <footer class="flex items-center justify-between">
+      <ion-skeleton-text
+        class="{{ skeletonCardSections.footer[0].classes }}"
+      ></ion-skeleton-text>
+      <div class="flex items-center gap-ds-sm">
+        <ion-skeleton-text
+          class="{{ skeletonCardSections.footer[1].classes }}"
+        ></ion-skeleton-text>
+        <ion-skeleton-text
+          class="{{ skeletonCardSections.footer[2].classes }}"
+        ></ion-skeleton-text>
+      </div>
+    </footer>
+  </article>
+</ng-template>

@@ -1,0 +1,21 @@
+<button
+  *transloco="let t"
+  class="flex h-24 w-full flex-col items-center justify-center gap-1 rounded-lg border border-gray-200 bg-white px-8 py-3"
+  id="nav-item"
+  [routerLink]="routerPath()"
+>
+  <span class="relative">
+    <ng-icon
+      [name]="menuRoute().iconName!"
+      [class]="menuRoute().iconClass ?? 'text-[2rem]'"
+    ></ng-icon>
+    @if (count()) {
+      <div
+        class="absolute -top-1 flex h-3.5 w-3.5 items-center justify-center rounded-xl bg-[#ECAD01] text-center text-[11px] text-white ltr:-right-1 rtl:-left-2"
+      >
+        {{ count() }}
+      </div>
+    }
+  </span>
+  <ion-label>{{ t(menuRoute().titleI18nKey) }}</ion-label>
+</button>

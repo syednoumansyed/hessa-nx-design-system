@@ -1,0 +1,20 @@
+<div class="flex flex-wrap gap-3">
+  @for (
+    semester of academicData.semesters;
+    track semester.id;
+    let idx = $index
+  ) {
+    <div
+      (click)="onEditSemester(semester)"
+      class="flex h-5 cursor-pointer items-center justify-center rounded-2xl px-2 py-0.5 text-center text-xs font-medium leading-none"
+      [ngClass]="{
+        'bg-purple-50 text-violet-700 ': idx === 0,
+        'bg-sky-50 text-blue-700': idx === 1,
+        'bg-indigo-50 text-indigo-700': idx === 2,
+        'bg-rose-50 text-rose-500': idx > 2
+      }"
+    >
+      {{ semester.name }}
+    </div>
+  }
+</div>

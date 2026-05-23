@@ -1,0 +1,41 @@
+@mixin link-large {
+  font-family: var(--h-typography-utility-link-lg-font-family);
+  font-size: var(--h-typography-utility-link-lg-font-size);
+  font-style: var(--h-typography-utility-link-lg-font-style);
+  font-weight: var(--h-typography-utility-link-lg-font-weight);
+  line-height: var(--h-typography-utility-link-lg-line-height);
+  letter-spacing: var(--h-typography-utility-link-lg-letter-spacing);
+  text-decoration-line: var(
+    --h-typography-utility-link-lg-text-decoration-line
+  );
+}
+
+@mixin link-small {
+  font-family: var(--h-typography-utility-link-sm-font-family);
+  font-size: var(--h-typography-utility-link-sm-font-size);
+  font-style: var(--h-typography-utility-link-sm-font-style);
+  font-weight: var(--h-typography-utility-link-sm-font-weight);
+  line-height: var(--h-typography-utility-link-sm-line-height);
+  letter-spacing: var(--h-typography-utility-link-sm-letter-spacing);
+  text-decoration-line: var(
+    --h-typography-utility-link-sm-text-decoration-line
+  );
+}
+
+@mixin btn-text-large {
+  font-family: var(--h-typography-utility-button-lg-font-family);
+  font-size: var(--h-typography-utility-button-lg-font-size);
+  font-style: var(--h-typography-utility-button-lg-font-style);
+  font-weight: var(--h-typography-utility-button-lg-font-weight);
+  line-height: var(--h-typography-utility-button-lg-line-height);
+  letter-spacing: var(--h-typography-utility-button-lg-letter-spacing);
+}
+
+@mixin btn-text-small {
+  font-family: var(--h-typography-utility-button-sm-font-family);
+  font-size: var(--h-typography-utility-button-sm-font-size);
+  font-style: var(--h-typography-utility-button-sm-font-style);
+  font-weight: var(--h-typography-utility-button-sm-font-weight);
+  line-height: var(--h-typography-utility-button-sm-line-height);
+  letter-spacing: var(--h-typography-utility-button-sm-letter-spacing);
+}

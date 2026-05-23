@@ -1,0 +1,331 @@
+.ds-qr-scanner {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--colors-neutral-cool-black, #131517);
+  overflow: hidden;
+  z-index: 9999;
+
+  // Overlay with semi-transparent dark background (Figma: rgba(0,0,0,0.72))
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    background-color: var(--colors-neutral-cool-black-70, rgba(0, 0, 0, 0.72));
+    z-index: 1;
+  }
+
+  // Camera feed container
+  &__camera-container {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+
+    zxing-scanner {
+      display: block;
+      width: 100%;
+      height: 100%;
+
+      ::ng-deep video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+  }
+
+  // Content layer above camera
+  &__content {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    padding: var(--ds-gaps-3xl, 24px);
+    padding-top: calc(env(safe-area-inset-top, 0px) + var(--size-px-48, 48px));
+    padding-bottom: calc(
+      env(safe-area-inset-bottom, 0px) + var(--ds-gaps-3xl, 24px)
+    );
+  }
+
+  // Close button
+  &__close-btn {
+    position: absolute;
+    top: calc(env(safe-area-inset-top, 0px) + var(--size-px-16, 16px));
+    right: 0;
+    width: var(--size-px-48, 48px);
+    height: var(--size-px-48, 48px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 10;
+
+    &:hover {
+      opacity: 0.8;
+    }
+
+    &:active {
+      opacity: 0.6;
+    }
+  }
+
+  // Header section
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ds-spacing-md, 8px);
+    margin-bottom: var(--ds-gaps-3xl, 24px);
+  }
+
+  // Title: heading/h1/high-emphasis (Figma)
+  &__title {
+    font-family: var(--hes-text-font, "Nunito", sans-serif);
+    font-weight: var(--font-weight-extrabold, 800);
+    font-size: var(--font-size-4xl, 32px);
+    line-height: var(--font-line-height-4xl, 44px);
+    color: var(--colors-neutral-cool-white-100, #ffffff);
+    margin: 0;
+  }
+
+  // Subtitle: Content/md/mid-emphasis (Figma)
+  &__subtitle {
+    font-family: var(--hes-text-font, "Nunito", sans-serif);
+    font-weight: var(--font-weight-semibold, 600);
+    font-size: var(--font-size-base, 14px);
+    line-height: var(--font-line-height-base, 20px);
+    color: var(--colors-neutral-cool-200, #dbdbdb);
+    margin: 0;
+  }
+
+  // Scanner frame container
+  &__frame-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  // Scanner frame with dashed border (Figma: #fdb518, 6px dashed, 16px radius)
+  &__frame {
+    position: relative;
+    width: 100%;
+    max-width: 345px;
+    aspect-ratio: 345 / 629;
+    max-height: calc(100vh - 300px);
+    border: var(--size-px-6, 6px) dashed var(--colors-brand-500, #fdb518);
+    border-radius: var(--ds-corner-radius-xl, 16px);
+    overflow: hidden;
+
+    // Make the frame area transparent to show camera
+    background: transparent;
+
+    // Create hole in overlay effect
+    &::before {
+      content: "";
+      position: absolute;
+      inset: calc(var(--size-px-6, 6px) * -1);
+      border-radius: var(--ds-corner-radius-xl, 16px);
+      box-shadow: 0 0 0 9999px
+        var(--colors-neutral-cool-black-70, rgba(0, 0, 0, 0.72));
+      pointer-events: none;
+    }
+  }
+
+  // Scanning animation line
+  &__scan-line {
+    position: absolute;
+    left: var(--ds-spacing-2xl, 20px);
+    right: var(--ds-spacing-2xl, 20px);
+    height: var(--size-px-3, 3px);
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      var(--colors-brand-500, #fdb518) 50%,
+      transparent 100%
+    );
+    border-radius: var(--ds-corner-radius-xs, 2px);
+    animation: scanLine 2.5s ease-in-out infinite;
+    box-shadow: 0 0 var(--size-px-8, 8px) var(--colors-brand-500, #fdb518);
+  }
+
+  @keyframes scanLine {
+    0%,
+    100% {
+      top: var(--ds-spacing-2xl, 20px);
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    50% {
+      top: calc(100% - 23px);
+      opacity: 1;
+    }
+    60% {
+      opacity: 0;
+    }
+  }
+
+  // Loading state
+  &__loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--ds-gaps-xl, 16px);
+    background: var(--colors-neutral-cool-black-70, rgba(0, 0, 0, 0.7));
+    border-radius: var(--ds-corner-radius-md, 10px);
+  }
+
+  &__spinner {
+    width: var(--size-px-48, 48px);
+    height: var(--size-px-48, 48px);
+    border: var(--size-px-4, 4px) solid
+      var(--colors-neutral-cool-white-20, rgba(255, 255, 255, 0.2));
+    border-top-color: var(--colors-brand-500, #fdb518);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  &__loading-text {
+    font-family: var(--hes-text-font, "Nunito", sans-serif);
+    font-weight: var(--font-weight-semibold, 600);
+    font-size: var(--font-size-base, 14px);
+    color: var(--colors-neutral-cool-white-100, #ffffff);
+    margin: 0;
+  }
+
+  // Error state
+  &__error {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--ds-gaps-3xl, 24px);
+    background: var(--colors-neutral-cool-black-70, rgba(0, 0, 0, 0.7));
+    border-radius: var(--ds-corner-radius-md, 10px);
+  }
+
+  &__error-text {
+    font-family: var(--hes-text-font, "Nunito", sans-serif);
+    font-weight: var(--font-weight-semibold, 600);
+    font-size: var(--font-size-lg, 16px);
+    color: var(--colors-error-red-400, #f85632);
+    text-align: center;
+    margin: 0;
+  }
+
+  // Controls section
+  &__controls {
+    display: flex;
+    justify-content: center;
+    gap: var(--ds-gaps-3xl, 24px);
+    margin-top: var(--ds-gaps-3xl, 24px);
+  }
+
+  &__control-btn {
+    width: var(--size-px-56, 56px);
+    height: var(--size-px-56, 56px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--colors-neutral-cool-white-10, rgba(255, 255, 255, 0.15));
+    border: var(--size-px-2, 2px) solid
+      var(--colors-neutral-cool-white-30, rgba(255, 255, 255, 0.3));
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--colors-neutral-cool-white-100, #ffffff);
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: var(
+        --colors-neutral-cool-white-20,
+        rgba(255, 255, 255, 0.25)
+      );
+      border-color: var(
+        --colors-neutral-cool-white-50,
+        rgba(255, 255, 255, 0.5)
+      );
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    &--active {
+      background: var(--colors-brand-500, #fdb518);
+      border-color: var(--colors-brand-500, #fdb518);
+      color: var(--colors-neutral-cool-black, #000000);
+
+      &:hover {
+        background: var(--colors-brand-600, #d2a61b);
+        border-color: var(--colors-brand-600, #d2a61b);
+      }
+    }
+
+    svg {
+      width: var(--size-px-24, 24px);
+      height: var(--size-px-24, 24px);
+    }
+  }
+}
+
+// RTL Support
+:host-context([dir="rtl"]) {
+  .ds-qr-scanner {
+    &__close-btn {
+      right: auto;
+      left: 0;
+    }
+
+    &__controls {
+      flex-direction: row-reverse;
+    }
+  }
+}
+
+// Landscape mode adjustments
+@media (orientation: landscape) {
+  .ds-qr-scanner {
+    &__content {
+      flex-direction: row;
+      align-items: center;
+      gap: var(--ds-gaps-3xl, 32px);
+    }
+
+    &__header {
+      flex: 0 0 auto;
+      max-width: 200px;
+      margin-bottom: 0;
+    }
+
+    &__frame-container {
+      flex: 1;
+    }
+
+    &__frame {
+      max-width: 280px;
+      max-height: calc(100vh - 100px);
+    }
+
+    &__controls {
+      flex-direction: column;
+      margin-top: 0;
+      margin-inline-start: var(--ds-gaps-3xl, 24px);
+    }
+  }
+}

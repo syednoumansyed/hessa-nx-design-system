@@ -1,0 +1,54 @@
+<app-hes-input
+  [placeholder]="placeholder"
+  [label]="label"
+  [required]="required ?? false"
+  [iconSuffix]="searchIcon"
+  [(ngModel)]="searchQuery"
+></app-hes-input>
+
+<div class="mt-4 rounded-md border border-gray-200">
+  @if (options().length === 0) {
+    <div class="p-4 text-center text-gray-400">
+      No student list available. Select class to see the list
+    </div>
+  } @else {
+    <!-- Grid of items: 1 col on mobile, 2 cols on md+ -->
+    <div class="grid grid-cols-1 md:grid-cols-2">
+      @if (filteredOptions().length > 0) {
+        <div
+          class="border-odd flex items-center justify-between space-x-2 p-4"
+          [ngClass]="{ 'bg-[#FFFCE7]': allSelected() }"
+        >
+          <span class="text-base text-gray-800">Select All</span>
+          <ion-checkbox
+            class="hes-checkbox flex-shrink-0"
+            [disabled]="disabled()"
+            [checked]="allSelected()"
+            (ionChange)="toggleSelectAll($event)"
+          ></ion-checkbox>
+        </div>
+      }
+
+      @for (item of filteredOptions(); track item.value; let i = $index) {
+        <div
+          class="flex items-center justify-between space-x-2 p-4"
+          [ngClass]="{
+            'bg-[#FFFCE7]': item.checked,
+            'border-even': i % 2 === 0,
+            'border-odd': i % 2 !== 0,
+          }"
+        >
+          <span class="flex-grow text-base text-gray-800">{{
+            item.label
+          }}</span>
+          <ion-checkbox
+            class="hes-checkbox flex-shrink-0"
+            [disabled]="disabled()"
+            [checked]="item.checked"
+            (ionChange)="toggleItem(item, $event)"
+          ></ion-checkbox>
+        </div>
+      }
+    </div>
+  }
+</div>

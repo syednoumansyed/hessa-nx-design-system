@@ -1,0 +1,124 @@
+<ng-container *transloco="let t">
+  <div class="p-8">
+    <h5 class="border-b pb-5 font-semibold">
+      {{
+        type === "notification"
+          ? t("announcements.review_push_notification.title")
+          : t("announcements.review_sms.title")
+      }}
+    </h5>
+    @if (viewModel().title) {
+      <div class="title border-b py-5">
+        <div class="flex justify-between">
+          <h6 class="pb-4 font-medium text-gray-500">
+            {{ t("announcements.title.title") }}
+          </h6>
+        </div>
+        <h6 class="font-semibold">{{ viewModel().title }}</h6>
+      </div>
+    }
+    <div class="content border-b py-5">
+      <div class="flex justify-between">
+        <h6 class="pb-4 font-medium text-gray-500">
+          {{ t("announcements.content.title") }}
+        </h6>
+      </div>
+      <p class="text-sm font-normal text-gray-700">
+        {{ viewModel().content }}
+      </p>
+    </div>
+    <div class="target py-5">
+      <div class="flex justify-between">
+        <h6 class="pb-4 font-medium text-gray-500">
+          {{ t("announcements.target.title") }}
+        </h6>
+      </div>
+      <div class="flex gap-2">
+        <app-hes-icon [hesIcon]="schoolIcon"></app-hes-icon>
+        <div class="flex flex-col pt-0.5">
+          <div class="flex">
+            <div class="ml-2">
+              <h6 class="text-xs font-medium">
+                {{ t("announcements.target_schools.title") }}
+              </h6>
+              <div
+                class="target-stuff-wrapper flex flex-wrap gap-x-2 gap-y-3 py-4"
+              >
+                @for (target of viewModel().targets; track $index) {
+                  <div
+                    class="flex h-6 max-w-[102px] items-center justify-between rounded-full bg-[#f2f4f7] px-3 text-[#344054]"
+                  >
+                    <p class="truncate text-xs font-medium">
+                      {{ target.name }}
+                    </p>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+          <div class="flex">
+            <div class="ml-2">
+              <h6 class="text-black text-xs font-medium">
+                {{ t("announcements.target_roles.label") }}
+              </h6>
+              <div class="target-stuff-wrapper flex flex-wrap gap-1 py-4">
+                @for (role of viewModel().roleIds; track $index) {
+                  <div
+                    class="flex h-6 max-w-[102px] items-center justify-between rounded-full bg-[#f2f4f7] px-3 text-[#344054]"
+                  >
+                    <p class="truncate text-xs font-medium">
+                      {{ role.displayedValue }}
+                      @if (role.extraData !== undefined) {
+                        {{ "(" + role.extraData + ")" }})
+                      }
+                    </p>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ion-footer class="shadow-none">
+    <div class="mt-2 flex gap-2 px-8 pb-8">
+      @if (type === "sms") {
+        <div class="flex min-w-28 items-center justify-center">
+          @if (testSMSLoader()) {
+            <ion-spinner class="h-5 w-5"></ion-spinner>
+          } @else {
+            <div
+              (click)="sendTestSMS()"
+              class="flex cursor-pointer items-center text-base font-medium leading-normal text-[#ecad01] underline"
+            >
+              {{ t("announcements.send_text_sms.btn") }}
+            </div>
+          }
+        </div>
+      }
+      <ion-button
+        hesBtn
+        hesColor="secondary"
+        class="mt-4 flex-1"
+        (click)="cancel()"
+      >
+        {{ t("global.cancel.btn") }}
+      </ion-button>
+      <ion-button
+        hesBtn
+        hesColor="primary"
+        class="mt-4 flex-1"
+        (click)="onSubmit()"
+        [disabled]="loading() || form.invalid"
+      >
+        @if (loading()) {
+          <ion-spinner class="h-5 w-5"></ion-spinner>
+        } @else {
+          {{ t("global.publish.btn") }}
+        }
+      </ion-button>
+    </div>
+  </ion-footer>
+</ng-container>

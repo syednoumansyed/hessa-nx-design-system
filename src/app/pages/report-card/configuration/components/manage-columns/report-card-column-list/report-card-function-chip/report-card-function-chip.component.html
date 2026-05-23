@@ -1,0 +1,43 @@
+<ng-container *transloco="let t">
+  @if (isMaxMarks()) {
+    <div
+      class="inline-flex h-[22px] items-center justify-start rounded-[40px] border px-2 py-0.5"
+      [ngClass]="'border-[#F4D7BE] bg-[#FBF1E8]'"
+    >
+      <div class="text-center"></div>
+      <div
+        class="text-center font-['Inter'] text-xs font-medium leading-[18px] text-[#818489]"
+      >
+        {{ column()?.maxMarks }} {{ t("grade_management.mark.title") }}
+      </div>
+    </div>
+  }
+
+  @if (isFunctionType()) {
+    <div
+      class="mx-1 inline-flex h-[22px] items-center justify-start rounded-[40px] border px-2 py-0.5"
+      [ngClass]="getClassMap()"
+    >
+      <div class="text-center"></div>
+      <div
+        class="text-center font-['Inter'] text-xs font-medium leading-[18px] text-[#818489]"
+      >
+        {{ getFunctionType() }}
+      </div>
+    </div>
+  }
+
+  @if (exsitingColumn()?.scaleMaxMarks) {
+    <div
+      class="mx-1 inline-flex h-[22px] items-center justify-start rounded-[40px] border border-[#D0F4BE] bg-[#EEFBE8] px-2 py-0.5"
+    >
+      <div class="text-center"></div>
+      <div
+        class="text-center text-xs font-medium leading-[18px] text-[#818489]"
+      >
+        {{ exsitingColumn()?.scaleMaxMarks }}
+        {{ t("grade_management.mark.title") }}
+      </div>
+    </div>
+  }
+</ng-container>

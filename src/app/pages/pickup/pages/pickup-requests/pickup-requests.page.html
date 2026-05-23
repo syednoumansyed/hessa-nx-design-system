@@ -1,0 +1,21 @@
+<app-no-selected-scope-card
+  [requiredScope]="requiredScopes"
+  (onScopeUpdate)="handleDisplayContent($event)"
+>
+</app-no-selected-scope-card>
+@if(displayContent()){
+<ng-container *transloco="let t">
+  <app-list-view-container
+    [columns]="columns"
+    class="w-full"
+    [dataSource]="fetchPickupRequests"
+    [inlineFilterConfig]="inlineFilterConfig"
+    [noDataConfig]="noDataConfig"
+    [mobileVisibleFieldsLimit]="5"
+    [pageTitle]="t('dismissal.student_pickup_requests.label')"
+    [showSearchInput]="true"
+    [canCopy]="true"
+    [persistColumnSettings]="true"
+  />
+</ng-container>
+}

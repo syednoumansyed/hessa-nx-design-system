@@ -1,0 +1,106 @@
+<div class="relative">
+  <div
+    class="Modal flex flex-col justify-start gap-5 rounded-xl bg-white p-7 shadow"
+    *transloco="let t"
+  >
+    <div class="mb-3 flex justify-between border-b pb-4">
+      <div class="text-lg font-semibold text-[#101828]">
+        {{
+          isView
+            ? t("grade_management.view_grade_scale.title")
+            : gradeScaleId
+              ? t("grade_management.edit_grade_scale.title")
+              : t("grade_management.setup_grade_scale.title")
+        }}
+      </div>
+      <fa-icon
+        class="mt-1 cursor-pointer text-[#929CB5] hover:text-[#0000008a]"
+        [icon]="faClose"
+        size="xl"
+        (click)="onCloseModal()"
+      ></fa-icon>
+    </div>
+    <form [formGroup]="form" class="flex w-full flex-col gap-8">
+      <div class="grid grid-cols-1 gap-8 gap-y-5 self-stretch">
+        @for (control of formConfig(); track $index) {
+          <div class="flex-1">
+            <app-form-control-generator
+              [control]="control"
+            ></app-form-control-generator>
+          </div>
+        }
+      </div>
+      <div
+        class="-mb-10 flex items-center gap-1 text-base font-semibold md:-mb-6"
+      >
+        {{
+          t(
+            isView
+              ? "grade_manegement.grades.title"
+              : "grade_management.enter_grades.title"
+          )
+        }}
+        @if (!isView) {
+          <span class="text-[#e62e2e]">*</span>
+        }
+      </div>
+      <div class="md:rounded md:border md:p-4">
+        <app-letter-grades-form
+          [gradeForm]="form"
+          [isView]="isView"
+        ></app-letter-grades-form>
+        @if (!isView) {
+          <ion-button
+            (click)="addGrade()"
+            class="mt-4 w-full border-0 hover:bg-[#fffce7] hover:text-[#ecad01]"
+            fill="solid"
+            [disabled]="grades.invalid || isMinValueZero()"
+            [ngStyle]="{
+              '--background':
+                grades.invalid || isMinValueZero() ? '#f3f3f3' : '#fffce7',
+              '--color':
+                grades.invalid || isMinValueZero() ? '#a3a3a3' : '#ecad01',
+              '--border-width': '0',
+              cursor:
+                grades.invalid || isMinValueZero() ? 'not-allowed' : 'pointer'
+            }"
+          >
+            {{ t("time_period.add_period.btn") }}
+          </ion-button>
+        }
+      </div>
+      @if (!isView) {
+        <div class="my-8 flex flex-col-reverse gap-3 self-stretch md:flex-row">
+          <ion-button
+            hesbtn
+            hesColor="white"
+            hesSize="xl"
+            class="grow"
+            (click)="onCloseModal()"
+            >{{ t("global.cancel.btn") }}</ion-button
+          >
+          <ion-button
+            hesbtn
+            hesColor="primary"
+            hesSize="xl"
+            class="grow"
+            (click)="onSave()"
+            [disabled]="form.invalid || form.pristine"
+            >{{
+              gradeScaleId
+                ? t("grade_management.action_buttons.update_grades_button")
+                : t("grade_management.create_grades.btn")
+            }}</ion-button
+          >
+        </div>
+      }
+    </form>
+  </div>
+  @if (isLoading()) {
+    <div
+      class="absolute bottom-0 left-0 right-0 top-0 z-10 flex min-h-52 items-center justify-center bg-[rgba(255,255,255,0.5)]"
+    >
+      <ion-spinner class="spinner" name="crescent"></ion-spinner>
+    </div>
+  }
+</div>

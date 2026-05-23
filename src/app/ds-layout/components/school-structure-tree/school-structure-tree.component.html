@@ -1,0 +1,52 @@
+<div
+  class="pb-safe-mobile flex flex-col gap-4 p-4 rtl:gap-4 rtl:pl-4 rtl:pr-4"
+  [ngClass]="{ 'max-h-[70vh]': !isMobile }"
+  *transloco="let t"
+>
+  <!-- header -->
+  <div class="flex items-center justify-between rtl:flex-row-reverse">
+    <h5 class="truncate text-sm font-bold md:text-sm rtl:text-right">
+      {{ "global.select_company_campus_school.btn" | transloco }}
+    </h5>
+
+    <ion-button
+      *ngIf="showClearBtn"
+      hesBtn
+      hesColor="link"
+      hesSize="xs"
+      class="!font-normal !capitalize !leading-6 text-[#383C57] rtl:order-first"
+      (click)="onClear()"
+    >
+      {{ "global.clear.btn" | transloco }}
+    </ion-button>
+  </div>
+
+  <!-- checkbox row (auto-mirrors with logical props we added) -->
+  <app-ds-checkbox
+    size="sm"
+    [title]="t('global.set_current.txt')"
+    (checkedChange)="isStructureDefaultSet($event)"
+    [defaultValue]="isStructureSelectionSaved"
+  ></app-ds-checkbox>
+
+  <!-- tree -->
+  <div class="no-scrollbar overflow-y-auto p-2 rtl:pl-2 rtl:pr-2">
+    <ul>
+      @for (
+        item of getFilteredSchoolStructure();
+        track item.id;
+        let isLast = $last
+      ) {
+        <app-ds-school-structure-nav-item
+          [item]="item"
+          [scopeSelection]="scopeSelection"
+          [isNavItem]="false"
+          [isLastSibling]="isLast"
+          (close)="dismiss()"
+          (selectionComplete)="selectionComplete.emit($event)"
+          class="[&.active>.tree-content>.toggle-box]:ml-[-1rem] [&.active]:ps-4 rtl:[&.active]:pe-4"
+        ></app-ds-school-structure-nav-item>
+      }
+    </ul>
+  </div>
+</div>

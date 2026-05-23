@@ -1,0 +1,64 @@
+<div class="overflow-y-auto">
+  <app-no-selected-scope-card
+    [requiredScope]="requiredScopes"
+    (onScopeUpdate)="handleDisplayContent($event)"
+  />
+</div>
+@if(displayContent()){
+<ion-content *transloco="let t;" class="bottom-bar-spacing ds-page-content">
+  <div class="sticky top-0 z-10 bg-brand-35 p-ds-md pb-0">
+    @if (!isMobile) {
+    <div class="mb-4 text-2xl font-medium">
+      {{ t('dismissal.student_pickup_requests.label') }}
+    </div>
+    }
+    <app-request-tabs
+      [activeTab]="activeTabValue()"
+      [tabsData]="tabsData()"
+      (tabChange)="onTabChange($event)"
+    />
+  </div>
+
+  <!-- <div class="px-ds-md">
+    @for (pickup of filteredPickupList(); track pickup.id) {
+    <app-personnel-student-request-card
+      [pickupInfo]="pickup"
+      (onAction)="onAction($event)"
+    />
+    }
+  </div> -->
+
+  @if (!filteredPickupList().length) {
+  <div class="flex h-[calc(100vh-28rem)] items-center justify-center">
+    <div class="text-center">
+      <ng-icon
+        [name]="'saxCarOutline'"
+        class="text-dark-800 mb-4 text-5xl"
+      ></ng-icon>
+      <p class="text-base">{{ t('dismissal.no_pickup_request.txt') }}</p>
+    </div>
+  </div>
+  }
+
+  <!-- Floating Scan button -->
+  <div
+    class="pointer-events-none fixed bottom-36 left-1/2 z-20 -translate-x-1/2"
+  >
+    <ds-button
+      class="pointer-events-auto shadow-[0px_0px_10px_-6px_rgba(0,0,0,0.1),0px_20px_25px_-5px_rgba(0,0,0,0.16)]"
+      [variant]="'primary'"
+      [size]="'lg'"
+      [disabled]="isScanning()"
+      (click)="startQrScan()"
+    >
+      <span class="flex items-center gap-ds-md">
+        @if (isScanning()) {
+        <ion-spinner name="crescent" class="h-5 w-5"></ion-spinner>
+        } @else {
+        <app-ds-icon [icon]="qrcodeIcon" size="xl"></app-ds-icon>
+        } {{ t('global.scan.btn')}}
+      </span>
+    </ds-button>
+  </div>
+</ion-content>
+}

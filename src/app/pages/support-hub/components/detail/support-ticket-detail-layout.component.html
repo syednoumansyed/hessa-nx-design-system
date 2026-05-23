@@ -1,0 +1,140 @@
+<ion-content
+  class="flex flex-1 flex-col bg-surface-primary"
+  [fullscreen]="true"
+>
+  <div class="flex h-full flex-col">
+    <!-- Header Section -->
+    <div class="border-b border-stroke-black-08 bg-surface-primary">
+      @if (isLoading()) {
+        <div
+          class="flex items-center gap-ds-md px-ds-2xl py-ds-md"
+          aria-hidden="true"
+        >
+          <ion-skeleton-text
+            class="h-12 w-12 rounded-ds-full"
+          ></ion-skeleton-text>
+          <ion-skeleton-text class="h-5 w-48 rounded-ds-md"></ion-skeleton-text>
+        </div>
+      } @else {
+        @if (headerConfig(); as header) {
+          <app-support-hub-detail-header
+            [config]="header"
+            (back)="onBackRequested()"
+            (viewProfile)="onViewProfileRequested()"
+          ></app-support-hub-detail-header>
+        } @else {
+          <ng-content select="[header]"></ng-content>
+        }
+      }
+    </div>
+
+    <!-- School Info Section (when not scrolled) -->
+    @if (!isLoading() && showSchoolInfo() && !showScrollHeader()) {
+      <div class="bg-surface-primary px-ds-xl py-ds-lg">
+        <app-support-ticket-school-info
+          [school]="schoolInfo()!"
+        ></app-support-ticket-school-info>
+      </div>
+    }
+
+    <!-- Scroll Header (when scrolled past threshold) -->
+    @if (!isLoading() && showScrollHeader()) {
+      @if (summary(); as summaryData) {
+        <app-support-ticket-detail-scroll-header
+          [summary]="summaryData"
+          [detail]="detail()"
+          (clicked)="onScrollHeaderClick()"
+          (menuItemSelected)="onScrollHeaderMenuItemSelected($event)"
+        ></app-support-ticket-detail-scroll-header>
+      }
+    }
+
+    <!-- Scrollable Content Area -->
+    <div
+      #scrollContainer
+      class="flex flex-1 flex-col gap-ds-2xl px-ds-2xl pt-ds-xl"
+      [ngClass]="hasFooter() ? '!lg:pb-[30px] pb-[80px]' : 'pb-ds-3xl'"
+      [class.overflow-y-auto]="!isLoading()"
+      [class.overflow-hidden]="isLoading()"
+      style="min-height: 0"
+      (scroll)="onScroll($event)"
+    >
+      @if (isLoading()) {
+        <ng-container [ngTemplateOutlet]="detailSkeleton"></ng-container>
+      } @else {
+        <ng-content></ng-content>
+      }
+      @if (!hasFooter()) {
+        <div class="h-ds-3xl shrink-0"></div>
+      }
+    </div>
+
+    <!-- Footer Section (for buttons, etc.) -->
+    @if (!isLoading()) {
+      <ng-content select="[footer]"></ng-content>
+    }
+  </div>
+</ion-content>
+
+<ng-template #detailSkeleton>
+  <div class="flex justify-center">
+    <div
+      class="flex w-full max-w-[550px] flex-col gap-ds-xl"
+      aria-hidden="true"
+    >
+      <div class="flex justify-center">
+        <span
+          class="inline-flex items-center gap-ds-xs rounded-ds-2xl border border-stroke-black-08 bg-surface-secondary px-ds-lg py-ds-sm"
+        >
+          <ion-skeleton-text class="h-4 w-32 rounded-ds-md"></ion-skeleton-text>
+        </span>
+      </div>
+
+      <div class="flex flex-col gap-ds-md">
+        @for (stage of skeletonStages; track stage.id) {
+          <article
+            class="flex flex-col gap-ds-md rounded-ds-xl border border-stroke-black-08 bg-surface-primary p-ds-xl"
+          >
+            <header class="flex items-start gap-ds-md">
+              <ion-skeleton-text class="{{ stage.avatar }}"></ion-skeleton-text>
+              <div class="flex flex-1 flex-col gap-ds-sm">
+                @for (line of stage.headerLines; track $index) {
+                  <ion-skeleton-text class="{{ line }}"></ion-skeleton-text>
+                }
+              </div>
+              @if (stage.trailing) {
+                <ion-skeleton-text
+                  class="{{ stage.trailing }}"
+                ></ion-skeleton-text>
+              }
+            </header>
+
+            <div class="flex flex-col gap-ds-sm">
+              @for (line of stage.bodyLines; track $index) {
+                <ion-skeleton-text class="{{ line }}"></ion-skeleton-text>
+              }
+            </div>
+
+            @if (stage.footerBadges.length) {
+              <div class="flex flex-wrap items-center gap-ds-sm">
+                @for (badge of stage.footerBadges; track $index) {
+                  <ion-skeleton-text class="{{ badge }}"></ion-skeleton-text>
+                }
+              </div>
+            }
+
+            @if (stage.attachments.length) {
+              <div class="flex flex-col gap-ds-sm">
+                @for (attachment of stage.attachments; track $index) {
+                  <ion-skeleton-text
+                    class="{{ attachment }}"
+                  ></ion-skeleton-text>
+                }
+              </div>
+            }
+          </article>
+        }
+      </div>
+    </div>
+  </div>
+</ng-template>

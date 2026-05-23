@@ -1,0 +1,58 @@
+.list,
+.item {
+  position: relative;
+}
+
+/* Line from the child to the right */
+.item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 0.25rem;
+  height: 1px;
+  background: #3c425f;
+  transform: translatex(-100%);
+}
+
+.item:dir(rtl)::before {
+  right: 0;
+  transform: translatex(100%);
+}
+
+/* Line going up to the parent */
+.list::before {
+  content: "";
+  position: absolute;
+  height: calc(100% - 16px);
+  width: 1px;
+  background: #3c425f;
+  bottom: 0;
+  transform: translatey(-20px) translateX(-0.25rem);
+}
+
+.list:dir(rtl)::before {
+  transform: translatey(-20px) translateX(0.25rem);
+}
+
+.only-child.list::before {
+  content: "";
+  position: absolute;
+  height: 25px;
+  width: 1px;
+  background: #3c425f;
+
+  top: 0;
+  transform: translatey(-4px) translateX(-0.25rem);
+}
+.only-child.list:dir(rtl)::before {
+  transform: translatey(-4px) translateX(0.25rem);
+}
+
+/* Hide the upward line for the first level */
+:host > .list:first-child::before {
+  display: none;
+}
+:host > .list:first-child > .item::before {
+  display: none;
+}

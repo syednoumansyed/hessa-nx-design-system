@@ -1,0 +1,54 @@
+<div
+  *transloco="let t"
+  class="flex h-full flex-col justify-between gap-ds-md rounded-ds-xl border-4 border-b-8 border-stroke-mid bg-white p-ds-lg"
+>
+  <div class="flex flex-col gap-ds-md">
+    <div>
+      <div class="heading-h4-high-emphasis text-emphasis-high">
+        {{ courseData()?.title }}
+      </div>
+      <div class="content-sm-mid-emphasis text-emphasis-mid">
+        {{ courseData()?.topic?.title }}
+      </div>
+    </div>
+    <div
+      class="flex items-center gap-ds-xs"
+      [ngClass]="{
+        'text-error-ds-600': courseData()?.dueColor === 'red',
+        'text-warn-orange-500': courseData()?.dueColor === 'orange',
+        'text-emphasis-mid': courseData()?.dueColor === 'gray'
+      }"
+    >
+      <app-ds-icon [icon]="clockIcon" />
+      <span class="single-line-caption-mid-emphasis">
+        {{ courseData()?.dueString }}
+      </span>
+    </div>
+    <div class="flex items-center gap-ds-md">
+      <app-content-tag
+        [type]="'work'"
+        [workItem]="courseData()?.workItemType"
+        [title]="workItemTitle()"
+        [assignmentType]="courseData()?.type"
+      ></app-content-tag>
+
+      <app-content-tag
+        [type]="'subject'"
+        [title]="courseData()?.subject?.displayName"
+        [url]="courseData()?.imageUrl"
+      ></app-content-tag>
+    </div>
+  </div>
+  @if (!courseData()!.isMissed && isStudentUser()) {
+    <div>
+      <ds-button
+        size="sm"
+        [fullWidth]="true"
+        variant="primary"
+        [disabled]="courseData()!.isMissed"
+      >
+        {{ t("global.start") }}
+      </ds-button>
+    </div>
+  }
+</div>

@@ -1,0 +1,46 @@
+<div class="flex w-full flex-col gap-ds-xl">
+  <div class="flex max-h-[360px] flex-col gap-ds-sm overflow-y-auto pr-ds-xs">
+    @for (student of students(); track student.id) {
+      <button
+        type="button"
+        class="flex w-full items-center gap-ds-md rounded-ds-md border-2 px-ds-xl py-ds-md text-start transition-colors duration-200"
+        [ngClass]="{
+          'border-stroke-brand-default bg-surface-brand-surface-light':
+            isSelected(student),
+          'border-transparent bg-surface-primary': !isSelected(student),
+        }"
+        (click)="toggleStudent(student)"
+        [attr.aria-pressed]="isSelected(student)"
+      >
+        <app-ds-avatar
+          [fullName]="student.fullName"
+          [imageUrl]="student.avatarUrl ?? null"
+          [color]="student.avatarColor"
+          size="lg"
+          [includeBorder]="false"
+        ></app-ds-avatar>
+        <div class="gap-ds-2xs flex flex-1 flex-col">
+          <span class="heading-h5-high-emphasis text-emphasis-high">
+            {{ student.fullName }}
+          </span>
+          <div
+            class="single-line-caption-mid-emphasis flex items-center gap-ds-lg whitespace-nowrap text-emphasis-mid"
+          >
+            <span>{{ student.levelLabel }}</span>
+            <span>{{ student.classLabel }}</span>
+          </div>
+        </div>
+        @if (isSelected(student)) {
+          <span class="ms-auto">
+            <app-ds-icon
+              [icon]="checkIcon"
+              size="lg"
+              cssClass="text-surface-pastel-foreground-brand"
+              aria-hidden="true"
+            ></app-ds-icon>
+          </span>
+        }
+      </button>
+    }
+  </div>
+</div>

@@ -1,0 +1,77 @@
+<div class="user-selection" *transloco="let t">
+  <div class="flex flex-col gap-ds-3xl pb-ds-xl">
+    @for (student of studentsList(); track student.id) {
+      <div class="flex flex-col gap-ds-md">
+        <div
+          class="flex cursor-pointer items-center gap-ds-md py-ds-lg"
+          (click)="onUserSelected(student, userType.STUDENT)"
+        >
+          <app-ds-avatar
+            [fullName]="student.displayName"
+            size="2xl"
+            [includeBorder]="false"
+            [imageUrl]="student.imageUrl"
+          />
+
+          <div
+            class="single-line-md-high-emphasis flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-emphasis-high"
+          >
+            {{ student.displayName }}
+          </div>
+
+          <div
+            class="ml-auto flex h-[24px] w-[24px] items-center justify-center"
+          >
+            <app-ds-icon [icon]="isRtl ? faChevronLeft : faChevronRight" />
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-ds-xl rounded-ds-xl bg-white p-ds-xl">
+          @for (guardian of student.guardians; track guardian.id) {
+            <div
+              class="flex cursor-pointer items-center gap-ds-md py-ds-lg"
+              (click)="onUserSelected(guardian, userType.GUARDIAN)"
+            >
+              <app-ds-avatar
+                [fullName]="guardian.displayName"
+                size="2xl"
+                [includeBorder]="false"
+                [color]="guardian.profileColor"
+              />
+              <div class="flex flex-1 flex-col gap-ds-sm overflow-hidden">
+                <div
+                  class="single-line-md-mid-emphasis overflow-hidden text-ellipsis whitespace-nowrap text-emphasis-high"
+                >
+                  {{ guardian.displayName }}
+                </div>
+                <div
+                  class="single-line-xs-mid-emphasis w-fit items-center rounded-full bg-pastels-neutralGray-150 px-ds-lg py-ds-sm"
+                >
+                  {{ guardian.guardianRelationship | enumLang }}
+                </div>
+              </div>
+
+              <div
+                class="ml-auto flex h-[24px] w-[24px] items-center justify-center"
+              >
+                <app-ds-icon [icon]="isRtl ? faChevronLeft : faChevronRight" />
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+  @if (showInfiniteScroll()) {
+    <ion-infinite-scroll
+      #infiniteScrollRef
+      threshold="10px"
+      (ionInfinite)="onLoadMore($event)"
+    >
+      <ion-infinite-scroll-content
+        loadingSpinner="crescent"
+        loadingText="{{ t('chats.loading_more_data.txt') }}"
+      ></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  }
+</div>

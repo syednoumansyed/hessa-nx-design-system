@@ -1,0 +1,66 @@
+<app-question-wrapper
+  *transloco="let t"
+  [bodyTempRef]="bodyTempRef"
+  [ctaTempRef]="ctaTempRef"
+  [titlePlaceholder]="t('content_management.exam_details.title')"
+  [isQuestionListShow]="this.examStyle() !== ExamStyle.OFFLINE"
+  [title]="form.controls.title.value"
+  [mainTabTitle]="form.controls.title.value"
+  [isParentEdit]="!isEditMode()"
+>
+</app-question-wrapper>
+
+<ng-template #ctaTempRef>
+  <div *transloco="let t">
+    @if (isEditMode() || !examId()){
+    <div class="mx-4 mb-4 flex flex-col-reverse md:flex-row">
+      <ion-button hesBtn class="hes-btn--outline" (click)="onCancel()"
+        >{{ t('global.cancel.btn') }}</ion-button
+      >
+      <ion-button
+        hesBtn
+        [disabled]="form.invalid"
+        (click)="onSave()"
+        *hesRbacSome="[addExamPermission, ediExamPermission]"
+      >
+        {{t('global.save.btn')}}
+      </ion-button>
+    </div>
+    } @else {
+    <ion-button
+      hesBtn
+      class="hes-btn--outline"
+      *hesRbac="ediExamPermission"
+      (click)="enableEditMode()"
+      >{{ t('global.edit.btn') }}</ion-button
+    >
+    }
+  </div>
+</ng-template>
+<ng-template #bodyTempRef>
+  <div class="h-full" *transloco="let t">
+    <div
+      class="flex h-auto w-full flex-col items-start justify-start gap-8 bg-white px-4 py-8 md:bg-transparent md:p-0"
+    >
+      <form
+        [formGroup]="form"
+        class="flex w-full flex-col items-end justify-start gap-8"
+      >
+        <div
+          class="Frame23 md:shadow-[0_1px_2px_0_rgba(0, 0, 0, 0.05)] flex w-full flex-col items-start justify-start gap-10 bg-white md:rounded-lg md:border md:border-[#F1F1F4] md:p-8"
+        >
+          <div class="flex w-full flex-col gap-8 gap-y-10">
+            @for ( control of formConfig(); track control.formControlName ) {
+            <div class="flex-1">
+              <app-form-control-generator
+                [control]="control"
+              ></app-form-control-generator>
+            </div>
+            }
+          </div>
+          <div class="Line1 h-[0px] self-stretch border border-slate-200"></div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>

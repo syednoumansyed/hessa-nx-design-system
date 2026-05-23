@@ -1,0 +1,147 @@
+<ion-content class="ds-page-content" *transloco="let t">
+  <div class="flex w-full flex-col gap-4 bg-white p-2 lg:gap-8 lg:bg-inherit">
+    <div
+      class="-mx-4 p-6 shadow-xs lg:m-0 lg:rounded-lg lg:border lg:border-[#F1F1F4]"
+    >
+      <app-profile-header
+        [fullName]="personnel()?.displayName ?? ''"
+        [profileColor]="personnel()?.profileColor ?? userProfileColors.NEUTRAL"
+        [metadata]="metadata()"
+        [userType]="userType"
+        [associateSchoolControl]="hasSchoolStructurePermission ? associateSchoolControl : $any(null)"
+        class="rounded-lg"
+        (onCloseAssociateSchoolModal)="onCloseAssociateSchoolModal($event)"
+        [creationDate]="personnel()?.createdAt?.toString()"
+        [createdBy]="personnel()?.createdBy?.displayName ?? ''"
+        [lastActiveDate]="personnel()?.userEvent?.[0]?.createdAt ?? null"
+      ></app-profile-header>
+    </div>
+
+    @if (personnel()?.status === 'INACTIVE') {
+    <app-hes-alert
+      hesAuth
+      [roles]="[]"
+      type="warning"
+      [title]="t('user_management.account_deactivated.title')"
+      [message]="t('user_management.account_deactivated.txt')"
+      [buttonTitle]="t('global.activate_account.btn')"
+      (actionClick)="onActivatePersonnel()"
+    ></app-hes-alert>
+    }
+
+    <!-- Associated subjects section -->
+    <div
+      class="hes-card flex flex-1 flex-col items-start justify-start gap-4 bg-white p-6 lg:gap-0 lg:p-0"
+    >
+      <div
+        class="flex w-full items-center justify-between self-stretch rounded-lg bg-white lg:px-6 lg:pb-[19px] lg:pt-5"
+      >
+        <span
+          class="text-sm font-semibold uppercase leading-7 text-[#AEAFB8] lg:text-lg lg:normal-case lg:text-gray-900"
+        >
+          {{ t("grade_management.applicable_subjects.title") }}
+        </span>
+      </div>
+
+      <!-- Desktop layout -->
+      <div
+        class="hidden w-full flex-col self-stretch rounded-b-lg border-t border-gray-200 bg-white lg:flex"
+      >
+        <div class="flex items-stretch self-stretch border-b border-gray-200">
+          <div
+            class="box-content flex min-h-10 w-[292px] flex-1 items-center justify-start px-6 py-4"
+          >
+            <span class="text-sm font-normal text-gray-500">
+              {{ t("grade_management.applicable_subjects.title") }}
+            </span>
+          </div>
+          <div
+            class="box-content flex min-h-10 w-[381px] flex-1 items-center justify-start px-24 py-4"
+          >
+            @if (hasSubjectAssociationPermission) {
+            <app-ds-select
+              class="w-full"
+              [config]="subjectsConfig()"
+              [formControl]="subjectsControl"
+              (closed)="onSubjectsDropdownClosed()"
+              (chipRemoved)="onSubjectsDropdownClosed()"
+            ></app-ds-select>
+            } @else { @if (subjects().length > 0) {
+            <div class="flex flex-wrap items-center gap-1.5">
+              @for (subject of subjects(); track subject.subjectId) {
+              <span
+                class="inline-flex items-center rounded-full bg-[#f9f5ff] px-2 py-0.5 text-xs font-medium text-[#6941c6]"
+              >
+                {{ subject.displayName }}
+              </span>
+              }
+            </div>
+            } @else {
+            <span class="text-sm font-semibold text-gray-900">-</span>
+            } }
+          </div>
+          <div
+            class="box-content flex min-h-10 w-[381px] flex-1 items-center px-6 py-4"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Mobile layout -->
+      <div class="flex w-full flex-col gap-1 lg:hidden">
+        <span
+          class="text-base font-semibold capitalize leading-tight text-neutral-900"
+        >
+          {{ t("grade_management.applicable_subjects.title") }}
+        </span>
+        <div>
+          @if (hasSubjectAssociationPermission) {
+          <app-ds-select
+            class="w-full"
+            [config]="subjectsConfig()"
+            [formControl]="subjectsControl"
+            (closed)="onSubjectsDropdownClosed()"
+          ></app-ds-select>
+          } @else { @if (subjects().length > 0) {
+          <div class="flex flex-wrap items-center gap-1.5">
+            @for (subject of subjects(); track subject.subjectId) {
+            <span
+              class="inline-flex items-center rounded-full bg-[#f9f5ff] px-2 py-0.5 text-xs font-medium text-[#6941c6]"
+            >
+              {{ subject.displayName }}
+            </span>
+            }
+          </div>
+          } @else {
+          <span class="text-sm font-medium leading-tight text-slate-500"
+            >-</span
+          >
+          } }
+        </div>
+      </div>
+    </div>
+
+    <app-profile-details
+      [profileDetails]="profileDetails()"
+      [onUpdateProfile]="goToUpdatePersonnelPage"
+      [updatePermissionId]="updatePersonnelPermissionId"
+    ></app-profile-details>
+
+    <app-profile-login-methods
+      [deactivateRoles]="[]"
+      [phoneNumber]="personnel()?.phoneNumber!"
+      [onDeactivate]="onDeactivatePersonnel"
+      [showDeactivateBtn]="personnel()?.status === 'ACTIVE'"
+      [userType]="userType"
+      [ownProfile]="personnel()?.id === authService.user()?.userTypeId && authService.user()?.type === UserType.PERSONNEL"
+      [deactivatePermissionId]="activateDeactiveProfilePermissionId"
+      [updatePhoneNumberPermissionId]="updatePersonnelPermissionId"
+      [onUpdateSuccess]="onRefreshProfile"
+    ></app-profile-login-methods>
+    @if(personnel()){
+    <app-connected-profile
+      [data]="personnel()"
+      [userType]="userType"
+    ></app-connected-profile>
+    }
+  </div>
+</ion-content>

@@ -1,0 +1,50 @@
+<ion-content class="no-scrollbar" *transloco="let t">
+  <div class="flex min-h-full flex-col">
+    <!-- Main Content Area -->
+    <div
+      class="flex flex-1 flex-col gap-ds-xl px-ds-xl pt-ds-2xl"
+      [ngClass]="isMobile() ? 'pb-ds-2xl' : 'pb-0'"
+    >
+      <!-- Header -->
+      <div class="flex flex-col gap-ds-md">
+        <div class="heading-h2-high-emphasis text-emphasis-high">
+          {{ selectedLesson()?.displayName ?? t("learning_outcome.lesson.txt")
+          }}
+        </div>
+        <span class="content-md-mid-emphasis text-emphasis-mid">
+          {{ t("learning_outcome.learning_outcomes.txt") }}
+        </span>
+      </div>
+
+      <!-- Outcomes List -->
+      @if (isLoadingOutcomes() || outcomeCards().length === 0) {
+      <app-lo-empty-state
+        [isLoading]="isLoadingOutcomes()"
+        [title]="t('learning_outcome.no_outcome_available.title')"
+        [description]="t('learning_outcome.no_outcomes_created.txt')"
+      />
+      } @else {
+      <div class="flex flex-col gap-ds-sm">
+        @for (outcome of outcomeCards(); track outcome.id) {
+        <app-outcome-card
+          [outcome]="outcome"
+          (editOutcome)="onEditOutcome($event)"
+          (deleteOutcome)="onDeleteOutcome($event)"
+        />
+        }
+      </div>
+      }
+    </div>
+
+    <!-- Sticky Footer with Add Outcome Button -->
+    <div
+      *hesRbac="createOutcomePermissionId"
+      class="sticky bottom-0 bg-brand-35 p-ds-xl"
+      [ngClass]="isMobile() ? 'border-t border-stroke-black-08' : 'flex justify-end'"
+    >
+      <ds-button [fullWidth]="isMobile()" (click)="onAddOutcome()">
+        {{ t("learning_outcome.add_outcome.btn") }}
+      </ds-button>
+    </div>
+  </div>
+</ion-content>

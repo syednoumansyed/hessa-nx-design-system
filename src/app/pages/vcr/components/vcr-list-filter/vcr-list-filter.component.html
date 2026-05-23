@@ -1,0 +1,81 @@
+<ng-container *transloco="let t">
+  <div
+    class="flex w-full items-start justify-between px-6 py-5"
+    [class]="
+      isAdvanceFilter() ? 'flex-col' : 'flex-col items-center md:flex-row'
+    "
+  >
+    <div
+      class="mb-5 flex w-full items-center justify-between text-lg font-medium leading-7 text-gray-900"
+    >
+      <div class="text-sm text-[#AEAFB8] md:text-inherit">
+        {{ t("global.virtual_classrooms_vcr.title") }}
+      </div>
+      @if (isMobile) {
+        <ion-button
+          hesBtn
+          hesSize="xs"
+          *hesRbac="addVrcsPermissionId; bypassSuperAdminCheck: true"
+          (click)="onAddVCR()"
+        >
+          <fa-icon [icon]="faPlus"></fa-icon>
+        </ion-button>
+      }
+    </div>
+    <ng-container
+      [ngTemplateOutlet]="
+        isAdvanceFilter() ? advanceFilterTpl : commonFilterTpl
+      "
+    ></ng-container>
+  </div>
+
+  <ng-template #advanceFilterTpl>
+    <div
+      class="flex w-full flex-wrap items-center justify-center gap-y-5 md:justify-between"
+    >
+      <div class="flex flex-wrap justify-between gap-3 gap-y-5 md:gap-5">
+        <form [formGroup]="advanceFiltersForm" class="contents">
+          @for (control of advanceFilterFormConfig(); track $index) {
+            <app-form-control-generator
+              class="w-[45%] md:w-[140px]"
+              [control]="control"
+            ></app-form-control-generator>
+          }
+        </form>
+      </div>
+      <ng-container [ngTemplateOutlet]="commonFilterTpl"></ng-container>
+    </div>
+  </ng-template>
+
+  <ng-template #commonFilterTpl>
+    <div
+      class="flex w-full flex-wrap items-center justify-end gap-4 md:w-auto md:flex-nowrap"
+    >
+      <form
+        [formGroup]="commonFiltersForm"
+        class="flex w-full flex-col items-start justify-between gap-5 md:contents md:items-center"
+      >
+        @for (control of commonFiltersConfig(); track $index) {
+          <app-form-control-generator
+            [ngClass]="{
+              'w-[45%]': control.type !== 'date-range',
+              'w-full': control.type === 'date-range' && isMobile,
+              'md:w-[140px]': true,
+              'min-w-[17rem]': control.type === 'date-range' && !isMobile,
+            }"
+            [control]="control"
+          ></app-form-control-generator>
+        }
+      </form>
+      @if (!isMobile) {
+        <ion-button
+          class="whitespace-nowrap"
+          *hesRbac="addVrcsPermissionId; bypassSuperAdminCheck: true"
+          (click)="onAddVCR()"
+        >
+          {{ t("virtual_classrooms.add_vcr.btn") }}
+        </ion-button>
+      }
+    </div>
+  </ng-template>
+</ng-container>

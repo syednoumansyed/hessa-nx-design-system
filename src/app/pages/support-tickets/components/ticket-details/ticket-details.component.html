@@ -1,0 +1,128 @@
+<ng-container *transloco="let t">
+  <div class="flex flex-col items-start justify-start gap-6">
+    <div
+      class="grid w-full grid-cols-2 items-start justify-start gap-8 gap-y-4 lg:flex lg:flex-wrap"
+    >
+      <div class="flex flex-col gap-2">
+        <div class="text-lg font-semibold capitalize leading-5 text-[#141519]">
+          {{ t("support_ticket.category_req.label") }}
+        </div>
+        <div class="text-base capitalize leading-5 text-[#41434A]">
+          {{ ticketDetails()!.supportTypes[0].displayName }}
+        </div>
+      </div>
+      <div class="flex flex-col gap-2">
+        <div class="text-lg font-semibold capitalize leading-5 text-[#141519]">
+          {{ t("support_tickets.sub_category_title.label") }}
+        </div>
+        <div class="text-base capitalize leading-5 text-[#41434A]">
+          {{ ticketDetails()!.supportCategories[0].displayName }}
+        </div>
+      </div>
+      <div class="flex flex-col gap-2">
+        <div class="text-lg font-semibold capitalize leading-5 text-[#141519]">
+          {{ t("support_ticket.title.title") }}
+        </div>
+        <div class="text-base capitalize leading-5 text-[#41434A]">
+          {{ ticketDetails()!.title }}
+        </div>
+      </div>
+      <div class="flex flex-col gap-2">
+        <div
+          *transloco="let t"
+          class="text-lg font-semibold capitalize leading-5 text-[#141519]"
+        >
+          {{ t("global.status.title") }}
+        </div>
+        <div
+          [ngClass]="{
+            'hes-badge--success':
+              ticketDetails()!.status === SupportTicketStatus.RESOLVED,
+            'hes-badge--warnning':
+              ticketDetails()!.status !== SupportTicketStatus.RESOLVED
+          }"
+          class="hes-badge w-fit text-xs font-medium capitalize leading-[1.125rem]"
+          *transloco="let tEnum; read: 'enum'"
+        >
+          {{ tEnum(ticketDetails()!.status.toUpperCase()) }}
+        </div>
+      </div>
+    </div>
+    <!-- Description -->
+    <div class="flex w-full flex-col gap-3">
+      <div class="text-lg font-semibold capitalize leading-5 text-[#141519]">
+        {{ t("support_ticket.description.title") }}
+      </div>
+      <p class="text-base leading-5 text-[#41434A]">
+        {{ ticketDetails()!.description }}
+      </p>
+    </div>
+    <!-- Attachments -->
+    @if (ticketDetails()!.attachments?.length) {
+      <div class="flex flex-col gap-3">
+        <div class="text-lg font-semibold capitalize leading-5 text-[#141519]">
+          {{ t("global.attachments.title") }}
+        </div>
+        @if (imgAttachments()!.length > 4) {
+          <div class="flex flex-wrap items-center gap-2">
+            @for (
+              attachment of imgAttachments()!.slice(0, 3);
+              track index;
+              let index = $index
+            ) {
+              <ion-img
+                (click)="onViewImg(index)"
+                [src]="attachment.url"
+                class="h-[7.5rem] w-[7.5rem] object-cover [&::part(image)]:rounded-lg"
+              ></ion-img>
+            }
+            <div (click)="onViewImg(3)" class="relative h-[7.5rem] w-[7.5rem]">
+              <ion-img
+                [src]="imgAttachments()![3].url"
+                class="h-[7.5rem] w-[7.5rem] object-cover [&::part(image)]:rounded"
+              ></ion-img>
+              <div
+                class="absolute bottom-0 left-0 right-0 top-0 rounded bg-[#212121] opacity-60"
+              ></div>
+              <div
+                class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+              >
+                <span class="text-sm text-white"
+                  >+{{ imgAttachments()!.length - 3 }}</span
+                >
+              </div>
+            </div>
+          </div>
+        } @else {
+          <div class="flex flex-wrap items-center gap-2">
+            @for (
+              attachment of imgAttachments()!;
+              track index;
+              let index = $index
+            ) {
+              <ion-img
+                (click)="onViewImg(index)"
+                [src]="attachment.url"
+                class="h-[7.5rem] w-[7.5rem] object-cover [&::part(image)]:rounded-lg"
+              ></ion-img>
+            }
+          </div>
+        }
+        @if (pdfAttachments()!.length) {
+          <div class="pdf-cards-wrapper mt-4">
+            @for (file of pdfAttachments(); track $index) {
+              <app-file-preview-card [file]="file"></app-file-preview-card>
+            }
+          </div>
+        }
+        @if (pptAttachments()!.length) {
+          <div class="pdf-cards-wrapper mt-4">
+            @for (file of pptAttachments(); track $index) {
+              <app-file-preview-card [file]="file"></app-file-preview-card>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+</ng-container>

@@ -1,0 +1,234 @@
+<ion-content>
+  <div class="p-4 md:p-6">
+    <app-demo-page-wrapper title="Feedback & Overlays">
+      <!-- Responsive Menu -->
+      <h2 class="heading-h2-high-emphasis mb-4">Responsive Menu</h2>
+      <div class="mb-6 flex items-center gap-ds-sm">
+        <ds-responsive-menu
+          [items]="iconContainerMenuItems"
+          triggerAriaLabel="Open responsive menu"
+        ></ds-responsive-menu>
+        <span class="content-md-mid-emphasis">Responsive menu (default)</span>
+      </div>
+
+      <!-- Modal Variants -->
+      <h2 class="heading-h2-high-emphasis mb-4 mt-8">Modal Variants</h2>
+      <div class="mb-4 flex flex-wrap gap-2">
+        <ds-button (click)="openFeedback('success')" variant="primary">
+          Success Feedback modal
+        </ds-button>
+        <ds-button (click)="openFeedback('error')" variant="primary">
+          Error Feedback modal
+        </ds-button>
+        <ds-button (click)="openFeedback('warning')" variant="primary">
+          Info Feedback modal
+        </ds-button>
+      </div>
+
+      <h2 class="heading-h2-high-emphasis mb-4 mt-8">Sidebar</h2>
+      <p class="content-md-mid-emphasis mb-4">
+        Sidebar on desktop, bottom sheet or modal sheet on mobile.
+      </p>
+      <app-sidebar-demo />
+
+      <h2 class="heading-h2-high-emphasis mb-4 mt-8">Modal Component</h2>
+      <p class="content-md-mid-emphasis mb-4">
+        Unified modal component with configurable header, footer, and content.
+      </p>
+      <app-modal-demo />
+
+      <h2 class="heading-h2-high-emphasis mb-4 mt-8">In-App Notifications</h2>
+      <p class="content-md-mid-emphasis mb-4">
+        Trigger dummy notifications for UI and interaction testing.
+      </p>
+      <div class="mb-4 flex flex-wrap gap-2">
+        <ds-button variant="primary" (click)="showSuccessInAppNotification()">
+          Success Notification
+        </ds-button>
+        <ds-button variant="secondary" (click)="showInfoInAppNotification()">
+          Info Notification
+        </ds-button>
+        <ds-button
+          variant="dangerStroke"
+          (click)="showWarningInAppNotification()"
+        >
+          Warning Notification
+        </ds-button>
+        <ds-button variant="tertiary" (click)="showStickyInAppNotification()">
+          Sticky Notification
+        </ds-button>
+        <ds-button variant="ghost" (click)="clearInAppNotifications()">
+          Clear Notifications
+        </ds-button>
+      </div>
+
+      <!-- Tooltip -->
+      <h2 class="heading-h2-high-emphasis mb-4 mt-8">Tooltip</h2>
+      <div class="flex flex-col items-start gap-6">
+        <div class="mb-8">
+          <div class="my-4 flex flex-col gap-4 text-lg">
+            <div class="flex justify-center">
+              <div
+                dsTooltip
+                [dsTooltipTitle]="'Below Tooltip'"
+                [dsTooltipContent]="'Alghaidaa reached the school late with excuse'"
+                [dsTooltipFooter]="'Mon 7 May 2025'"
+                [dsTooltipPosition]="'below'"
+                [dsTooltipIcon]="circleInfoIcon"
+                class="rounded-md bg-brand-600 p-2 text-emphasis-high text-white"
+              >
+                Below
+              </div>
+            </div>
+            <div class="flex items-center justify-between">
+              <div
+                dsTooltip
+                [dsTooltipTitle]="'Right Tooltip'"
+                [dsTooltipContent]="'Alghaidaa reached the school late'"
+                [dsTooltipFooter]="'Mon 7 May 2025'"
+                [dsTooltipPosition]="'right'"
+                [dsTooltipIcon]="circleInfoIcon"
+                class="max-h-[44px] rounded-md bg-brand-600 p-2 text-emphasis-high text-white"
+              >
+                Right
+              </div>
+              <div class="flex flex-col items-end justify-end gap-8">
+                <div
+                  dsTooltip
+                  [dsTooltipTitle]="'Left Tooltip'"
+                  [dsTooltipContent]="'Alghaidaa reached the school'"
+                  [dsTooltipFooter]="'Mon 7 May 2025'"
+                  [dsTooltipPosition]="'left'"
+                  [dsTooltipIcon]="circleInfoIcon"
+                  class="flex w-fit items-center justify-center rounded-md bg-brand-600 p-2 text-emphasis-high text-white"
+                >
+                  Left
+                </div>
+                <div
+                  dsTooltip
+                  [dsTooltipTitle]="'fallback Tooltip'"
+                  [dsTooltipContent]="'Alghaidaa reached the school late with excuse'"
+                  [dsTooltipFooter]="'Mon 7 May 2025'"
+                  [dsTooltipPosition]="'right'"
+                  [dsTooltipIcon]="circleInfoIcon"
+                  class="rounded-md bg-brand-600 p-2 text-emphasis-high text-white"
+                >
+                  Right (auto-fallback)
+                </div>
+              </div>
+            </div>
+            <div class="flex justify-center">
+              <div
+                dsTooltip
+                [dsTooltipTitle]="'Late with Excuse'"
+                [dsTooltipContent]="'Alghaidaa reached the school late with excuse'"
+                [dsTooltipFooter]="'Mon 7 May 2025'"
+                [dsTooltipIcon]="circleInfoIcon"
+                class="rounded-md bg-brand-600 p-2 text-emphasis-high text-white"
+              >
+                Default
+              </div>
+            </div>
+          </div>
+          <p>
+            Hi
+            <span
+              dsTooltip
+              [dsTooltipContent]="'Alghaidaa reached the school late with excuse'"
+              ><app-ds-icon
+                [icon]="circleInfoIcon"
+                size="16"
+              ></app-ds-icon></span
+            >Long tool tip in span
+
+            <span
+              class="inline-block text-blue-500 underline"
+              dsTooltip
+              [dsTooltipTitle]="'Tooltip'"
+              [dsTooltipContent]="'Alghaidaa reached the school late with excuse'"
+              [dsTooltipFooter]="'Mon 7 May 2025'"
+              >Hover</span
+            >
+            here
+            <span
+              dsTooltip
+              [dsTooltipContent]="'Alghaidaa reached the school late with excuse'"
+              ><app-ds-icon [icon]="circleInfoIcon" size="16"></app-ds-icon
+            ></span>
+            <span
+              class="inline-block text-blue-500 underline"
+              dsTooltip
+              [dsTooltipContent]="'Alghaidaa reached the school late with excuse'"
+              >gain text</span
+            >
+            and this is a long text to test the tooltip
+            <span
+              dsTooltip
+              [dsTooltipContent]="'1 Alghaidaa reached the school late with excuse'"
+              >functionality</span
+            >. This is a long text to test the tooltip functionality. This is a
+            long text to test the tooltip functionality. This is a long text
+            <span
+              class="inline-block text-blue-500 underline"
+              dsTooltip
+              [dsTooltipContent]="'Alghaidaa reached the school late with excuse'"
+              [dsTooltipFooter]="'footer here'"
+              >to test
+            </span>
+            functionality. This is a long text to test the
+          </p>
+        </div>
+
+        <h3 class="heading-h3-high-emphasis mb-2">Custom Template Tooltip</h3>
+
+        <div
+          class="my-4 flex w-full flex-col items-center justify-center gap-4"
+        >
+          <div
+            dsTooltip
+            [tooltipTemplate]="customTooltip"
+            class="flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 px-5 py-3 text-lg font-semibold text-white shadow-lg hover:from-blue-600 hover:to-indigo-700 focus:outline-none"
+          >
+            Show Custom Tooltip
+          </div>
+        </div>
+        <ng-template #customTooltip>
+          <div class="max-w-xs rounded-lg text-white shadow-lg">
+            <div class="mb-2 flex items-center gap-2">
+              <span class="text-base font-bold">Advanced Tooltip Example</span>
+            </div>
+            <div class="mb-2 text-sm text-blue-200">
+              <span class="font-semibold">Tip:</span> You can use
+              <span class="text-yellow-200">any Angular template</span> here,
+              including icons, lists, and more!
+            </div>
+            <ul class="mb-2 list-inside list-disc text-xs text-blue-100">
+              <li>
+                Supports
+                <span class="font-semibold text-white">rich content</span>
+              </li>
+              <li>Arrow always points to the trigger</li>
+              <li>Responsive and accessible</li>
+            </ul>
+            <div
+              class="mt-2 flex items-center justify-between text-xs text-blue-300"
+            >
+              <span
+                >Last updated: <span class="font-mono">23 Jul 2025</span></span
+              >
+              <span class="italic">Custom footer</span>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+
+      <!-- Popup -->
+      <h2 class="heading-h2-high-emphasis mb-4 mt-8">Popup</h2>
+      <p>
+        Click any trigger element to open the popup. Hover over items with
+        arrows to see nested menus.
+      </p>
+      <app-popup-usage-example></app-popup-usage-example>
+    </app-demo-page-wrapper>
+  </div>
+</ion-content>

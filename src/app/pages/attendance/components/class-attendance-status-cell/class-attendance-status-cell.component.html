@@ -1,0 +1,15 @@
+<div *transloco="let t; read: 'enum'">
+  <div
+    class="flex h-5 min-w-[5rem] items-center justify-center rounded-2xl px-3 py-2 text-center text-xs font-medium leading-none"
+    [ngClass]="{
+      'bg-success-50 text-success-700 ':
+        statusValue === ClassAttendanceStatus.SUBMITTED,
+      'bg-warning-50 text-warning-700':
+        statusValue === ClassAttendanceStatus.PENDING,
+      'bg-[#fff6ed] text-[#C4320A]':
+        statusValue === ClassAttendanceStatus.IN_PROGRESS
+    }"
+  >
+    {{ t(statusValue) }}
+  </div>
+</div>

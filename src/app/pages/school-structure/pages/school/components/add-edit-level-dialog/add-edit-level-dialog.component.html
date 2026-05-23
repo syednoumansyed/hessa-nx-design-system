@@ -1,0 +1,48 @@
+<div
+  *transloco="let t"
+  class="Modal flex flex-col justify-start gap-4 rounded-xl bg-white p-7 shadow"
+>
+  <div class="mb-3 flex justify-between border-b pb-4">
+    <div class="text-xl font-semibold text-gray-900">
+      {{ t("school_structure.add_edit_level.title") }}
+    </div>
+    <fa-icon
+      class="mt-1 cursor-pointer text-[#929CB5] hover:text-[#0000008a]"
+      [icon]="faClose"
+      size="xl"
+      (click)="closeModal()"
+    ></fa-icon>
+  </div>
+  <div class="w-full max-w-full overflow-x-auto">
+    <form
+      [formGroup]="levelForm"
+      class="flex w-full flex-col items-end justify-start gap-8"
+    >
+      <div class="grid gap-8 gap-y-10 self-stretch">
+        @for (control of levelFormConfig(); track control.formControlName) {
+          <div class="flex-1">
+            <app-form-control-generator
+              [control]="control"
+            ></app-form-control-generator>
+          </div>
+        }
+      </div>
+      <div
+        class="mb-2 mt-2 grid grid-cols-1 gap-8 gap-y-10 self-stretch md:grid-cols-2"
+      >
+        <ion-button
+          hesBtn
+          hesColor="secondary"
+          hesSize="xl"
+          (click)="closeModal()"
+        >
+          {{ t("global.cancel.btn") }}
+        </ion-button>
+        <ion-button hesBtn hesSize="xl" (click)="onUpdateLevels()">
+          <!-- [disabled]="levelForm.invalid" -->
+          {{ t("global.save.btn") }}
+        </ion-button>
+      </div>
+    </form>
+  </div>
+</div>

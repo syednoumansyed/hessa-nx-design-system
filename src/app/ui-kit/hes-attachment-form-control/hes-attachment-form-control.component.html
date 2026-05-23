@@ -1,0 +1,65 @@
+<div *transloco="let t">
+  <div class="mb-4 flex flex-col gap-2">
+    @if (label) {
+      <div class="text-lg font-semibold capitalize text-gray-900">
+        {{ label }}
+        @if (required) {
+          <span class="text-[#e62e2e]">*</span>
+        }
+      </div>
+    }
+    @if (subLabel) {
+      <div class="text-sm font-normal leading-tight text-gray-500">
+        {{ subLabel }}
+      </div>
+    }
+  </div>
+
+  <div
+    (dragover)="onDragOver($event)"
+    (drop)="onDrop($event)"
+    (dragend)="onDragEnd()"
+  >
+    <label>
+      <input
+        #fileInput
+        type="file"
+        class="hidden"
+        [accept]="acceptFileTypesComputed()"
+        (change)="onFileChange($event); resetInput(fileInput)"
+        [multiple]="isMultiple"
+        [disabled]="isDisabled"
+      />
+      <div
+        #container
+        class="flex cursor-pointer flex-col items-center rounded-lg border border-dashed border-slate-300 py-6"
+        [ngClass]="{
+          'opacity-50': isDisabled,
+        }"
+      >
+        <app-hes-icon [faIcon]="faUpload"></app-hes-icon>
+        <div>
+          <span class="text-sm font-semibold text-yellow-700">
+            {{ t("global.click_to_upload.btn") }}
+          </span>
+          <span class="text-sm font-normal leading-tight text-gray-500">
+            {{ t("global.drag_drop.txt") }}
+          </span>
+        </div>
+        <div class="text-center text-xs font-normal text-gray-400">
+          {{ placeholder ?? uploadPlaceholder() }}
+        </div>
+      </div>
+    </label>
+  </div>
+</div>
+
+<div class="mt-4 flex flex-wrap gap-4 text-[#7F8491]">
+  @for (item of attachments; track item) {
+    <app-hes-attachment-preview
+      [attachment]="item"
+      (removed)="removeAttachment($index)"
+      [removable]="!isreadonly"
+    ></app-hes-attachment-preview>
+  }
+</div>

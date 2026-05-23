@@ -1,0 +1,68 @@
+/* ──────────────────────────────────────────────
+   HEADER / TOP TOOLBAR  (stand-alone component)
+   ────────────────────────────────────────────── */
+
+:host {
+  display: block; /* so the host stretches full-width */
+  width: 100%;
+  padding-top: env(safe-area-inset-top) !important;
+}
+
+:host.has-banner-above {
+  padding-top: 0 !important;
+}
+
+/* 1.  Toolbar look & feel */
+ion-toolbar {
+  --background: #ffffff; /* you can swap to var(--surface-primary) etc. */
+  --box-shadow: none;
+  box-shadow: none !important; /* strip Ionic’s default shadow */
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* 2.  Mobile / Tablet paddings & heights */
+@media (max-width: 1023px) {
+  ion-toolbar {
+    --padding-start: 1rem; /* left/right gutters */
+    --padding-end: 1rem;
+    min-height: 70px; /* matches your old spec */
+  }
+
+  /* profile-button hover effect */
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+  }
+}
+
+/* 3.  Narrow-phone tweaks */
+@media (max-width: 599px) {
+  ion-toolbar {
+    --min-height: 70px;
+  }
+
+  /* shrink the logo a touch on tiny screens */
+  img.h-7 {
+    height: 1.75rem !important;
+  }
+
+  /* make the avatar a little smaller */
+  app-ds-avatar {
+    transform: scale(0.9);
+  }
+}
+
+/* 4.  Accessibility focus outline (kept from old sheet) */
+button:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--colors-brand-500, #3b82f6);
+  outline-offset: 2px;
+  border-radius: 4px;
+}

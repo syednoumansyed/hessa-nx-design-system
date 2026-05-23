@@ -1,0 +1,7 @@
+@if (isLoading()) {
+  <div class="flex h-full min-h-[200px] items-center justify-center">
+    <tui-loader [showLoader]="true"></tui-loader>
+  </div>
+} @else if (postData()) {
+  <app-preview-post-card [post]="postData()!"></app-preview-post-card>
+}

@@ -1,0 +1,86 @@
+<div
+  *transloco="let t"
+  class="Modal flex flex-col items-center justify-start gap-4 rounded-xl bg-white px-6 py-10 shadow"
+>
+  <div
+    class="Content flex flex-col items-center justify-start gap-5 self-stretch"
+  >
+    <div
+      class="flex h-12 w-12 items-center justify-center rounded-[1.75rem] border-[0.5rem] border-[#FFFAEB] bg-[#FEF0C7] p-3"
+    >
+      <div class="CheckCircle flex h-6 w-6 flex-col items-start justify-start">
+        <fa-icon class="text-[#DC6803]" [icon]="faEnvelope" size="lg" />
+      </div>
+    </div>
+    <div class="flex flex-col items-start justify-start gap-2 self-stretch">
+      <div
+        *transloco="let t"
+        class="self-stretch text-center text-lg font-semibold text-gray-900"
+      >
+        {{ t("global.verification_required.title") }}
+      </div>
+      <div class="self-stretch text-center text-sm font-normal text-gray-500">
+        {{ t("login.enter_the_code.txt") }} {{ phoneNumber }}
+      </div>
+    </div>
+    <div class="min-h-16 w-full">
+      <div
+        class="relative"
+        [ngClass]="{
+          hidden: !isShowLoader()
+        }"
+      >
+        <ion-spinner
+          class="absolute end-0 start-0 top-3 z-40 m-auto"
+        ></ion-spinner>
+      </div>
+      <div
+        [ngClass]="{
+          hidden: isShowLoader()
+        }"
+      >
+        <form [formGroup]="OTPForm">
+          <div [dir]="'ltr'" class="flex w-full justify-center">
+            <div class="mb-2 w-40">
+              <app-hes-input
+                formControlName="otp"
+                [maxLength]="4"
+                [type]="'text'"
+                [inputMode]="'numeric'"
+                [autoComplete]="'one-time-code'"
+                [pattern]="'[0-9]{4}'"
+                [autoFocus]="true"
+                [isOnlyNumaric]="true"
+                inputCssClass="text-center"
+              >
+              </app-hes-input>
+            </div>
+          </div>
+        </form>
+        @if (OTPForm.controls.otp.errors?.["inValidOTP"]) {
+          <div
+            class="self-stretch text-xs font-normal leading-none tracking-tight text-red-600"
+            *transloco="let t"
+          >
+            {{ t("login.invalid_code.txt") }}
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+  <div
+    class="ModalActions flex w-full flex-col items-start justify-start gap-4"
+    *transloco="let t"
+  >
+    <ion-button
+      class="m-0 w-full"
+      hesBtn
+      [disabled]="isTimerOn()"
+      (click)="onResendOtp()"
+      >{{ t("login.resend.btn") }} {{ timer() }}</ion-button
+    >
+    <ion-button class="hes-btn--white m-0 w-full" hesBtn (click)="cancel()">{{
+      t("global.cancel.btn")
+    }}</ion-button>
+  </div>
+</div>

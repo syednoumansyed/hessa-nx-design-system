@@ -1,0 +1,16 @@
+<ion-content>
+  <div class="p-4 md:p-6">
+    <app-demo-page-wrapper title="Filter Panel">
+      <div class="flex flex-col gap-4">
+        <app-ds-filter-panel
+          [filters]="filterPanelFilters"
+          [selection]="filterPanelSelection()"
+          (filtersChange)="onFilterPanelChange($event)"
+        ></app-ds-filter-panel>
+        <div class="content-sm-mid-emphasis">
+          Selection: {{ filterPanelSelection() | json }}
+        </div>
+      </div>
+    </app-demo-page-wrapper>
+  </div>
+</ion-content>

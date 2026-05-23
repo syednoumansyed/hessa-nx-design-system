@@ -1,0 +1,164 @@
+<ion-content class="ds-page-content" *transloco="let t">
+  @if (journal() !== null) {
+  <div class="h-full overflow-hidden overflow-y-scroll">
+    <div
+      class="hes-card flex w-full flex-col items-start justify-start border-0 border-none p-0"
+      [ngClass]="isMobile ? 'px-4 py-4 mx-2 mt-4' : 'px-6 py-8 rounded-none'"
+    >
+      <div class="text-black text-lg font-semibold">
+        {{ journalType() === 'DAILY' ? t('journals.daily.title') :
+        t('journals.weekly.title') }} {{ t('journals.journals.title') }}
+      </div>
+      <div
+        class="mt-6 grid grid-cols-1 gap-8 gap-y-10 self-stretch text-base md:grid-cols-2"
+      >
+        <!-- Each item -->
+        <div class="flex-1">
+          <div class="text-black font-semibold">
+            {{ t('global.national_id.label') }}
+          </div>
+          <div class="text-gray-500">{{ journal()?.nationalId }}</div>
+        </div>
+        <div class="flex-1">
+          <div class="text-black font-semibold">
+            {{ t('global.class.label') }}
+          </div>
+          <div class="text-gray-500">{{ journal()?.classDisplayName }}</div>
+        </div>
+        <div class="flex-1">
+          <div class="text-black font-semibold">
+            {{ t('global.semester.title') }}
+          </div>
+          <div class="text-gray-500">{{ semester().name | titlecase }}</div>
+        </div>
+        <div class="flex-1">
+          <div class="text-black font-semibold">
+            {{ t('journals.day_and_date.title') }}
+          </div>
+          <div class="text-gray-500">
+            {{ today() | date:'dd/MM/yyyy' }} @if (journalType() ===
+            JournalType.WEEKLY){- {{endDate() | date: 'dd/MM/yyyy'}}}<br />
+            {{ day() | dayOfWeek }} @if (journalType() === JournalType.WEEKLY){-
+            {{endDay() | dayOfWeek }}}
+          </div>
+        </div>
+        <div class="flex-1">
+          <div class="text-black font-semibold">
+            {{ t('global.student_name.title') }}
+          </div>
+          <div class="text-gray-500">{{ journal()?.displayName }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="flex w-full flex-col items-start justify-start rounded-none border-0 border-none p-0"
+      [ngClass]="isMobile ? 'py-2' : 'px-6 mt-4 py-8 hes-card'"
+    >
+      @if (groupedControls().length > 0) {
+      <form
+        [formGroup]="form"
+        class="flex w-full flex-col items-end justify-start gap-8"
+      >
+        <div class="gap-8 gap-y-10 self-stretch">
+          <div
+            *ngFor="let group of groupedControls()"
+            class="mt-8"
+            [ngClass]="isMobile ? 'hes-card mx-2' : ''"
+          >
+            <!-- Display heading if hideTitle is false -->
+            <div
+              *ngIf="!group.hideTitle"
+              class="text-black mb-4 mt-4 text-lg font-semibold"
+            >
+              {{ t(group.sectionTitle) }}
+            </div>
+            <div class="mb-8 mt-8 flex-1 gap-2">
+              <div *ngFor="let control of group.controls" class="mt-4">
+                <app-form-control-generator
+                  [control]="control"
+                ></app-form-control-generator>
+              </div>
+            </div>
+            <hr />
+          </div>
+        </div>
+
+        <!--          actions starts here-->
+
+        <!-- Acknowledge Button (no Cancel here, so unchanged) -->
+        <div class="flex w-full flex-col justify-end gap-4 md:flex-row">
+          @if (rbac.hasPermission(journalAcknowledgePermission) &&
+          journal()?.status === JournalStatus.PUBLISHED && userType() ===
+          UserType.GUARDIAN) {
+          <ion-button
+            hesBtn
+            hesColor="primary"
+            (click)="onAcknowledge()"
+            [disabled]="inProgress()"
+          >
+            {{ t('journal.acknowledge.btn') }}
+          </ion-button>
+          }
+        </div>
+
+        <!-- If in editMode -->
+        @if (editMode()) {
+        <div class="flex w-full flex-col justify-end gap-4 md:flex-row">
+          @if (journal()?.status === JournalStatus.DRAFT || journal()?.status
+          === JournalStatus.NEW) {
+          <!-- Cancel button: put FIRST in HTML, but second on mobile -->
+          <ion-button
+            hesBtn
+            hesColor="gray"
+            (click)="onCancel()"
+            class="order-2 md:order-1"
+          >
+            {{ t('global.cancel.btn') }}
+          </ion-button>
+
+          <!-- Submit button: put SECOND in HTML, but first on mobile -->
+          <ion-button
+            hesBtn
+            *hesRbac="journalUpdatePermission"
+            hesColor="primary"
+            (click)="onSubmit()"
+            [disabled]="!form.valid || inProgress()"
+            class="order-1 md:order-2"
+          >
+            {{ t('global.submit.btn') }}
+          </ion-button>
+          }
+        </div>
+        } @else { @if (journal()?.status === JournalStatus.DRAFT) {
+        <div class="flex w-full flex-col justify-end gap-4 md:flex-row">
+          <!-- Cancel button: put FIRST in HTML, but second on mobile -->
+          <ion-button
+            hesBtn
+            hesColor="gray"
+            *hesRbac="journalPublishPermission"
+            (click)="onCancel()"
+            class="order-2 md:order-1"
+          >
+            {{ t('global.cancel.btn') }}
+          </ion-button>
+
+          <!-- Publish button: put SECOND in HTML, but first on mobile -->
+          <ion-button
+            hesBtn
+            *hesRbac="journalPublishPermission"
+            hesColor="primary"
+            (click)="onPublish()"
+            [disabled]="inProgress()"
+            class="order-1 md:order-2"
+          >
+            {{ t('global.publish.btn') }}
+          </ion-button>
+        </div>
+        } }
+      </form>
+      }
+    </div>
+  </div>
+  }
+</ion-content>

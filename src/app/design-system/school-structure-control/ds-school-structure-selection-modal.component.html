@@ -1,0 +1,31 @@
+<div class="flex h-full flex-col gap-ds-lg">
+  @if (showSearchEnabled()) {
+    <app-search-box
+      [placeholderTxt]="
+        searchPlaceholder() ?? transloco.translate('global.search.placeholder')
+      "
+      [value]="searchTerm()"
+      [autoFocus]="true"
+      [autoFocusDelay]="400"
+      [manageBottomBarVisibility]="false"
+      (searchChange)="handleSearchChange($event)"
+    />
+  }
+
+  <div class="flex-1 overflow-auto">
+    @if (filteredNodes().length === 0) {
+      <app-no-data-card
+        class="h-full"
+        [noBgStyle]="true"
+        mainImagePath="assets/illustrations/no-search-result.svg"
+        [title]="'support.school_selection.search.empty' | dsTranslate"
+      ></app-no-data-card>
+    } @else {
+      <app-ds-school-structure-tree
+        [nodes]="filteredNodes()"
+        [helper]="helperRef"
+        [readOnly]="readOnly()"
+      ></app-ds-school-structure-tree>
+    }
+  </div>
+</div>

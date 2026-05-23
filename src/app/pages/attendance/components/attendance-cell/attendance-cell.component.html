@@ -1,0 +1,46 @@
+<div *transloco="let t" class="flex select-none flex-col gap-1">
+  <div class="flex items-center gap-2">
+    <!-- Show status transition if there's history -->
+    <div
+      *ngIf="hasStatusTransition && previousStatus"
+      class="flex items-center gap-1"
+    >
+      <!-- Previous status -->
+      <div
+        class="flex h-5 w-fit items-center justify-center rounded-2xl px-2 py-[0.13rem] text-center text-xs font-medium leading-none"
+        [ngClass]="getStatusChipClasses(previousStatus!)"
+      >
+        {{ t("enum." + previousStatus) }}
+      </div>
+      <span class="text-gray-400 rtl:rotate-180">→</span>
+      <!-- Current status -->
+      <div
+        class="flex h-5 w-fit items-center justify-center rounded-2xl px-2 py-[0.13rem] text-center text-xs font-medium leading-none"
+        [ngClass]="getStatusChipClasses(statusValue)"
+      >
+        {{ t("enum." + statusValue) }}
+      </div>
+    </div>
+
+    <!-- Regular status display (no transition) -->
+    <div
+      *ngIf="!hasStatusTransition"
+      class="flex h-5 w-fit items-center justify-center rounded-2xl px-2 py-[0.13rem] text-center text-xs font-medium leading-none"
+      [ngClass]="getStatusChipClasses(statusValue)"
+    >
+      {{ t("enum." + statusValue) }}
+    </div>
+
+    <!-- Info icon to view history -->
+    <button
+      type="button"
+      *ngIf="hasHistory"
+      class="flex items-center justify-center text-gray-400 hover:text-primary-600"
+      (click)="onViewHistoryClick(); $event.stopPropagation()"
+      [title]="t('attendance.view_history.title')"
+      [attr.aria-label]="t('attendance.view_history.title')"
+    >
+      <fa-icon [icon]="faCircleInfo" size="lg"></fa-icon>
+    </button>
+  </div>
+</div>

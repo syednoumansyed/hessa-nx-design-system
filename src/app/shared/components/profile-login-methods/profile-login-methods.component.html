@@ -1,0 +1,247 @@
+<ng-container *transloco="let t">
+  <div
+    class="hes-card flex flex-1 flex-col items-start justify-start gap-4 bg-white p-6 lg:gap-0 lg:p-0"
+  >
+    <div
+      class="CardHeader 2424 flex items-center justify-between self-stretch rounded-lg bg-white lg:px-6 lg:py-5"
+    >
+      <ion-label
+        class="text-sm font-semibold uppercase leading-7 text-[#AEAFB8] lg:text-lg lg:normal-case lg:text-gray-900"
+        >{{ t("user_management.sign_in_method.title") }}</ion-label
+      >
+      <div class="flex items-center gap-ds-md">
+        @if (showPauseBtn) {
+          <ds-button
+            *hesRbac="deactivatePermissionId"
+            variant="secondary"
+            size="sm"
+            hesAuth
+            [roles]="['superadmin']"
+            (click)="onPause()"
+          >
+            {{ t("global.pause_account.btn") }}
+          </ds-button>
+        }
+        @if (showDeactivateBtn) {
+          <ds-button
+            *hesRbac="deactivatePermissionId"
+            variant="secondary"
+            size="sm"
+            hesAuth
+            [roles]="['superadmin']"
+            (click)="onDeactivate()"
+          >
+            {{ t("global.de_activate.btn") }}
+          </ds-button>
+        }
+      </div>
+    </div>
+
+    @if (showPhoneNumberForm()) {
+      <app-user-change-number
+        class="w-full"
+        [phoneNumber]="phoneNumber"
+        [onDismiss]="onDismissChangeNumber"
+        [onUpdateSuccess]="onUpdatePasswordSuccess"
+        [userType]="userType"
+      ></app-user-change-number>
+    } @else {
+      <!-- Desktop list -->
+      <div
+        class="Content hidden items-start justify-start self-stretch rounded-b-lg border-t border-gray-200 bg-white lg:flex"
+      >
+        <div
+          class="items-center justify-start self-stretch border-gray-200 px-6 py-4"
+        >
+          <div
+            class="TextAndSupportingText inline-flex flex-col items-start justify-start self-stretch"
+          >
+            <div class="Text text-sm font-medium leading-tight text-gray-900">
+              {{ t("global.contact_number.label") }}
+            </div>
+            <div
+              class="SupportingText phone-number-dir text-sm font-normal leading-tight text-gray-500"
+            >
+              +966 {{ phoneNumber }}
+            </div>
+          </div>
+        </div>
+        @if (ownProfile) {
+          <div
+            class="Column flex flex-1 shrink grow basis-0 flex-col items-start justify-start"
+          >
+            <div
+              class="TableCell flex h-[72px] items-center justify-end gap-4 self-stretch border-b border-t border-gray-200 px-6 py-4"
+            >
+              <ds-button
+                variant="secondary"
+                size="sm"
+                (click)="onChangePhoneNumber()"
+              >
+                {{ t("global.change_number.btn") }}
+              </ds-button>
+            </div>
+          </div>
+        }
+      </div>
+      <!-- Mobile listing -->
+      <div
+        class="flex w-full flex-col items-start justify-start gap-2 lg:hidden"
+      >
+        <div class="flex w-full items-center justify-between">
+          <div class="Frame25063 flex flex-col items-start justify-start gap-1">
+            <div
+              class="Text text-base font-semibold leading-tight text-gray-900"
+            >
+              {{ t("global.phone_number.title") }}
+            </div>
+            <div
+              class="SupportingText phone-number-dir text-sm font-normal leading-tight text-gray-500"
+            >
+              +966 {{ phoneNumber }}
+            </div>
+          </div>
+          @if (ownProfile) {
+            <ds-button
+              variant="secondary"
+              size="sm"
+              (click)="onChangePhoneNumber()"
+            >
+              {{ t("global.change_number.btn") }}
+            </ds-button>
+          }
+        </div>
+      </div>
+    }
+
+    @if (
+      userType === UserType.STUDENT && (ownProfile ? isAccountSetup : true)
+    ) {
+      @if (showPasswordForm() && studentId) {
+        <app-user-change-password
+          class="w-full"
+          *hesRbac="updatePasswordPermissionId"
+          [userType]="userType"
+          [studentId]="studentId"
+          [nationalId]="nationalId"
+          [onDismiss]="onDismissChangePassword"
+        >
+        </app-user-change-password>
+      } @else {
+        <!-- Desktop UI -->
+        <div
+          class="Content hidden items-start justify-around self-stretch border-t lg:flex"
+        >
+          <div class="flex items-start justify-around self-stretch">
+            <div
+              class="TableCell inline-flex items-center justify-start self-stretch px-6 py-4"
+            >
+              <div
+                class="TextAndSupportingText inline-flex flex-col items-start justify-start self-stretch"
+              >
+                <div
+                  class="Text text-sm font-medium leading-tight text-gray-900"
+                >
+                  {{ t("global.national_id.title") }}
+                </div>
+                <div
+                  class="SupportingText text-sm font-normal leading-tight text-gray-500"
+                >
+                  {{ nationalId }}
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="TableCell inline-flex items-center justify-start self-stretch px-6 py-4"
+            >
+              <div
+                class="TextAndSupportingText inline-flex flex-col items-start justify-start self-stretch"
+              >
+                <div
+                  class="Text text-sm font-medium leading-tight text-gray-900"
+                >
+                  {{ t("global.password.title") }}
+                </div>
+                <div
+                  class="SupportingText text-sm font-normal leading-tight text-gray-500"
+                >
+                  **********
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="Column flex flex-1 shrink grow basis-0 flex-col items-start justify-start"
+          >
+            <div
+              class="TableCell flex h-[72px] items-center justify-end gap-4 self-stretch px-6 py-4"
+            >
+              @if (
+                rbacService.hasPermission(updatePasswordPermissionId) ||
+                isStudent()
+              ) {
+                <ds-button
+                  variant="secondary"
+                  size="sm"
+                  (click)="onChangePassword()"
+                >
+                  {{ t(resetPasswordText) }}
+                </ds-button>
+              }
+            </div>
+          </div>
+        </div>
+        <!-- Mobile UI -->
+        <div class="w-full border border-slate-200 lg:hidden"></div>
+
+        <div
+          class="flex w-full flex-col items-start justify-start gap-4 lg:hidden"
+        >
+          <div class="flex w-full items-center justify-between">
+            <div
+              class="Frame25063 flex flex-col items-start justify-start gap-1"
+            >
+              <div
+                class="Text text-base font-semibold leading-tight text-gray-900"
+              >
+                {{ t("global.national_id.title") }}
+              </div>
+              <div class="text-sm font-normal text-gray-500">
+                {{ nationalId }}
+              </div>
+            </div>
+          </div>
+
+          <div class="flex w-full items-center justify-between">
+            <div
+              class="Frame25063 flex flex-col items-start justify-start gap-1"
+            >
+              <div
+                class="Text text-base font-semibold leading-tight text-gray-900"
+              >
+                {{ t("global.password.title") }}
+              </div>
+              <div class="text-sm font-normal text-gray-500">**********</div>
+            </div>
+            <div class="pb-2">
+              @if (
+                rbacService.hasPermission(updatePasswordPermissionId) ||
+                isStudent()
+              ) {
+                <ds-button
+                  variant="secondary"
+                  size="sm"
+                  (click)="onChangePassword()"
+                >
+                  {{ t("global.reset_password.btn") }}
+                </ds-button>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    }
+  </div>
+</ng-container>

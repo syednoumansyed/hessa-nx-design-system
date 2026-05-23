@@ -1,0 +1,89 @@
+@if (!isMobile()) {
+  <ng-container *transloco="let t">
+    <div class="flex w-full items-end justify-between p-4">
+      <app-hes-input
+        [type]="'tel'"
+        [label]="t('global.enter_new_contact_number.label')"
+        [placeholder]="'XXX XXXXXXX'"
+        [required]="true"
+        fill="solid"
+        [formControl]="phoneNumberControl"
+        [autofocus]="true"
+        [maxLength]="9"
+        [errorText]="phoneNumberErr() ?? undefined"
+      ></app-hes-input>
+
+      @if (phoneNumberControl.valid && this.otpSent()) {
+        <ngx-otp-input
+          [config]="otpInputConfig()"
+          (fill)="updateOtp($event)"
+        ></ngx-otp-input>
+      }
+
+      <div class="flex items-center justify-end gap-6">
+        <ion-button
+          hesBtn
+          hesSize="sm"
+          [hesColor]="'link'"
+          (click)="cancel()"
+          >{{ t("global.cancel.btn") }}</ion-button
+        >
+
+        <ion-button
+          hesBtn
+          hesSize="sm"
+          (click)="updateNumber().subscribe()"
+          [disabled]="phoneNumberControl.invalid || otp().length < 4"
+          >{{ t("global.update.btn") }}</ion-button
+        >
+      </div>
+    </div>
+    @if (otpSent()) {
+      <!-- Translation required for message-->
+      <app-hes-alert
+        type="info"
+        [title]="t('global.verification_required.title')"
+        [message]="message()"
+        [buttonTitle]="t('login.resend.btn') + ' ' + timer()"
+        (actionClick)="resendOtp()"
+        [isActionDisabled]="isTimerOn()"
+        class="w-full px-6 py-7"
+      ></app-hes-alert>
+    }
+  </ng-container>
+} @else {
+  <div
+    *transloco="let t"
+    class="flex w-full flex-col items-stretch justify-start gap-4"
+  >
+    <app-hes-input
+      [type]="'tel'"
+      [label]="t('global.phone_number.label')"
+      [placeholder]="'XXX XXXXXXX'"
+      [required]="true"
+      fill="solid"
+      [formControl]="phoneNumberControl"
+      [maxLength]="10"
+      [errorText]="phoneNumberErr() ?? undefined"
+    ></app-hes-input>
+    <div class="flex items-center justify-between gap-6">
+      <ion-button
+        hesBtn
+        hesSize="sm"
+        [hesColor]="'secondary'"
+        (click)="cancel()"
+        class="basis-1/2"
+        >{{ t("global.cancel.btn") }}</ion-button
+      >
+
+      <ion-button
+        hesBtn
+        hesSize="sm"
+        (click)="sendOtp()"
+        class="basis-1/2"
+        [disabled]="phoneNumberControl.invalid"
+        >{{ t("global.send_otp.btn") }}</ion-button
+      >
+    </div>
+  </div>
+}

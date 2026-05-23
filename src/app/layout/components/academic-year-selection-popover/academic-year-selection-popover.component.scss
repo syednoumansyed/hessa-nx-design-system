@@ -1,0 +1,42 @@
+ion-popover.hes-popover {
+  // todo add variable for page padding
+  --popover-width: calc(100% - 2rem);
+  --empty-space: calc(100% - var(--popover-width));
+
+  --width: var(--popover-width);
+  &.ios {
+    --offset-x: calc(var(--empty-space) / 2);
+  }
+  @media screen and (min-width: 480px) {
+    --width: 22.6rem;
+    --min-width: 22.6rem;
+  }
+}
+
+ion-accordion-group {
+  ion-accordion {
+    ion-item[slot="header"] {
+      --background: #f4f4f8;
+      --border-radius: 0.25rem;
+    }
+
+    div[slot="content"] {
+      margin-top: 1rem;
+      ion-item {
+        --background: #f4f4f8;
+        --border-radius: 0.25rem;
+        &:not(:last-child) {
+          margin-bottom: 1rem;
+        }
+        &.selected {
+          --background: var(--h-color-primary);
+          --color: white;
+        }
+      }
+    }
+
+    &:not(:last-child) {
+      margin-bottom: 1rem;
+    }
+  }
+}

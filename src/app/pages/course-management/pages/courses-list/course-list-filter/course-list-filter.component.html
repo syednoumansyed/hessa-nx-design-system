@@ -1,0 +1,21 @@
+<form [formGroup]="form">
+  <div class="flex flex-col flex-wrap justify-between gap-4 md:flex-row">
+    <div class="flex flex-col gap-4 md:flex-row">
+      @for (control of schoolStructureControlsConfig(); track $index) {
+        <app-form-control-generator
+          class="md:min-w-[200px]"
+          [control]="control"
+        ></app-form-control-generator>
+      }
+    </div>
+
+    <div class="flex flex-col gap-4 md:flex-row">
+      @for (control of controlsConfig(); track control) {
+        <app-form-control-generator
+          class="md:min-w-[200px]"
+          [control]="control"
+        ></app-form-control-generator>
+      }
+    </div>
+  </div>
+</form>

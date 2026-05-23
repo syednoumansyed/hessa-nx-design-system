@@ -1,0 +1,542 @@
+
+app_version = ENV['APP_VERSION']
+app_build_number = ENV['APP_BUILD_NUMBER']
+dev_package_name = "dev.ncle.hessa.app"
+stg_package_name = "stg.ncle.hessa.app"
+prod_package_name = "sa.com.hessa.app"
+full_version = "v#{app_version}+#{app_build_number}"
+release_notes_link = "https://ncle.atlassian.net/wiki/spaces/nxp/pages/103514113"
+
+platform :android do
+
+    aws_access_key = ENV['AWS_ACCESS_KEY']
+    aws_secret_access_key = ENV['AWS_SECRET_ACCESS_KEY']
+    s3_bucket = ENV['S3_FE_BUCKET']
+    s3_region = ENV['AWS_REGION']
+    
+    android_dir = File.expand_path('../android')
+    google_json_key_dir = File.expand_path('../android/nx-production-playstore-release.json')
+    dev_apk_dir = File.expand_path('../android/app/build/outputs/apk/dev/release/app-dev-release.apk')
+    stg_apk_dir = File.expand_path('../android/app/build/outputs/apk/stg/release/app-stg-release.apk')
+    prod_apk_dir = File.expand_path('../android/app/build/outputs/apk/prod/release/app-prod-release.apk')
+    prod_aab_dir = File.expand_path('../android/app/build/outputs/bundle/prodRelease/app-prod-release.aab')
+
+    app_upload_dir = "mobile-builds/android"
+    version_dir = "v#{app_version}_b#{app_build_number}"
+    download_link_prefix = "https://#{s3_bucket}.s3.eu-central-1.amazonaws.com/#{app_upload_dir}/#{version_dir}/"
+    
+    desc "Build the Android development apk"
+    lane :buildDevApk do
+        gradle(
+            project_dir: android_dir,
+            task: "assembleDevRelease"
+        )
+    end
+
+    desc "Send the Android development apk to Slack"
+    lane :sendDevApkToSlack do
+        apk_file_name = "app-dev-release.apk"
+        download_link = "#{download_link_prefix}#{apk_file_name}"
+        aws_s3(
+            access_key: aws_access_key,
+            secret_access_key: aws_secret_access_key,
+            bucket: s3_bucket,
+            region: s3_region,
+            apk: dev_apk_dir,
+            app_directory: app_upload_dir,
+            upload_metadata: false,
+            version_file_name: "#{version_dir}.json",
+        )
+        slack(
+            message: "Android: Development App successfully released for testing!",
+            success: true,
+            payload: {
+                "Build DateTime" => Time.new.to_s,
+                "Built By" => "Github & Fastlane",
+                "App Version" => "[#{full_version}](#{download_link})",
+                "Download Link" => "[Click Here](#{download_link})",
+            }
+        )
+    end
+
+    desc "Build the Android Staging apk"
+    lane :buildStgApk do
+        gradle(
+            project_dir: android_dir,
+            task: "assembleStgRelease"
+        )
+    end
+
+    desc "Send the Android Staging apk to Slack"
+    lane :sendStgApkToSlack do
+        apk_file_name = "app-stg-release.apk"
+        download_link = "#{download_link_prefix}#{apk_file_name}"
+        aws_s3(
+            access_key: aws_access_key,
+            secret_access_key: aws_secret_access_key,
+            bucket: s3_bucket,
+            region: s3_region,
+            apk: stg_apk_dir,
+            app_directory: app_upload_dir,
+            upload_metadata: false,
+            version_file_name: "#{version_dir}.json",
+        )
+        slack(
+            message: "Android: Staging App successfully released for testing!",
+            success: true,
+            payload: {
+                "Build DateTime" => Time.new.to_s,
+                "Built By" => "Github & Fastlane",
+                "App Verion" => "[#{full_version}](#{download_link})",
+                "Download Link" => "[Click Here](#{download_link})",
+            }
+        )
+    end
+
+    desc "Build the Android production apk"
+    lane :buildProdApk do
+        gradle(
+            project_dir: android_dir,
+            task: "assembleProdRelease"
+        )
+    end
+
+    desc "Send the Android production apk to Slack"
+    lane :sendProdApkToSlack do
+        apk_file_name = "app-prod-release.apk"
+        download_link = "#{download_link_prefix}#{apk_file_name}"
+        aws_s3(
+            access_key: aws_access_key,
+            secret_access_key: aws_secret_access_key,
+            bucket: s3_bucket,
+            region: s3_region,
+            apk: prod_apk_dir,
+            app_directory: app_upload_dir,
+            upload_metadata: false,
+            version_file_name: "#{version_dir}.json",
+        )
+        slack(
+            message: "Android: Production App successfully released for testing!",
+            success: true,
+            payload: {
+                "Build DateTime" => Time.new.to_s,
+                "Built By" => "Github & Fastlane",
+                "App Version" => "[#{full_version}](#{download_link})",
+                "Download Link" => "[Click Here](#{download_link})",
+            }
+        )
+    end
+
+    desc "Build the Android production appbundle"
+    lane :buildProdAab do
+        gradle(
+            project_dir: android_dir,
+            task: "bundleProdRelease"
+        )
+    end
+
+    desc "Upload the Android production appbundle to playstore"
+    lane :uploadToPlaystore do
+        upload_to_play_store(
+            aab: prod_aab_dir,
+            json_key: google_json_key_dir,
+            package_name: prod_package_name,
+           # track: "internal",
+        )
+        slack(
+            message: "Android: Production App successfully submitted for review Playstore!",
+            success: true,
+            payload: {
+                "Build DateTime" => Time.new.to_s,
+                "Built By" => "Github & Fastlane",
+                "App Version" => full_version,
+                "Release notes" => "[Click Here](#{release_notes_link})",
+            }
+        )
+    end
+
+end
+
+platform :ios do
+    team_id = ENV['APPLE_TEAM_ID']
+    key_id = ENV['APPLE_KEY_ID']
+    issuer_id = ENV['APPLE_ISSUER_ID']
+    signing_key_password = ENV['APPLE_SIGNING_KEY_PASSWORD']
+
+    signing_key_file_path = "#{ENV['CURRENT_DIR']}/../ios/ios-dist-signing-key.p12"
+    apple_key_file_dir = "#{ENV['CURRENT_DIR']}/../ios/nx-appstore-release.p8"
+    xcodeprojpath = "#{ENV['CURRENT_DIR']}/../ios/App/App.xcodeproj"
+    xcworkspacepath = "#{ENV['CURRENT_DIR']}/../ios/App/App.xcworkspace"
+    output_ipa_dir = "#{ENV['CURRENT_DIR']}/../ios/build"
+
+    keychain_name = "signing"
+    keychain_password = "nx"
+    output_name = "nx-iOS" # specify the name of the .ipa file to generate
+    export_method = "app-store" # specify the export method
+    dev_profile_name = "hessa-development-provisioning-profile"
+    stg_profile_name = "hessa-staging-provisioning-profile"
+    prod_profile_name = "hessa-production-provisioning-profile"
+    
+    desc "Build the iOS development app and send it to Testflight for testing"
+    lane :buildDevIpaForTestflight do
+
+        api_key = app_store_connect_api_key(
+            key_id: key_id,
+            issuer_id: issuer_id,
+            key_filepath: apple_key_file_dir,
+            duration: 1200, # optional (maximum 1200)
+            in_house: false
+        )
+
+        delete_keychain(
+            name: keychain_name
+        ) if File.exist? File.expand_path("~/Library/Keychains/#{keychain_name}-db")
+
+        create_keychain(
+            name: keychain_name,
+            password: keychain_password,
+            default_keychain: true,
+            unlock: true,
+            timeout: 3600
+        )
+
+        import_certificate(
+            certificate_path: signing_key_file_path,
+            certificate_password: signing_key_password,
+            keychain_name: keychain_name,
+            keychain_password: keychain_password
+        )
+
+        get_provisioning_profile(
+            adhoc: false,
+            team_id: team_id,
+            readonly: true,
+            provisioning_name: dev_profile_name,
+            app_identifier: dev_package_name
+        )
+
+        update_code_signing_settings(
+            use_automatic_signing: false,
+            targets: ["main-target"],
+            code_sign_identity: "Apple Distribution",
+            bundle_identifier: dev_package_name,
+            profile_name: dev_profile_name,
+            path: xcodeprojpath,
+            build_configurations: ["Debug"]
+        )
+
+        build_app(
+            workspace: xcworkspacepath,
+            scheme: "nx Dev",
+            configuration: "Debug",
+            output_directory: output_ipa_dir,
+            output_name: output_name,
+            skip_profile_detection: false,
+            clean: true,
+            export_options: {
+                method: export_method,
+                provisioningProfiles: {
+                    dev_package_name => dev_profile_name
+                }
+            } 
+        )
+
+        upload_to_testflight(
+            ipa: "#{output_ipa_dir}/#{output_name}.ipa",
+            app_identifier: dev_package_name,
+            api_key: api_key,
+            build_number: app_build_number,
+            app_version: app_version,
+        )
+
+        slack(
+            message: "iOS: Development App successfully released to Testflight!",
+            success: true,
+            payload: {
+                "Build DateTime" => Time.new.to_s,
+                "Built By" => "Github & Fastlane",
+                "App Version" => full_version,
+            }
+        )
+        
+    end
+
+    desc "Build the iOS staging app and send it to Testflight for testing"
+    lane :buildStgIpaForTestflight do
+
+        api_key = app_store_connect_api_key(
+            key_id: key_id,
+            issuer_id: issuer_id,
+            key_filepath: apple_key_file_dir,
+            duration: 1200, # optional (maximum 1200)
+            in_house: false
+        )
+
+        delete_keychain(
+            name: keychain_name
+        ) if File.exist? File.expand_path("~/Library/Keychains/#{keychain_name}-db")
+
+        create_keychain(
+            name: keychain_name,
+            password: keychain_password,
+            default_keychain: true,
+            unlock: true,
+            timeout: 3600
+        )
+
+        import_certificate(
+            certificate_path: signing_key_file_path,
+            certificate_password: signing_key_password,
+            keychain_name: keychain_name,
+            keychain_password: keychain_password
+        )
+
+        get_provisioning_profile(
+            adhoc: false,
+            team_id: team_id,
+            readonly: true,
+            provisioning_name: stg_profile_name,
+            app_identifier: stg_package_name
+        )
+
+        update_code_signing_settings(
+            use_automatic_signing: false,
+            targets: ["main-target"],
+            code_sign_identity: "Apple Distribution",
+            bundle_identifier: stg_package_name,
+            profile_name: stg_profile_name,
+            path: xcodeprojpath,
+            build_configurations: ["Staging"]
+        )
+
+        build_app(
+            workspace: xcworkspacepath,
+            scheme: "nx Stg",
+            configuration: "Staging",
+            output_directory: output_ipa_dir,
+            output_name: output_name,
+            skip_profile_detection: false,
+            clean: true,
+            export_options: {
+                method: export_method,
+                provisioningProfiles: {
+                    stg_package_name => stg_profile_name
+                }
+            } 
+        )
+
+        upload_to_testflight(
+            ipa: "#{output_ipa_dir}/#{output_name}.ipa",
+            app_identifier: stg_package_name,
+            api_key: api_key,
+            build_number: app_build_number,
+            app_version: app_version,
+        )
+
+        slack(
+            message: "iOS: Staging App successfully released to Testflight!",
+            success: true,
+            payload: {
+                "Build DateTime" => Time.new.to_s,
+                "Built By" => "Github & Fastlane",
+                "App Version" => full_version,
+            }
+        )
+        
+    end
+
+    desc "Build the iOS Production app and send it to Testflight for testing"
+    lane :buildProdIpaForTestflight do
+
+        api_key = app_store_connect_api_key(
+            key_id: key_id,
+            issuer_id: issuer_id,
+            key_filepath: apple_key_file_dir,
+            duration: 1200, # optional (maximum 1200)
+            in_house: false
+        )
+
+        delete_keychain(
+            name: keychain_name
+        ) if File.exist? File.expand_path("~/Library/Keychains/#{keychain_name}-db")
+
+        create_keychain(
+            name: keychain_name,
+            password: keychain_password,
+            default_keychain: true,
+            unlock: true,
+            timeout: 3600
+        )
+
+        import_certificate(
+            certificate_path: signing_key_file_path,
+            certificate_password: signing_key_password,
+            keychain_name: keychain_name,
+            keychain_password: keychain_password
+        )
+
+        get_provisioning_profile(
+            adhoc: false,
+            team_id: team_id,
+            readonly: true,
+            provisioning_name: prod_profile_name,
+            app_identifier: prod_package_name
+        )
+
+        update_code_signing_settings(
+            use_automatic_signing: false,
+            targets: ["main-target"],
+            code_sign_identity: "Apple Distribution",
+            bundle_identifier: dev_package_name,
+            profile_name: dev_profile_name,
+            path: xcodeprojpath,
+            build_configurations: ["Release"]
+        )
+
+        build_app(
+            workspace: xcworkspacepath,
+            scheme: "nx",
+            configuration: "Release",
+            output_directory: output_ipa_dir,
+            output_name: output_name,
+            skip_profile_detection: false,
+            clean: true,
+            export_options: {
+                method: export_method,
+                provisioningProfiles: {
+                    prod_package_name => prod_profile_name
+                }
+            } 
+        )
+
+        upload_to_testflight(
+            ipa: "#{output_ipa_dir}/#{output_name}.ipa",
+            app_identifier: prod_package_name,
+            api_key: api_key,
+            build_number: app_build_number,
+            app_version: app_version,
+        )
+
+        slack(
+            message: "iOS: Production App successfully released to Testflight!",
+            success: true,
+            payload: {
+                "Build DateTime" => Time.new.to_s,
+                "Built By" => "Github & Fastlane",
+                "App Version" => full_version,
+            }
+        )
+        
+    end
+
+    desc "Build the iOS Production app and upload it to Appstore for production release"
+    lane :buildProdIpaForAppstore do
+
+        api_key = app_store_connect_api_key(
+            key_id: key_id,
+            issuer_id: issuer_id,
+            key_filepath: apple_key_file_dir,
+            duration: 1200, # optional (maximum 1200)
+            in_house: false
+        )
+
+        delete_keychain(
+            name: keychain_name
+        ) if File.exist? File.expand_path("~/Library/Keychains/#{keychain_name}-db")
+
+        create_keychain(
+            name: keychain_name,
+            password: keychain_password,
+            default_keychain: true,
+            unlock: true,
+            timeout: 3600
+        )
+
+        import_certificate(
+            certificate_path: signing_key_file_path,
+            certificate_password: signing_key_password,
+            keychain_name: keychain_name,
+            keychain_password: keychain_password
+        )
+
+        update_code_signing_settings(
+            use_automatic_signing: false,
+            targets: ["main-target"],
+            code_sign_identity: "Apple Distribution",
+            bundle_identifier: dev_package_name,
+            profile_name: dev_profile_name,
+            path: xcodeprojpath,
+            build_configurations: ["Release"]
+        )
+
+        get_provisioning_profile(
+            adhoc: false,
+            team_id: team_id,
+            readonly: true,
+            provisioning_name: prod_profile_name,
+            app_identifier: prod_package_name
+        )
+
+        build_app(
+            workspace: xcworkspacepath,
+            scheme: "nx",
+            configuration: "Release",
+            output_directory: output_ipa_dir,
+            output_name: output_name,
+            skip_profile_detection: false,
+            clean: true,
+            export_options: {
+                method: export_method,
+                provisioningProfiles: {
+                    prod_package_name => prod_profile_name
+                }
+            } 
+        )
+
+        deliver(
+            ipa: "#{output_ipa_dir}/#{output_name}.ipa",
+            api_key: api_key,
+            submit_for_review: true,
+            automatic_release: false,
+            force: true, # Skip HTMl report verification
+            skip_metadata: true,
+            skip_screenshots: true,
+            skip_binary_upload: false,
+            precheck_include_in_app_purchases: false,
+            release_notes: ({
+                'default' => "Bug fixes & performance enhancements",
+                'en-US' => "Bug fixes & performance enhancements",
+                'ar-SA' => "إصلاحات وتحسينات عامة"
+            }),
+            submission_information: {
+                export_compliance_encryption_updated: false,
+                export_compliance_uses_encryption: false,
+                content_rights_contains_third_party_content: false,
+                add_id_info_uses_idfa: false,
+                add_id_info_serves_ads: false
+            },
+        )
+
+        slack(
+            message: "iOS: Production App successfully released to Appstore!",
+            success: true,
+            payload: {
+                "Build DateTime" => Time.new.to_s,
+                "Built By" => "Github & Fastlane",
+                "App Version" => full_version,
+                "Release notes" => "[Click Here](#{release_notes_link})",
+            }
+        )
+        
+    end
+
+end
+
+error do |lane, exception|
+    slack(
+      message: exception.to_s,
+      success: false,
+      payload: { "Output" => exception.error_info.to_s }
+    )
+end
+

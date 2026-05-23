@@ -1,0 +1,74 @@
+<div *transloco="let t" class="p-4">
+  <div class="flex items-center justify-evenly">
+    <div
+      class="max-md:px-5 w-full items-stretch gap-6 rounded-lg bg-white px-2 py-2 font-semibold md:flex md:w-[35rem] md:max-w-[35rem] md:flex-col md:px-16 md:py-12 md:shadow-[0_0_80px_0_rgba(0,0,0,0.05)]"
+    >
+      <div class="flex flex-col items-stretch gap-6">
+        <div class="flex flex-col items-stretch gap-16">
+          <header
+            class="flex flex-col items-center justify-center gap-4 whitespace-nowrap text-center text-3xl leading-7 text-gray-800"
+          >
+            <div>{{t('global.welcome_to_hessa.title')}}</div>
+            <div
+              class="whitespace-nowrap text-center text-xl leading-4 tracking-tight text-gray-500"
+            >
+              {{t('global.welcome.txt')}}
+            </div>
+          </header>
+
+          <form
+            [formGroup]="studentForm"
+            class="flex flex-col"
+            (ngSubmit)="login()"
+          >
+            <div class="flex flex-col gap-4">
+              <app-hes-input
+                [label]="t('global.national_id.label')"
+                [required]="true"
+                fill="solid"
+                formControlName="nationalId"
+                [type]="'text'"
+                [inputMode]="'numeric'"
+                [isOnlyNumaric]="true"
+                [autoFocus]="true"
+                [maxLength]="18"
+                [errorText]="nationalIdErr() ?? undefined"
+              ></app-hes-input>
+
+              <app-hes-input
+                [type]="'password'"
+                [label]="t('global.password.label')"
+                [required]="true"
+                fill="solid"
+                formControlName="password"
+              ></app-hes-input>
+            </div>
+            <a
+              class="mt-7 self-end whitespace-nowrap text-right text-sm font-medium leading-5 tracking-tight text-gray-500"
+              href="login/forget-password"
+            >
+              {{t('login.forgot_password.txt')}}
+            </a>
+
+            <ion-button
+              hesBtn
+              type="submit"
+              class="mt-3"
+              [disabled]="studentForm.invalid"
+            >
+              {{t('global.login.btn')}}
+            </ion-button>
+          </form>
+        </div>
+        @if (loginErr()) {
+        <div
+          *transloco="let t;"
+          class="self-stretch text-center text-xs font-normal leading-none tracking-tight text-red-600"
+        >
+          {{ t("login.incorrect_password_or_id.txt") }}
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

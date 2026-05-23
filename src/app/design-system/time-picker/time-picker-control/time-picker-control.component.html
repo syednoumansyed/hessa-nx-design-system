@@ -1,0 +1,72 @@
+<!-- Input trigger -->
+<div
+  (click)="openPicker()"
+  (keydown.enter)="openFromKey($event)"
+  (keydown.space)="openFromKey($event)"
+  [attr.id]="triggerId"
+  role="button"
+  [attr.tabindex]="effectiveDisabled() ? -1 : 0"
+  [attr.aria-disabled]="effectiveDisabled()"
+  class="relative outline-none"
+  [class.pointer-events-none]="effectiveDisabled()"
+>
+  <app-ds-input
+    #input
+    [label]="label()"
+    [disabled]="effectiveDisabled()"
+    [readOnly]="true"
+    [placeholder]="placeholder()"
+    inputClasses="select-none"
+    [iconEnd]="timeIcon"
+    cdkOverlayOrigin
+    #trigger="cdkOverlayOrigin"
+    class="block"
+  />
+  <!-- Overlay layer for dim effect -->
+  <div class="absolute inset-0 md:pointer-events-none"></div>
+</div>
+<!-- Desktop popover (opened when openMode === 'popover') -->
+@if (openMode() === "popover") {
+  <ng-template
+    cdkConnectedOverlay
+    [cdkConnectedOverlayOrigin]="trigger"
+    [cdkConnectedOverlayOpen]="isOpen()"
+    (overlayOutsideClick)="onPopoverDismiss(); isOpen.set(false)"
+    [cdkConnectedOverlayOffsetY]="7"
+    [cdkConnectedOverlayHasBackdrop]="true"
+    [cdkConnectedOverlayScrollStrategy]="scrollStrategy"
+    [cdkConnectedOverlayBackdropClass]="'cdk-overlay-transparent-backdrop'"
+  >
+    <div
+      class="w-full overflow-hidden rounded-ds-md border border-neutral-cool-700 bg-white p-ds-md"
+    >
+      <ds-time-picker
+        #picker
+        [minuteStep]="minuteStep()"
+        (valueChange)="onPickerValue($event)"
+        [lang]="lang"
+      ></ds-time-picker>
+    </div>
+  </ng-template>
+}
+
+<!-- Mobile bottom sheet modal -->
+@if (openMode() === "modal" && isOpen()) {
+  <ion-modal
+    [isOpen]="true"
+    (didDismiss)="onModalClose()"
+    breakpoints="[0,0.9]"
+    initialBreakpoint="0.9"
+  >
+    <ng-template>
+      <div class="p-4">
+        <ds-time-picker
+          #picker
+          [minuteStep]="minuteStep()"
+          (valueChange)="onPickerValue($event)"
+          [lang]="lang"
+        ></ds-time-picker>
+      </div>
+    </ng-template>
+  </ion-modal>
+}

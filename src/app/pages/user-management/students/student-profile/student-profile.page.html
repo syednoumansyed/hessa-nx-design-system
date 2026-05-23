@@ -1,0 +1,79 @@
+<ion-content class="ds-page-content" *transloco="let t">
+  <div class="flex w-full flex-col gap-4 bg-white p-2 lg:gap-8 lg:bg-inherit">
+    <div
+      class="-mx-4 translate-y-4 p-6 lg:m-0 lg:rounded-lg lg:border lg:border-[#F1F1F4]"
+    >
+      <app-profile-header
+        [fullName]="student()?.displayName ?? ''"
+        [metadata]="metadata()"
+        [createdBy]="student()?.createdBy?.displayName ?? ''"
+        [creationDate]="student()?.createdAt?.toString()"
+        [lastActiveDate]="student()?.lastActive"
+        [profilePictureUrl]="student()?.imageUrl ?? null"
+        [showProfileUploadButton]="true"
+        [userTypeId]="id"
+        class="rounded-lg"
+      ></app-profile-header>
+    </div>
+
+    @if (student()?.status === 'INACTIVE') {
+    <app-hes-alert
+      hesAuth
+      [roles]="[]"
+      type="warning"
+      [title]="t('user_management.account_deactivated.title')"
+      [message]="deactivatedMessage()"
+      [buttonTitle]="t('global.activate_account.btn')"
+      [showButton]="!isGuardian()"
+      (actionClick)="onActivateStudent()"
+    ></app-hes-alert>
+    } @else if (student()?.status === 'PAUSED') {
+    <app-hes-alert
+      hesAuth
+      [roles]="[]"
+      type="warning"
+      [title]="t('deactivation_paused_user.account_paused_title.txt')"
+      [message]="pausedMessage()"
+      [buttonTitle]="t('global.resume_account.btn')"
+      [showButton]="!isGuardian()"
+      (actionClick)="onResumeStudent()"
+    ></app-hes-alert>
+    }
+    <app-profile-details
+      [profileDetails]="profileDetails()"
+      [onUpdateProfile]="goToUpdateStudentPage"
+      [updatePermissionId]="updateStudentPermissionId"
+    ></app-profile-details>
+
+    <app-linked-profiles
+      [header]="t('global.linked_guardians.title')"
+      [linkedProfiles]="linkedGuardians()"
+      [unlinkProfileRoles]="[]"
+      [viewProfilePermissionId]="viewGuardianProfilePermissionId"
+      [unLinkProfilePermissionId]="unLinkGuardianPermissionId"
+    ></app-linked-profiles>
+
+    <app-profile-login-methods
+      [deactivateRoles]="[]"
+      [phoneNumber]="student()?.phoneNumber!"
+      [onDeactivate]="onDeactivateStudent"
+      [showDeactivateBtn]="student()?.status !== 'INACTIVE'"
+      [onPause]="onPauseStudent"
+      [showPauseBtn]="student()?.status === 'ACTIVE'"
+      [userType]="userType"
+      [ownProfile]="student()?.id === authService.user()?.userTypeId && authService.user()?.type === UserType.STUDENT"
+      [studentId]="id"
+      [nationalId]="student()?.nationalId ?? ''"
+      [deactivatePermissionId]="activateDeactiveProfilePermissionId"
+      [updatePhoneNumberPermissionId]="changePhoneNumberPermissionId"
+      [updatePasswordPermissionId]="updatePasswordPermissionId"
+      [onUpdateSuccess]="onRefreshProfile"
+    ></app-profile-login-methods>
+  </div>
+  @if(student()){
+  <app-connected-profile
+    [data]="student()"
+    [userType]="userType"
+  ></app-connected-profile>
+  }
+</ion-content>

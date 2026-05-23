@@ -1,0 +1,39 @@
+<div
+  class="flex cursor-pointer items-center justify-between gap-ds-md rounded-ds-sm p-ds-sm transition-colors hover:bg-surface-hover"
+  (click)="onCardClick()"
+>
+  <div class="flex-shrink-0">
+    <app-ds-avatar
+      [fullName]="journal().displayName"
+      [imageUrl]="journal().avatar || ''"
+      [color]="journal().profileColor"
+    ></app-ds-avatar>
+  </div>
+
+  <div class="min-w-0 flex-1">
+    <p class="content-md-high-emphasis truncate">
+      {{ journal().displayName }}
+      @if (journal().type === "WEEKLY") {
+        {{ "journals.weekly.title" | dsTranslate }}
+        {{ "journals.journal.title" | dsTranslate }}
+      } @else {
+        {{ "journals.daily.title" | dsTranslate }}
+        {{ "journals.journal.title" | dsTranslate }}
+      }
+    </p>
+    <p class="content-xs-mid-emphasis text-content-mid">
+      {{
+        journal().updatedAt || journal().createdAt || journal().journalDate
+          | hesTimeAgo
+      }}
+    </p>
+  </div>
+
+  <div class="flex-shrink-0">
+    <app-ds-icon
+      class="rtl:rotate-180"
+      [icon]="arrowIcon"
+      size="md"
+    ></app-ds-icon>
+  </div>
+</div>

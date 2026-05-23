@@ -1,0 +1,109 @@
+/* Create stacking context on the bubble */
+.chat-bubble {
+  position: relative;
+}
+
+/* Single rotated rectangle for tail - LTR (points LEFT) */
+.chat-bubble::before {
+  content: "";
+  position: absolute;
+  top: 45%;
+  transform: translateY(-50%) rotate(45deg);
+  width: 25px;
+  height: 48px;
+  border-bottom-left-radius: 8px;
+  background-color: #d1e2ef;
+  border-right: none;
+  border-top: none;
+  z-index: 0;
+  left: -8px;
+  border-bottom: 4px solid #c2d2de;
+  border-left: 4px solid #c2d2de;
+}
+
+/* Cover to hide tail borders inside bubble */
+.chat-bubble::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 25px;
+  height: 100%;
+  background-color: #d1e2ef;
+  z-index: 1;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
+
+/* RTL styles using :host-context */
+:host-context([dir="rtl"]) .chat-bubble::before {
+  left: auto;
+  right: -8px;
+  transform: translateY(-50%) rotate(-45deg);
+  border-left: none;
+  border-top: none;
+  border-right: 4px solid #c2d2de;
+  border-bottom: 4px solid #c2d2de;
+}
+
+:host-context([dir="rtl"]) .chat-bubble::after {
+  left: auto;
+  right: 0;
+  border-radius: 0 20px 20px 0;
+}
+
+//Error state
+
+/* Create stacking context on the bubble */
+.chat-bubble-err {
+  position: relative;
+}
+
+/* Single rotated rectangle for tail - LTR (points LEFT) */
+.chat-bubble-err::before {
+  content: "";
+  position: absolute;
+  top: 45%;
+  transform: translateY(-50%) rotate(45deg);
+  width: 25px;
+  height: 48px;
+  border-bottom-left-radius: 8px;
+  background-color: var(--colors-pastels-error-red-250);
+  border-right: none;
+  border-top: none;
+  z-index: 0;
+  left: -8px;
+  border-bottom: 4px solid var(--colors-pastels-magenta-50);
+  border-left: 4px solid var(--colors-pastels-magenta-50);
+}
+
+/* Cover to hide tail borders inside bubble */
+.chat-bubble-err::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 25px;
+  height: 100%;
+  background-color: var(--colors-pastels-error-red-250);
+  z-index: 1;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
+
+/* RTL styles using :host-context */
+:host-context([dir="rtl"]) .chat-bubble-err::before {
+  left: auto;
+  right: -8px;
+  transform: translateY(-50%) rotate(-45deg);
+  border-left: none;
+  border-top: none;
+  border-right: 4px solid var(--colors-pastels-magenta-50);
+  border-bottom: 4px solid var(--colors-pastels-magenta-50);
+}
+
+:host-context([dir="rtl"]) .chat-bubble-err::after {
+  left: auto;
+  right: 0;
+  border-radius: 0 20px 20px 0;
+}

@@ -1,0 +1,73 @@
+<ng-container *transloco="let t">
+  <div id="{{ targetId }}" class="cursor-pointer">
+    @if (displayTargetRef()) {
+      <ng-content></ng-content>
+    } @else {
+      <fa-duotone-icon
+        class="flex flex-shrink-0 p-2 text-2xl text-[#7E7D77]"
+        [icon]="faCalendarDays"
+      ></fa-duotone-icon>
+    }
+  </div>
+
+  @if (true) {
+    <ion-popover
+      [isOpen]="isOpen()"
+      (didDismiss)="OnPopoverDismiss()"
+      [trigger]="targetId"
+      alignment="end"
+      class="hes-popover"
+    >
+      <ng-template>
+        <ion-content>
+          <div class="flex flex-col items-stretch gap-4 p-6">
+            <h5>{{ t("global.select_academic_year.btn") }}</h5>
+            <ion-accordion-group
+              #accordionGroup
+              class="w-full"
+              [value]="this.selectedAcademicYear()?.id?.toString()"
+            >
+              @for (year of academicYears(); track year.id) {
+                <ion-accordion [value]="year.id.toString()">
+                  <ion-item slot="header" [lines]="'none'">
+                    <ion-label>
+                      <span class="text-[0.875rem] font-medium text-[#242424]">
+                        {{ year.name }}
+                      </span>
+                    </ion-label>
+                    <fa-icon
+                      class="ion-accordion-toggle-icon text-[#242424]"
+                      slot="end"
+                      [icon]="faChevronDown"
+                    ></fa-icon>
+                  </ion-item>
+                  <div slot="content">
+                    <ion-list class="ion-no-padding">
+                      @for (semester of year.semesters; track semester.id) {
+                        <ion-item
+                          (click)="onSemesterSelect(semester, year)"
+                          [class.selected]="
+                            semester.id === selectedSemester()?.id
+                          "
+                          [lines]="'none'"
+                        >
+                          <ion-label>
+                            <span
+                              class="text-[0.875rem] font-medium text-[#242424]"
+                            >
+                              {{ semester.name }}
+                            </span></ion-label
+                          >
+                        </ion-item>
+                      }
+                    </ion-list>
+                  </div>
+                </ion-accordion>
+              }
+            </ion-accordion-group>
+          </div>
+        </ion-content>
+      </ng-template>
+    </ion-popover>
+  }
+</ng-container>

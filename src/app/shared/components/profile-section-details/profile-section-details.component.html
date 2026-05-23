@@ -1,0 +1,37 @@
+<div class="flex flex-col gap-ds-sm">
+  @for (item of items; track item.label) {
+    <div
+      class="flex items-start justify-between gap-ds-xl overflow-hidden rounded-ds-xl border border-stroke-black-08 bg-surface-primary px-ds-xl py-[22px]"
+    >
+      <div
+        class="single-line-sm-low-emphasis text-emphasis-mid lg:w-[252px] lg:min-w-[252px]"
+      >
+        {{ item.label }}
+      </div>
+
+      <div class="flex min-w-0 flex-1 flex-col gap-1 text-end lg:text-end">
+        <div class="content-md-mid-emphasis break-words text-emphasis-high">
+          @if (item.type === "date" && isIsoDate(item.value)) {
+            {{ item.value | hesDate }}
+          } @else if (item.type === "enum") {
+            {{ item.value | enumLang }}
+          } @else if (item.type === "phoneNumber") {
+            <bdi>{{ item.value }}</bdi>
+          } @else {
+            {{ item.value }}
+          }
+        </div>
+
+        @if (item.actionLabel && item.onAction) {
+          <button
+            type="button"
+            class="content-md-high-emphasis w-fit self-end text-content-action"
+            (click)="item.onAction()"
+          >
+            {{ item.actionLabel }}
+          </button>
+        }
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,32 @@
+<div class="ds-expandable">
+  <!-- Expandable content -->
+  <div
+    #contentWrapper
+    class="relative overflow-hidden transition-all duration-300 ease-in-out"
+    [style.max-height]="isExpanded() ? 'none' : getMaxHeightStyle()"
+  >
+    <div #contentElement class="relative">
+      <ng-content></ng-content>
+    </div>
+
+    <!-- Gradient overlay when collapsed -->
+    <!-- @if (!isExpanded() && shouldShowToggle()) {
+      <div class="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
+    } -->
+  </div>
+
+  <!-- Show More/Less toggle - only show if content exceeds height limit -->
+  @if (shouldShowToggle()) {
+    <div class="mt-2">
+      <button
+        type="button"
+        class="content-md-high-emphasis text-content-information"
+        [attr.aria-expanded]="isExpanded()"
+        aria-label="Toggle content"
+        (click)="toggle()"
+      >
+        {{ (isExpanded() ? showLessText() : showMoreText()) | dsTranslate }}
+      </button>
+    </div>
+  }
+</div>

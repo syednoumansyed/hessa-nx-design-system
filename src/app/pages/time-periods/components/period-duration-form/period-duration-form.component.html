@@ -1,0 +1,70 @@
+<ng-container *transloco="let t">
+  @if (!isMobile) {
+    <div
+      [ngClass]="{
+        'grid-cols-[repeat(4,1fr)_auto]': showRemoveButton,
+        'grid-cols-4': !showRemoveButton
+      }"
+      class="mb-6 grid gap-3 gap-y-6 self-stretch"
+    >
+      @for (
+        control of periodDurationFormConfig();
+        track control.formControlName
+      ) {
+        <app-form-control-generator
+          [control]="control"
+        ></app-form-control-generator>
+      }
+      @if (showRemoveButton) {
+        <div
+          class="flex w-14 cursor-pointer items-center justify-center rounded-lg bg-[#FEF3F2] p-3 text-[#D92D20]"
+          (click)="removePeriodDuration()"
+        >
+          <app-hes-icon [faIcon]="removeIcon"></app-hes-icon>
+        </div>
+      }
+    </div>
+  }
+  @if (isMobile) {
+    <div
+      [ngClass]="{
+        'grid-cols-[1fr_auto]': showRemoveButton
+      }"
+      class="mb-6 grid items-start gap-4"
+    >
+      <div class="w-full space-y-4">
+        @for (
+          control of periodDurationFormConfig().slice(0, 2);
+          track control.formControlName
+        ) {
+          <div class="w-full">
+            <app-form-control-generator
+              [control]="control"
+            ></app-form-control-generator>
+          </div>
+        }
+        <div class="grid grid-cols-2 gap-3">
+          @for (
+            control of periodDurationFormConfig().slice(2, 4);
+            track control.formControlName
+          ) {
+            <div>
+              <app-form-control-generator
+                [control]="control"
+              ></app-form-control-generator>
+            </div>
+          }
+        </div>
+      </div>
+
+      @if (showRemoveButton) {
+        <div
+          class="flex h-full w-14 cursor-pointer items-center justify-center rounded-lg bg-[#FEF3F2] text-[#D92D20]"
+          (click)="removePeriodDuration()"
+        >
+          <app-hes-icon [faIcon]="removeIcon"></app-hes-icon>
+        </div>
+      }
+    </div>
+  }
+</ng-container>

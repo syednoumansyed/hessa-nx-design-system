@@ -1,0 +1,76 @@
+<div
+  *transloco="let t"
+  class="Modal flex flex-col justify-start gap-4 rounded-xl bg-white p-7 shadow"
+>
+  <div class="mb-3 flex justify-between border-b pb-4">
+    <div class="text-xl font-semibold text-gray-900">
+      {{
+        !isSubCompany
+          ? isEditModal()
+            ? t("school_structure.edit_company.title")
+            : t("school_structure.add_new_company.title")
+          : isEditModal()
+            ? t("school_structure.edit_sub_company.title")
+            : t("school_structure.add_sub_company.title")
+      }}
+    </div>
+    <fa-icon
+      class="mt-1 cursor-pointer text-[#929CB5] hover:text-[#0000008a]"
+      [icon]="faClose"
+      size="xl"
+      (click)="closeModal()"
+    ></fa-icon>
+  </div>
+  <form
+    [formGroup]="companyForm"
+    class="flex w-full flex-col items-end justify-start gap-8"
+  >
+    <div class="grid grid-cols-1 gap-8 gap-y-10 self-stretch">
+      @if (logo()) {
+        <div class="-mb-5 flex flex-col">
+          <div class="text-base font-semibold">
+            {{ t("school_structure.upload_logo.label")
+            }}<span class="text-red-500">*</span>
+          </div>
+          <div class="mt-1 flex-1">
+            <img [src]="logo()" class="h-20 w-20 rounded-lg" />
+          </div>
+        </div>
+      }
+      @for (control of companyFormConfig(); track control.formControlName) {
+        <div class="flex-1">
+          <app-form-control-generator
+            [control]="control"
+          ></app-form-control-generator>
+        </div>
+      }
+    </div>
+    <div
+      class="mb-2 mt-2 grid grid-cols-1 gap-8 gap-y-10 self-stretch md:grid-cols-2"
+    >
+      <ion-button
+        hesBtn
+        hesColor="secondary"
+        hesSize="xl"
+        (click)="closeModal()"
+      >
+        {{ t("global.cancel.btn") }}
+      </ion-button>
+      <ion-button
+        hesBtn
+        hesSize="xl"
+        [disabled]="
+          companyForm.invalid ||
+          !isLogoValid ||
+          (isEditModal() &&
+            !companyForm.dirty &&
+            !companyForm.controls.logo.value.length) ||
+          loading()
+        "
+        (click)="this.isEditModal() ? onEditCompany() : onAddCompany()"
+      >
+        {{ t("global.save.btn") }}
+      </ion-button>
+    </div>
+  </form>
+</div>
