@@ -6,7 +6,6 @@ const config: StorybookConfig = {
     '@storybook/addon-links',
     '@storybook/addon-docs',
     '@storybook/addon-a11y',
-    '@storybook/addon-interactions',
     'storybook-addon-pseudo-states',
   ],
 

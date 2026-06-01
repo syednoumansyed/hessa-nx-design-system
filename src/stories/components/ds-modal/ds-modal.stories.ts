@@ -5,7 +5,7 @@ import {
   moduleMetadata,
   componentWrapperDecorator,
 } from '@storybook/angular';
-import { expect, userEvent, within } from '@storybook/test';
+import { expect, userEvent, within } from 'storybook/test';
 import { provideIonicAngular } from '@ionic/angular/standalone';
 import { DsModalComponent } from '@ds/modal/modal.component';
 

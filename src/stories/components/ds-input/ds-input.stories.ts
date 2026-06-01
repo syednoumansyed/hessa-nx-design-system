@@ -1,13 +1,12 @@
-import { expect, userEvent, within } from '@storybook/test';
+import { expect, userEvent, within } from 'storybook/test';
 import {
   Meta,
   StoryObj,
-  applicationConfig,
   moduleMetadata,
   componentWrapperDecorator,
 } from '@storybook/angular';
-import { provideIonicAngular } from '@ionic/angular/standalone';
 import { ReactiveFormsModule } from '@angular/forms';
+import { withHessaProviders } from '../../../../.storybook/hessa-providers';
 import { DsInputComponent } from '@ds/input/input.component';
 import {
   faSearch,
@@ -82,7 +81,7 @@ const meta: Meta<DsInputComponent> = {
     },
   },
   decorators: [
-    applicationConfig({ providers: [provideIonicAngular()] }),
+    withHessaProviders(),
     moduleMetadata({ imports: [DsInputComponent, ReactiveFormsModule] }),
     componentWrapperDecorator(
       (story) => `<div style="max-width:360px;padding:16px;">${story}</div>`,
@@ -577,5 +576,4 @@ export const RTL: Story = {
     ),
   ],
 };
-
 

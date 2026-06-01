@@ -1,12 +1,11 @@
 import {
   Meta,
   StoryObj,
-  applicationConfig,
   moduleMetadata,
   componentWrapperDecorator,
 } from '@storybook/angular';
-import { expect, userEvent, within } from '@storybook/test';
-import { provideIonicAngular } from '@ionic/angular/standalone';
+import { expect, userEvent, within } from 'storybook/test';
+import { withHessaProviders } from '../../../../.storybook/hessa-providers';
 import { DsButtonComponent } from '@ds/button/button.component';
 import { faArrowRight, faPlus, faTrash } from '@fortawesome/pro-regular-svg-icons';
 
@@ -58,7 +57,7 @@ const meta: Meta<DsButtonComponent> = {
     fullWidth: { control: 'boolean' },
   },
   decorators: [
-    applicationConfig({ providers: [provideIonicAngular()] }),
+    withHessaProviders(),
     moduleMetadata({ imports: [DsButtonComponent] }),
   ],
 };

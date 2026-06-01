@@ -1,43 +1,23 @@
 import {
   Meta,
   StoryObj,
-  applicationConfig,
   moduleMetadata,
   componentWrapperDecorator,
 } from '@storybook/angular';
-import { provideIonicAngular } from '@ionic/angular/standalone';
-import { ToastrService } from 'ngx-toastr';
+import { withHessaProviders } from '../../../../.storybook/hessa-providers';
 import { DsAttachmentFormControlComponent } from '@ds/attachment/ds-attachment-form-control.component';
-import { DS_TRANSLATION_TOKEN } from '@ds/i18n/ds-translation.token';
 
-const translationProvider = {
-  provide: DS_TRANSLATION_TOKEN,
-  useValue: {
-    translate: (key: string, params?: any) => {
-      const translations: Record<string, string> = {
-        'global.multiple_attachment_upload.info': 'Drag and drop or click here to upload files ({{types}} up to {{size}}GB)',
-        'global.single_attachment_upload.info': 'Drag and drop or click here to upload a file ({{types}} up to {{size}}GB)',
-        'global.attachment.max_size.error.msg': 'File {{name}} exceeds the maximum allowed size.',
-        'global.attachment.not_supported.error.msg': 'File {{name}} has an unsupported format.',
-      };
-      let text = translations[key] || key;
-      if (params) {
-        Object.entries(params).forEach(([k, v]) => {
-          text = text.replace(`{{${k}}}`, String(v));
-        });
-      }
-      return text;
-    },
-    getActiveLang: () => 'en',
-  },
-};
-
-const toastrMock = {
-  provide: ToastrService,
-  useValue: {
-    success: () => {},
-    error: () => {},
-  },
+const attachmentTranslations = {
+  'global.click_to_upload.btn': 'Click to upload',
+  'global.drag_drop.txt': 'or drag and drop',
+  'global.multiple_attachment_upload.info':
+    'Drag and drop or click here to upload files ({{types}} up to {{size}}GB)',
+  'global.single_attachment_upload.info':
+    'Drag and drop or click here to upload a file ({{types}} up to {{size}}GB)',
+  'global.attachment.max_size.error.msg':
+    'File {{name}} exceeds the maximum allowed size.',
+  'global.attachment.not_supported.error.msg':
+    'File {{name}} has an unsupported format.',
 };
 
 /**
@@ -54,12 +34,15 @@ const meta: Meta<DsAttachmentFormControlComponent> = {
   component: DsAttachmentFormControlComponent,
   tags: ['autodocs'],
   decorators: [
-    applicationConfig({
-      providers: [provideIonicAngular(), translationProvider, toastrMock],
+    withHessaProviders({
+      translations: attachmentTranslations,
+      toaster: 'mock',
+      fileInteractions: 'mock',
     }),
     moduleMetadata({ imports: [DsAttachmentFormControlComponent] }),
     componentWrapperDecorator(
-      (story) => `<div style="max-width:480px;margin:0 auto;padding:16px;">${story}</div>`
+      (story) =>
+        `<div style="max-width:480px;margin:0 auto;padding:16px;">${story}</div>`,
     ),
   ],
   parameters: {
@@ -121,7 +104,8 @@ export const LTR: Story = {
   },
   decorators: [
     componentWrapperDecorator(
-      (story) => `<div lang="en" dir="ltr" style="font-family:'Nunito',sans-serif;">${story}</div>`
+      (story) =>
+        `<div lang="en" dir="ltr" style="font-family:'Nunito',sans-serif;">${story}</div>`,
     ),
   ],
 };
@@ -137,7 +121,8 @@ export const RTL: Story = {
   },
   decorators: [
     componentWrapperDecorator(
-      (story) => `<div lang="ar" dir="rtl" style="font-family:'Lama Rounded',sans-serif;">${story}</div>`
+      (story) =>
+        `<div lang="ar" dir="rtl" style="font-family:'Lama Rounded',sans-serif;">${story}</div>`,
     ),
   ],
 };
