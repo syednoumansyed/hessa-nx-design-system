@@ -89,6 +89,7 @@ jobs:
             APP_NAME: 'nx Storybook',
           };
           EOF
+          cp src/environments/environment.ts src/environments/environment.production.ts
 
       - name: Build Storybook
         run: npm run build-storybook
