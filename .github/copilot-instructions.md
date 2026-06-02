@@ -2,6 +2,39 @@
 
 This document provides ground rules for AI assistants collaborating on the nx front end repository. Follow these instructions when proposing code, refactors, or documentation updates.
 
+## nx-design System Storybook
+
+When the user says:
+
+```text
+Use nx-design system Storybook
+```
+
+or provides a PRD and asks for Hessa UI, use the remote Storybook agent context
+before creating UI. Follow the full workflow in
+`docs/agentic-ui-from-prd.md`.
+
+Always load:
+
+```text
+https://syednoumansyed.github.io/hessa-nx-design-system/agent-manifest/index.json
+https://syednoumansyed.github.io/hessa-nx-design-system/agent-manifest/tokens.json
+```
+
+Then choose the relevant context pack or component shard from the manifest.
+Inspect selected story `absoluteUrl` iframe links before coding.
+
+Required rules:
+
+- Use Hessa design-system components instead of raw HTML controls.
+- Use reactive forms. Do not use `ngModel`.
+- Use token rules for typography, spacing, colors, radius, RTL, role theming,
+  and device breakpoints.
+- For modal, sheet, sidebar, picker, table, selector, or responsive PRDs,
+  validate desktop and mobile behavior separately.
+- Report which Storybook stories, context packs, component shards, and token
+  rules were used.
+
 ## Branch checklist
 
 - Always use the `sprint/stable` branch as the base for new changes.
