@@ -6,6 +6,7 @@ on:
     branches:
       - main
     paths:
+      - '.github/workflows/storybook-pages.yaml'
       - '.storybook/**'
       - 'src/app/design-system/**'
       - 'src/stories/**'
