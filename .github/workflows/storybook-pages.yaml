@@ -51,6 +51,8 @@ jobs:
       - name: Configure FontAwesome registry
         run: |
           {
+            echo '@ncle-edu:registry=https://npm.pkg.github.com/'
+            echo '//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}'
             echo '@fortawesome:registry=https://npm.fontawesome.com/'
             echo '//npm.fontawesome.com/:_authToken=${NPM_FONTAWESOME_AUTH_TOKEN}'
           } >> "$NPM_CONFIG_USERCONFIG"
