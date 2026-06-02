@@ -59,7 +59,7 @@ jobs:
 
       - name: Verify private registry auth
         run: |
-          npm whoami --registry=https://npm.fontawesome.com/ >/dev/null
+          npm view @fortawesome/pro-solid-svg-icons version --registry=https://npm.fontawesome.com/ >/dev/null
 
       - name: Install dependencies
         run: npm ci
