@@ -52,9 +52,9 @@ jobs:
         run: |
           {
             echo '@ncle-edu:registry=https://npm.pkg.github.com/'
-            echo '//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}'
+            printf '//npm.pkg.github.com/:_authToken=%s\n' "$NODE_AUTH_TOKEN"
             echo '@fortawesome:registry=https://npm.fontawesome.com/'
-            echo '//npm.fontawesome.com/:_authToken=${NPM_FONTAWESOME_AUTH_TOKEN}'
+            printf '//npm.fontawesome.com/:_authToken=%s\n' "$NPM_FONTAWESOME_AUTH_TOKEN"
           } >> "$NPM_CONFIG_USERCONFIG"
 
       - name: Verify private registry auth
