@@ -10,6 +10,52 @@ mobile, RTL, and student-role contexts.
 
 ## How To Give This Work To Any LLM
 
+### Remote Storybook Context Pack
+
+Use this when the agent is working from another project, another device, or a
+tool that can browse/fetch public URLs.
+
+```text
+https://syednoumansyed.github.io/hessa-nx-design-system/agent-manifest/index.json
+https://syednoumansyed.github.io/hessa-nx-design-system/agent-manifest/tokens.json
+```
+
+Then add one task pack or one component shard:
+
+```text
+https://syednoumansyed.github.io/hessa-nx-design-system/agent-manifest/context-packs/student-assignment-form.json
+https://syednoumansyed.github.io/hessa-nx-design-system/agent-manifest/context-packs/filterable-student-table.json
+https://syednoumansyed.github.io/hessa-nx-design-system/agent-manifest/context-packs/modal-sheet-sidebar-flow.json
+
+https://syednoumansyed.github.io/hessa-nx-design-system/agent-manifest/components/button.json
+https://syednoumansyed.github.io/hessa-nx-design-system/agent-manifest/components/input.json
+https://syednoumansyed.github.io/hessa-nx-design-system/agent-manifest/components/modal-sheet.json
+https://syednoumansyed.github.io/hessa-nx-design-system/agent-manifest/components/sidebar.json
+```
+
+Rules for remote agents:
+
+- Load `tokens.json` for typography, spacing, radius, semantic colors,
+  breakpoint mismatch rules, RTL rules, and role theming.
+- Load a task pack for page/workflow creation, or a component shard for a
+  narrow component task.
+- Inspect the `absoluteUrl` iframe links in the selected stories before
+  creating UI. The iframe is the visual source of truth.
+- Do not load the raw Storybook `index.json` unless debugging discovery; the
+  agent manifest is smaller and already grouped for LLM use.
+- When the target includes mobile behavior, inspect mobile/provider stories and
+  validate the final UI in a mobile viewport.
+
+Proof story:
+
+```text
+https://syednoumansyed.github.io/hessa-nx-design-system/iframe.html?id=4-agent-workflow-generated-student-assignment-form--default&viewMode=story
+```
+
+This story validates the intended workflow: an agent-generated UI uses Hessa
+tokens, real design-system components, reactive forms, provider setup, student
+role styling, and a Storybook `play()` contract.
+
 ### Minimum Context Pack
 
 For a small component or page task, give the agent these files:
@@ -81,17 +127,42 @@ Task:
 Verification:
 - npm run storybook:audit
 - npx tsc -p .storybook/tsconfig.json --noEmit
-- npm run build-storybook
+- npm run build-storybook:agent
+```
+
+### Copy-Paste Remote Prompt For Any Agent
+
+```text
+You are creating Hessa UI using remote Storybook as the source of truth.
+
+Load these first:
+- https://syednoumansyed.github.io/hessa-nx-design-system/agent-manifest/index.json
+- https://syednoumansyed.github.io/hessa-nx-design-system/agent-manifest/tokens.json
+
+Then load the most relevant task pack or component shard:
+- <paste one agent-manifest/context-packs/*.json URL or components/*.json URL>
+
+Before writing UI:
+- Inspect the selected stories through their absoluteUrl iframe links.
+- Use Hessa design-system components instead of raw HTML controls.
+- Use reactive forms for form UI.
+- Use token classes and token rules from tokens.json.
+- Respect role, RTL, and device behavior. For modal/sidebar work, desktop,
+  mobile bottom-sheet, and mobile modal-sheet paths are different contracts.
+
+After writing UI:
+- Explain which stories and token rules you used.
+- Validate in desktop and mobile viewports when the task pack includes mobile.
 ```
 
 ### Context Strategy By Tool
 
 | Tool | Best way to provide context |
 | --- | --- |
-| Claude Code | Ask it to read this guide plus the exact source/story files. For large tasks, give it only one component family at a time so it does not generalize from unrelated stories. |
-| Cursor | Add this file and the target source/story files to context. Keep `ai-manifest.json` pinned or referenced, then ask for scoped edits. |
-| Antigravity | Use the copy-paste prompt above and attach this guide, the manifest, token docs, and target files. Ask it to report changed file paths and verification commands. |
-| Any chat LLM | Paste the "Minimum Context Pack" text, then paste the relevant source snippets. Do not ask it to infer Hessa rules from generic Angular or Ionic docs. |
+| Claude Code | For remote use, give it the remote prompt and ask it to fetch the manifest, token pack, and one context pack. For repo-local edits, ask it to read this guide plus the exact source/story files. |
+| Cursor | Add this file to context for repo-local work. For remote design reference, paste the manifest URLs and keep the relevant component shard pinned. |
+| Antigravity | Use the remote prompt and attach the task pack URL. Ask it to report which iframe stories it inspected and which verification commands it ran. |
+| Any chat LLM | Paste the remote prompt plus one context pack or component shard. Do not ask it to infer Hessa rules from generic Angular or Ionic docs. |
 
 ## Work Protocol For Storybook Tasks
 

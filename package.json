@@ -46,6 +46,10 @@
     "storybook": "ng run app:storybook",
     "build-storybook": "ng run app:build-storybook",
     "storybook:audit": "ts-node --compiler-options '{\"module\":\"commonjs\"}' scripts/audit-stories-coverage.ts",
+    "storybook:agent-manifest": "node tools/storybook-agent/generate-agent-manifest.js",
+    "storybook:agent-manifest:static": "node tools/storybook-agent/generate-agent-manifest.js --source storybook-static/index.json --out storybook-static/agent-manifest",
+    "storybook:agent-validate": "node tools/storybook-agent/validate-agent-workflow.js",
+    "build-storybook:agent": "npm run build-storybook && npm run storybook:agent-manifest:static",
     "post-version": "ts-node scripts/version-creator.ts"
   },
   "private": true,
