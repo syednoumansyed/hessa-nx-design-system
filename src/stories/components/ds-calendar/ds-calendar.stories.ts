@@ -1,43 +1,28 @@
 import {
   Meta,
   StoryObj,
-  applicationConfig,
   moduleMetadata,
   componentWrapperDecorator,
 } from '@storybook/angular';
-import { provideIonicAngular } from '@ionic/angular/standalone';
+import { expect, within } from 'storybook/test';
 import {
   AttendanceCalendarComponent,
   AttendanceEventType,
   AbsenceType,
 } from '@ds/calendar/attendance-calendar.component';
-import { DS_TRANSLATION_TOKEN } from '@ds/i18n/ds-translation.token';
+import { withHessaProviders } from '../../../../.storybook/hessa-providers';
 
-const translationProvider = {
-  provide: DS_TRANSLATION_TOKEN,
-  useValue: {
-    translate: (key: string, params?: any) => {
-      // Basic mock translation dictionary
-      const translations: Record<string, string> = {
-        'attendance.present.title': 'Present',
-        'attendance.absent.title': 'Absent',
-        'attendance.excused.title': 'Excused',
-        'attendance.late.title': 'Late Arrival',
-        'attendance.planned.title': 'Planned Leave',
-        'attendance.not_planned_absence.title': 'Unplanned Absence',
-        'attendance.vacation.total_days_month.title':
-          '{{days}} Vacation Days This Month',
-        'attendance.vacation_wish': 'Wishing you a blessed and joyful time 🌴',
-        'attendance.todaystatus.attended_on_time': 'Attended on time today',
-      };
-      let text = translations[key] || key;
-      if (params && params.days !== undefined) {
-        text = text.replace('{{days}}', params.days.toString());
-      }
-      return text;
-    },
-    getActiveLang: () => 'en',
-  },
+const calendarTranslations = {
+  'attendance.present.title': 'Present',
+  'attendance.absent.title': 'Absent',
+  'attendance.excused.title': 'Excused',
+  'attendance.late.title': 'Late Arrival',
+  'attendance.planned.title': 'Planned Leave',
+  'attendance.not_planned_absence.title': 'Unplanned Absence',
+  'attendance.vacation.total_days_month.title':
+    '{{days}} Vacation Days This Month',
+  'attendance.vacation_wish': 'Wishing you a blessed and joyful time',
+  'attendance.todaystatus.attended_on_time': 'Attended on time today',
 };
 
 /**
@@ -56,9 +41,7 @@ const meta: Meta<AttendanceCalendarComponent> = {
   component: AttendanceCalendarComponent,
   tags: ['autodocs'],
   decorators: [
-    applicationConfig({
-      providers: [provideIonicAngular(), translationProvider],
-    }),
+    withHessaProviders({ translations: calendarTranslations }),
     moduleMetadata({ imports: [AttendanceCalendarComponent] }),
     componentWrapperDecorator(
       (story) =>
@@ -227,6 +210,21 @@ export const Default: Story = {
     year: 2026,
     config: mockConfig,
     local: 'en',
+  },
+};
+
+export const Error: Story = {
+  name: 'State: Absence alert summary',
+  args: {
+    month: 4,
+    year: 2026,
+    config: mockConfig,
+    local: 'en',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText('Absent')).toBeVisible();
+    await expect(canvas.getByText('Unplanned Absence')).toBeVisible();
   },
 };
 

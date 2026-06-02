@@ -6,6 +6,25 @@ This document captures the second-stage Storybook audit after the foundation wor
 
 The immediate focus was P0 components, plus modal-adjacent components where mobile and desktop behavior differs.
 
+## Phase Status And Gates
+
+Last updated: 2026-06-02.
+
+Recent discoveries changed the execution model. Coverage expansion should not lead the work, because adding more variants before source/service/token parity creates more inaccurate stories. Each phase now has an explicit exit gate.
+
+| Phase | Status | Exit gate | Evidence | Remaining work |
+| --- | --- | --- | --- | --- |
+| Phase 1: Storybook 9 foundation | Complete | Storybook packages/imports are aligned, shared provider helper exists, and audit script runs. | Commit `07e072d` aligned Storybook dependencies/imports, added shared provider infrastructure, and introduced `storybook:audit`. | Keep Storybook package alignment intact when dependencies change. |
+| Phase 2: Provider harness adoption | Mostly complete for representative stories | Touched stories use `withHessaProviders()` or explicitly justify isolation. No duplicate Ionic/toaster/translation boilerplate remains in audited stories. | `.storybook/hessa-providers.ts` is in use across audited stories and now includes Ionic, HTTP, toaster, locale, role, layout, and common translation defaults. | Continue replacing per-story provider boilerplate as each story is touched. |
+| Phase 3: Source-of-truth audit | In progress | Story args, states, templates, service calls, tokens, and platform behavior match the production component contract. | Commit `f16ca4b` fixed drift for modal, feedback modal, toast, picker select, select loading, and several P0/P1 primitives. | Finish source comparison for remaining P0 primitives and form states, especially input, avatar, progress, and deeper button variants. |
+| Phase 4: Service contract stories | In progress | Service-backed components have at least one story that exercises the real service path or a realistic local service fake. | `DsModalService`, `FeedbackService`, `HesToasterService`, Picker Select modal path, and Select loading overlay are now exercised. | Add contract stories for notification, journal feed, filter panel, responsive table, and student selector flows. |
+| Phase 5: Platform and overlay scenarios | In progress | Desktop modal, mobile bottom sheet, Ionic overlay, custom modal sheet, sidebar sheet, loading, and dismissal branches are opened through `play()` where possible. | Picker Select now covers desktop modal and mobile bottom-sheet branches; `DsModalService` path is validated separately from direct modal rendering. | Audit `ModalSheetService`, `ds-modal-sheet`, and bottom-sheet scenarios separately because they do not share the same runtime path as `DsModalService`. |
+| Phase 6: Token and visual parity | In progress | Stories avoid fake shells, raw colors, unsupported utility classes, inline visual styling, and raw HTML controls when DS components/tokens exist. | Modal, feedback modal, toast, icon, and multiple primitives were cleaned up during the P0 audit batch. | Continue token cleanup during each component audit; do not add broad visual variants until parity is confirmed. |
+| Phase 7: Coverage gap burn-down | Not started beyond audit tooling | `storybook:audit` gaps trend down without introducing fake states or incorrect service paths. | `storybook:audit` identifies missing story folders, matrix gaps, missing `argTypes`, and missing `play()` tests. | Add missing stories and reduce the current 23 interactive candidates without `play()` and 12 matrix-gap files after correctness gates pass. |
+| Phase 8: Build warning cleanup | Deferred | Build warnings are either fixed or documented as external/non-actionable. | Build succeeds, but warnings remain from duplicate Tailwind keys, Sass mixed declarations, CommonJS dependency output, and broad Angular compilation includes. | Clean warnings after story correctness is stable so warning cleanup does not hide behavior fixes. |
+
+The practical rule is: do not create new story volume until the component passes the source, provider, service, platform, and token gates for its real use cases.
+
 ## Main Discoveries
 
 ### Storybook drifted from production service paths
@@ -102,13 +121,13 @@ Expected matrix states should be applied only where meaningful:
 
 For form error states, prefer real controls and validators over mocked red text. For mobile/desktop differences, use platform or layout mocks and open the actual branch with a `play()` test.
 
-## Next Recommended Stages
+## Next Execution Order
 
-1. Finish P0 source-alignment audit for the remaining high-use primitives such as input, avatar, progress, and button variants.
-2. Add service-contract stories for missing or high-risk service-backed components: `in-app-notification`, `journal-feed`, `filter-panel`, and responsive table flows.
-3. Audit `ds-modal-sheet` and bottom-sheet stories separately from `DsModalService`, with explicit mobile scenarios.
-4. Reduce remaining `storybook:audit` gaps by adding `play()` tests to interactive candidates before expanding visual-only variants.
-5. Clean unrelated build warnings after story correctness is stable: duplicate Tailwind keys, Sass mixed-declaration warnings, and broad Angular unused-compilation warnings.
+1. Finish P0 source-alignment audits for remaining primitives and forms, with focus on input, avatar, progress, button variants, and error/loading states.
+2. Audit modal-adjacent mobile paths separately: `DsModalService`, `ModalSheetService`, bottom sheet, sidebar sheet, and any Ionic overlay behavior should not be treated as interchangeable.
+3. Add service-contract stories for high-risk service-backed components: `in-app-notification`, `journal-feed`, `filter-panel`, responsive table flows, and student selector flows.
+4. Reduce `storybook:audit` gaps by adding missing stories, matrix states, `argTypes`, and `play()` tests only after each component passes the source/service/platform/token gates.
+5. Clean unrelated build warnings after story correctness is stable: duplicate Tailwind keys, Sass mixed-declaration warnings, CommonJS dependency output, and broad Angular unused-compilation warnings.
 
 ## Verification Loop
 

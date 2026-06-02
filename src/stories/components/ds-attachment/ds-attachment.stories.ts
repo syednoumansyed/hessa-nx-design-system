@@ -4,6 +4,7 @@ import {
   moduleMetadata,
   componentWrapperDecorator,
 } from '@storybook/angular';
+import { expect, userEvent, within } from 'storybook/test';
 import { withHessaProviders } from '../../../../.storybook/hessa-providers';
 import { DsAttachmentFormControlComponent } from '@ds/attachment/ds-attachment-form-control.component';
 
@@ -90,6 +91,32 @@ export const Readonly: Story = {
     label: 'Syllabus PDF',
     isreadonly: true,
     acceptFileTypes: ['PDF'],
+  },
+};
+
+export const Error: Story = {
+  name: 'State: Rejected file',
+  args: {
+    label: 'Upload Assignment',
+    placeholder: 'PDF files up to 100 bytes',
+    maxSizeInMB: 0.0001,
+    isMultiple: false,
+    acceptFileTypes: ['PDF'],
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const fileInput = canvasElement.querySelector<HTMLInputElement>(
+      'input[type="file"]',
+    );
+    await expect(fileInput).not.toBeNull();
+    await userEvent.upload(
+      fileInput!,
+      new File([new Uint8Array(2048)], 'oversized.pdf', {
+        type: 'application/pdf',
+      }),
+    );
+    await expect(canvas.queryByText('oversized.pdf')).not.toBeInTheDocument();
+    await expect(canvas.getByText('PDF files up to 100 bytes')).toBeVisible();
   },
 };
 

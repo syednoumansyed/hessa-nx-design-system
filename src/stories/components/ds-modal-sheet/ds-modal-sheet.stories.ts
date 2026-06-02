@@ -1,194 +1,187 @@
 import {
   Meta,
   StoryObj,
-  applicationConfig,
-  moduleMetadata,
   componentWrapperDecorator,
+  moduleMetadata,
 } from '@storybook/angular';
-import { provideIonicAngular } from '@ionic/angular/standalone';
-import { Component } from '@angular/core';
-import { NgClass } from '@angular/common';
+import { Component, inject, Input } from '@angular/core';
+import { expect, userEvent, within } from 'storybook/test';
+import { withHessaProviders } from '../../../../.storybook/hessa-providers';
 import { ModalSheetContainerComponent } from '@ds/modal-sheet/modal-sheet-container.component';
 import { ModalSheetService } from '@ds/modal-sheet/modal-sheet.service';
-import { DS_TRANSLATION_TOKEN } from '@ds/i18n/ds-translation.token';
+import { DsButtonComponent } from '@ds/button/button.component';
+import { DsFeedbackComponent } from '@ds/feedback/feedback.component';
+import { DsInputComponent } from '@ds/input/input.component';
 
-// ─── Dummy content component for stories ──────────────────────────────────────
+type SheetScenario =
+  | 'default'
+  | 'ltr'
+  | 'rtl'
+  | 'disabled'
+  | 'loading'
+  | 'form';
 
 @Component({
-  selector: 'story-sheet-content',
+  selector: 'story-modal-sheet-summary',
   standalone: true,
+  imports: [DsFeedbackComponent],
   template: `
-    <div style="padding:16px;font-family:inherit">
-      <p style="color:#374151;line-height:1.6;margin:0 0 12px">
-        This is the scrollable content area of the modal sheet.
-        In production, any Angular component can be injected here
-        via <code>ModalSheetService.present()</code>.
-      </p>
-      <p style="color:#6b7280;line-height:1.6;margin:0">
-        The sheet slides up from the bottom (90dvh) with a rounded top and
-        a semi-transparent backdrop above it.
-      </p>
+    <ds-feedback
+      type="info"
+      title="Service content created"
+      message="ModalSheetService.present() projected this standalone component into the custom sheet stack."
+    />
+  `,
+})
+class StoryModalSheetSummaryComponent {}
+
+@Component({
+  selector: 'story-modal-sheet-form',
+  standalone: true,
+  imports: [DsInputComponent],
+  template: `
+    <div class="flex flex-col gap-ds-lg">
+      <app-ds-input
+        label="Full name"
+        inputValue="Ahmed Al-Rashid"
+        placeholder="Enter full name"
+      />
+      <app-ds-input
+        label="Email"
+        inputValue="ahmed@school.edu.sa"
+        placeholder="name@school.edu.sa"
+        dsType="email"
+      />
     </div>
   `,
 })
-class StorySheetContentComponent {}
+class StoryModalSheetFormComponent {}
 
 @Component({
-  selector: 'story-sheet-content-form',
+  selector: 'story-modal-sheet-arabic',
   standalone: true,
+  imports: [DsFeedbackComponent],
   template: `
-    <div style="padding:16px;font-family:inherit;display:flex;flex-direction:column;gap:12px">
-      <div>
-        <label style="display:block;font-size:14px;font-weight:600;color:#374151;margin-bottom:4px">Full Name</label>
-        <input type="text" placeholder="Enter your name"
-          style="width:100%;padding:10px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;box-sizing:border-box" />
-      </div>
-      <div>
-        <label style="display:block;font-size:14px;font-weight:600;color:#374151;margin-bottom:4px">Email</label>
-        <input type="email" placeholder="Enter your email"
-          style="width:100%;padding:10px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;box-sizing:border-box" />
-      </div>
-      <div>
-        <label style="display:block;font-size:14px;font-weight:600;color:#374151;margin-bottom:4px">Grade</label>
-        <select style="width:100%;padding:10px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;box-sizing:border-box">
-          <option>Grade 1</option>
-          <option>Grade 2</option>
-          <option selected>Grade 3</option>
-          <option>Grade 4</option>
-          <option>Grade 5</option>
-        </select>
-      </div>
+    <div lang="ar" dir="rtl">
+      <ds-feedback
+        type="info"
+        title="تم إنشاء المحتوى"
+        message="تم عرض هذا المحتوى عبر خدمة ModalSheetService ومسار لوحة النموذج المخصص."
+      />
     </div>
   `,
 })
-class StorySheetFormContentComponent {}
+class StoryModalSheetArabicComponent {}
 
 @Component({
-  selector: 'story-sheet-content-arabic',
+  selector: 'story-modal-sheet-launcher',
   standalone: true,
+  imports: [DsButtonComponent, ModalSheetContainerComponent],
   template: `
-    <div style="padding:16px;font-family:'Lama Rounded',sans-serif;direction:rtl;text-align:right">
-      <p style="color:#374151;line-height:1.8;margin:0 0 12px">
-        هذه منطقة المحتوى القابلة للتمرير في لوحة النموذج.
-        في الإنتاج، يمكن حقن أي مكوّن Angular هنا عبر
-        <code>ModalSheetService.present()</code>.
-      </p>
-      <p style="color:#6b7280;line-height:1.8;margin:0">
-        تنزلق اللوحة لأعلى من الأسفل مع زوايا مدوّرة في الأعلى.
-      </p>
+    <div class="flex h-full flex-col justify-end bg-surface-secondary-light">
+      <div class="flex flex-col gap-ds-md p-ds-xl">
+        <p class="content-sm-default text-content-mid">
+          Custom ModalSheetService stack path. This is separate from DsModalService
+          and Ionic ModalController bottom-sheet behavior.
+        </p>
+        <ds-button
+          variant="primary"
+          size="lg"
+          [fullWidth]="true"
+          (click)="openSheet()"
+        >
+          Open modal sheet
+        </ds-button>
+      </div>
+      <ds-modal-sheet-container />
     </div>
   `,
 })
-class StorySheetArabicContentComponent {}
+class StoryModalSheetLauncherComponent {
+  @Input() scenario: SheetScenario = 'default';
 
-// ─── Factory: seed ModalSheetService with an entry ───────────────────────────
+  private readonly modalSheetService = inject(ModalSheetService);
 
-function makeSheetProvider(
-  title: string,
-  subtitle: string | undefined,
-  showBack: boolean,
-  showClose: boolean,
-  contentComponent: unknown,
-  primaryLabel?: string,
-  secondaryLabel?: string,
-) {
-  return {
-    provide: ModalSheetService,
-    useFactory: () => {
-      const svc = new ModalSheetService();
-      svc.present({
-        component: contentComponent as never,
-        headerConfig: {
-          title,
-          subtitle,
-          showBackButton: showBack,
-          showCloseButton: showClose,
+  openSheet(): void {
+    const isRtl = this.scenario === 'rtl';
+    const isForm = this.scenario === 'form';
+
+    this.modalSheetService.present({
+      component: isRtl
+        ? StoryModalSheetArabicComponent
+        : isForm
+          ? StoryModalSheetFormComponent
+          : StoryModalSheetSummaryComponent,
+      headerConfig: {
+        title: isRtl ? 'عنوان اللوحة' : 'Sheet Title',
+        subtitle: isRtl
+          ? 'مسار خدمة لوحة النموذج'
+          : 'Presented through ModalSheetService',
+        showBackButton: false,
+        showCloseButton: true,
+      },
+      footerConfig: {
+        primaryButton: {
+          text:
+            this.scenario === 'loading'
+              ? 'Saving'
+              : isRtl
+                ? 'تأكيد'
+                : 'Save changes',
+          disabled: this.scenario === 'disabled',
+          loading: this.scenario === 'loading',
         },
-        ...(primaryLabel || secondaryLabel
-          ? {
-              footerConfig: {
-                ...(primaryLabel
-                  ? { primaryButton: { text: primaryLabel } }
-                  : {}),
-                ...(secondaryLabel
-                  ? { secondaryButton: { text: secondaryLabel } }
-                  : {}),
-                fullWidthButtons: true,
-              },
-            }
-          : {}),
-        backdropDismiss: false,
-      });
-      return svc;
-    },
-  };
+        secondaryButton: {
+          text: isRtl ? 'إلغاء' : 'Cancel',
+          disabled: this.scenario === 'disabled' || this.scenario === 'loading',
+        },
+        fullWidthButtons: true,
+        buttonSize: 'lg',
+      },
+      contentClass: 'p-ds-xl',
+      scrollableContent: true,
+      backdropDismiss: true,
+    });
+  }
 }
 
-// ─── Base provider helpers ─────────────────────────────────────────────────────
-
-const baseProviders = [
-  provideIonicAngular(),
-  {
-    provide: DS_TRANSLATION_TOKEN,
-    useValue: {
-      translate: (key: string) => key,
-      getActiveLang: () => 'en',
-    },
-  },
-];
-
 /**
- * # Modal Sheet — `ds-modal-sheet-container`
+ * # Modal Sheet - `ds-modal-sheet-container`
  *
- * A bottom-sheet overlay for mobile viewports (375px recommended). Managed entirely
- * by `ModalSheetService` — call `.present({ component, headerConfig, footerConfig })`
- * to push a sheet onto the stack.
- *
- * This is not the same path as `DsModalService` mobile bottom-sheet behavior.
- * `DsModalService` uses Ionic `ModalController` and `DsModalWrapperComponent`;
- * `ModalSheetService` uses an in-app signal stack rendered by
- * `ds-modal-sheet-container`. `DsSidebarService` can choose this service on
- * mobile when `mobilePresentation: 'modal-sheet'`.
- *
- * **Note:** This is a mobile-first component. It occupies 90dvh of the viewport and
- * slides up from the bottom. Stories are constrained to a 375×667px mobile frame.
- *
- * **Key features:**
- * - Stack-based: multiple sheets can be presented simultaneously.
- * - Standard header with title, subtitle, back/close buttons.
- * - Scrollable content area with any Angular component injected dynamically.
- * - Optional primary/secondary footer buttons.
- * - Backdrop dismiss (configurable).
- * - RTL-ready.
+ * Custom signal-stack bottom sheet rendered by `ModalSheetService`. This is not
+ * the same runtime path as `DsModalService`, which uses Ionic `ModalController`
+ * and `DsModalWrapperComponent`.
  */
 const meta: Meta<ModalSheetContainerComponent> = {
   title: '3. P2 Components/ModalSheet',
   component: ModalSheetContainerComponent,
   tags: ['autodocs'],
   parameters: {
+    layout: 'fullscreen',
+    viewport: { defaultViewport: 'mobile' },
     docs: {
       description: {
         component:
-          'Bottom-sheet overlay for mobile. Managed by ModalSheetService, not DsModalService. Supports stacking, custom headers, footers, and RTL layouts. Constrain to a mobile viewport (≤ 375px) for correct visual output.',
+          'Mobile-first custom sheet stack. Stories open the sheet through ModalSheetService.present() and render ds-modal-sheet-container in the canvas.',
       },
     },
     a11y: { config: { rules: [] } },
-    layout: 'fullscreen',
   },
   argTypes: {},
   decorators: [
+    withHessaProviders({ mobile: true, layout: true }),
     moduleMetadata({
       imports: [
         ModalSheetContainerComponent,
-        StorySheetContentComponent,
-        StorySheetFormContentComponent,
-        StorySheetArabicContentComponent,
-        NgClass,
+        StoryModalSheetLauncherComponent,
+        StoryModalSheetSummaryComponent,
+        StoryModalSheetFormComponent,
+        StoryModalSheetArabicComponent,
       ],
     }),
     componentWrapperDecorator(
       (story) =>
-        `<div style="position:relative;width:375px;height:667px;overflow:hidden;background:#f3f4f6;border:1px solid #d1d5db;border-radius:16px;margin:auto;font-family:'Nunito',sans-serif">${story}</div>`,
+        `<div class="relative mx-auto h-[667px] w-[375px] overflow-hidden rounded-ds-2xl border-2 border-stroke-mid bg-surface-secondary-light">${story}</div>`,
     ),
   ],
 };
@@ -196,147 +189,87 @@ const meta: Meta<ModalSheetContainerComponent> = {
 export default meta;
 type Story = StoryObj<ModalSheetContainerComponent>;
 
-// ─── Stories ──────────────────────────────────────────────────────────────────
+const renderLauncher = (scenario: SheetScenario = 'default') => ({
+  props: { scenario },
+  template: `<story-modal-sheet-launcher [scenario]="scenario" />`,
+});
+
+const openSheet = async (canvasElement: HTMLElement) => {
+  const canvas = within(canvasElement);
+  await userEvent.click(
+    canvas.getByRole('button', { name: 'Open modal sheet' }),
+  );
+  return canvas;
+};
 
 export const Default: Story = {
-  name: 'Default (Header + Content)',
-  decorators: [
-    applicationConfig({
-      providers: [
-        ...baseProviders,
-        makeSheetProvider(
-          'Sheet Title',
-          undefined,
-          false,
-          true,
-          StorySheetContentComponent,
-        ),
-      ],
-    }),
-  ],
-  render: () => ({
-    template: `<ds-modal-sheet-container></ds-modal-sheet-container>`,
-  }),
-};
-
-export const WithSubtitle: Story = {
-  name: 'With Subtitle',
-  decorators: [
-    applicationConfig({
-      providers: [
-        ...baseProviders,
-        makeSheetProvider(
-          'Select a Course',
-          'Choose the course you want to review',
-          false,
-          true,
-          StorySheetContentComponent,
-        ),
-      ],
-    }),
-  ],
-  render: () => ({
-    template: `<ds-modal-sheet-container></ds-modal-sheet-container>`,
-  }),
-};
-
-export const WithBackButton: Story = {
-  name: 'With Back Button',
-  decorators: [
-    applicationConfig({
-      providers: [
-        ...baseProviders,
-        makeSheetProvider(
-          'Assignment Details',
-          'Math — Unit 3',
-          true,
-          true,
-          StorySheetContentComponent,
-        ),
-      ],
-    }),
-  ],
-  render: () => ({
-    template: `<ds-modal-sheet-container></ds-modal-sheet-container>`,
-  }),
-};
-
-export const WithFooterButtons: Story = {
-  name: 'With Footer Buttons',
-  decorators: [
-    applicationConfig({
-      providers: [
-        ...baseProviders,
-        makeSheetProvider(
-          'Confirm Enrollment',
-          'Review your selection before confirming',
-          false,
-          true,
-          StorySheetContentComponent,
-          'Confirm',
-          'Cancel',
-        ),
-      ],
-    }),
-  ],
-  render: () => ({
-    template: `<ds-modal-sheet-container></ds-modal-sheet-container>`,
-  }),
+  name: 'Default service path',
+  render: () => renderLauncher('default'),
+  play: async ({ canvasElement }) => {
+    const canvas = await openSheet(canvasElement);
+    await expect(await canvas.findByText('Sheet Title')).toBeInTheDocument();
+    await expect(
+      await canvas.findByText('Service content created'),
+    ).toBeInTheDocument();
+  },
 };
 
 export const FormSheet: Story = {
-  name: 'Real-World: Form Sheet',
-  decorators: [
-    applicationConfig({
-      providers: [
-        ...baseProviders,
-        makeSheetProvider(
-          'Edit Profile',
-          'Update your personal information',
-          false,
-          true,
-          StorySheetFormContentComponent,
-          'Save Changes',
-          'Cancel',
-        ),
-      ],
-    }),
-  ],
-  render: () => ({
-    template: `<ds-modal-sheet-container></ds-modal-sheet-container>`,
-  }),
+  name: 'Real form content',
+  render: () => renderLauncher('form'),
+  play: async ({ canvasElement }) => {
+    const canvas = await openSheet(canvasElement);
+    await expect(await canvas.findByLabelText('Full name')).toBeInTheDocument();
+  },
+};
+
+export const Disabled: Story = {
+  name: 'State: Disabled footer actions',
+  render: () => renderLauncher('disabled'),
+  play: async ({ canvasElement }) => {
+    const canvas = await openSheet(canvasElement);
+    await expect(
+      await canvas.findByRole('button', { name: 'Save changes' }),
+    ).toBeDisabled();
+    await expect(
+      await canvas.findByRole('button', { name: 'Cancel' }),
+    ).toBeDisabled();
+  },
+};
+
+export const Loading: Story = {
+  name: 'State: Loading primary action',
+  render: () => renderLauncher('loading'),
+  play: async ({ canvasElement }) => {
+    const canvas = await openSheet(canvasElement);
+    await expect(
+      await canvas.findByRole('button', { name: 'Saving' }),
+    ).toBeDisabled();
+  },
+};
+
+export const LTR: Story = {
+  name: 'LTR (English)',
+  render: () => renderLauncher('ltr'),
+  decorators: [withHessaProviders({ mobile: true, layout: true, locale: 'en' })],
+  play: async ({ canvasElement }) => {
+    const canvas = await openSheet(canvasElement);
+    await expect(await canvas.findByText('Sheet Title')).toBeInTheDocument();
+  },
 };
 
 export const RTL: Story = {
   name: 'RTL (Arabic)',
+  render: () => renderLauncher('rtl'),
   decorators: [
-    applicationConfig({
-      providers: [
-        provideIonicAngular(),
-        {
-          provide: DS_TRANSLATION_TOKEN,
-          useValue: {
-            translate: (key: string) => key,
-            getActiveLang: () => 'ar',
-          },
-        },
-        makeSheetProvider(
-          'عنوان اللوحة',
-          'اختر الخيار المناسب',
-          false,
-          true,
-          StorySheetArabicContentComponent,
-          'تأكيد',
-          'إلغاء',
-        ),
-      ],
-    }),
+    withHessaProviders({ mobile: true, layout: true, locale: 'ar' }),
     componentWrapperDecorator(
       (story) =>
-        `<div dir="rtl" lang="ar" style="position:relative;width:375px;height:667px;overflow:hidden;background:#f3f4f6;border:1px solid #d1d5db;border-radius:16px;margin:auto;font-family:'Lama Rounded',sans-serif">${story}</div>`,
+        `<div class="relative mx-auto h-[667px] w-[375px] overflow-hidden rounded-ds-2xl border-2 border-stroke-mid bg-surface-secondary-light" lang="ar" dir="rtl">${story}</div>`,
     ),
   ],
-  render: () => ({
-    template: `<ds-modal-sheet-container></ds-modal-sheet-container>`,
-  }),
+  play: async ({ canvasElement }) => {
+    const canvas = await openSheet(canvasElement);
+    await expect(await canvas.findByText('عنوان اللوحة')).toBeInTheDocument();
+  },
 };

@@ -1,28 +1,19 @@
 import {
   Meta,
   StoryObj,
-  applicationConfig,
+  componentWrapperDecorator,
   moduleMetadata,
 } from '@storybook/angular';
-import { provideIonicAngular } from '@ionic/angular/standalone';
+import { expect, within } from 'storybook/test';
+import { withHessaProviders } from '../../../../.storybook/hessa-providers';
 import { AvatarComponent } from '@ds/avatar/avatar.component';
 import { UserProfileColors } from '@shared/enums';
 
 /**
- * # Avatar — `app-ds-avatar`
+ * # Avatar - `app-ds-avatar`
  *
- * Displays a user's avatar — either a photo or generated initials with a
- * colour-coded background. Supports 8 sizes and 10 colour variants.
- *
- * **When to use:**
- * - Represent a user in lists, headers, comment threads, or profile pages
- * - Use `imageUrl` when the user has a photo; the component falls back to initials automatically
- *
- * **Initials logic:** The component takes only the **first character** of
- * `fullName` (uppercased). A single-letter initial is always shown.
- *
- * **Border:** `includeBorder` defaults to `true` — set to `false` to remove the
- * thin dark stroke.
+ * Displays a user photo when available, otherwise a generated first-letter
+ * initial with a token-backed profile color.
  */
 const meta: Meta<AvatarComponent> = {
   title: '1. P0 Components/Avatar',
@@ -33,7 +24,7 @@ const meta: Meta<AvatarComponent> = {
     docs: {
       description: {
         component:
-          'User avatar with photo or initials fallback. 8 sizes × 10 colour variants. RTL-safe.',
+          'User avatar with local image support and initials fallback. Supports 8 sizes, profile-color tokens, and optional border.',
       },
     },
   },
@@ -51,17 +42,15 @@ const meta: Meta<AvatarComponent> = {
     fullName: { control: 'text' },
   },
   decorators: [
-    applicationConfig({ providers: [provideIonicAngular()] }),
+    withHessaProviders(),
     moduleMetadata({ imports: [AvatarComponent] }),
+    componentWrapperDecorator((story) => `<div class="p-ds-xl">${story}</div>`),
   ],
 };
 
 export default meta;
 type Story = StoryObj<AvatarComponent>;
 
-// ---------------------------------------------------------------------------
-// Default — initials fallback
-// ---------------------------------------------------------------------------
 export const Default: Story = {
   args: {
     fullName: 'Ahmed Al-Rashid',
@@ -69,207 +58,169 @@ export const Default: Story = {
     includeBorder: true,
     color: UserProfileColors.NEUTRAL,
   },
-};
-
-// ---------------------------------------------------------------------------
-// With Image
-// ---------------------------------------------------------------------------
-export const WithImage: Story = {
-  args: {
-    fullName: 'Sara Johnson',
-    imageUrl: 'https://i.pravatar.cc/150?img=1',
-    size: 'md',
-    includeBorder: true,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(await canvas.findByText('A')).toBeInTheDocument();
   },
 };
 
-// ---------------------------------------------------------------------------
-// With Border
-// ---------------------------------------------------------------------------
-export const WithBorder: Story = {
+export const WithImage: Story = {
+  args: {
+    fullName: 'Sara Al-Mansouri',
+    imageUrl: 'assets/icons/avatar-bg.png',
+    size: '2xl',
+    includeBorder: true,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      await canvas.findByAltText('Sara Al-Mansouri'),
+    ).toBeInTheDocument();
+  },
+};
+
+export const WithoutBorder: Story = {
   args: {
     fullName: 'Khaled Nasser',
     size: 'lg',
-    includeBorder: true,
+    includeBorder: false,
     color: UserProfileColors.BRAND,
   },
 };
 
-// ---------------------------------------------------------------------------
-// All Sizes
-// ---------------------------------------------------------------------------
 export const AllSizes: Story = {
-  parameters: {
-    docs: {
-      description: {
-        story: 'All 8 avatar sizes rendered side-by-side with size labels.',
-      },
-    },
-  },
   render: () => ({
     template: `
-      <div style="display:flex; align-items:flex-end; gap:24px; flex-wrap:wrap; padding:16px;">
-        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
-          <app-ds-avatar fullName="Ahmed Al-Rashid" size="xs" [includeBorder]="true"></app-ds-avatar>
-          <span style="font-size:11px;color:#666">xs</span>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
-          <app-ds-avatar fullName="Ahmed Al-Rashid" size="sm" [includeBorder]="true"></app-ds-avatar>
-          <span style="font-size:11px;color:#666">sm</span>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
-          <app-ds-avatar fullName="Ahmed Al-Rashid" size="md" [includeBorder]="true"></app-ds-avatar>
-          <span style="font-size:11px;color:#666">md</span>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
-          <app-ds-avatar fullName="Ahmed Al-Rashid" size="lg" [includeBorder]="true"></app-ds-avatar>
-          <span style="font-size:11px;color:#666">lg</span>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
-          <app-ds-avatar fullName="Ahmed Al-Rashid" size="xl" [includeBorder]="true"></app-ds-avatar>
-          <span style="font-size:11px;color:#666">xl</span>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
-          <app-ds-avatar fullName="Ahmed Al-Rashid" size="2xl" [includeBorder]="true"></app-ds-avatar>
-          <span style="font-size:11px;color:#666">2xl</span>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
-          <app-ds-avatar fullName="Ahmed Al-Rashid" size="3xl" [includeBorder]="true"></app-ds-avatar>
-          <span style="font-size:11px;color:#666">3xl</span>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
-          <app-ds-avatar fullName="Ahmed Al-Rashid" size="4xl" [includeBorder]="true"></app-ds-avatar>
-          <span style="font-size:11px;color:#666">4xl</span>
-        </div>
+      <div class="flex flex-wrap items-end gap-ds-xl">
+        @for (size of sizes; track size) {
+          <div class="flex flex-col items-center gap-ds-sm">
+            <app-ds-avatar
+              fullName="Ahmed Al-Rashid"
+              [size]="size"
+              [includeBorder]="true"
+            />
+            <span class="single-line-caption-mid-emphasis text-content-mid">
+              {{ size }}
+            </span>
+          </div>
+        }
       </div>
     `,
+    props: {
+      sizes: ['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl'],
+    },
   }),
 };
 
-// ---------------------------------------------------------------------------
-// All Colors
-// ---------------------------------------------------------------------------
 export const AllColors: Story = {
-  parameters: {
-    docs: {
-      description: {
-        story: 'All 10 `UserProfileColors` rendered with distinct initials.',
-      },
-    },
-  },
   render: () => ({
     template: `
-      <div style="display:flex; gap:16px; flex-wrap:wrap; padding:16px; align-items:flex-end;">
-        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
-          <app-ds-avatar fullName="Brand" size="2xl" color="brand" [includeBorder]="false"></app-ds-avatar>
-          <span style="font-size:11px;color:#666">brand</span>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
-          <app-ds-avatar fullName="Emerald" size="2xl" color="emerald" [includeBorder]="false"></app-ds-avatar>
-          <span style="font-size:11px;color:#666">emerald</span>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
-          <app-ds-avatar fullName="Blue" size="2xl" color="blue" [includeBorder]="false"></app-ds-avatar>
-          <span style="font-size:11px;color:#666">blue</span>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
-          <app-ds-avatar fullName="Green" size="2xl" color="green" [includeBorder]="false"></app-ds-avatar>
-          <span style="font-size:11px;color:#666">green</span>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
-          <app-ds-avatar fullName="Yellow" size="2xl" color="yellow" [includeBorder]="false"></app-ds-avatar>
-          <span style="font-size:11px;color:#666">yellow</span>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
-          <app-ds-avatar fullName="Neutral" size="2xl" color="neutral" [includeBorder]="false"></app-ds-avatar>
-          <span style="font-size:11px;color:#666">neutral</span>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
-          <app-ds-avatar fullName="Coral" size="2xl" color="coral" [includeBorder]="false"></app-ds-avatar>
-          <span style="font-size:11px;color:#666">coral</span>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
-          <app-ds-avatar fullName="Teal" size="2xl" color="teal" [includeBorder]="false"></app-ds-avatar>
-          <span style="font-size:11px;color:#666">teal</span>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
-          <app-ds-avatar fullName="Purple" size="2xl" color="purple" [includeBorder]="false"></app-ds-avatar>
-          <span style="font-size:11px;color:#666">purple</span>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
-          <app-ds-avatar fullName="Indigo" size="2xl" color="indigo" [includeBorder]="false"></app-ds-avatar>
-          <span style="font-size:11px;color:#666">indigo</span>
-        </div>
+      <div class="flex flex-wrap items-end gap-ds-lg">
+        @for (item of items; track item.color) {
+          <div class="flex flex-col items-center gap-ds-sm">
+            <app-ds-avatar
+              [fullName]="item.label"
+              size="2xl"
+              [color]="item.color"
+              [includeBorder]="false"
+            />
+            <span class="single-line-caption-mid-emphasis text-content-mid">
+              {{ item.color }}
+            </span>
+          </div>
+        }
       </div>
     `,
+    props: {
+      items: [
+        { label: 'Brand', color: UserProfileColors.BRAND },
+        { label: 'Emerald', color: UserProfileColors.EMERALD },
+        { label: 'Blue', color: UserProfileColors.BLUE },
+        { label: 'Green', color: UserProfileColors.GREEN },
+        { label: 'Yellow', color: UserProfileColors.YELLOW },
+        { label: 'Neutral', color: UserProfileColors.NEUTRAL },
+        { label: 'Coral', color: UserProfileColors.CORAL },
+        { label: 'Teal', color: UserProfileColors.TEAL },
+        { label: 'Purple', color: UserProfileColors.PURPLE },
+        { label: 'Indigo', color: UserProfileColors.INDIGO },
+      ],
+    },
   }),
 };
 
-// ---------------------------------------------------------------------------
-// Initials generation
-// ---------------------------------------------------------------------------
 export const Initials: Story = {
+  render: () => ({
+    template: `
+      <div class="flex flex-wrap items-end gap-ds-xl">
+        @for (name of names; track name) {
+          <div class="flex flex-col items-center gap-ds-sm">
+            <app-ds-avatar
+              [fullName]="name"
+              size="2xl"
+              color="teal"
+              [includeBorder]="true"
+            />
+            <span class="content-sm-default text-content-mid">
+              {{ name }}
+            </span>
+          </div>
+        }
+      </div>
+    `,
+    props: {
+      names: ['Layla', 'Sara Johnson', 'Mohammed Al Hassan Al Rashid'],
+    },
+  }),
+};
+
+export const EmptyNameFallback: Story = {
+  name: 'Empty name fallback',
+  args: {
+    fullName: ' ',
+    size: 'lg',
+    includeBorder: true,
+    color: UserProfileColors.NEUTRAL,
+  },
   parameters: {
     docs: {
       description: {
         story:
-          'The component shows the **first character** of `fullName` (uppercased). ' +
-          'Single-word, double-word, and multi-word names all produce one letter.',
+          'The production component renders an empty initial when `fullName` is blank, so consumers should pass a real display name.',
       },
     },
   },
-  render: () => ({
-    template: `
-      <div style="display:flex; gap:24px; padding:16px; flex-wrap:wrap; align-items:flex-end;">
-        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
-          <app-ds-avatar fullName="Layla" size="2xl" color="emerald" [includeBorder]="true"></app-ds-avatar>
-          <span style="font-size:11px;color:#666">"Layla"</span>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
-          <app-ds-avatar fullName="Sara Johnson" size="2xl" color="blue" [includeBorder]="true"></app-ds-avatar>
-          <span style="font-size:11px;color:#666">"Sara Johnson"</span>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
-          <app-ds-avatar fullName="Mohammed Al Hassan Al Rashid" size="2xl" color="teal" [includeBorder]="true"></app-ds-avatar>
-          <span style="font-size:11px;color:#666">"Mohammed Al Hassan Al Rashid"</span>
-        </div>
-      </div>
-    `,
-  }),
 };
 
-// ---------------------------------------------------------------------------
-// LTR
-// ---------------------------------------------------------------------------
 export const LTR: Story = {
-  parameters: {
-    docs: {
-      description: { story: 'English name in a left-to-right context.' },
-    },
-  },
+  name: 'LTR (English)',
   render: () => ({
     template: `
-      <div dir="ltr" style="padding:16px;">
-        <app-ds-avatar fullName="John Smith" size="lg" color="blue" [includeBorder]="true"></app-ds-avatar>
+      <div dir="ltr" lang="en">
+        <app-ds-avatar
+          fullName="John Smith"
+          size="lg"
+          color="blue"
+          [includeBorder]="true"
+        />
       </div>
     `,
   }),
+  decorators: [withHessaProviders({ locale: 'en' })],
 };
 
-// ---------------------------------------------------------------------------
-// RTL
-// ---------------------------------------------------------------------------
 export const RTL: Story = {
-  parameters: {
-    docs: {
-      description: { story: 'Arabic name in a right-to-left context.' },
-    },
-  },
+  name: 'RTL (Arabic)',
   render: () => ({
     template: `
-      <div dir="rtl" style="padding:16px;">
-        <app-ds-avatar fullName="أحمد الراشد" size="lg" color="brand" [includeBorder]="true"></app-ds-avatar>
+      <div dir="rtl" lang="ar">
+        <app-ds-avatar
+          fullName="أحمد الراشد"
+          size="lg"
+          color="brand"
+          [includeBorder]="true"
+        />
       </div>
     `,
   }),
+  decorators: [withHessaProviders({ locale: 'ar' })],
 };

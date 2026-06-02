@@ -5,8 +5,20 @@ import {
   moduleMetadata,
   componentWrapperDecorator,
 } from '@storybook/angular';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { expect, fireEvent, waitFor, within } from 'storybook/test';
 import { provideIonicAngular } from '@ionic/angular/standalone';
 import { DsTimePickerComponent } from '@ds/time-picker/time-picker.component';
+
+const dispatchPickerChange = (column: Element, value: number | string) =>
+  fireEvent(
+    column,
+    new CustomEvent('ionChange', {
+      detail: { value },
+      bubbles: true,
+      composed: true,
+    }),
+  );
 
 /**
  * # Time Picker — `ds-time-picker`
@@ -33,7 +45,7 @@ const meta: Meta<DsTimePickerComponent> = {
   },
   decorators: [
     applicationConfig({ providers: [provideIonicAngular()] }),
-    moduleMetadata({ imports: [DsTimePickerComponent] }),
+    moduleMetadata({ imports: [DsTimePickerComponent, ReactiveFormsModule] }),
     componentWrapperDecorator(
       (story) => `<div style="max-width:320px;padding:16px;border:1px solid #e5e7eb;border-radius:12px;background:white;">${story}</div>`
     ),
@@ -61,6 +73,23 @@ export const MinuteStep15: Story = {
     disabled: false,
     lang: 'en',
   },
+  play: async ({ canvasElement }) => {
+    const columns = Array.from(
+      canvasElement.querySelectorAll('ion-picker-column'),
+    );
+    const minuteColumn = columns[1];
+
+    if (!minuteColumn) {
+      throw new Error('Minute picker column was not rendered.');
+    }
+
+    const minuteCanvas = within(minuteColumn as HTMLElement);
+    await expect(minuteCanvas.getByText('00')).toBeInTheDocument();
+    await expect(minuteCanvas.getByText('15')).toBeInTheDocument();
+    await expect(minuteCanvas.getByText('30')).toBeInTheDocument();
+    await expect(minuteCanvas.getByText('45')).toBeInTheDocument();
+    await expect(minuteCanvas.queryByText('14')).not.toBeInTheDocument();
+  },
 };
 
 export const MinuteStep30: Story = {
@@ -77,6 +106,50 @@ export const Disabled: Story = {
   args: {
     disabled: true,
     lang: 'en',
+  },
+};
+
+export const EmitsValue: Story = {
+  name: 'Interaction: Emits selected time',
+  render: () => ({
+    props: {
+      selectedControl: new FormControl('08:00 AM', { nonNullable: true }),
+    },
+    template: `
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <ds-time-picker
+          [minuteStep]="15"
+          lang="en"
+          [formControl]="selectedControl"
+          (valueChange)="selectedControl.setValue($event)"
+        />
+        <p aria-live="polite" style="margin:0;font-size:13px;color:#4b5563;">
+          Selected time: {{ selectedControl.value }}
+        </p>
+      </div>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const columns = Array.from(
+      canvasElement.querySelectorAll('ion-picker-column'),
+    );
+    const [hourColumn, minuteColumn, meridiemColumn] = columns;
+    const status = canvas.getByText(/Selected time:/);
+
+    if (!hourColumn || !minuteColumn || !meridiemColumn) {
+      throw new Error('Expected hour, minute, and meridiem picker columns.');
+    }
+
+    await expect(status).toHaveTextContent('Selected time: 08:00 AM');
+
+    await dispatchPickerChange(hourColumn, 9);
+    await dispatchPickerChange(minuteColumn, 30);
+    await dispatchPickerChange(meridiemColumn, 'pm');
+
+    await waitFor(() => {
+      expect(status).toHaveTextContent('Selected time: 09:30 PM');
+    });
   },
 };
 
@@ -106,4 +179,24 @@ export const RTL: Story = {
       (story) => `<div lang="ar" dir="rtl" style="font-family:'Lama Rounded',sans-serif;">${story}</div>`
     ),
   ],
+  play: async ({ canvasElement }) => {
+    const columns = Array.from(
+      canvasElement.querySelectorAll('ion-picker-column'),
+    );
+    const [meridiemColumn, hourColumn, minuteColumn] = columns;
+
+    if (!meridiemColumn || !hourColumn || !minuteColumn) {
+      throw new Error('Expected RTL picker columns to render.');
+    }
+
+    await expect(
+      within(meridiemColumn as HTMLElement).getByText('ص'),
+    ).toBeInTheDocument();
+    await expect(
+      within(hourColumn as HTMLElement).getByText('01'),
+    ).toBeInTheDocument();
+    await expect(
+      within(minuteColumn as HTMLElement).getByText('00'),
+    ).toBeInTheDocument();
+  },
 };

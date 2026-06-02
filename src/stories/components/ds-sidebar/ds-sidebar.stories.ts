@@ -1,26 +1,105 @@
 import {
   Meta,
   StoryObj,
-  moduleMetadata,
   componentWrapperDecorator,
+  moduleMetadata,
 } from '@storybook/angular';
+import { Component, inject, Input } from '@angular/core';
+import { IonApp } from '@ionic/angular/standalone';
+import { expect, userEvent, within } from 'storybook/test';
 import { withHessaProviders } from '../../../../.storybook/hessa-providers';
 import { DsSidebarComponent } from '@ds/sidebar/sidebar.component';
+import { DsSidebarService } from '@ds/sidebar/sidebar.service';
+import { ModalSheetContainerComponent } from '@ds/modal-sheet/modal-sheet-container.component';
+import { DsButtonComponent } from '@ds/button/button.component';
+import { DsFeedbackComponent } from '@ds/feedback/feedback.component';
+import { DsInputComponent } from '@ds/input/input.component';
+
+type SidebarScenario = 'desktop' | 'mobile-sheet';
+
+@Component({
+  selector: 'story-sidebar-service-content',
+  standalone: true,
+  imports: [DsFeedbackComponent, DsInputComponent],
+  template: `
+    <div class="flex flex-col gap-ds-xl">
+      <ds-feedback
+        type="success"
+        title="Sidebar service content"
+        message="DsSidebarService.open() projected this standalone component into the active presentation path."
+      />
+      <app-ds-input
+        label="Student note"
+        inputValue="Ready for review"
+        placeholder="Add note"
+      />
+    </div>
+  `,
+})
+class StorySidebarServiceContentComponent {}
+
+@Component({
+  selector: 'story-sidebar-service-launcher',
+  standalone: true,
+  imports: [IonApp, DsButtonComponent, ModalSheetContainerComponent],
+  template: `
+    <ion-app>
+      <div class="flex h-full flex-col justify-end bg-surface-secondary-light p-ds-xl">
+        <p class="content-sm-default mb-ds-md text-content-mid">
+          Opens through DsSidebarService using the selected runtime branch.
+        </p>
+        <ds-button
+          variant="primary"
+          size="lg"
+          [fullWidth]="true"
+          (click)="openSidebar()"
+        >
+          Open service sidebar
+        </ds-button>
+      </div>
+      <ds-modal-sheet-container />
+    </ion-app>
+  `,
+})
+class StorySidebarServiceLauncherComponent {
+  @Input() scenario: SidebarScenario = 'desktop';
+
+  private readonly sidebarService = inject(DsSidebarService);
+
+  async openSidebar(): Promise<void> {
+    await this.sidebarService.open({
+      component: StorySidebarServiceContentComponent,
+      headerConfig: {
+        title:
+          this.scenario === 'mobile-sheet'
+            ? 'Mobile Sheet Sidebar'
+            : 'Desktop Sidebar',
+        subtitle:
+          this.scenario === 'mobile-sheet'
+            ? 'Routed through ModalSheetService'
+            : 'Routed through Ionic ModalController',
+        showCloseButton: true,
+      },
+      footerConfig: {
+        primaryButton: { text: 'Save changes' },
+        secondaryButton: { text: 'Cancel' },
+        fullWidthButtons: true,
+        buttonSize: 'lg',
+      },
+      contentClass: 'p-ds-xl',
+      scrollableContent: true,
+      mobilePresentation:
+        this.scenario === 'mobile-sheet' ? 'modal-sheet' : 'bottom-sheet',
+      backdropDismiss: true,
+    });
+  }
+}
 
 /**
- * # Sidebar — `ds-sidebar`
+ * # Sidebar - `ds-sidebar`
  *
- * A panel shell for slide-over / drawer UI. Structurally identical to the modal
- * but designed for persistent side-panel contexts.
- *
- * - Header via `headerConfig` (`DsModalHeaderConfig`) — title, subtitle, back/close buttons
- * - Body via `<ng-content>` — fully custom
- * - Footer via `footerConfig` (`DsModalFooterConfig`) — primary & secondary action buttons
- * - `scrollableContent` (default `true`) — body scrolls independently while header & footer stick
- * - `contentClass` — custom CSS class for the body wrapper (default `p-ds-xl`)
- *
- * In production the sidebar is opened via `DsSidebarService`. In Storybook the shell
- * is rendered directly inside a fixed-size container to simulate the panel appearance.
+ * Structured side-panel shell and service-backed drawer flow. Direct stories
+ * inspect the shell; service stories open the production runtime paths.
  */
 const meta: Meta<DsSidebarComponent> = {
   title: '2. P1 Components/Sidebar',
@@ -28,338 +107,253 @@ const meta: Meta<DsSidebarComponent> = {
   tags: ['autodocs'],
   parameters: {
     layout: 'fullscreen',
+    docs: {
+      description: {
+        component:
+          'Sidebar shell with header, scrollable body, and footer actions. DsSidebarService uses an Ionic modal sidebar on desktop and can route mobile modal-sheet presentation through ModalSheetService.',
+      },
+    },
+    a11y: { config: { rules: [] } },
   },
   argTypes: {
-    headerConfig: {
-      control: 'object',
-      description:
-        'Standard sidebar header configuration: title, subtitle, back button, and close button.',
-    },
-    footerConfig: {
-      control: 'object',
-      description:
-        'Footer action configuration shared with DsModalFooterComponent.',
-    },
-    contentClass: {
-      control: 'text',
-      description: 'CSS classes applied to the scrollable content wrapper.',
-    },
-    scrollableContent: {
-      control: 'boolean',
-      description:
-        'Keeps header and footer fixed while the content area scrolls independently.',
-    },
+    headerConfig: { control: 'object' },
+    footerConfig: { control: 'object' },
+    contentClass: { control: 'text' },
+    scrollableContent: { control: 'boolean' },
   },
   decorators: [
-    withHessaProviders(),
-    moduleMetadata({ imports: [DsSidebarComponent] }),
+    withHessaProviders({ mobile: false, layout: true }),
+    moduleMetadata({
+      imports: [
+        DsSidebarComponent,
+        StorySidebarServiceLauncherComponent,
+        StorySidebarServiceContentComponent,
+      ],
+    }),
   ],
 };
 
 export default meta;
 type Story = StoryObj<DsSidebarComponent>;
 
-/** Full sidebar — header with close button, body content, primary + secondary footer buttons. */
+const shellTemplate = (body: string, footer = true) => `
+  <div class="flex h-screen justify-end bg-surface-secondary-light">
+    <div class="flex h-full w-[400px] max-w-full bg-surface-primary shadow-lg">
+      <ds-sidebar
+        [headerConfig]="{
+          title: 'Student Details',
+          subtitle: 'Review current profile data',
+          showCloseButton: true,
+          showBackButton: false
+        }"
+        ${
+          footer
+            ? `[footerConfig]="{
+                primaryButton: { text: 'Save' },
+                secondaryButton: { text: 'Cancel' },
+                buttonSize: 'md',
+                fullWidthButtons: true
+              }"`
+            : ''
+        }
+      >
+        ${body}
+      </ds-sidebar>
+    </div>
+  </div>
+`;
+
 export const Default: Story = {
   render: () => ({
-    template: `
-      <div style="display:flex;justify-content:flex-end;height:100vh;background:#f3f4f6;">
-        <div style="width:400px;height:100%;background:#fff;box-shadow:-4px 0 24px rgba(0,0,0,.10);display:flex;flex-direction:column;">
-          <ds-sidebar
-            [headerConfig]="{
-              title: 'Student Details',
-              showCloseButton: true,
-              showBackButton: false
-            }"
-            [footerConfig]="{
-              primaryButton: { text: 'Save' },
-              secondaryButton: { text: 'Cancel' },
-              buttonSize: 'md'
-            }"
-          >
-            <div style="display:flex;flex-direction:column;gap:16px;color:#374151;">
-              <p style="margin:0;"><strong>Name:</strong> Ahmed Al-Rashid</p>
-              <p style="margin:0;"><strong>Grade:</strong> 5-A</p>
-              <p style="margin:0;"><strong>Student ID:</strong> STU-20240042</p>
-              <p style="margin:0;"><strong>Status:</strong> Active</p>
-            </div>
-          </ds-sidebar>
-        </div>
+    template: shellTemplate(`
+      <div class="flex flex-col gap-ds-md">
+        <p class="content-md-default text-content-high">
+          Ahmed Al-Rashid
+        </p>
+        <p class="content-sm-default text-content-mid">
+          Grade 5-A · STU-20240042 · Active
+        </p>
       </div>
-    `,
+    `),
   }),
 };
 
-/** Disabled footer actions — preserves the shell while blocking submit/cancel. */
 export const Disabled: Story = {
+  name: 'State: Disabled footer actions',
   render: () => ({
     template: `
-      <div style="display:flex;justify-content:flex-end;height:100vh;background:#f3f4f6;">
-        <div style="width:400px;height:100%;background:#fff;box-shadow:-4px 0 24px rgba(0,0,0,.10);display:flex;flex-direction:column;">
+      <div class="flex h-screen justify-end bg-surface-secondary-light">
+        <div class="flex h-full w-[400px] max-w-full bg-surface-primary shadow-lg">
           <ds-sidebar
             [headerConfig]="{
               title: 'Student Details',
               subtitle: 'Actions disabled while permissions are checked',
-              showCloseButton: true,
-              showBackButton: false
+              showCloseButton: true
             }"
             [footerConfig]="{
               primaryButton: { text: 'Save', disabled: true },
               secondaryButton: { text: 'Cancel', disabled: true },
-              buttonSize: 'md'
+              buttonSize: 'md',
+              fullWidthButtons: true
             }"
           >
-            <div style="display:flex;flex-direction:column;gap:16px;color:#374151;">
-              <p style="margin:0;">This panel is visible, but footer actions are disabled.</p>
-              <p style="margin:0;font-size:13px;color:#6b7280;">Use this when backend permissions or validation prevent submission.</p>
-            </div>
+            <p class="content-sm-default text-content-mid">
+              The panel is visible, but footer actions are blocked.
+            </p>
           </ds-sidebar>
         </div>
       </div>
     `,
   }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole('button', { name: 'Save' })).toBeDisabled();
+    await expect(canvas.getByRole('button', { name: 'Cancel' })).toBeDisabled();
+  },
 };
 
-/** Loading footer action — primary action displays the design-system spinner. */
 export const Loading: Story = {
+  name: 'State: Loading primary action',
   render: () => ({
     template: `
-      <div style="display:flex;justify-content:flex-end;height:100vh;background:#f3f4f6;">
-        <div style="width:400px;height:100%;background:#fff;box-shadow:-4px 0 24px rgba(0,0,0,.10);display:flex;flex-direction:column;">
+      <div class="flex h-screen justify-end bg-surface-secondary-light">
+        <div class="flex h-full w-[400px] max-w-full bg-surface-primary shadow-lg">
           <ds-sidebar
             [headerConfig]="{
               title: 'Saving Changes',
               subtitle: 'Primary footer action is in progress',
-              showCloseButton: true,
-              showBackButton: false
+              showCloseButton: true
             }"
             [footerConfig]="{
               primaryButton: { text: 'Saving', loading: true },
               secondaryButton: { text: 'Cancel', disabled: true },
-              buttonSize: 'md'
+              buttonSize: 'md',
+              fullWidthButtons: true
             }"
           >
-            <div style="display:flex;flex-direction:column;gap:16px;color:#374151;">
-              <p style="margin:0;">The sidebar remains readable while the primary action is loading.</p>
-              <p style="margin:0;font-size:13px;color:#6b7280;">Secondary action is disabled to prevent duplicate state transitions.</p>
-            </div>
+            <p class="content-sm-default text-content-mid">
+              The sidebar remains readable while the primary action is loading.
+            </p>
           </ds-sidebar>
         </div>
       </div>
     `,
   }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole('button', { name: 'Saving' })).toBeDisabled();
+  },
 };
 
-/** Header includes an optional subtitle for extra context below the title. */
-export const WithSubtitle: Story = {
-  name: 'With Subtitle',
-  render: () => ({
-    template: `
-      <div style="display:flex;justify-content:flex-end;height:100vh;background:#f3f4f6;">
-        <div style="width:400px;height:100%;background:#fff;box-shadow:-4px 0 24px rgba(0,0,0,.10);display:flex;flex-direction:column;">
-          <ds-sidebar
-            [headerConfig]="{
-              title: 'Add Subject',
-              subtitle: 'Choose from available subjects below',
-              showCloseButton: true,
-              showBackButton: false
-            }"
-            [footerConfig]="{
-              primaryButton: { text: 'Add Subject' },
-              secondaryButton: { text: 'Cancel' },
-              buttonSize: 'md'
-            }"
-          >
-            <div style="display:flex;flex-direction:column;gap:12px;color:#374151;">
-              <p style="margin:0;">Select a subject to add to this student's curriculum.</p>
-              <ul style="margin:0;padding-left:20px;">
-                <li>Mathematics</li>
-                <li>Science</li>
-                <li>English</li>
-                <li>Arabic</li>
-              </ul>
-            </div>
-          </ds-sidebar>
-        </div>
-      </div>
-    `,
-  }),
-};
-
-/** No footer — header and body only. Useful for read-only detail panels. */
 export const NoFooter: Story = {
-  name: 'No Footer',
+  name: 'No footer',
   render: () => ({
-    template: `
-      <div style="display:flex;justify-content:flex-end;height:100vh;background:#f3f4f6;">
-        <div style="width:400px;height:100%;background:#fff;box-shadow:-4px 0 24px rgba(0,0,0,.10);display:flex;flex-direction:column;">
-          <ds-sidebar
-            [headerConfig]="{
-              title: 'Notifications',
-              showCloseButton: true,
-              showBackButton: false
-            }"
-          >
-            <div style="display:flex;flex-direction:column;gap:16px;color:#374151;">
-              <div style="padding:12px;background:#f9fafb;border-radius:8px;">
-                <p style="margin:0;font-weight:600;">Assignment Due</p>
-                <p style="margin:4px 0 0;font-size:13px;color:#6b7280;">Math homework due tomorrow at 8 AM.</p>
-              </div>
-              <div style="padding:12px;background:#f9fafb;border-radius:8px;">
-                <p style="margin:0;font-weight:600;">Attendance Alert</p>
-                <p style="margin:4px 0 0;font-size:13px;color:#6b7280;">Student was absent on Monday.</p>
-              </div>
-            </div>
-          </ds-sidebar>
+    template: shellTemplate(
+      `
+        <div class="flex flex-col gap-ds-md">
+          <p class="content-md-default text-content-high">Notifications</p>
+          <p class="content-sm-default text-content-mid">
+            Read-only sidebar content does not need footer actions.
+          </p>
         </div>
-      </div>
-    `,
+      `,
+      false,
+    ),
   }),
 };
 
-/**
- * Long body content with `scrollableContent=true` — the body scrolls while the
- * header and footer remain fixed (sticky).
- */
-export const ScrollableContent: Story = {
-  name: 'Scrollable Content',
+export const DesktopServicePath: Story = {
+  name: 'Service path: desktop sidebar',
   render: () => ({
-    template: `
-      <div style="display:flex;justify-content:flex-end;height:100vh;background:#f3f4f6;">
-        <div style="width:400px;height:100%;background:#fff;box-shadow:-4px 0 24px rgba(0,0,0,.10);display:flex;flex-direction:column;">
-          <ds-sidebar
-            [scrollableContent]="true"
-            [headerConfig]="{
-              title: 'Full Report',
-              showCloseButton: true,
-              showBackButton: false
-            }"
-            [footerConfig]="{
-              primaryButton: { text: 'Export PDF' },
-              secondaryButton: { text: 'Close' },
-              buttonSize: 'md'
-            }"
-          >
-            <div style="color:#374151;line-height:1.7;display:flex;flex-direction:column;gap:16px;">
-              <p style="margin:0;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula libero vel enim vestibulum, nec feugiat lorem suscipit. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>
-              <p style="margin:0;">Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit.</p>
-              <p style="margin:0;">Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper.</p>
-              <p style="margin:0;">Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum.</p>
-              <p style="margin:0;">Integer in mauris eu nibh euismod gravida dui. Duis orci. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus. Phasellus ultrices nulla quis nibh. Quisque a lectus. Donec consectetuer ligula vulputate sem tristique cursus.</p>
-            </div>
-          </ds-sidebar>
-        </div>
-      </div>
-    `,
+    props: { scenario: 'desktop' satisfies SidebarScenario },
+    template: `<story-sidebar-service-launcher [scenario]="scenario" />`,
   }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'Open service sidebar' }),
+    );
+
+    const body = within(document.body);
+    await expect(
+      await body.findByText('Sidebar service content'),
+    ).toBeInTheDocument();
+    await expect(await body.findByText('Desktop Sidebar')).toBeInTheDocument();
+  },
 };
 
-/** Back button shown in the header — for multi-step sidebar flows. */
-export const WithBackButton: Story = {
-  name: 'With Back Button',
+export const MobileModalSheetServicePath: Story = {
+  name: 'Service path: mobile modal sheet',
   render: () => ({
-    template: `
-      <div style="display:flex;justify-content:flex-end;height:100vh;background:#f3f4f6;">
-        <div style="width:400px;height:100%;background:#fff;box-shadow:-4px 0 24px rgba(0,0,0,.10);display:flex;flex-direction:column;">
-          <ds-sidebar
-            [headerConfig]="{
-              title: 'Step 2 of 3 — Assign Teacher',
-              showBackButton: true,
-              showCloseButton: true
-            }"
-            [footerConfig]="{
-              primaryButton: { text: 'Continue' },
-              secondaryButton: { text: 'Back' },
-              buttonSize: 'md'
-            }"
-          >
-            <div style="color:#374151;">
-              <p style="margin:0 0 16px;">Select a teacher to assign to this class.</p>
-              <div style="display:flex;flex-direction:column;gap:10px;">
-                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
-                  <input type="radio" name="teacher" value="1" /> Ms. Fatima Al-Nasser
-                </label>
-                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
-                  <input type="radio" name="teacher" value="2" /> Mr. Khalid Ibrahim
-                </label>
-                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
-                  <input type="radio" name="teacher" value="3" /> Dr. Aisha Mahmoud
-                </label>
-              </div>
-            </div>
-          </ds-sidebar>
-        </div>
-      </div>
-    `,
+    props: { scenario: 'mobile-sheet' satisfies SidebarScenario },
+    template: `<story-sidebar-service-launcher [scenario]="scenario" />`,
   }),
+  decorators: [
+    withHessaProviders({ mobile: true, layout: true }),
+    componentWrapperDecorator(
+      (story) =>
+        `<div class="relative mx-auto h-[667px] w-[375px] overflow-hidden rounded-ds-2xl border-2 border-stroke-mid bg-surface-secondary-light">${story}</div>`,
+    ),
+  ],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'Open service sidebar' }),
+    );
+
+    await expect(
+      await canvas.findByText('Sidebar service content'),
+    ).toBeInTheDocument();
+    await expect(
+      await canvas.findByText('Mobile Sheet Sidebar'),
+    ).toBeInTheDocument();
+  },
 };
 
-/** LTR layout — English content, left-to-right text direction. */
 export const LTR: Story = {
   name: 'LTR (English)',
   render: () => ({
     template: `
-      <div style="display:flex;justify-content:flex-end;height:100vh;background:#f3f4f6;">
-        <div style="width:400px;height:100%;background:#fff;box-shadow:-4px 0 24px rgba(0,0,0,.10);display:flex;flex-direction:column;">
-          <ds-sidebar
-            [headerConfig]="{
-              title: 'Filters',
-              showCloseButton: true,
-              showBackButton: false
-            }"
-            [footerConfig]="{
-              primaryButton: { text: 'Apply Filters' },
-              secondaryButton: { text: 'Reset' },
-              buttonSize: 'md'
-            }"
-          >
-            <p style="margin:0;color:#374151;">Filter options go here.</p>
-          </ds-sidebar>
-        </div>
+      <div lang="en" dir="ltr">
+        ${shellTemplate(`
+          <p class="content-sm-default text-content-mid">
+            Left-to-right sidebar header and footer layout.
+          </p>
+        `)}
       </div>
     `,
   }),
-  decorators: [
-    componentWrapperDecorator(
-      (story) =>
-        `<div lang="en" dir="ltr" style="font-family:'Nunito',sans-serif;">${story}</div>`,
-    ),
-  ],
+  decorators: [withHessaProviders({ mobile: false, layout: true, locale: 'en' })],
 };
 
-/** RTL layout — Arabic content, right-to-left text direction. */
 export const RTL: Story = {
   name: 'RTL (Arabic)',
   render: () => ({
     template: `
-      <div style="display:flex;justify-content:flex-start;height:100vh;background:#f3f4f6;">
-        <div style="width:400px;height:100%;background:#fff;box-shadow:4px 0 24px rgba(0,0,0,.10);display:flex;flex-direction:column;">
-          <ds-sidebar
-            [headerConfig]="{
-              title: 'تفاصيل الطالب',
-              showCloseButton: true,
-              showBackButton: false
-            }"
-            [footerConfig]="{
-              primaryButton: { text: 'حفظ' },
-              secondaryButton: { text: 'إلغاء' },
-              buttonSize: 'md'
-            }"
-          >
-            <div style="display:flex;flex-direction:column;gap:16px;color:#374151;">
-              <p style="margin:0;"><strong>الاسم:</strong> أحمد الراشد</p>
-              <p style="margin:0;"><strong>الصف:</strong> الخامس أ</p>
-              <p style="margin:0;"><strong>رقم الطالب:</strong> STU-20240042</p>
-            </div>
-          </ds-sidebar>
+      <div lang="ar" dir="rtl">
+        <div class="flex h-screen justify-start bg-surface-secondary-light">
+          <div class="flex h-full w-[400px] max-w-full bg-surface-primary shadow-lg">
+            <ds-sidebar
+              [headerConfig]="{
+                title: 'تفاصيل الطالب',
+                subtitle: 'مراجعة بيانات الملف',
+                showCloseButton: true
+              }"
+              [footerConfig]="{
+                primaryButton: { text: 'حفظ' },
+                secondaryButton: { text: 'إلغاء' },
+                buttonSize: 'md',
+                fullWidthButtons: true
+              }"
+            >
+              <p class="content-sm-default text-content-mid">
+                تخطيط الشريط الجانبي من اليمين إلى اليسار.
+              </p>
+            </ds-sidebar>
+          </div>
         </div>
       </div>
     `,
   }),
-  decorators: [
-    componentWrapperDecorator(
-      (story) =>
-        `<div lang="ar" dir="rtl" style="font-family:'Lama Rounded',sans-serif;">${story}</div>`,
-    ),
-  ],
+  decorators: [withHessaProviders({ mobile: false, layout: true, locale: 'ar' })],
 };

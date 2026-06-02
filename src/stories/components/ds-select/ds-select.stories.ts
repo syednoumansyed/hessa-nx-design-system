@@ -214,6 +214,20 @@ subsequent page fetch.
   },
 };
 
+export const Loading: Story = {
+  name: 'State: Loading (async options)',
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Async `loadOptions` branch with a pending Observable. Opening the select shows the production loading spinner.',
+      },
+    },
+  },
+  args: Paginated.args,
+  play: Paginated.play,
+};
+
 // ─── Disabled ────────────────────────────────────────────────────────────────
 
 export const Disabled: Story = {

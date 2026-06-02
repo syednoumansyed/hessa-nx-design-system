@@ -1,12 +1,11 @@
 import {
   Meta,
   StoryObj,
-  applicationConfig,
   moduleMetadata,
   componentWrapperDecorator,
 } from '@storybook/angular';
-import { provideIonicAngular } from '@ionic/angular/standalone';
 import { DsIconComponent } from '@ds/icon/icon.component';
+import { withHessaProviders } from '../../../../.storybook/hessa-providers';
 import {
   faHouse,
   faUser,
@@ -76,9 +75,7 @@ const meta: Meta<DsIconComponent> = {
     },
   },
   decorators: [
-    applicationConfig({
-      providers: [provideIonicAngular()],
-    }),
+    withHessaProviders(),
     moduleMetadata({ imports: [DsIconComponent] }),
     componentWrapperDecorator(
       (story) => `<div style="padding:16px;">${story}</div>`,

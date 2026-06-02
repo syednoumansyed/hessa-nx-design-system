@@ -6,6 +6,7 @@ import {
   componentWrapperDecorator,
 } from '@storybook/angular';
 import { provideIonicAngular } from '@ionic/angular/standalone';
+import { expect, userEvent, within } from 'storybook/test';
 import {
   DsSegmentedControlComponent,
   DsSegmentedControlOption,
@@ -127,6 +128,46 @@ export const WithDisabledOption: Story = {
   args: {
     options: withDisabled,
     value: 'active',
+  },
+};
+
+// ─── Selection interaction ───────────────────────────────────────────────────
+
+export const SelectionInteraction: Story = {
+  name: 'Interaction: Selection and disabled guard',
+  render: () => ({
+    template: `
+      <ds-segmented-control
+        [options]="options"
+        [value]="value"
+        (valueChange)="value = $event"
+      ></ds-segmented-control>
+    `,
+    props: {
+      options: withDisabled,
+      value: 'active',
+    },
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const activeTab = canvas.getByRole('tab', { name: 'Active' });
+    const pendingTab = canvas.getByRole('tab', { name: 'Pending' });
+    const lockedTab = canvas.getByRole('tab', { name: 'Locked' });
+
+    await expect(activeTab).toHaveAttribute('aria-selected', 'true');
+    await expect(pendingTab).toHaveAttribute('aria-selected', 'false');
+
+    await userEvent.click(pendingTab);
+
+    await expect(activeTab).toHaveAttribute('aria-selected', 'false');
+    await expect(pendingTab).toHaveAttribute('aria-selected', 'true');
+    await expect(lockedTab).toBeDisabled();
+    await expect(lockedTab).toHaveAttribute('aria-disabled', 'true');
+
+    lockedTab.click();
+
+    await expect(pendingTab).toHaveAttribute('aria-selected', 'true');
+    await expect(lockedTab).toHaveAttribute('aria-selected', 'false');
   },
 };
 

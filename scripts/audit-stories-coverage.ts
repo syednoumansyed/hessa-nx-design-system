@@ -130,10 +130,17 @@ const hasExportLike = (
 const expectedMatrixFor = (componentSource: string): MatrixExpectation[] => {
   const sourceWithoutComments = stripComments(componentSource);
   const expectations: MatrixExpectation[] = ['Default', 'LTR', 'RTL'];
-  if (/\b(disabled|isreadonly|readOnly)\b/i.test(sourceWithoutComments)) {
+  if (
+    /\b(disabled|isreadonly)\b/i.test(sourceWithoutComments) ||
+    /\breadOnly\b/.test(sourceWithoutComments)
+  ) {
     expectations.push('Disabled');
   }
-  if (/\b(isLoading|loading)\b/i.test(sourceWithoutComments)) {
+  if (
+    /\bisLoading\b/.test(sourceWithoutComments) ||
+    /\bloading\s*=\s*input\b/i.test(sourceWithoutComments) ||
+    /@Input\([^)]*\)\s+loading\b/i.test(sourceWithoutComments)
+  ) {
     expectations.push('Loading');
   }
   if (
@@ -155,7 +162,7 @@ const isInteractiveCandidate = (
   componentSource: string,
   storySource: string,
 ): boolean =>
-  /ControlValueAccessor|EventEmitter|@Output\s*\(|\boutput\s*\(|\bemit\s*\(|\([a-z][\w-]*\)\s*=|ToastrService|HesToasterService|ModalController|PopoverController|ActionSheetController|DsFileInteractionService/i.test(
+  /ControlValueAccessor|EventEmitter|@Output\s*\(|\boutput\s*\(|\bemit\s*\(|\([a-z][\w-]*\)\s*=(?!>)|ToastrService|HesToasterService|ModalController|PopoverController|ActionSheetController|DsFileInteractionService/i.test(
     stripComments(`${componentSource}\n${storySource}`),
   );
 

@@ -1,4 +1,13 @@
 import {
+  AfterViewInit,
+  Component,
+} from '@angular/core';
+import {
+  FormControl,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import {
   Meta,
   StoryObj,
   moduleMetadata,
@@ -8,6 +17,36 @@ import { expect, userEvent, within } from 'storybook/test';
 import { withHessaProviders } from '../../../../.storybook/hessa-providers';
 import { DsPickerSelectComponent } from '@ds/picker-select/picker-select.component';
 import type { DsPickerSelectConfig } from '@ds/picker-select/picker-select.interface';
+
+@Component({
+  selector: 'story-picker-select-validation',
+  standalone: true,
+  imports: [ReactiveFormsModule, DsPickerSelectComponent],
+  template: `
+    <app-ds-picker-select [config]="config" [formControl]="control" />
+  `,
+})
+class StoryPickerSelectValidationComponent implements AfterViewInit {
+  control = new FormControl(null, Validators.required);
+  config: DsPickerSelectConfig = {
+    label: 'Select Subject',
+    placeholder: 'Choose a subject...',
+    isMultiple: false,
+    options: [
+      { id: '1', display: 'Mathematics' },
+      { id: '2', display: 'Science' },
+      { id: '3', display: 'English' },
+    ],
+    itemLabel: 'subjects',
+  };
+
+  ngAfterViewInit(): void {
+    queueMicrotask(() => {
+      this.control.markAsTouched();
+      this.control.updateValueAndValidity({ emitEvent: true });
+    });
+  }
+}
 
 /**
  * # Picker Select — `app-ds-picker-select`
@@ -52,7 +91,9 @@ const meta: Meta<DsPickerSelectComponent> = {
   },
   decorators: [
     withHessaProviders({ http: true, mobile: false }),
-    moduleMetadata({ imports: [DsPickerSelectComponent] }),
+    moduleMetadata({
+      imports: [DsPickerSelectComponent, StoryPickerSelectValidationComponent],
+    }),
   ],
 };
 
@@ -188,6 +229,21 @@ export const Required: Story = {
     },
     template: `<app-ds-picker-select [config]="config" />`,
   }),
+};
+
+export const Error: Story = {
+  name: 'State: Error via FormControl',
+  render: () => ({
+    template: `<story-picker-select-validation />`,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const trigger = await canvas.findByRole('button', {
+      name: /Choose a subject/i,
+    });
+
+    await expect(trigger).toHaveClass('border-error');
+  },
 };
 
 // ─── Disabled ────────────────────────────────────────────────────────────────

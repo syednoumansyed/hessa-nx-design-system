@@ -1,11 +1,11 @@
 import {
   Meta,
   StoryObj,
-  applicationConfig,
   moduleMetadata,
   componentWrapperDecorator,
 } from '@storybook/angular';
-import { provideIonicAngular } from '@ionic/angular/standalone';
+import { expect, within } from 'storybook/test';
+import { withHessaProviders } from '../../../../.storybook/hessa-providers';
 import { DsFeedbackComponent } from '@ds/feedback/feedback.component';
 
 /**
@@ -51,7 +51,7 @@ const meta: Meta<DsFeedbackComponent> = {
     message: { control: 'text' },
   },
   decorators: [
-    applicationConfig({ providers: [provideIonicAngular()] }),
+    withHessaProviders(),
     moduleMetadata({ imports: [DsFeedbackComponent] }),
   ],
 };
@@ -66,6 +66,12 @@ export const Success: Story = {
     type: 'success',
     title: 'Assignment submitted',
     message: 'Your work has been saved and sent to your teacher.',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      await canvas.findByText('Assignment submitted'),
+    ).toBeInTheDocument();
   },
 };
 

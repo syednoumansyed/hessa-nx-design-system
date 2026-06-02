@@ -5,6 +5,8 @@ import {
   moduleMetadata,
   componentWrapperDecorator,
 } from '@storybook/angular';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { expect, userEvent, within } from 'storybook/test';
 import { provideIonicAngular } from '@ionic/angular/standalone';
 import { DsRadioComponent } from '@ds/radio-button/radio/radio.component';
 
@@ -35,7 +37,7 @@ const meta: Meta<DsRadioComponent> = {
   },
   decorators: [
     applicationConfig({ providers: [provideIonicAngular()] }),
-    moduleMetadata({ imports: [DsRadioComponent] }),
+    moduleMetadata({ imports: [DsRadioComponent, ReactiveFormsModule] }),
     componentWrapperDecorator(
       (story) => `<div style="padding:16px;">${story}</div>`
     ),
@@ -55,17 +57,59 @@ export const Default: Story = {
     disabled: false,
     required: false,
   },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const radio = canvas.getByRole('radio', { name: 'Option label' });
+
+    await expect(radio).not.toBeChecked();
+    await userEvent.click(radio);
+    await expect(radio).toBeChecked();
+  },
+};
+
+export const EmitsValue: Story = {
+  name: 'Interaction: Emits value',
+  render: () => ({
+    props: { emitted: 'none' },
+    template: `
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <app-ds-radio
+          title="Notify by SMS"
+          value="sms"
+          size="lg"
+          (checkedChange)="emitted = $event"
+        />
+        <p aria-live="polite" style="margin:0;font-size:13px;color:#4b5563;">
+          Emitted value: {{ emitted }}
+        </p>
+      </div>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const radio = canvas.getByRole('radio', { name: 'Notify by SMS' });
+    const status = canvas.getByText(/Emitted value:/);
+
+    await expect(status).toHaveTextContent('Emitted value: none');
+    await userEvent.click(radio);
+    await expect(radio).toBeChecked();
+    await expect(status).toHaveTextContent('Emitted value: sms');
+  },
 };
 
 export const Checked: Story = {
   name: 'State: Checked',
-  render: (args) => ({
-    props: args,
-    template: `<app-ds-radio [title]="title" [size]="size" [disabled]="disabled" [required]="required" [checked]="true" />`,
+  render: () => ({
+    props: {
+      checkedControl: new FormControl(true, { nonNullable: true }),
+    },
+    template: `<app-ds-radio title="Selected Option" size="lg" [formControl]="checkedControl" />`,
   }),
-  args: {
-    title: 'Selected Option',
-    size: 'lg',
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      canvas.getByRole('radio', { name: 'Selected Option' }),
+    ).toBeChecked();
   },
 };
 
@@ -91,16 +135,33 @@ export const Disabled: Story = {
     title: 'Disabled radio button',
     disabled: true,
   },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const radio = canvas.getByRole('radio', { name: 'Disabled radio button' });
+
+    await expect(radio).toBeDisabled();
+    await userEvent.click(radio);
+    await expect(radio).not.toBeChecked();
+  },
 };
 
 export const DisabledChecked: Story = {
   name: 'State: Disabled & Checked',
-  render: (args) => ({
-    props: args,
-    template: `<app-ds-radio [title]="title" [size]="size" [disabled]="true" [checked]="true" />`,
+  render: () => ({
+    props: {
+      checkedControl: new FormControl(
+        { value: true, disabled: true },
+        { nonNullable: true },
+      ),
+    },
+    template: `<app-ds-radio title="Disabled and Checked" size="lg" [formControl]="checkedControl" />`,
   }),
-  args: {
-    title: 'Disabled and Checked',
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const radio = canvas.getByRole('radio', { name: 'Disabled and Checked' });
+
+    await expect(radio).toBeDisabled();
+    await expect(radio).toBeChecked();
   },
 };
 
@@ -109,9 +170,12 @@ export const DisabledChecked: Story = {
 export const LTR: Story = {
   name: 'LTR (English)',
   render: () => ({
+    props: {
+      englishUkControl: new FormControl(true, { nonNullable: true }),
+    },
     template: `
       <div style="display:flex;flex-direction:column;gap:12px;">
-        <app-ds-radio title="English (UK)" size="lg" [checked]="true"></app-ds-radio>
+        <app-ds-radio title="English (UK)" size="lg" [formControl]="englishUkControl"></app-ds-radio>
         <app-ds-radio title="English (US)" size="lg"></app-ds-radio>
       </div>
     `,
@@ -128,9 +192,12 @@ export const LTR: Story = {
 export const RTL: Story = {
   name: 'RTL (Arabic)',
   render: () => ({
+    props: {
+      arabicControl: new FormControl(true, { nonNullable: true }),
+    },
     template: `
       <div style="display:flex;flex-direction:column;gap:12px;">
-        <app-ds-radio title="اللغة العربية" size="lg" [checked]="true"></app-ds-radio>
+        <app-ds-radio title="اللغة العربية" size="lg" [formControl]="arabicControl"></app-ds-radio>
         <app-ds-radio title="اللغة الإنجليزية" size="lg"></app-ds-radio>
       </div>
     `,

@@ -6,6 +6,7 @@ import {
   componentWrapperDecorator,
 } from '@storybook/angular';
 import { provideIonicAngular } from '@ionic/angular/standalone';
+import { expect, userEvent, within } from 'storybook/test';
 import { DsChipSelectorComponent } from '@ds/chip-selector/chip-selector.component';
 
 /**
@@ -60,6 +61,17 @@ const subjectOptions = [
   { value: 'art', displayedValue: 'Art' },
 ];
 
+const getChipRoot = (canvasElement: HTMLElement, label: string): HTMLElement => {
+  const labelElement = within(canvasElement).getByText(label);
+  const chipRoot = labelElement.closest('app-ds-chip')?.firstElementChild;
+
+  if (!(chipRoot instanceof HTMLElement)) {
+    throw new Error(`Could not find chip root for ${label}`);
+  }
+
+  return chipRoot;
+};
+
 // ─── Single Select ────────────────────────────────────────────────────────────
 
 export const SingleSelect: Story = {
@@ -68,6 +80,34 @@ export const SingleSelect: Story = {
     options: subjectOptions,
     multiple: false,
     displayType: 'pill',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await expect(getChipRoot(canvasElement, 'Math')).not.toHaveClass(
+      'bg-brand-100',
+    );
+
+    await userEvent.click(canvas.getByText('Math'));
+
+    await expect(getChipRoot(canvasElement, 'Math')).toHaveClass(
+      'bg-brand-100',
+    );
+
+    await userEvent.click(canvas.getByText('Science'));
+
+    await expect(getChipRoot(canvasElement, 'Math')).not.toHaveClass(
+      'bg-brand-100',
+    );
+    await expect(getChipRoot(canvasElement, 'Science')).toHaveClass(
+      'bg-brand-100',
+    );
+
+    await userEvent.click(canvas.getByText('Science'));
+
+    await expect(getChipRoot(canvasElement, 'Science')).not.toHaveClass(
+      'bg-brand-100',
+    );
   },
 };
 
@@ -79,6 +119,28 @@ export const MultiSelect: Story = {
     options: subjectOptions,
     multiple: true,
     displayType: 'pill',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await userEvent.click(canvas.getByText('Math'));
+    await userEvent.click(canvas.getByText('Science'));
+
+    await expect(getChipRoot(canvasElement, 'Math')).toHaveClass(
+      'bg-brand-100',
+    );
+    await expect(getChipRoot(canvasElement, 'Science')).toHaveClass(
+      'bg-brand-100',
+    );
+
+    await userEvent.click(canvas.getByText('Math'));
+
+    await expect(getChipRoot(canvasElement, 'Math')).not.toHaveClass(
+      'bg-brand-100',
+    );
+    await expect(getChipRoot(canvasElement, 'Science')).toHaveClass(
+      'bg-brand-100',
+    );
   },
 };
 
@@ -116,6 +178,35 @@ export const WithDisabledOptions: Story = {
     ],
     multiple: true,
     displayType: 'pill',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const disabledOption = canvas
+      .getByText('Science')
+      .closest('.cursor-pointer');
+
+    if (!(disabledOption instanceof HTMLElement)) {
+      throw new Error('Could not find disabled Science option wrapper');
+    }
+
+    await expect(disabledOption).toHaveClass('opacity-50');
+    await expect(disabledOption).toHaveClass('pointer-events-none');
+    await expect(disabledOption).toHaveClass('cursor-not-allowed');
+
+    disabledOption.click();
+
+    await expect(getChipRoot(canvasElement, 'Science')).not.toHaveClass(
+      'bg-brand-100',
+    );
+
+    await userEvent.click(canvas.getByText('English'));
+
+    await expect(getChipRoot(canvasElement, 'English')).toHaveClass(
+      'bg-brand-100',
+    );
+    await expect(getChipRoot(canvasElement, 'Science')).not.toHaveClass(
+      'bg-brand-100',
+    );
   },
 };
 

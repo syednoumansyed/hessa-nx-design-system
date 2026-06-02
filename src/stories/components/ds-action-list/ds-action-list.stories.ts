@@ -1,14 +1,17 @@
 import {
   Meta,
   StoryObj,
-  applicationConfig,
   moduleMetadata,
   componentWrapperDecorator,
 } from '@storybook/angular';
-import { provideIonicAngular } from '@ionic/angular/standalone';
+import { expect, userEvent, within } from 'storybook/test';
 import { DsActionListComponent } from '@ds/action-list/action-list.component';
-import { DS_TRANSLATION_TOKEN } from '@ds/i18n/ds-translation.token';
-import { DsActionListConfig } from '@ds/action-list/action-list.interface';
+import { DsActionListItemComponent } from '@ds/action-list/action-list-item.component';
+import {
+  DsActionListConfig,
+  DsActionListItemConfig,
+} from '@ds/action-list/action-list.interface';
+import { withHessaProviders } from '../../../../.storybook/hessa-providers';
 
 /**
  * # Action List — `ds-action-list`
@@ -37,19 +40,10 @@ const meta: Meta<DsActionListComponent> = {
   },
   argTypes: {},
   decorators: [
-    applicationConfig({
-      providers: [
-        provideIonicAngular(),
-        {
-          provide: DS_TRANSLATION_TOKEN,
-          useValue: {
-            translate: (key: string) => key,
-            getActiveLang: () => 'en',
-          },
-        },
-      ],
+    withHessaProviders(),
+    moduleMetadata({
+      imports: [DsActionListComponent, DsActionListItemComponent],
     }),
-    moduleMetadata({ imports: [DsActionListComponent] }),
     componentWrapperDecorator(
       (story) =>
         `<div style="max-width:380px;height:500px;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;font-family:'Nunito',sans-serif">${story}</div>`,
@@ -208,10 +202,43 @@ const arabicConfig: DsActionListConfig = {
   ],
 };
 
+const disabledItemConfig: DsActionListItemConfig = {
+  id: 'disabled',
+  title: 'Archived assignment',
+  upperSupportingText: 'No actions available',
+  supportingText: { text: 'Read-only', variant: 'default' },
+  endIconConfig: { showArrow: true },
+};
+
+const dangerItemConfig: DsActionListItemConfig = {
+  id: 'danger',
+  title: 'Late submissions',
+  upperSupportingText: 'Grade 5 Mathematics',
+  supportingText: { text: '2 overdue', variant: 'danger', count: 2 },
+  endIconConfig: { showArrow: true },
+};
+
 // ─── Stories ──────────────────────────────────────────────────────────────────
 
 export const Default: Story = {
   name: 'Default (LTR)',
+  render: () => ({
+    template: `<ds-action-list [config]="config" [closeCb]="closeCb"></ds-action-list>`,
+    props: {
+      config: basicConfig,
+      closeCb: () => {},
+    },
+  }),
+};
+
+export const LTR: Story = {
+  name: 'LTR (English)',
+  decorators: [
+    componentWrapperDecorator(
+      (story) =>
+        `<div dir="ltr" lang="en" style="max-width:380px;height:500px;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;font-family:'Nunito',sans-serif">${story}</div>`,
+    ),
+  ],
   render: () => ({
     template: `<ds-action-list [config]="config" [closeCb]="closeCb"></ds-action-list>`,
     props: {
@@ -257,17 +284,6 @@ export const WithAvatars: Story = {
 export const RTL: Story = {
   name: 'RTL (Arabic)',
   decorators: [
-    applicationConfig({
-      providers: [
-        {
-          provide: DS_TRANSLATION_TOKEN,
-          useValue: {
-            translate: (key: string) => key,
-            getActiveLang: () => 'ar',
-          },
-        },
-      ],
-    }),
     componentWrapperDecorator(
       (story) =>
         `<div dir="rtl" lang="ar" style="max-width:380px;height:500px;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;font-family:'Lama Rounded',sans-serif">${story}</div>`,
@@ -280,6 +296,51 @@ export const RTL: Story = {
       closeCb: () => {},
     },
   }),
+};
+
+export const Disabled: Story = {
+  name: 'State: Disabled item',
+  render: () => ({
+    template: `
+      <div class="flex flex-col gap-3">
+        <ds-action-list-item
+          [config]="config"
+          [disabled]="true"
+          (itemClick)="clicked = clicked + 1"
+        ></ds-action-list-item>
+        <p data-testid="click-count" class="content-sm-default text-emphasis-mid">
+          Clicked: {{ clicked }}
+        </p>
+      </div>
+    `,
+    props: {
+      config: disabledItemConfig,
+      clicked: 0,
+    },
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByTestId('ds-list-item-disabled'));
+    await expect(canvas.getByTestId('click-count')).toHaveTextContent(
+      'Clicked: 0',
+    );
+  },
+};
+
+export const Error: Story = {
+  name: 'State: Danger supporting text',
+  render: () => ({
+    template: `<ds-action-list-item [config]="config"></ds-action-list-item>`,
+    props: {
+      config: dangerItemConfig,
+    },
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText('2 overdue')).toHaveClass(
+      'text-content-error',
+    );
+  },
 };
 
 export const RealWorldUsage: Story = {

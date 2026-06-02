@@ -1,15 +1,19 @@
 import {
   Meta,
   StoryObj,
-  applicationConfig,
   moduleMetadata,
   componentWrapperDecorator,
 } from '@storybook/angular';
-import { provideIonicAngular } from '@ionic/angular/standalone';
-import { provideAnimations } from '@angular/platform-browser/animations';
+import { expect, userEvent, within } from 'storybook/test';
 import { DsMenuComponent } from '@ds/popup/ds-menu.component';
-import { faTrash, faPen, faShare, faCopy } from '@fortawesome/pro-regular-svg-icons';
+import {
+  faTrash,
+  faPen,
+  faShare,
+  faCopy,
+} from '@fortawesome/pro-regular-svg-icons';
 import type { PopupItem } from '@ds/popup/types/popup.interface';
+import { withHessaProviders } from '../../../../.storybook/hessa-providers';
 
 /**
  * # Popup Menu — `ds-menu`
@@ -47,12 +51,7 @@ const meta: Meta<DsMenuComponent> = {
     selectedValues: { control: 'object' },
   },
   decorators: [
-    applicationConfig({
-      providers: [
-        provideIonicAngular(),
-        provideAnimations(),
-      ],
-    }),
+    withHessaProviders({ animations: 'browser' }),
     moduleMetadata({ imports: [DsMenuComponent] }),
   ],
 };
@@ -124,6 +123,41 @@ export const WithDisabledItems: Story = {
       { title: 'Export (unavailable)', icon: faShare, disabled: true, action: () => {} },
       { title: 'Delete', icon: faTrash, state: 'danger', action: () => {} },
     ],
+  },
+};
+
+// ─── Error / Danger ──────────────────────────────────────────────────────────
+
+export const Error: Story = {
+  name: 'Error / danger action',
+  render: () => ({
+    props: {
+      items: [
+        {
+          title: 'Delete assignment',
+          icon: faTrash,
+          state: 'danger',
+          action: () => {},
+        },
+      ] as PopupItem[],
+    },
+    template: `
+      <ds-menu [items]="items">
+        <button type="button" class="rounded-ds-md bg-brand-500 px-ds-lg py-ds-md text-white">
+          Open actions
+        </button>
+      </ds-menu>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const trigger =
+      canvasElement.querySelector<HTMLElement>('.cdk-menu-trigger');
+    await expect(trigger).not.toBeNull();
+    await userEvent.click(trigger!);
+
+    const body = within(document.body);
+    const dangerItem = await body.findByText('Delete assignment');
+    await expect(dangerItem).toHaveClass('text-content-error');
   },
 };
 

@@ -1,12 +1,21 @@
-import { EnvironmentProviders, Provider } from '@angular/core';
+import {
+  EnvironmentProviders,
+  importProvidersFrom,
+  Provider,
+} from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import {
   provideAnimations,
   provideNoopAnimations,
 } from '@angular/platform-browser/animations';
+import { ReactiveFormsModule } from '@angular/forms';
 import { Platform, provideIonicAngular } from '@ionic/angular/standalone';
 import { provideToastr, ToastrService } from 'ngx-toastr';
-import { TranslocoService } from '@jsverse/transloco';
+import { provideLottieOptions } from 'ngx-lottie';
+import { TranslocoService, TranslocoTestingModule } from '@jsverse/transloco';
+import { TuiErrorModule, TuiRootModule } from '@taiga-ui/core';
+import { TUI_DATE_FORMAT } from '@taiga-ui/cdk';
+import { TUI_CANCEL_WORD, TUI_DONE_WORD } from '@taiga-ui/kit';
 import { of } from 'rxjs';
 import { applicationConfig } from '@storybook/angular';
 import {
@@ -33,6 +42,9 @@ export interface HessaProvidersOptions {
   fileInteractions?: HessaFileInteractions;
   mobile?: boolean;
   layout?: boolean;
+  taiga?: boolean;
+  lottie?: boolean;
+  translocoTesting?: boolean;
 }
 
 const DEFAULT_TRANSLATIONS: Record<string, string> = {
@@ -41,21 +53,32 @@ const DEFAULT_TRANSLATIONS: Record<string, string> = {
   'global.clear.btn': 'Clear',
   'global.close.btn': 'Close',
   'global.create.btn': 'Create',
+  'global.customize_columns.title': 'Customize columns',
   'global.delete.btn': 'Delete',
   'global.delete_confirm.btn': 'Delete',
   'global.edit.btn': 'Edit',
   'global.no.btn': 'No',
   'global.none.txt': 'None',
+  'global.ok.btn': 'OK',
+  'global.per_page.txt': 'per page',
   'global.save.btn': 'Save',
   'global.select.btn': 'Select',
   'global.select_all.txt': 'Select all',
+  'global.select_items_to.txt': 'Select to',
+  'global.selected.txt': 'selected',
   'global.update.btn': 'Update',
   'global.view.btn': 'View',
   'global.yes.btn': 'Yes',
   'global.you.txt': 'You',
+  'global.all.txt': 'All',
+  'global.all_students.title': 'All Students',
   'global.class.title': 'Class',
   'global.click_to_upload.btn': 'Click to upload',
   'global.drag_drop.txt': 'or drag and drop',
+  'global.apply.btn': 'Apply',
+  'global.apply.txt': 'Apply',
+  'global.clear_filters.btn': 'Clear filters',
+  'global.filters.title': 'Filters',
   'global.picker_select.items_selected':
     '{{count}} {{itemLabel}} selected',
   'global.picker_select.select_title': 'Select {{itemLabel}}',
@@ -68,6 +91,14 @@ const DEFAULT_TRANSLATIONS: Record<string, string> = {
   'global.attachment.not_supported.error.msg':
     'File {{name}} has an unsupported format.',
   'global.attachments.title': 'Attachment',
+  'global.wrong_msg.title': 'Something went wrong',
+  'global.actions.title': 'Actions',
+  'general.sort_by.txt': 'Sort by',
+  'journals.daily.title': 'Daily',
+  'journals.journal.title': 'Journal',
+  'journals.journals.title': 'Journals',
+  'journals.weekly.title': 'Weekly',
+  'journals.weekly_journals.title': 'Weekly Journals',
 };
 
 const interpolate = (
@@ -204,6 +235,9 @@ export const buildHessaProviders = (
     fileInteractions = false,
     mobile,
     layout = false,
+    taiga = false,
+    lottie = false,
+    translocoTesting = false,
   } = options;
 
   const providers: Array<Provider | EnvironmentProviders> = [];
@@ -222,17 +256,68 @@ export const buildHessaProviders = (
     providers.push(provideHttpClient());
   }
 
+  if (taiga) {
+    providers.push(
+      importProvidersFrom(ReactiveFormsModule, TuiRootModule, TuiErrorModule),
+      {
+        provide: TUI_DATE_FORMAT,
+        useFactory: (platform: Platform) => (platform.isRTL ? 'YMD' : 'DMY'),
+        deps: [Platform],
+      },
+      {
+        provide: TUI_CANCEL_WORD,
+        useFactory: (transloco: TranslocoService) =>
+          of(transloco.translate('global.cancel.btn')),
+        deps: [TranslocoService],
+      },
+      {
+        provide: TUI_DONE_WORD,
+        useFactory: (transloco: TranslocoService) =>
+          of(transloco.translate('global.ok.btn')),
+        deps: [TranslocoService],
+      },
+    );
+  }
+
+  if (lottie) {
+    providers.push(
+      provideLottieOptions({
+        player: () => import('lottie-web'),
+      }),
+    );
+  }
+
   if (translations !== false) {
     const messages =
       typeof translations === 'object'
         ? { ...DEFAULT_TRANSLATIONS, ...translations }
         : DEFAULT_TRANSLATIONS;
     const translationMock = createTranslationMock(messages, locale);
-    providers.push(
-      { provide: DS_TRANSLATION_TOKEN, useValue: translationMock },
-      { provide: HesTranslateService, useValue: translationMock },
-      { provide: TranslocoService, useValue: translationMock },
-    );
+    if (translocoTesting) {
+      providers.push(
+        importProvidersFrom(
+          TranslocoTestingModule.forRoot({
+            langs: {
+              en: messages,
+              ar: messages,
+            },
+            translocoConfig: {
+              availableLangs: ['en', 'ar'],
+              defaultLang: locale,
+            },
+            preloadLangs: true,
+          }),
+        ),
+        { provide: DS_TRANSLATION_TOKEN, useValue: translationMock },
+        { provide: HesTranslateService, useValue: translationMock },
+      );
+    } else {
+      providers.push(
+        { provide: DS_TRANSLATION_TOKEN, useValue: translationMock },
+        { provide: HesTranslateService, useValue: translationMock },
+        { provide: TranslocoService, useValue: translationMock },
+      );
+    }
   }
 
   if (toaster === 'mock') {

@@ -5,8 +5,46 @@ import {
   moduleMetadata,
   componentWrapperDecorator,
 } from '@storybook/angular';
+import { AfterViewInit, Component } from '@angular/core';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { expect, fireEvent, userEvent, waitFor, within } from 'storybook/test';
 import { provideIonicAngular } from '@ionic/angular/standalone';
 import { DsTextareaComponent } from '@ds/text-area/text-area.component';
+
+@Component({
+  selector: 'story-textarea-validation',
+  standalone: true,
+  imports: [ReactiveFormsModule, DsTextareaComponent],
+  template: `
+    <div style="max-width:480px;display:flex;flex-direction:column;gap:8px;">
+      <app-ds-textarea
+        label="Required field"
+        placeholder="This field is required"
+        [required]="true"
+        [rows]="4"
+        [formControl]="notesControl"
+      />
+      @if (notesControl.touched && notesControl.hasError('required')) {
+        <span role="alert" style="color:#ef4444;font-size:13px;padding-left:12px;">
+          This field is required.
+        </span>
+      }
+    </div>
+  `,
+})
+class StoryTextareaValidationComponent implements AfterViewInit {
+  notesControl = new FormControl('', {
+    nonNullable: true,
+    validators: [Validators.required],
+  });
+
+  ngAfterViewInit(): void {
+    queueMicrotask(() => {
+      this.notesControl.markAsTouched();
+      this.notesControl.updateValueAndValidity();
+    });
+  }
+}
 
 /**
  * # Text Area — `app-ds-textarea`
@@ -66,7 +104,9 @@ const meta: Meta<DsTextareaComponent> = {
   },
   decorators: [
     applicationConfig({ providers: [provideIonicAngular()] }),
-    moduleMetadata({ imports: [DsTextareaComponent] }),
+    moduleMetadata({
+      imports: [DsTextareaComponent, StoryTextareaValidationComponent],
+    }),
   ],
 };
 
@@ -138,6 +178,19 @@ export const CharacterCount: Story = {
       </div>
     `,
   }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const textarea = canvas.getByPlaceholderText('Tell us about yourself...');
+
+    fireEvent.input(textarea, {
+      target: { value: 'Storybook typed note' },
+    });
+
+    await waitFor(() => {
+      expect(textarea).toHaveValue('Storybook typed note');
+      expect(canvas.getByText(/20\s*\/\s*200/)).toBeInTheDocument();
+    });
+  },
 };
 
 /** Disabled textarea — cursor not-allowed, muted colours. */
@@ -154,6 +207,13 @@ export const Disabled: Story = {
       </div>
     `,
   }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const textarea = canvas.getByPlaceholderText('No notes available');
+
+    await expect(textarea).toBeDisabled();
+    await expect(textarea).toHaveValue('');
+  },
 };
 
 /**
@@ -163,20 +223,24 @@ export const Disabled: Story = {
  */
 export const Error: Story = {
   render: () => ({
-    template: `
-      <div style="max-width:480px;display:flex;flex-direction:column;gap:8px;">
-        <app-ds-textarea
-          label="Required field"
-          placeholder="This field is required"
-          [required]="true"
-          [rows]="4"
-        />
-        <span style="color:#ef4444;font-size:13px;padding-left:12px;">
-          ⚠ This field is required.
-        </span>
-      </div>
-    `,
+    template: `<story-textarea-validation />`,
   }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await expect(await canvas.findByRole('alert')).toHaveTextContent(
+      'This field is required.',
+    );
+
+    await userEvent.type(
+      canvas.getByPlaceholderText('This field is required'),
+      'Resolved note',
+    );
+
+    await waitFor(() => {
+      expect(canvas.queryByRole('alert')).not.toBeInTheDocument();
+    });
+  },
 };
 
 /**

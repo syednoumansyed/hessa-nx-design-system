@@ -5,6 +5,7 @@ import {
   moduleMetadata,
 } from "@storybook/angular";
 import { provideIonicAngular } from "@ionic/angular/standalone";
+import { expect, userEvent, within } from "storybook/test";
 import { DsAccordionComponent } from "@ds/accordion/accordion.component";
 
 /**
@@ -72,6 +73,20 @@ export const Default: Story = {
       </div>
     `,
   }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const header = canvas.getByRole("button", { name: /Course Details/ });
+
+    await expect(header).toHaveAttribute("aria-expanded", "false");
+
+    await userEvent.click(header);
+
+    await expect(header).toHaveAttribute("aria-expanded", "true");
+
+    await userEvent.click(header);
+
+    await expect(header).toHaveAttribute("aria-expanded", "false");
+  },
 };
 
 // ---------------------------------------------------------------------------

@@ -1,21 +1,12 @@
 import {
   Meta,
   StoryObj,
-  applicationConfig,
   moduleMetadata,
   componentWrapperDecorator,
 } from '@storybook/angular';
-import { provideIonicAngular } from '@ionic/angular/standalone';
+import { expect, userEvent, within } from 'storybook/test';
 import { DsExpandableComponent } from '@ds/expandable/expandable.component';
-import { DS_TRANSLATION_TOKEN } from '@ds/i18n/ds-translation.token';
-
-const translationProvider = {
-  provide: DS_TRANSLATION_TOKEN,
-  useValue: {
-    translate: (key: string) => key,
-    getActiveLang: () => 'en',
-  },
-};
+import { withHessaProviders } from '../../../../.storybook/hessa-providers';
 
 /**
  * # Expandable — `ds-expandable`
@@ -34,7 +25,7 @@ const meta: Meta<DsExpandableComponent> = {
   component: DsExpandableComponent,
   tags: ['autodocs'],
   decorators: [
-    applicationConfig({ providers: [provideIonicAngular(), translationProvider] }),
+    withHessaProviders(),
     moduleMetadata({ imports: [DsExpandableComponent] }),
     componentWrapperDecorator(
       (story) => `<div style="max-width:480px;padding:16px;">${story}</div>`,
@@ -75,6 +66,43 @@ const SHORT_TEXT = `Short content that does not exceed the height limit — no t
 
 export const Default: Story = {
   name: 'Default — Collapsed',
+  render: (args) => ({
+    props: args,
+    template: `
+      <ds-expandable
+        [maxHeight]="maxHeight"
+        [initiallyExpanded]="initiallyExpanded"
+        [showMoreText]="showMoreText"
+        [showLessText]="showLessText"
+      >
+        <p style="margin:0;line-height:1.6;">${LONG_TEXT}</p>
+      </ds-expandable>
+    `,
+  }),
+  args: {
+    initiallyExpanded: false,
+    maxHeight: 80,
+    showMoreText: 'Show more',
+    showLessText: 'Show less',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const toggle = await canvas.findByRole('button', {
+      name: 'Toggle content',
+    });
+    await userEvent.click(toggle);
+    await expect(canvas.getByText('Show less')).toBeVisible();
+  },
+};
+
+export const LTR: Story = {
+  name: 'LTR — English',
+  decorators: [
+    componentWrapperDecorator(
+      (story) =>
+        `<div lang="en" dir="ltr" style="max-width:480px;padding:16px;font-family:'Nunito',sans-serif;">${story}</div>`,
+    ),
+  ],
   render: (args) => ({
     props: args,
     template: `

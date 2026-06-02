@@ -14,6 +14,12 @@ const config: StorybookConfig = {
     options: {},
   },
 
-  staticDirs: [{ from: '../src/assets/i18n', to: '/i18n' }],
+  staticDirs: [
+    { from: '../src/assets/i18n', to: '/i18n' },
+    {
+      from: '../node_modules/@taiga-ui/icons/src',
+      to: '/assets/taiga-ui/icons',
+    },
+  ],
 };
 export default config;

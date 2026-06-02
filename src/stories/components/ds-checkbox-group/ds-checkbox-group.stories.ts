@@ -4,9 +4,47 @@ import {
   moduleMetadata,
   componentWrapperDecorator,
 } from '@storybook/angular';
+import { AfterViewInit, Component } from '@angular/core';
+import {
+  FormControl,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 import { withHessaProviders } from '../../../../.storybook/hessa-providers';
 import { DsCheckboxGroupComponent } from '@ds/checkbox-group/checkbox-group.component';
 import { DsCheckboxComponent } from '@ds/checkbox/checkbox.component';
+
+@Component({
+  selector: 'story-checkbox-group-validation',
+  standalone: true,
+  imports: [ReactiveFormsModule, DsCheckboxGroupComponent, DsCheckboxComponent],
+  template: `
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <app-ds-checkbox-group [formControl]="skillsControl" [required]="true">
+        <app-ds-checkbox title="I agree to the terms" value="agree" />
+      </app-ds-checkbox-group>
+      @if (skillsControl.touched && skillsControl.hasError('required')) {
+        <span role="alert" style="color:#ef4444;font-size:13px;">
+          Select at least one option.
+        </span>
+      }
+    </div>
+  `,
+})
+class StoryCheckboxGroupValidationComponent implements AfterViewInit {
+  skillsControl = new FormControl<string[]>([], {
+    nonNullable: true,
+    validators: [Validators.required],
+  });
+
+  ngAfterViewInit(): void {
+    queueMicrotask(() => {
+      this.skillsControl.markAsTouched();
+      this.skillsControl.updateValueAndValidity();
+    });
+  }
+}
 
 /**
  * # Checkbox Group — `app-ds-checkbox-group`
@@ -49,7 +87,12 @@ const meta: Meta<DsCheckboxGroupComponent> = {
   decorators: [
     withHessaProviders(),
     moduleMetadata({
-      imports: [DsCheckboxGroupComponent, DsCheckboxComponent],
+      imports: [
+        DsCheckboxGroupComponent,
+        DsCheckboxComponent,
+        ReactiveFormsModule,
+        StoryCheckboxGroupValidationComponent,
+      ],
     }),
   ],
 };
@@ -62,14 +105,42 @@ type Story = StoryObj<DsCheckboxGroupComponent>;
 export const Basic: Story = {
   name: 'Basic (3 options)',
   render: () => ({
+    props: {
+      selectedControl: new FormControl<string[]>([], { nonNullable: true }),
+    },
     template: `
-      <app-ds-checkbox-group>
-        <app-ds-checkbox title="Reading" value="reading" />
-        <app-ds-checkbox title="Writing" value="writing" />
-        <app-ds-checkbox title="Listening" value="listening" />
-      </app-ds-checkbox-group>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <app-ds-checkbox-group [formControl]="selectedControl">
+          <app-ds-checkbox title="Reading" value="reading" />
+          <app-ds-checkbox title="Writing" value="writing" />
+          <app-ds-checkbox title="Listening" value="listening" />
+        </app-ds-checkbox-group>
+        <p aria-live="polite" style="margin:0;font-size:13px;color:#4b5563;">
+          Selected: {{ selectedControl.value.length ? selectedControl.value.join(', ') : 'none' }}
+        </p>
+      </div>
     `,
   }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const reading = canvas.getByRole('checkbox', { name: 'Reading' });
+    const writing = canvas.getByRole('checkbox', { name: 'Writing' });
+    const status = canvas.getByText(/Selected:/);
+
+    await expect(status).toHaveTextContent('Selected: none');
+
+    await userEvent.click(reading);
+    await expect(reading).toBeChecked();
+    await waitFor(() => {
+      expect(status).toHaveTextContent('Selected: reading');
+    });
+
+    await userEvent.click(writing);
+    await expect(writing).toBeChecked();
+    await waitFor(() => {
+      expect(status).toHaveTextContent('Selected: reading, writing');
+    });
+  },
 };
 
 // ─── With Select All ──────────────────────────────────────────────────────────
@@ -77,15 +148,48 @@ export const Basic: Story = {
 export const WithSelectAll: Story = {
   name: 'With Select All',
   render: () => ({
+    props: {
+      selectedControl: new FormControl<string[]>([], { nonNullable: true }),
+    },
     template: `
-      <app-ds-checkbox-group>
-        <app-ds-checkbox title="Select All" value="SELECT_ALL" />
-        <app-ds-checkbox title="Math" value="math" />
-        <app-ds-checkbox title="Science" value="science" />
-        <app-ds-checkbox title="English" value="english" />
-      </app-ds-checkbox-group>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <app-ds-checkbox-group [formControl]="selectedControl">
+          <app-ds-checkbox title="Select All" value="SELECT_ALL" />
+          <app-ds-checkbox title="Math" value="math" />
+          <app-ds-checkbox title="Science" value="science" />
+          <app-ds-checkbox title="English" value="english" />
+        </app-ds-checkbox-group>
+        <p aria-live="polite" style="margin:0;font-size:13px;color:#4b5563;">
+          Selected subjects: {{ selectedControl.value.length ? selectedControl.value.join(', ') : 'none' }}
+        </p>
+      </div>
     `,
   }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const selectAll = canvas.getByRole('checkbox', { name: 'Select All' });
+    const math = canvas.getByRole('checkbox', { name: 'Math' });
+    const science = canvas.getByRole('checkbox', { name: 'Science' });
+    const english = canvas.getByRole('checkbox', { name: 'English' });
+    const status = canvas.getByText(/Selected subjects:/);
+
+    await userEvent.click(selectAll);
+    await expect(math).toBeChecked();
+    await expect(science).toBeChecked();
+    await expect(english).toBeChecked();
+    await waitFor(() => {
+      expect(status).toHaveTextContent(
+        'Selected subjects: math, science, english',
+      );
+    });
+
+    await userEvent.click(science);
+    await expect(science).not.toBeChecked();
+    await expect(selectAll).toBePartiallyChecked();
+    await waitFor(() => {
+      expect(status).toHaveTextContent('Selected subjects: math, english');
+    });
+  },
 };
 
 // ─── Required Validation ─────────────────────────────────────────────────────
@@ -93,26 +197,64 @@ export const WithSelectAll: Story = {
 export const Required: Story = {
   name: 'Required (validation)',
   render: () => ({
-    template: `
-      <app-ds-checkbox-group [required]="true">
-        <app-ds-checkbox title="I agree to the terms" value="agree" [required]="true" />
-      </app-ds-checkbox-group>
-    `,
+    template: `<story-checkbox-group-validation />`,
   }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await expect(await canvas.findByRole('alert')).toHaveTextContent(
+      'Select at least one option.',
+    );
+
+    await userEvent.click(
+      canvas.getByRole('checkbox', { name: 'I agree to the terms' }),
+    );
+
+    await waitFor(() => {
+      expect(canvas.queryByRole('alert')).not.toBeInTheDocument();
+    });
+  },
 };
 
 // ─── Disabled ────────────────────────────────────────────────────────────────
 
 export const Disabled: Story = {
   render: () => ({
+    props: {
+      selectedControl: new FormControl<string[]>([], { nonNullable: true }),
+    },
     template: `
-      <app-ds-checkbox-group>
-        <app-ds-checkbox title="Available" value="available" />
-        <app-ds-checkbox title="Disabled option" value="disabled-opt" [disabled]="true" />
-        <app-ds-checkbox title="Also available" value="also-available" />
-      </app-ds-checkbox-group>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <app-ds-checkbox-group [formControl]="selectedControl">
+          <app-ds-checkbox title="Available" value="available" />
+          <app-ds-checkbox title="Disabled option" value="disabled-opt" [disabled]="true" />
+          <app-ds-checkbox title="Also available" value="also-available" />
+        </app-ds-checkbox-group>
+        <p aria-live="polite" style="margin:0;font-size:13px;color:#4b5563;">
+          Selected availability: {{ selectedControl.value.length ? selectedControl.value.join(', ') : 'none' }}
+        </p>
+      </div>
     `,
   }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const available = canvas.getByRole('checkbox', { name: 'Available' });
+    const disabledOption = canvas.getByRole('checkbox', {
+      name: 'Disabled option',
+    });
+    const status = canvas.getByText(/Selected availability:/);
+
+    await expect(disabledOption).toBeDisabled();
+    await userEvent.click(disabledOption);
+    await expect(disabledOption).not.toBeChecked();
+    await expect(status).toHaveTextContent('Selected availability: none');
+
+    await userEvent.click(available);
+    await expect(available).toBeChecked();
+    await waitFor(() => {
+      expect(status).toHaveTextContent('Selected availability: available');
+    });
+  },
 };
 
 // ─── Small Size ──────────────────────────────────────────────────────────────

@@ -6,6 +6,7 @@ import {
   componentWrapperDecorator,
 } from '@storybook/angular';
 import { provideIonicAngular } from '@ionic/angular/standalone';
+import { expect, userEvent, within } from 'storybook/test';
 import { DsChipComponent } from '@ds/chip/chip.component';
 import { faBook, faStar, faGraduationCap, faTag } from '@fortawesome/pro-regular-svg-icons';
 
@@ -112,6 +113,49 @@ export const Removable: Story = {
     variant: 'primary',
     displayType: 'pill',
     removable: true,
+  },
+};
+
+export const RemoveInteraction: Story = {
+  name: 'Interaction: Remove emits',
+  render: () => ({
+    template: `
+      <div style="display:flex;flex-direction:column;gap:12px;align-items:flex-start;">
+        <app-ds-chip
+          text="Removable tag"
+          variant="primary"
+          displayType="pill"
+          [removable]="true"
+          (remove)="removed = true"
+        ></app-ds-chip>
+        <span data-testid="remove-status" style="font-size:12px;color:#6b7280;">
+          Removed: {{ removed ? 'yes' : 'no' }}
+        </span>
+      </div>
+    `,
+    props: {
+      removed: false,
+    },
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const removeIcon = canvasElement.querySelector(
+      'app-ds-chip app-ds-icon.cursor-pointer',
+    );
+
+    if (!(removeIcon instanceof HTMLElement)) {
+      throw new Error('Could not find removable chip close icon');
+    }
+
+    await expect(canvas.getByTestId('remove-status')).toHaveTextContent(
+      'Removed: no',
+    );
+
+    await userEvent.click(removeIcon);
+
+    await expect(canvas.getByTestId('remove-status')).toHaveTextContent(
+      'Removed: yes',
+    );
   },
 };
 

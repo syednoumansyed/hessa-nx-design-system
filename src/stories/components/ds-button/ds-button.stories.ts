@@ -1,10 +1,10 @@
 import {
   Meta,
   StoryObj,
-  moduleMetadata,
   componentWrapperDecorator,
+  moduleMetadata,
 } from '@storybook/angular';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, within } from 'storybook/test';
 import { withHessaProviders } from '../../../../.storybook/hessa-providers';
 import { DsButtonComponent } from '@ds/button/button.component';
 import {
@@ -14,26 +14,10 @@ import {
 } from '@fortawesome/pro-regular-svg-icons';
 
 /**
- * # Button — `ds-button`
+ * # Button - `ds-button`
  *
- * The primary action component. Used 654 times across the app — the most-used
- * component in the design system.
- *
- * **When to use:**
- * - Any user-initiated action (submit, navigate, confirm, cancel)
- * - One primary button per view for the main CTA
- *
- * **When NOT to use:**
- * - Navigation between pages → use router links
- * - Toggle states → use `ds-chip` or `ds-switch`
- * - Inline text actions → use `link` variant sparingly
- *
- * **Note:** Button text is projected via `<ng-content>` — pass it as child content,
- * not as an input property.
- *
- * **Student theme:** `border-b` is thickened to create a 3D raised effect with
- * a press-down animation on active. Activate by setting `data-role="student"` on
- * a parent element (the `StudentRole` story demonstrates this).
+ * The primary action component. Text is projected through `ng-content`; icons,
+ * loading, disabled state, size, width, and variant are production inputs.
  */
 const meta: Meta<DsButtonComponent> = {
   title: '1. P0 Components/Button',
@@ -45,7 +29,7 @@ const meta: Meta<DsButtonComponent> = {
     docs: {
       description: {
         component:
-          'Primary action component. 7 variants × 3 sizes. Text is projected via `<ng-content>`. Has student-role tactile press effect.',
+          'Action button with 7 variants, 3 sizes, icon slots, loading state, full-width mode, and student-role tactile borders.',
       },
     },
     a11y: { config: { rules: [{ id: 'color-contrast', enabled: true }] } },
@@ -67,6 +51,9 @@ const meta: Meta<DsButtonComponent> = {
     loading: { control: 'boolean' },
     disabled: { control: 'boolean' },
     fullWidth: { control: 'boolean' },
+    type: { control: 'select', options: ['button', 'submit', 'reset'] },
+    title: { control: 'text' },
+    cssClass: { control: 'text' },
   },
   decorators: [
     withHessaProviders(),
@@ -77,13 +64,13 @@ const meta: Meta<DsButtonComponent> = {
 export default meta;
 type Story = StoryObj<DsButtonComponent>;
 
-// ─── Variants ──────────────────────────────────────────────────────────────
-
-export const Primary: Story = {
+export const Default: Story = {
   render: () => ({
     template: `<ds-button variant="primary" size="lg">Confirm</ds-button>`,
   }),
 };
+
+export const Primary: Story = Default;
 
 export const Secondary: Story = {
   render: () => ({
@@ -93,7 +80,7 @@ export const Secondary: Story = {
 
 export const Tertiary: Story = {
   render: () => ({
-    template: `<ds-button variant="tertiary" size="lg">Learn More</ds-button>`,
+    template: `<ds-button variant="tertiary" size="lg">Learn more</ds-button>`,
   }),
 };
 
@@ -113,20 +100,29 @@ export const DangerStroke: Story = {
 export const DangerFill: Story = {
   name: 'Danger (Fill)',
   render: () => ({
-    template: `<ds-button variant="dangerFill" size="lg">Delete Permanently</ds-button>`,
+    template: `<ds-button variant="dangerFill" size="lg">Delete permanently</ds-button>`,
   }),
 };
 
 export const Error: Story = {
   name: 'Error / destructive',
   render: () => ({
-    template: `<ds-button variant="dangerFill" size="lg">Remove student</ds-button>`,
+    props: { faTrash },
+    template: `
+      <ds-button
+        variant="dangerFill"
+        size="lg"
+        [iconStart]="faTrash"
+      >
+        Remove student
+      </ds-button>
+    `,
   }),
   parameters: {
     docs: {
       description: {
         story:
-          'Matrix error/destructive state using the real `dangerFill` variant for irreversible actions.',
+          'Matrix destructive state using the production `dangerFill` variant and icon slot.',
       },
     },
   },
@@ -137,8 +133,6 @@ export const Link: Story = {
     template: `<ds-button variant="link" size="lg">View details</ds-button>`,
   }),
 };
-
-// ─── Sizes ────────────────────────────────────────────────────────────────
 
 export const SizeSm: Story = {
   name: 'Size: sm',
@@ -161,43 +155,72 @@ export const SizeLg: Story = {
   }),
 };
 
-// ─── States ───────────────────────────────────────────────────────────────
-
 export const Loading: Story = {
   render: () => ({
-    template: `<ds-button variant="primary" size="lg" [loading]="true">Saving...</ds-button>`,
+    template: `
+      <ds-button variant="primary" size="lg" [loading]="true">
+        Saving
+      </ds-button>
+    `,
   }),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const btn = canvas.getByRole('button');
-    await expect(btn).toBeInTheDocument();
-    await expect(btn).toHaveAttribute('disabled');
+    await expect(canvas.getByRole('button')).toHaveAttribute('disabled');
   },
 };
 
 export const Disabled: Story = {
   render: () => ({
-    template: `<ds-button variant="primary" size="lg" [disabled]="true">Unavailable</ds-button>`,
+    template: `
+      <ds-button variant="primary" size="lg" [disabled]="true">
+        Unavailable
+      </ds-button>
+    `,
   }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole('button')).toBeDisabled();
+  },
 };
 
 export const FullWidth: Story = {
   render: () => ({
     template: `
-      <div style="width:320px;">
-        <ds-button variant="primary" size="lg" [fullWidth]="true">Submit Form</ds-button>
+      <div class="w-[320px]">
+        <ds-button variant="primary" size="lg" [fullWidth]="true">
+          Submit form
+        </ds-button>
       </div>
     `,
   }),
 };
 
-// ─── With Icons ───────────────────────────────────────────────────────────
+export const SubmitType: Story = {
+  name: 'Type: submit',
+  render: () => ({
+    template: `
+      <form class="flex flex-col gap-ds-md">
+        <ds-button type="submit" variant="primary" size="lg">
+          Submit
+        </ds-button>
+      </form>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole('button')).toHaveAttribute('type', 'submit');
+  },
+};
 
 export const WithIconStart: Story = {
   name: 'With icon (start)',
   render: () => ({
     props: { faPlus },
-    template: `<ds-button variant="primary" size="lg" [iconStart]="faPlus">Add Item</ds-button>`,
+    template: `
+      <ds-button variant="primary" size="lg" [iconStart]="faPlus">
+        Add item
+      </ds-button>
+    `,
   }),
 };
 
@@ -205,87 +228,71 @@ export const WithIconEnd: Story = {
   name: 'With icon (end)',
   render: () => ({
     props: { faArrowRight },
-    template: `<ds-button variant="primary" size="lg" [iconEnd]="faArrowRight">Continue</ds-button>`,
+    template: `
+      <ds-button variant="primary" size="lg" [iconEnd]="faArrowRight">
+        Continue
+      </ds-button>
+    `,
   }),
 };
-
-// ─── All Variants Grid ────────────────────────────────────────────────────
 
 export const AllVariants: Story = {
   name: 'All Variants',
   render: () => ({
     template: `
-      <div style="display:flex;flex-wrap:wrap;gap:12px;padding:16px;background:#f9fafb;border-radius:12px;">
-        <ds-button variant="primary"      size="lg">Primary</ds-button>
-        <ds-button variant="secondary"    size="lg">Secondary</ds-button>
-        <ds-button variant="tertiary"     size="lg">Tertiary</ds-button>
-        <ds-button variant="ghost"        size="lg">Ghost</ds-button>
+      <div class="flex flex-wrap gap-ds-md bg-surface-secondary-light p-ds-xl">
+        <ds-button variant="primary" size="lg">Primary</ds-button>
+        <ds-button variant="secondary" size="lg">Secondary</ds-button>
+        <ds-button variant="tertiary" size="lg">Tertiary</ds-button>
+        <ds-button variant="ghost" size="lg">Ghost</ds-button>
         <ds-button variant="dangerStroke" size="lg">Danger Stroke</ds-button>
-        <ds-button variant="dangerFill"   size="lg">Danger Fill</ds-button>
-        <ds-button variant="link"         size="lg">Link</ds-button>
+        <ds-button variant="dangerFill" size="lg">Danger Fill</ds-button>
+        <ds-button variant="link" size="lg">Link</ds-button>
       </div>
     `,
   }),
 };
-
-// ─── LTR ─────────────────────────────────────────────────────────────────
 
 export const LTR: Story = {
   name: 'LTR (English)',
   render: () => ({
     props: { faArrowRight },
     template: `
-      <div style="display:flex;gap:8px;">
-        <ds-button variant="primary"   size="lg" [iconEnd]="faArrowRight">Confirm</ds-button>
+      <div class="flex gap-ds-sm" lang="en" dir="ltr">
+        <ds-button variant="primary" size="lg" [iconEnd]="faArrowRight">
+          Confirm
+        </ds-button>
         <ds-button variant="secondary" size="lg">Cancel</ds-button>
       </div>
     `,
   }),
-  decorators: [
-    componentWrapperDecorator(
-      (story) =>
-        `<div lang="en" dir="ltr" style="font-family:'Nunito',sans-serif;">${story}</div>`,
-    ),
-  ],
+  decorators: [withHessaProviders({ locale: 'en' })],
 };
-
-// ─── RTL ─────────────────────────────────────────────────────────────────
 
 export const RTL: Story = {
   name: 'RTL (Arabic)',
   render: () => ({
     template: `
-      <div style="display:flex;gap:8px;">
-        <ds-button variant="primary"   size="lg">تأكيد</ds-button>
+      <div class="flex gap-ds-sm" lang="ar" dir="rtl">
+        <ds-button variant="primary" size="lg">تأكيد</ds-button>
         <ds-button variant="secondary" size="lg">إلغاء</ds-button>
-        <ds-button variant="ghost"     size="lg">تخطي</ds-button>
+        <ds-button variant="ghost" size="lg">تخطي</ds-button>
       </div>
     `,
   }),
-  decorators: [
-    componentWrapperDecorator(
-      (story) =>
-        `<div lang="ar" dir="rtl" style="font-family:'Lama Rounded',sans-serif;">${story}</div>`,
-    ),
-  ],
+  decorators: [withHessaProviders({ locale: 'ar' })],
 };
-
-// ─── Student Role ────────────────────────────────────────────────────────
 
 export const StudentRole: Story = {
   name: 'Student Role (tactile borders)',
   render: () => ({
     template: `
-      <div style="display:flex;flex-direction:column;gap:16px;">
-        <p style="font-size:12px;color:#6b7280;margin:0;">
-          Student theme: raised 3D bottom border with press-down animation.
-          Set via <code>data-role="student"</code> on a parent (applied by ThemeManagerService).
-        </p>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;">
-          <ds-button variant="primary"   size="lg">تأكيد / Confirm</ds-button>
-          <ds-button variant="secondary" size="lg">إلغاء / Cancel</ds-button>
-          <ds-button variant="primary"   size="md">Medium</ds-button>
-          <ds-button variant="primary"   size="sm">Small</ds-button>
+      <div class="flex flex-col gap-ds-lg" data-role="student">
+        <div class="flex flex-wrap gap-ds-md">
+          <ds-button variant="primary" size="lg">Confirm</ds-button>
+          <ds-button variant="secondary" size="lg">Cancel</ds-button>
+          <ds-button variant="primary" size="md">Medium</ds-button>
+          <ds-button variant="primary" size="sm">Small</ds-button>
         </div>
       </div>
     `,
@@ -293,7 +300,7 @@ export const StudentRole: Story = {
   decorators: [
     componentWrapperDecorator(
       (story) =>
-        `<div data-role="student" style="padding:16px;background:#fffbee;border-radius:12px;border:1px dashed #fed143;">${story}</div>`,
+        `<div class="bg-pastels-brand-50 p-ds-xl" data-role="student">${story}</div>`,
     ),
   ],
 };

@@ -1,12 +1,12 @@
 import {
   Meta,
   StoryObj,
-  applicationConfig,
   moduleMetadata,
   componentWrapperDecorator,
 } from '@storybook/angular';
-import { provideIonicAngular } from '@ionic/angular/standalone';
+import { expect, userEvent, within } from 'storybook/test';
 import { AlertMessageComponent } from '@ds/alert-message/alert-message.component';
+import { withHessaProviders } from '../../../../.storybook/hessa-providers';
 
 /**
  * # Alert Message — `alert-message`
@@ -29,7 +29,7 @@ const meta: Meta<AlertMessageComponent> = {
   component: AlertMessageComponent,
   tags: ['autodocs'],
   decorators: [
-    applicationConfig({ providers: [provideIonicAngular()] }),
+    withHessaProviders(),
     moduleMetadata({ imports: [AlertMessageComponent] }),
     componentWrapperDecorator(
       (story) =>
@@ -67,6 +67,23 @@ type Story = StoryObj<AlertMessageComponent>;
 
 export const Info: Story = {
   name: 'Info',
+  args: {
+    type: 'info',
+    title: 'Did you know?',
+    message: 'You can manage your notifications from the settings page.',
+    showCloseButton: true,
+    buttonTitle: '',
+  },
+};
+
+export const LTR: Story = {
+  name: 'LTR — English',
+  decorators: [
+    componentWrapperDecorator(
+      (story) =>
+        `<div lang="en" dir="ltr" style="max-width:480px;padding:16px;font-family:'Nunito',sans-serif;">${story}</div>`,
+    ),
+  ],
   args: {
     type: 'info',
     title: 'Did you know?',
@@ -130,6 +147,45 @@ export const NoCloseButton: Story = {
     message: 'This alert cannot be dismissed by the user.',
     showCloseButton: false,
     buttonTitle: '',
+  },
+};
+
+export const Dismissible: Story = {
+  name: 'Dismissible close output',
+  render: (args) => ({
+    props: {
+      ...args,
+      closed: 0,
+    },
+    template: `
+      <div class="flex flex-col gap-3">
+        <alert-message
+          [type]="type"
+          [title]="title"
+          [message]="message"
+          [showCloseButton]="showCloseButton"
+          [buttonTitle]="buttonTitle"
+          (close)="closed = closed + 1"
+        ></alert-message>
+        <p data-testid="closed-count" class="content-sm-default text-emphasis-mid">
+          Closed: {{ closed }}
+        </p>
+      </div>
+    `,
+  }),
+  args: {
+    type: 'info',
+    title: 'Dismissible notice',
+    message: 'Closing this banner emits the component close event.',
+    showCloseButton: true,
+    buttonTitle: '',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getAllByRole('button')[0]);
+    await expect(canvas.getByTestId('closed-count')).toHaveTextContent(
+      'Closed: 1',
+    );
   },
 };
 

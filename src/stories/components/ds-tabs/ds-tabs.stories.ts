@@ -6,7 +6,9 @@ import {
   componentWrapperDecorator,
 } from '@storybook/angular';
 import { provideIonicAngular } from '@ionic/angular/standalone';
+import { expect } from 'storybook/test';
 import { DsTabsComponent } from '@ds/tabs/tabs.component';
+import { DsTabsWithSwipeComponent } from '@ds/tabs/tabs-with-swipe.component';
 import { DS_TRANSLATION_TOKEN } from '@ds/i18n/ds-translation.token';
 
 /**
@@ -87,7 +89,7 @@ const meta: Meta<DsTabsComponent> = {
         { provide: DS_TRANSLATION_TOKEN, useValue: passthroughTranslation },
       ],
     }),
-    moduleMetadata({ imports: [DsTabsComponent] }),
+    moduleMetadata({ imports: [DsTabsComponent, DsTabsWithSwipeComponent] }),
     componentWrapperDecorator(
       (story) => `<div style="padding:16px;max-width:480px;">${story}</div>`,
     ),
@@ -276,6 +278,40 @@ This story uses a 300px container with 7 tabs to force overflow in any viewport.
       (story) => `<div style="padding:16px;max-width:300px;">${story}</div>`,
     ),
   ],
+};
+
+// ─── Loading ─────────────────────────────────────────────────────────────────
+
+export const Loading: Story = {
+  name: 'State: Loading skeleton',
+  parameters: {
+    docs: {
+      description: {
+        story:
+          '`ds-tabs-with-swipe` loading state renders the production skeleton instead of tab panel content.',
+      },
+    },
+  },
+  render: () => ({
+    props: {
+      tabs: sampleTabs,
+    },
+    template: `
+      <ds-tabs-with-swipe
+        [tabs]="tabs"
+        [activeTabId]="'overview'"
+        [isLoading]="true"
+        contentClass="min-h-[180px]"
+      >
+        <ng-template #content let-tabId>
+          <div class="p-ds-lg">Loaded content: {{ tabId }}</div>
+        </ng-template>
+      </ds-tabs-with-swipe>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    await expect(canvasElement.querySelector('.animate-pulse')).toBeTruthy();
+  },
 };
 
 // ─── LTR ─────────────────────────────────────────────────────────────────────

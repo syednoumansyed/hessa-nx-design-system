@@ -1,13 +1,11 @@
 import {
   Meta,
   StoryObj,
-  applicationConfig,
   moduleMetadata,
   componentWrapperDecorator,
 } from '@storybook/angular';
-import { provideIonicAngular } from '@ionic/angular/standalone';
 import { DsIconContainerComponent } from '@ds/icon-container/icon-container.component';
-import { DS_TRANSLATION_TOKEN } from '@ds/i18n/ds-translation.token';
+import { withHessaProviders } from '../../../../.storybook/hessa-providers';
 import {
   faHouse,
   faUser,
@@ -18,11 +16,6 @@ import {
   faFileLines,
   faChartBar,
 } from '@fortawesome/pro-regular-svg-icons';
-
-const passthroughTranslation = {
-  translate: (key: string) => key,
-  getActiveLang: () => 'en',
-};
 
 /**
  * # Icon Container — `ds-icon-container`
@@ -72,12 +65,7 @@ const meta: Meta<DsIconContainerComponent> = {
     },
   },
   decorators: [
-    applicationConfig({
-      providers: [
-        provideIonicAngular(),
-        { provide: DS_TRANSLATION_TOKEN, useValue: passthroughTranslation },
-      ],
-    }),
+    withHessaProviders({ animations: 'browser' }),
     moduleMetadata({ imports: [DsIconContainerComponent] }),
     componentWrapperDecorator(
       (story) =>

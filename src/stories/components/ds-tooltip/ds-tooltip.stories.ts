@@ -6,6 +6,7 @@ import {
   componentWrapperDecorator,
 } from '@storybook/angular';
 import { provideIonicAngular } from '@ionic/angular/standalone';
+import { expect, userEvent, within } from 'storybook/test';
 import { DsTooltipDirective } from '@ds/tooltip/ds-tooltip.directive';
 import { DsButtonComponent } from '@ds/button/button.component';
 
@@ -114,6 +115,27 @@ export const Default: Story = {
       </div>
     `,
   }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const trigger = canvas.getByText('Hover me').closest('ds-button');
+
+    if (!(trigger instanceof HTMLElement)) {
+      throw new Error('Could not find tooltip trigger host');
+    }
+
+    await userEvent.hover(trigger);
+
+    const body = within(document.body);
+    await expect(
+      await body.findByText('This is a simple tooltip'),
+    ).toBeInTheDocument();
+
+    await userEvent.unhover(trigger);
+
+    await expect(
+      body.queryByText('This is a simple tooltip'),
+    ).not.toBeInTheDocument();
+  },
 };
 
 /** Tooltip positioned **above** the trigger element (default arrow points down). */
