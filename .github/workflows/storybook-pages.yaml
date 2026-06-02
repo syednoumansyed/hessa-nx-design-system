@@ -55,6 +55,11 @@ jobs:
             echo '//npm.fontawesome.com/:_authToken=${NPM_FONTAWESOME_AUTH_TOKEN}'
           } >> "$NPM_CONFIG_USERCONFIG"
 
+      - name: Verify private registry auth
+        run: |
+          npm whoami --registry=https://npm.pkg.github.com/ >/dev/null
+          npm whoami --registry=https://npm.fontawesome.com/ >/dev/null
+
       - name: Install dependencies
         run: npm ci
 
