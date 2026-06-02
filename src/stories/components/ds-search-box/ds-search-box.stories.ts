@@ -5,6 +5,7 @@ import {
   moduleMetadata,
   componentWrapperDecorator,
 } from '@storybook/angular';
+import { expect, userEvent, within } from 'storybook/test';
 import { importProvidersFrom } from '@angular/core';
 import { provideIonicAngular } from '@ionic/angular/standalone';
 import { TranslocoTestingModule } from '@jsverse/transloco';
@@ -51,6 +52,37 @@ const meta: Meta<SearchBoxComponent> = {
   parameters: {
     layout: 'padded',
   },
+  argTypes: {
+    value: {
+      control: 'text',
+      description: 'Externally controlled search value',
+    },
+    placeholderTxt: {
+      control: 'text',
+      description: 'Placeholder text rendered inside the search input',
+    },
+    includeAddButton: {
+      control: 'boolean',
+      description: 'Shows the add icon tile beside the input',
+    },
+    includeCancelButton: {
+      control: 'boolean',
+      description: 'Shows the translated cancel action beside the input',
+    },
+    manageBottomBarVisibility: {
+      control: 'boolean',
+      description:
+        'Calls LayoutService on focus/blur to hide mobile bottom nav',
+    },
+    autoFocus: {
+      control: 'boolean',
+      description: 'Focuses the input after render',
+    },
+    autoFocusDelay: {
+      control: 'number',
+      description: 'Delay in ms before autofocus is applied',
+    },
+  },
   decorators: [
     applicationConfig({
       providers: [
@@ -58,7 +90,10 @@ const meta: Meta<SearchBoxComponent> = {
         importProvidersFrom(
           TranslocoTestingModule.forRoot({
             langs: STORYBOOK_TRANSLATIONS,
-            translocoConfig: { defaultLang: 'en', availableLangs: ['en', 'ar'] },
+            translocoConfig: {
+              defaultLang: 'en',
+              availableLangs: ['en', 'ar'],
+            },
             preloadLangs: true,
           }),
         ),
@@ -81,6 +116,26 @@ export const Default: Story = {
       </div>
     `,
   }),
+};
+
+/** Interaction test — typing updates the text box value used for filtering. */
+export const TypingInteraction: Story = {
+  name: 'Interaction: Type query',
+  render: () => ({
+    template: `
+      <div style="max-width:480px;">
+        <app-search-box placeholderTxt="Search..." />
+      </div>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole('textbox', { name: 'Search...' });
+
+    await userEvent.type(input, 'Ahmed');
+
+    await expect(input).toHaveValue('Ahmed');
+  },
 };
 
 /**
@@ -196,7 +251,10 @@ export const LTR: Story = {
         importProvidersFrom(
           TranslocoTestingModule.forRoot({
             langs: STORYBOOK_TRANSLATIONS,
-            translocoConfig: { defaultLang: 'en', availableLangs: ['en', 'ar'] },
+            translocoConfig: {
+              defaultLang: 'en',
+              availableLangs: ['en', 'ar'],
+            },
             preloadLangs: true,
           }),
         ),
@@ -229,7 +287,10 @@ export const RTL: Story = {
         importProvidersFrom(
           TranslocoTestingModule.forRoot({
             langs: STORYBOOK_TRANSLATIONS,
-            translocoConfig: { defaultLang: 'ar', availableLangs: ['en', 'ar'] },
+            translocoConfig: {
+              defaultLang: 'ar',
+              availableLangs: ['en', 'ar'],
+            },
             preloadLangs: true,
           }),
         ),

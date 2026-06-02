@@ -1,12 +1,11 @@
 import {
   Meta,
   StoryObj,
-  applicationConfig,
   moduleMetadata,
   componentWrapperDecorator,
 } from '@storybook/angular';
-import { provideIonicAngular } from '@ionic/angular/standalone';
-import { provideHttpClient } from '@angular/common/http';
+import { expect, userEvent, within } from 'storybook/test';
+import { withHessaProviders } from '../../../../.storybook/hessa-providers';
 import { DsPickerSelectComponent } from '@ds/picker-select/picker-select.component';
 import type { DsPickerSelectConfig } from '@ds/picker-select/picker-select.interface';
 
@@ -44,13 +43,15 @@ const meta: Meta<DsPickerSelectComponent> = {
     },
     a11y: { config: { rules: [{ id: 'color-contrast', enabled: true }] } },
   },
+  argTypes: {
+    config: {
+      control: 'object',
+      description:
+        'Picker trigger and modal options: label, placeholder, options, isMultiple, required, disabled, selectButtonText, and itemLabel.',
+    },
+  },
   decorators: [
-    applicationConfig({
-      providers: [
-        provideIonicAngular(),
-        provideHttpClient(),
-      ],
-    }),
+    withHessaProviders({ http: true, mobile: false }),
     moduleMetadata({ imports: [DsPickerSelectComponent] }),
   ],
 };
@@ -107,6 +108,66 @@ export const MultiSelect: Story = {
   }),
 };
 
+export const DesktopModal: Story = {
+  name: 'Desktop modal service branch',
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Desktop Platform mock. Opening the picker uses DsModalService with the desktop Ionic modal/dialog branch.',
+      },
+    },
+  },
+  render: () => ({
+    props: { config: singleConfig },
+    template: `<app-ds-picker-select [config]="config" />`,
+  }),
+  decorators: [withHessaProviders({ http: true, mobile: false })],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'Choose a subject...' }),
+    );
+
+    const body = within(document.body);
+    await expect(await body.findByText('Select subjects')).toBeInTheDocument();
+    await expect(await body.findByText('Mathematics')).toBeInTheDocument();
+  },
+};
+
+export const MobileBottomSheet: Story = {
+  name: 'Mobile bottom-sheet branch',
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Mobile Platform mock. Opening the picker uses DsModalService mobile bottom-sheet behavior, not ModalSheetService.',
+      },
+    },
+  },
+  render: () => ({
+    props: { config: singleConfig },
+    template: `<app-ds-picker-select [config]="config" />`,
+  }),
+  decorators: [
+    withHessaProviders({ http: true, mobile: true }),
+    componentWrapperDecorator(
+      (story) =>
+        `<div class="mx-auto w-full max-w-sm bg-surface-primary p-ds-xl">${story}</div>`,
+    ),
+  ],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'Choose a subject...' }),
+    );
+
+    const body = within(document.body);
+    await expect(await body.findByText('Select subjects')).toBeInTheDocument();
+    await expect(await body.findByText('Mathematics')).toBeInTheDocument();
+  },
+};
+
 // ─── Required ────────────────────────────────────────────────────────────────
 
 export const Required: Story = {
@@ -115,7 +176,7 @@ export const Required: Story = {
     props: {
       config: {
         ...singleConfig,
-        label: 'Select Grade *',
+        label: 'Select Grade',
         required: true,
         options: [
           { id: '1', display: 'Grade 1' },
@@ -173,8 +234,10 @@ export const LTR: Story = {
     template: `<app-ds-picker-select [config]="config" />`,
   }),
   decorators: [
+    withHessaProviders({ http: true, locale: 'en', mobile: false }),
     componentWrapperDecorator(
-      (story) => `<div lang="en" dir="ltr" style="font-family:'Nunito',sans-serif;padding:16px;max-width:360px;">${story}</div>`,
+      (story) =>
+        `<div lang="en" dir="ltr" class="max-w-sm p-ds-xl">${story}</div>`,
     ),
   ],
 };
@@ -201,9 +264,10 @@ export const RTL: Story = {
     template: `<app-ds-picker-select [config]="config" />`,
   }),
   decorators: [
+    withHessaProviders({ http: true, locale: 'ar', mobile: false }),
     componentWrapperDecorator(
       (story) =>
-        `<div lang="ar" dir="rtl" style="font-family:'Lama Rounded',sans-serif;padding:16px;max-width:360px;">${story}</div>`,
+        `<div lang="ar" dir="rtl" class="max-w-sm p-ds-xl">${story}</div>`,
     ),
   ],
 };
@@ -239,7 +303,7 @@ export const StudentRole: Story = {
   decorators: [
     componentWrapperDecorator(
       (story) =>
-        `<div data-role="student" style="padding:16px;max-width:360px;background:#fffbee;border-radius:12px;border:1px dashed #fed143;">${story}</div>`,
+        `<div data-role="student" class="max-w-sm rounded-ds-xl border border-dashed border-warning-500 bg-warning-50 p-ds-xl">${story}</div>`,
     ),
   ],
 };

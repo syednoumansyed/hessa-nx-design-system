@@ -5,7 +5,7 @@ import {
   effect,
   inject,
   Injector,
-  input,
+  Input,
   OnDestroy,
   OnInit,
   signal,
@@ -80,11 +80,11 @@ export interface DsModalContentComponent {
       [headerComponent]="computedHeaderComponent()"
       [headerComponentProps]="computedHeaderComponentProps()"
       [footerConfig]="computedFooterConfig()"
-      [modalSize]="modalSize()"
-      [contentClass]="contentClass()"
-      [respectTopSafeArea]="respectTopSafeArea()"
-      [scrollableContent]="scrollableContent()"
-      [dismissFn]="dismissFn()"
+      [modalSize]="modalSize"
+      [contentClass]="contentClass"
+      [respectTopSafeArea]="respectTopSafeArea"
+      [scrollableContent]="scrollableContent"
+      [dismissFn]="dismissFn"
       (backClick)="onBackClick()"
       (closeClick)="onCloseClick()"
       (primaryClick)="onPrimaryClick()"
@@ -95,18 +95,20 @@ export interface DsModalContentComponent {
   `,
 })
 export class DsModalWrapperComponent implements OnInit, OnDestroy {
-  readonly headerConfig = input<DsModalHeaderConfig>();
-  readonly headerComponent = input<Type<unknown>>();
-  readonly headerComponentProps = input<Record<string, unknown>>();
-  readonly footerConfig = input<DsModalFooterConfig>();
-  readonly modalSize = input<DsModalSize>('lg');
-  readonly contentClass = input<string>('p-6');
-  readonly respectTopSafeArea = input<boolean>(false);
-  readonly scrollableContent = input<boolean>(false);
-  readonly contentComponent = input.required<Type<unknown>>();
-  readonly contentProps = input<Record<string, unknown>>({});
-  readonly dismissFn =
-    input.required<(data?: unknown, role?: string) => void>();
+  @Input() headerConfig?: DsModalHeaderConfig;
+  @Input() headerComponent?: Type<unknown>;
+  @Input() headerComponentProps?: Record<string, unknown>;
+  @Input() footerConfig?: DsModalFooterConfig;
+  @Input() modalSize: DsModalSize = 'lg';
+  @Input() contentClass = 'p-6';
+  @Input() respectTopSafeArea = false;
+  @Input() scrollableContent = false;
+  @Input({ required: true }) contentComponent!: Type<unknown>;
+  @Input() contentProps: Record<string, unknown> = {};
+  @Input({ required: true }) dismissFn!: (
+    data?: unknown,
+    role?: string,
+  ) => void;
 
   @ViewChild('contentContainer', { read: ViewContainerRef, static: true })
   private contentContainer!: ViewContainerRef;
@@ -140,7 +142,7 @@ export class DsModalWrapperComponent implements OnInit, OnDestroy {
   protected readonly computedHeaderComponent = computed<
     Type<unknown> | undefined
   >(() => {
-    const inputComponent = this.headerComponent();
+    const inputComponent = this.headerComponent;
     if (inputComponent) return inputComponent;
     if (this.hasDynamicConfig()) {
       return this.dynamicHeaderComponent();
@@ -151,8 +153,8 @@ export class DsModalWrapperComponent implements OnInit, OnDestroy {
   protected readonly computedHeaderComponentProps = computed<
     Record<string, unknown> | undefined
   >(() => {
-    const inputProps = this.headerComponentProps();
-    if (this.headerComponent()) return inputProps;
+    const inputProps = this.headerComponentProps;
+    if (this.headerComponent) return inputProps;
     if (this.hasDynamicConfig()) {
       return this.dynamicHeaderComponentProps();
     }
@@ -163,7 +165,7 @@ export class DsModalWrapperComponent implements OnInit, OnDestroy {
   protected readonly computedHeaderConfig = computed<
     DsModalHeaderConfig | undefined
   >(() => {
-    const inputHeader = this.headerConfig();
+    const inputHeader = this.headerConfig;
     if (inputHeader) return inputHeader;
 
     if (this.hasDynamicConfig()) {
@@ -176,7 +178,7 @@ export class DsModalWrapperComponent implements OnInit, OnDestroy {
   protected readonly computedFooterConfig = computed<
     DsModalFooterConfig | undefined
   >(() => {
-    const inputFooter = this.footerConfig();
+    const inputFooter = this.footerConfig;
     const config = inputFooter
       ? inputFooter
       : this.hasDynamicConfig()
@@ -214,7 +216,7 @@ export class DsModalWrapperComponent implements OnInit, OnDestroy {
   }
 
   private createContentComponent(): void {
-    const component = this.contentComponent();
+    const component = this.contentComponent;
     if (!component) return;
 
     this.contentContainer.clear();
@@ -226,14 +228,14 @@ export class DsModalWrapperComponent implements OnInit, OnDestroy {
     const instance = this.contentRef.instance as DsModalContentComponent;
 
     // Pass all props to the content component using setInput for signal inputs
-    const props = this.contentProps();
+    const props = this.contentProps;
     Object.entries(props).forEach(([key, value]) => {
       this.contentRef!.setInput(key, value);
     });
 
     // Provide closeModal function
     instance.closeModal = (data?: unknown, role?: string) => {
-      this.dismissFn()(data, role ?? 'close');
+      this.dismissFn(data, role ?? 'close');
     };
 
     this.contentRef.changeDetectorRef.detectChanges();
@@ -349,7 +351,7 @@ export class DsModalWrapperComponent implements OnInit, OnDestroy {
     if (instance?.onBackClick) {
       instance.onBackClick();
     } else {
-      this.dismissFn()(undefined, 'back');
+      this.dismissFn(undefined, 'back');
     }
   }
 
@@ -358,7 +360,7 @@ export class DsModalWrapperComponent implements OnInit, OnDestroy {
     if (instance?.onCloseClick) {
       instance.onCloseClick();
     } else {
-      this.dismissFn()(undefined, 'close');
+      this.dismissFn(undefined, 'close');
     }
   }
 
@@ -368,7 +370,7 @@ export class DsModalWrapperComponent implements OnInit, OnDestroy {
       instance.onPrimaryClick();
     } else {
       // Default behavior: dismiss with 'confirm' role
-      this.dismissFn()(undefined, 'confirm');
+      this.dismissFn(undefined, 'confirm');
     }
   }
 
@@ -378,7 +380,7 @@ export class DsModalWrapperComponent implements OnInit, OnDestroy {
       instance.onSecondaryClick();
     } else {
       // Default behavior: dismiss with 'cancel' role
-      this.dismissFn()(undefined, 'cancel');
+      this.dismissFn(undefined, 'cancel');
     }
   }
 }

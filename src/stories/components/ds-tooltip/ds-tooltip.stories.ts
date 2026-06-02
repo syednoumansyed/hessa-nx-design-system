@@ -54,6 +54,42 @@ const meta: Meta = {
       },
     },
   },
+  argTypes: {
+    dsTooltipTitle: { control: 'text', description: 'Optional tooltip title' },
+    dsTooltipContent: {
+      control: 'text',
+      description: 'Main tooltip body content',
+    },
+    dsTooltipFooter: {
+      control: 'text',
+      description: 'Optional footer text shown below the body',
+    },
+    dsTooltipPosition: {
+      control: 'select',
+      options: [
+        'auto',
+        'above',
+        'below',
+        'left',
+        'right',
+        'above-left',
+        'above-right',
+      ],
+      description: 'Preferred CDK overlay position',
+    },
+    dsTooltipEnabled: {
+      control: 'boolean',
+      description: 'Disables overlay rendering when false',
+    },
+    dsTooltipIconClass: {
+      control: 'text',
+      description: 'Optional icon color/utility class',
+    },
+    dsTooltipIconSize: {
+      control: 'text',
+      description: 'Optional icon size token',
+    },
+  },
   decorators: [
     applicationConfig({ providers: [provideIonicAngular()] }),
     moduleMetadata({ imports: [DsTooltipDirective, DsButtonComponent] }),

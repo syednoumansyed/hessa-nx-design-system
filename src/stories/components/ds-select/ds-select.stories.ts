@@ -1,13 +1,14 @@
 import {
   Meta,
   StoryObj,
-  applicationConfig,
   moduleMetadata,
   componentWrapperDecorator,
 } from '@storybook/angular';
-import { provideIonicAngular } from '@ionic/angular/standalone';
+import { expect, userEvent, within } from 'storybook/test';
+import { NEVER } from 'rxjs';
 import { DsSelectComponent } from '@ds/select/select.component';
 import { DsSelectConfig } from '@ds/select/select.interface';
+import { withHessaProviders } from '../../../../.storybook/hessa-providers';
 
 /**
  * # Select — `app-ds-select`
@@ -50,10 +51,10 @@ const meta: Meta<DsSelectComponent> = {
     disabled: { control: 'boolean', description: 'Prevent opening the dropdown' },
   },
   decorators: [
-    applicationConfig({ providers: [provideIonicAngular()] }),
+    withHessaProviders({ mobile: false }),
     moduleMetadata({ imports: [DsSelectComponent] }),
     componentWrapperDecorator(
-      (story) => `<div style="padding:16px;max-width:360px;">${story}</div>`,
+      (story) => `<div class="max-w-sm p-ds-xl">${story}</div>`,
     ),
   ],
 };
@@ -200,13 +201,16 @@ subsequent page fetch.
       isMultiple: false,
       showSearch: true,
       isPaginated: true,
-      // Simulated async loader — returns empty to keep spinner visible in story
-      loadOptions: () =>
-        new (class {
-          subscribe() {}
-          pipe() { return this; }
-        })() as any,
+      // Keeps the async branch pending so the loading spinner is visible after opening.
+      loadOptions: () => NEVER as any,
     } as DsSelectConfig,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByPlaceholderText('Search students…'));
+
+    const body = within(document.body);
+    await expect(await body.findByLabelText('Loading')).toBeInTheDocument();
   },
 };
 
@@ -239,27 +243,20 @@ export const MobileView: Story = {
     docs: {
       description: {
         story: `
-**On mobile devices**, the select opens an \`IonModal\` full-screen sheet instead of
-a CDK overlay. The \`isMobile()\` platform utility (from \`@shared/utils/platform\`)
-determines which behavior is used at runtime.
-
-To see the modal behavior in Storybook:
-1. Open the **Device Toolbar** (⌘+Shift+M in Chrome DevTools)
-2. Select any mobile preset (e.g. iPhone 14)
-3. Click the select trigger — the IonModal will slide up from the bottom
-
-The story wrapper is constrained to 375px to simulate a mobile viewport.
+This story provides a mobile \`Platform\` mock, so the component uses its real
+\`IonModal\` branch without relying on DevTools viewport emulation. Click the
+select trigger to inspect the mobile sheet behavior.
         `,
       },
     },
   },
   render: () => ({
     template: `
-      <div style="max-width:375px;margin:0 auto;">
-        <p style="font-size:12px;color:#6b7280;margin:0 0 12px;padding:0 16px;">
-          Switch to a mobile preset in the Device Toolbar to see the IonModal sheet behavior.
+      <div class="mx-auto max-w-sm">
+        <p class="single-line-caption-mid-emphasis mb-ds-md px-ds-xl text-content-mid">
+          Mobile Platform mock active. The select opens through the IonModal branch.
         </p>
-        <div style="padding:0 16px;">
+        <div class="px-ds-xl">
           <app-ds-select [config]="config"></app-ds-select>
         </div>
       </div>
@@ -275,8 +272,10 @@ The story wrapper is constrained to 375px to simulate a mobile viewport.
     },
   }),
   decorators: [
+    withHessaProviders({ mobile: true }),
     componentWrapperDecorator(
-      (story) => `<div style="padding:0;max-width:375px;">${story}</div>`,
+      (story) =>
+        `<div class="mx-auto w-full max-w-sm bg-surface-primary py-ds-xl">${story}</div>`,
     ),
   ],
 };
@@ -309,9 +308,10 @@ export const LTR: Story = {
   },
   args: { config: singleConfig },
   decorators: [
+    withHessaProviders({ locale: 'en', mobile: false }),
     componentWrapperDecorator(
       (story) =>
-        `<div lang="en" dir="ltr" style="font-family:'Nunito',sans-serif;padding:16px;max-width:360px;">${story}</div>`,
+        `<div lang="en" dir="ltr" class="max-w-sm p-ds-xl">${story}</div>`,
     ),
   ],
 };
@@ -345,9 +345,10 @@ export const RTL: Story = {
     },
   },
   decorators: [
+    withHessaProviders({ locale: 'ar', mobile: false }),
     componentWrapperDecorator(
       (story) =>
-        `<div lang="ar" dir="rtl" style="font-family:'Lama Rounded',sans-serif;padding:16px;max-width:360px;">${story}</div>`,
+        `<div lang="ar" dir="rtl" class="max-w-sm p-ds-xl">${story}</div>`,
     ),
   ],
 };

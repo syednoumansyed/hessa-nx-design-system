@@ -77,9 +77,7 @@ const meta: Meta<DsIconComponent> = {
   },
   decorators: [
     applicationConfig({
-      providers: [
-        provideIonicAngular(),
-      ],
+      providers: [provideIonicAngular()],
     }),
     moduleMetadata({ imports: [DsIconComponent] }),
     componentWrapperDecorator(
@@ -171,13 +169,62 @@ export const FontAwesomeColors: Story = {
     },
   },
   render: () => ({
-    props: { faCircleCheck, faTriangleExclamation, faCircleXmark, faCircleInfo },
+    props: {
+      faCircleCheck,
+      faTriangleExclamation,
+      faCircleXmark,
+      faCircleInfo,
+    },
     template: `
       <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
         <app-ds-icon [icon]="faCircleCheck"        size="xl" cssClass="text-success-500" />
         <app-ds-icon [icon]="faTriangleExclamation" size="xl" cssClass="text-warning-500" />
-        <app-ds-icon [icon]="faCircleXmark"        size="xl" cssClass="text-danger-500" />
+        <app-ds-icon [icon]="faCircleXmark"        size="xl" cssClass="text-error-ds-600" />
         <app-ds-icon [icon]="faCircleInfo"         size="xl" cssClass="text-info-500" />
+      </div>
+    `,
+  }),
+};
+
+export const Disabled: Story = {
+  name: 'State: Disabled / muted',
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Icons do not own disabled behavior; consumers pass low-emphasis color classes when the surrounding action is disabled.',
+      },
+    },
+  },
+  render: () => ({
+    props: { faLock, faEyeSlash, faBell },
+    template: `
+      <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
+        <app-ds-icon [icon]="faLock"     size="xl" cssClass="text-content-low" />
+        <app-ds-icon [icon]="faEyeSlash" size="xl" cssClass="text-icon-low" />
+        <app-ds-icon [icon]="faBell"     size="xl" cssClass="text-black-40" />
+      </div>
+    `,
+  }),
+};
+
+export const Error: Story = {
+  name: 'State: Error / destructive',
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Error and destructive icon states are represented through semantic error color utilities passed via `cssClass`.',
+      },
+    },
+  },
+  render: () => ({
+    props: { faCircleXmark, faTriangleExclamation, faTrash },
+    template: `
+      <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
+        <app-ds-icon [icon]="faCircleXmark"         size="xl" cssClass="text-error-ds-600" />
+        <app-ds-icon [icon]="faTriangleExclamation" size="xl" cssClass="text-warning-500" />
+        <app-ds-icon [icon]="faTrash"               size="xl" cssClass="text-content-error" />
       </div>
     `,
   }),
@@ -197,9 +244,19 @@ export const CommonIcons: Story = {
   },
   render: () => ({
     props: {
-      faPlus, faTrash, faEdit, faCheck, faXmark,
-      faArrowRight, faArrowLeft, faChevronDown,
-      faEnvelope, faPhone, faLock, faEye, faEyeSlash,
+      faPlus,
+      faTrash,
+      faEdit,
+      faCheck,
+      faXmark,
+      faArrowRight,
+      faArrowLeft,
+      faChevronDown,
+      faEnvelope,
+      faPhone,
+      faLock,
+      faEye,
+      faEyeSlash,
     },
     template: `
       <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;background:#f9fafb;padding:16px;border-radius:12px;">
@@ -236,7 +293,8 @@ export const LTR: Story = {
   }),
   decorators: [
     componentWrapperDecorator(
-      (story) => `<div lang="en" dir="ltr" style="padding:16px;">${story}</div>`,
+      (story) =>
+        `<div lang="en" dir="ltr" style="padding:16px;">${story}</div>`,
     ),
   ],
 };
@@ -256,7 +314,8 @@ export const RTL: Story = {
   }),
   decorators: [
     componentWrapperDecorator(
-      (story) => `<div lang="ar" dir="rtl" style="padding:16px;">${story}</div>`,
+      (story) =>
+        `<div lang="ar" dir="rtl" style="padding:16px;">${story}</div>`,
     ),
   ],
 };

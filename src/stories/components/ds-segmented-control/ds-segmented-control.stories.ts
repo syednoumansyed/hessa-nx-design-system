@@ -150,6 +150,26 @@ export const LastSelected: Story = {
   },
 };
 
+// ─── LTR (English) ───────────────────────────────────────────────────────────
+
+export const LTR: Story = {
+  name: 'LTR — English',
+  decorators: [
+    componentWrapperDecorator(
+      (story) =>
+        `<div lang="en" dir="ltr" style="max-width:480px;padding:16px;font-family:'Nunito',sans-serif;">${story}</div>`,
+    ),
+  ],
+  args: {
+    options: [
+      { id: 'all', label: 'All' },
+      { id: 'mine', label: 'Mine' },
+      { id: 'shared', label: 'Shared' },
+    ],
+    value: 'all',
+  },
+};
+
 // ─── RTL (Arabic) ─────────────────────────────────────────────────────────────
 
 export const RTL: Story = {

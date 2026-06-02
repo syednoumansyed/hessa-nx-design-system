@@ -1,11 +1,10 @@
 import {
   Meta,
   StoryObj,
-  applicationConfig,
   moduleMetadata,
   componentWrapperDecorator,
 } from '@storybook/angular';
-import { provideIonicAngular } from '@ionic/angular/standalone';
+import { withHessaProviders } from '../../../../.storybook/hessa-providers';
 import { DsRadioComponent } from '@ds/radio-button/radio/radio.component';
 import { DsRadioGroupComponent } from '@ds/radio-button/radio-group/radio-group.component';
 
@@ -26,10 +25,19 @@ const meta: Meta<DsRadioGroupComponent> = {
     layout: 'centered',
     a11y: { config: { rules: [{ id: 'label', enabled: true }] } },
   },
+  argTypes: {
+    required: {
+      control: 'boolean',
+      description:
+        'Marks the radio group invalid until one child radio is selected.',
+    },
+  },
   decorators: [
-    applicationConfig({ providers: [provideIonicAngular()] }),
+    withHessaProviders(),
     moduleMetadata({ imports: [DsRadioComponent, DsRadioGroupComponent] }),
-    componentWrapperDecorator((story) => `<div style="padding:16px;">${story}</div>`),
+    componentWrapperDecorator(
+      (story) => `<div style="padding:16px;">${story}</div>`,
+    ),
   ],
 };
 
@@ -87,7 +95,8 @@ export const LTR: Story = {
   }),
   decorators: [
     componentWrapperDecorator(
-      (story) => `<div lang="en" dir="ltr" style="font-family:'Nunito',sans-serif;padding:16px;">${story}</div>`,
+      (story) =>
+        `<div lang="en" dir="ltr" style="font-family:'Nunito',sans-serif;padding:16px;">${story}</div>`,
     ),
   ],
 };

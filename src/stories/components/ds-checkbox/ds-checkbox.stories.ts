@@ -5,6 +5,7 @@ import {
   moduleMetadata,
   componentWrapperDecorator,
 } from '@storybook/angular';
+import { expect, userEvent, within } from 'storybook/test';
 import { provideIonicAngular } from '@ionic/angular/standalone';
 import { DsCheckboxComponent } from '@ds/checkbox/checkbox.component';
 import { DsCheckboxGroupComponent } from '@ds/checkbox-group/checkbox-group.component';
@@ -40,23 +41,46 @@ const meta: Meta<DsCheckboxComponent> = {
     a11y: { config: { rules: [{ id: 'label', enabled: true }] } },
   },
   argTypes: {
-    title: { control: 'text', description: 'Label text rendered beside the checkbox' },
-    size: { control: 'select', options: ['sm', 'lg'], description: 'Visual size of the checkbox box and label' },
+    title: {
+      control: 'text',
+      description: 'Label text rendered beside the checkbox',
+    },
+    size: {
+      control: 'select',
+      options: ['sm', 'lg'],
+      description: 'Visual size of the checkbox box and label',
+    },
     variantInput: {
       control: 'select',
       options: ['determinate', 'indeterminate'],
       description: 'Indeterminate shows a minus icon instead of a checkmark',
     },
-    disabled: { control: 'boolean', description: 'Prevents user interaction; grays out the control' },
-    required: { control: 'boolean', description: 'Adds required validation — fails if unchecked' },
-    defaultValue: { control: 'boolean', description: 'Initial checked state (not reactive after mount)' },
-    helperText: { control: 'text', description: 'Secondary description rendered below the label' },
+    disabled: {
+      control: 'boolean',
+      description: 'Prevents user interaction; grays out the control',
+    },
+    required: {
+      control: 'boolean',
+      description: 'Adds required validation — fails if unchecked',
+    },
+    defaultValue: {
+      control: 'boolean',
+      description: 'Initial checked state (not reactive after mount)',
+    },
+    helperText: {
+      control: 'text',
+      description: 'Secondary description rendered below the label',
+    },
     labelIconPlacement: { control: 'select', options: ['start', 'end'] },
   },
   decorators: [
     applicationConfig({ providers: [provideIonicAngular()] }),
-    moduleMetadata({ imports: [DsCheckboxComponent, DsCheckboxGroupComponent] }),
-    componentWrapperDecorator((story) => `<div style="padding:16px;">${story}</div>`),
+    moduleMetadata({
+      imports: [DsCheckboxComponent, DsCheckboxGroupComponent],
+    }),
+    componentWrapperDecorator(
+      (story) => `<div style="padding:16px;">${story}</div>`,
+    ),
   ],
 };
 
@@ -72,6 +96,23 @@ export const Default: Story = {
   args: {
     title: 'Accept terms',
     size: 'lg',
+  },
+};
+
+/** Interaction test — clicking the checkbox checks the underlying form control. */
+export const CheckInteraction: Story = {
+  name: 'Interaction: Check',
+  args: {
+    title: 'Accept terms',
+    size: 'lg',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const checkbox = canvas.getByRole('checkbox', { name: 'Accept terms' });
+
+    await expect(checkbox).not.toBeChecked();
+    await userEvent.click(checkbox);
+    await expect(checkbox).toBeChecked();
   },
 };
 

@@ -6,7 +6,11 @@ import {
   componentWrapperDecorator,
 } from '@storybook/angular';
 import { provideIonicAngular } from '@ionic/angular/standalone';
-import { AttendanceCalendarComponent, AttendanceEventType, AbsenceType } from '@ds/calendar/attendance-calendar.component';
+import {
+  AttendanceCalendarComponent,
+  AttendanceEventType,
+  AbsenceType,
+} from '@ds/calendar/attendance-calendar.component';
 import { DS_TRANSLATION_TOKEN } from '@ds/i18n/ds-translation.token';
 
 const translationProvider = {
@@ -21,7 +25,8 @@ const translationProvider = {
         'attendance.late.title': 'Late Arrival',
         'attendance.planned.title': 'Planned Leave',
         'attendance.not_planned_absence.title': 'Unplanned Absence',
-        'attendance.vacation.total_days_month.title': '{{days}} Vacation Days This Month',
+        'attendance.vacation.total_days_month.title':
+          '{{days}} Vacation Days This Month',
         'attendance.vacation_wish': 'Wishing you a blessed and joyful time 🌴',
         'attendance.todaystatus.attended_on_time': 'Attended on time today',
       };
@@ -51,14 +56,37 @@ const meta: Meta<AttendanceCalendarComponent> = {
   component: AttendanceCalendarComponent,
   tags: ['autodocs'],
   decorators: [
-    applicationConfig({ providers: [provideIonicAngular(), translationProvider] }),
+    applicationConfig({
+      providers: [provideIonicAngular(), translationProvider],
+    }),
     moduleMetadata({ imports: [AttendanceCalendarComponent] }),
     componentWrapperDecorator(
-      (story) => `<div style="max-width:480px;margin:0 auto;padding:16px;">${story}</div>`
+      (story) =>
+        `<div style="max-width:480px;margin:0 auto;padding:16px;">${story}</div>`,
     ),
   ],
   parameters: {
     layout: 'centered',
+  },
+  argTypes: {
+    month: {
+      control: { type: 'number', min: 0, max: 11, step: 1 },
+      description: 'Zero-based month index used by the attendance calendar.',
+    },
+    year: {
+      control: { type: 'number', min: 2020, max: 2035, step: 1 },
+      description: 'Calendar year.',
+    },
+    config: {
+      control: 'object',
+      description:
+        'Attendance dates, monthly statistics, attendance totals, and student display data.',
+    },
+    local: {
+      control: 'select',
+      options: ['en', 'ar'],
+      description: 'Locale used by the calendar translation display.',
+    },
   },
 };
 
@@ -214,7 +242,8 @@ export const LTR: Story = {
   },
   decorators: [
     componentWrapperDecorator(
-      (story) => `<div lang="en" dir="ltr" style="font-family:'Nunito',sans-serif;">${story}</div>`
+      (story) =>
+        `<div lang="en" dir="ltr" style="font-family:'Nunito',sans-serif;">${story}</div>`,
     ),
   ],
 };
@@ -231,7 +260,8 @@ export const RTL: Story = {
   },
   decorators: [
     componentWrapperDecorator(
-      (story) => `<div lang="ar" dir="rtl" style="font-family:'Lama Rounded',sans-serif;">${story}</div>`
+      (story) =>
+        `<div lang="ar" dir="rtl" style="font-family:'Lama Rounded',sans-serif;">${story}</div>`,
     ),
   ],
 };

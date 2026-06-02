@@ -32,6 +32,38 @@ const meta: Meta<DsTextareaComponent> = {
   parameters: {
     layout: 'padded',
   },
+  argTypes: {
+    label: {
+      control: 'text',
+      description: 'Optional label above the textarea',
+    },
+    placeholder: { control: 'text' },
+    required: {
+      control: 'boolean',
+      description: 'Marks the field required for form validation',
+    },
+    hintLeft: {
+      control: 'text',
+      description: 'Helper text below the textarea',
+    },
+    hintRight: {
+      control: 'text',
+      description: 'Secondary hint, often used for metadata or limits',
+    },
+    showCharacterCount: {
+      control: 'boolean',
+      description: 'Shows the live character counter',
+    },
+    rows: { control: 'number', description: 'Visible textarea rows' },
+    maxLength: {
+      control: 'number',
+      description: 'Maximum allowed character count',
+    },
+    disabled: {
+      control: 'boolean',
+      description: 'Disables input and applies muted styling',
+    },
+  },
   decorators: [
     applicationConfig({ providers: [provideIonicAngular()] }),
     moduleMetadata({ imports: [DsTextareaComponent] }),

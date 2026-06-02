@@ -64,6 +64,13 @@ const meta: Meta<DsIconContainerComponent> = {
     },
     a11y: { config: { rules: [] } },
   },
+  argTypes: {
+    config: {
+      control: 'object',
+      description:
+        'Icon container configuration: icon, color class, optional chip, menu, label, indicator, and grayed state',
+    },
+  },
   decorators: [
     applicationConfig({
       providers: [
@@ -73,7 +80,8 @@ const meta: Meta<DsIconContainerComponent> = {
     }),
     moduleMetadata({ imports: [DsIconContainerComponent] }),
     componentWrapperDecorator(
-      (story) => `<div style="padding:24px;display:flex;gap:24px;flex-wrap:wrap;">${story}</div>`,
+      (story) =>
+        `<div style="padding:24px;display:flex;gap:24px;flex-wrap:wrap;">${story}</div>`,
     ),
   ],
 };
@@ -100,7 +108,8 @@ export const WithLabel: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'A caption rendered below the frame, passed through `DsTranslatePipe`.',
+        story:
+          'A caption rendered below the frame, passed through `DsTranslatePipe`.',
       },
     },
   },
@@ -167,12 +176,22 @@ export const IconGrid: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Typical usage: a grid of subject icon containers on a dashboard.',
+        story:
+          'Typical usage: a grid of subject icon containers on a dashboard.',
       },
     },
   },
   render: () => ({
-    props: { faHouse, faGraduationCap, faBook, faBell, faCalendar, faFileLines, faChartBar, faUser },
+    props: {
+      faHouse,
+      faGraduationCap,
+      faBook,
+      faBell,
+      faCalendar,
+      faFileLines,
+      faChartBar,
+      faUser,
+    },
     template: `
       <div style="display:flex;gap:20px;flex-wrap:wrap;padding:16px;background:#f9fafb;border-radius:16px;">
         <ds-icon-container [config]="{ icon: faGraduationCap, iconColorClass: 'text-primary-500',   label: 'Math' }"     />
@@ -184,6 +203,28 @@ export const IconGrid: Story = {
       </div>
     `,
   }),
+};
+
+// ─── LTR ─────────────────────────────────────────────────────────────────────
+
+export const LTR: Story = {
+  name: 'LTR (English)',
+  render: () => ({
+    props: { faGraduationCap, faBook, faCalendar },
+    template: `
+      <div style="display:flex;gap:20px;flex-wrap:wrap;">
+        <ds-icon-container [config]="{ icon: faGraduationCap, iconColorClass: 'text-primary-500',   label: 'Mathematics' }" />
+        <ds-icon-container [config]="{ icon: faBook,          iconColorClass: 'text-success-500',   label: 'Science' }" />
+        <ds-icon-container [config]="{ icon: faCalendar,      iconColorClass: 'text-secondary-500', label: 'Schedule' }" />
+      </div>
+    `,
+  }),
+  decorators: [
+    componentWrapperDecorator(
+      (story) =>
+        `<div lang="en" dir="ltr" style="font-family:'Nunito',sans-serif;padding:16px;">${story}</div>`,
+    ),
+  ],
 };
 
 // ─── RTL ─────────────────────────────────────────────────────────────────────

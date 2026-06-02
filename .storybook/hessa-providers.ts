@@ -13,6 +13,7 @@ import {
   DS_TRANSLATION_TOKEN,
   DsTranslationService,
 } from '@ds/i18n/ds-translation.token';
+import { DsToastComponent } from '@ds/toast/ds-toast.component';
 import { HesTranslateService } from '@shared/services/hes-translate.service';
 import { LayoutService } from '@layout/layout.service';
 import { DsFileInteractionService } from '@ds/utils/ds-file-interaction.service';
@@ -35,8 +36,29 @@ export interface HessaProvidersOptions {
 }
 
 const DEFAULT_TRANSLATIONS: Record<string, string> = {
+  'global.add.btn': 'Add',
+  'global.cancel.btn': 'Cancel',
+  'global.clear.btn': 'Clear',
+  'global.close.btn': 'Close',
+  'global.create.btn': 'Create',
+  'global.delete.btn': 'Delete',
+  'global.delete_confirm.btn': 'Delete',
+  'global.edit.btn': 'Edit',
+  'global.no.btn': 'No',
+  'global.none.txt': 'None',
+  'global.save.btn': 'Save',
+  'global.select.btn': 'Select',
+  'global.select_all.txt': 'Select all',
+  'global.update.btn': 'Update',
+  'global.view.btn': 'View',
+  'global.yes.btn': 'Yes',
+  'global.you.txt': 'You',
+  'global.class.title': 'Class',
   'global.click_to_upload.btn': 'Click to upload',
   'global.drag_drop.txt': 'or drag and drop',
+  'global.picker_select.items_selected':
+    '{{count}} {{itemLabel}} selected',
+  'global.picker_select.select_title': 'Select {{itemLabel}}',
   'global.multiple_attachment_upload.info':
     'Drag and drop or click here to upload files ({{types}} up to {{size}}GB)',
   'global.single_attachment_upload.info':
@@ -218,7 +240,9 @@ export const buildHessaProviders = (
   } else if (toaster === 'real') {
     providers.push(
       provideToastr({
-        timeOut: 6000,
+        timeOut: 3000,
+        easeTime: 180,
+        toastComponent: DsToastComponent,
         closeButton: true,
         positionClass: 'toast-top-right',
       }),

@@ -180,7 +180,7 @@ export const WithMenu: Story = {
           title="Course Details"
           subtitle="3 units · 12 lessons"
           [showMenu]="true"
-          [menuItems]="[{label: 'Edit'}, {label: 'Duplicate'}, {label: 'Delete'}]"
+          [menuItems]="[{title: 'Edit'}, {title: 'Duplicate'}, {title: 'Delete', state: 'danger'}]"
           [expanded]="false"
         >
           <div style="padding:16px;">

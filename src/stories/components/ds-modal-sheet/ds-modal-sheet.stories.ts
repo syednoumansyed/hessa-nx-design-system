@@ -144,6 +144,12 @@ const baseProviders = [
  * by `ModalSheetService` — call `.present({ component, headerConfig, footerConfig })`
  * to push a sheet onto the stack.
  *
+ * This is not the same path as `DsModalService` mobile bottom-sheet behavior.
+ * `DsModalService` uses Ionic `ModalController` and `DsModalWrapperComponent`;
+ * `ModalSheetService` uses an in-app signal stack rendered by
+ * `ds-modal-sheet-container`. `DsSidebarService` can choose this service on
+ * mobile when `mobilePresentation: 'modal-sheet'`.
+ *
  * **Note:** This is a mobile-first component. It occupies 90dvh of the viewport and
  * slides up from the bottom. Stories are constrained to a 375×667px mobile frame.
  *
@@ -163,7 +169,7 @@ const meta: Meta<ModalSheetContainerComponent> = {
     docs: {
       description: {
         component:
-          'Bottom-sheet overlay for mobile. Managed by ModalSheetService — present/dismiss sheets imperatively. Supports stacking, custom headers, footers, and RTL layouts. Constrain to a mobile viewport (≤ 375px) for correct visual output.',
+          'Bottom-sheet overlay for mobile. Managed by ModalSheetService, not DsModalService. Supports stacking, custom headers, footers, and RTL layouts. Constrain to a mobile viewport (≤ 375px) for correct visual output.',
       },
     },
     a11y: { config: { rules: [] } },

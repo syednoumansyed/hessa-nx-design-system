@@ -7,7 +7,11 @@ import {
 import { expect, userEvent, within } from 'storybook/test';
 import { withHessaProviders } from '../../../../.storybook/hessa-providers';
 import { DsButtonComponent } from '@ds/button/button.component';
-import { faArrowRight, faPlus, faTrash } from '@fortawesome/pro-regular-svg-icons';
+import {
+  faArrowRight,
+  faPlus,
+  faTrash,
+} from '@fortawesome/pro-regular-svg-icons';
 
 /**
  * # Button — `ds-button`
@@ -49,7 +53,15 @@ const meta: Meta<DsButtonComponent> = {
   argTypes: {
     variant: {
       control: 'select',
-      options: ['primary', 'secondary', 'tertiary', 'ghost', 'dangerStroke', 'dangerFill', 'link'],
+      options: [
+        'primary',
+        'secondary',
+        'tertiary',
+        'ghost',
+        'dangerStroke',
+        'dangerFill',
+        'link',
+      ],
     },
     size: { control: 'select', options: ['sm', 'md', 'lg'] },
     loading: { control: 'boolean' },
@@ -103,6 +115,21 @@ export const DangerFill: Story = {
   render: () => ({
     template: `<ds-button variant="dangerFill" size="lg">Delete Permanently</ds-button>`,
   }),
+};
+
+export const Error: Story = {
+  name: 'Error / destructive',
+  render: () => ({
+    template: `<ds-button variant="dangerFill" size="lg">Remove student</ds-button>`,
+  }),
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Matrix error/destructive state using the real `dangerFill` variant for irreversible actions.',
+      },
+    },
+  },
 };
 
 export const Link: Story = {
@@ -216,7 +243,8 @@ export const LTR: Story = {
   }),
   decorators: [
     componentWrapperDecorator(
-      (story) => `<div lang="en" dir="ltr" style="font-family:'Nunito',sans-serif;">${story}</div>`,
+      (story) =>
+        `<div lang="en" dir="ltr" style="font-family:'Nunito',sans-serif;">${story}</div>`,
     ),
   ],
 };

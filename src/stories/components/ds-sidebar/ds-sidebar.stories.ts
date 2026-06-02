@@ -1,11 +1,10 @@
 import {
   Meta,
   StoryObj,
-  applicationConfig,
   moduleMetadata,
   componentWrapperDecorator,
 } from '@storybook/angular';
-import { provideIonicAngular } from '@ionic/angular/standalone';
+import { withHessaProviders } from '../../../../.storybook/hessa-providers';
 import { DsSidebarComponent } from '@ds/sidebar/sidebar.component';
 
 /**
@@ -30,8 +29,29 @@ const meta: Meta<DsSidebarComponent> = {
   parameters: {
     layout: 'fullscreen',
   },
+  argTypes: {
+    headerConfig: {
+      control: 'object',
+      description:
+        'Standard sidebar header configuration: title, subtitle, back button, and close button.',
+    },
+    footerConfig: {
+      control: 'object',
+      description:
+        'Footer action configuration shared with DsModalFooterComponent.',
+    },
+    contentClass: {
+      control: 'text',
+      description: 'CSS classes applied to the scrollable content wrapper.',
+    },
+    scrollableContent: {
+      control: 'boolean',
+      description:
+        'Keeps header and footer fixed while the content area scrolls independently.',
+    },
+  },
   decorators: [
-    applicationConfig({ providers: [provideIonicAngular()] }),
+    withHessaProviders(),
     moduleMetadata({ imports: [DsSidebarComponent] }),
   ],
 };
@@ -62,6 +82,66 @@ export const Default: Story = {
               <p style="margin:0;"><strong>Grade:</strong> 5-A</p>
               <p style="margin:0;"><strong>Student ID:</strong> STU-20240042</p>
               <p style="margin:0;"><strong>Status:</strong> Active</p>
+            </div>
+          </ds-sidebar>
+        </div>
+      </div>
+    `,
+  }),
+};
+
+/** Disabled footer actions — preserves the shell while blocking submit/cancel. */
+export const Disabled: Story = {
+  render: () => ({
+    template: `
+      <div style="display:flex;justify-content:flex-end;height:100vh;background:#f3f4f6;">
+        <div style="width:400px;height:100%;background:#fff;box-shadow:-4px 0 24px rgba(0,0,0,.10);display:flex;flex-direction:column;">
+          <ds-sidebar
+            [headerConfig]="{
+              title: 'Student Details',
+              subtitle: 'Actions disabled while permissions are checked',
+              showCloseButton: true,
+              showBackButton: false
+            }"
+            [footerConfig]="{
+              primaryButton: { text: 'Save', disabled: true },
+              secondaryButton: { text: 'Cancel', disabled: true },
+              buttonSize: 'md'
+            }"
+          >
+            <div style="display:flex;flex-direction:column;gap:16px;color:#374151;">
+              <p style="margin:0;">This panel is visible, but footer actions are disabled.</p>
+              <p style="margin:0;font-size:13px;color:#6b7280;">Use this when backend permissions or validation prevent submission.</p>
+            </div>
+          </ds-sidebar>
+        </div>
+      </div>
+    `,
+  }),
+};
+
+/** Loading footer action — primary action displays the design-system spinner. */
+export const Loading: Story = {
+  render: () => ({
+    template: `
+      <div style="display:flex;justify-content:flex-end;height:100vh;background:#f3f4f6;">
+        <div style="width:400px;height:100%;background:#fff;box-shadow:-4px 0 24px rgba(0,0,0,.10);display:flex;flex-direction:column;">
+          <ds-sidebar
+            [headerConfig]="{
+              title: 'Saving Changes',
+              subtitle: 'Primary footer action is in progress',
+              showCloseButton: true,
+              showBackButton: false
+            }"
+            [footerConfig]="{
+              primaryButton: { text: 'Saving', loading: true },
+              secondaryButton: { text: 'Cancel', disabled: true },
+              buttonSize: 'md'
+            }"
+          >
+            <div style="display:flex;flex-direction:column;gap:16px;color:#374151;">
+              <p style="margin:0;">The sidebar remains readable while the primary action is loading.</p>
+              <p style="margin:0;font-size:13px;color:#6b7280;">Secondary action is disabled to prevent duplicate state transitions.</p>
             </div>
           </ds-sidebar>
         </div>

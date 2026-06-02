@@ -1,11 +1,11 @@
 import {
   Meta,
   StoryObj,
-  applicationConfig,
   moduleMetadata,
   componentWrapperDecorator,
 } from '@storybook/angular';
-import { provideIonicAngular } from '@ionic/angular/standalone';
+import { expect, userEvent, within } from 'storybook/test';
+import { withHessaProviders } from '../../../../.storybook/hessa-providers';
 import { DsSwitchComponent } from '@ds/switch/switch.component';
 
 /**
@@ -28,8 +28,31 @@ const meta: Meta<DsSwitchComponent> = {
   parameters: {
     layout: 'centered',
   },
+  argTypes: {
+    type: {
+      control: 'select',
+      options: ['boolean', 'two-way'],
+      description: 'Switch mode: boolean on/off or two labelled options',
+    },
+    option1: { control: 'text', description: 'First label in two-way mode' },
+    option2: { control: 'text', description: 'Second label in two-way mode' },
+    selectedOption: {
+      control: 'text',
+      description: 'Initial selected option in two-way mode',
+    },
+    onColor: {
+      control: 'color',
+      description:
+        'Track color when selected; accepts CSS colors or utility classes',
+    },
+    offColor: {
+      control: 'color',
+      description:
+        'Track color when unselected; accepts CSS colors or utility classes',
+    },
+  },
   decorators: [
-    applicationConfig({ providers: [provideIonicAngular()] }),
+    withHessaProviders(),
     moduleMetadata({ imports: [DsSwitchComponent] }),
   ],
 };
@@ -48,6 +71,30 @@ export const BooleanOff: Story = {
       </div>
     `,
   }),
+};
+
+export const Default: Story = {
+  ...BooleanOff,
+  name: 'Default',
+};
+
+/** Interaction test — clicking the boolean switch moves the knob to the on state. */
+export const ToggleInteraction: Story = {
+  ...BooleanOff,
+  name: 'Interaction: Toggle on',
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const toggle = canvas.getByRole('button');
+
+    await userEvent.click(toggle);
+
+    const knobMoved = Array.from(canvasElement.querySelectorAll('div')).some(
+      (element) =>
+        typeof element.className === 'string' &&
+        element.className.includes('translate-x-[1.5rem]'),
+    );
+    await expect(knobMoved).toBe(true);
+  },
 };
 
 /** Boolean switch pre-set to the **on** (true) state via writeValue. */

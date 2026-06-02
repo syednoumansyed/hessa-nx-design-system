@@ -1,11 +1,10 @@
 import {
   Meta,
   StoryObj,
-  applicationConfig,
   moduleMetadata,
   componentWrapperDecorator,
 } from '@storybook/angular';
-import { provideIonicAngular } from '@ionic/angular/standalone';
+import { withHessaProviders } from '../../../../.storybook/hessa-providers';
 import { DsCheckboxGroupComponent } from '@ds/checkbox-group/checkbox-group.component';
 import { DsCheckboxComponent } from '@ds/checkbox/checkbox.component';
 
@@ -40,9 +39,18 @@ const meta: Meta<DsCheckboxGroupComponent> = {
     },
     a11y: { config: { rules: [{ id: 'label', enabled: true }] } },
   },
+  argTypes: {
+    required: {
+      control: 'boolean',
+      description:
+        'Requires at least one child checkbox selection for form validation.',
+    },
+  },
   decorators: [
-    applicationConfig({ providers: [provideIonicAngular()] }),
-    moduleMetadata({ imports: [DsCheckboxGroupComponent, DsCheckboxComponent] }),
+    withHessaProviders(),
+    moduleMetadata({
+      imports: [DsCheckboxGroupComponent, DsCheckboxComponent],
+    }),
   ],
 };
 
@@ -99,7 +107,7 @@ export const Disabled: Story = {
   render: () => ({
     template: `
       <app-ds-checkbox-group>
-        <app-ds-checkbox title="Available" value="available" [defaultValue]="true" />
+        <app-ds-checkbox title="Available" value="available" />
         <app-ds-checkbox title="Disabled option" value="disabled-opt" [disabled]="true" />
         <app-ds-checkbox title="Also available" value="also-available" />
       </app-ds-checkbox-group>
@@ -137,7 +145,8 @@ export const LTR: Story = {
   }),
   decorators: [
     componentWrapperDecorator(
-      (story) => `<div lang="en" dir="ltr" style="font-family:'Nunito',sans-serif;padding:16px;">${story}</div>`,
+      (story) =>
+        `<div lang="en" dir="ltr" style="font-family:'Nunito',sans-serif;padding:16px;">${story}</div>`,
     ),
   ],
 };
