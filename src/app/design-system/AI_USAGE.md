@@ -15,6 +15,12 @@ The Hessa Design System is a standalone Angular component library built for a bi
 - **Angular CDK** for overlays (desktop dropdowns)
 - **Transloco** for i18n
 
+For portable handoffs to external coding agents such as Claude Code, Cursor,
+Antigravity, or chat-based LLMs, start with
+`docs/llm-design-system-operating-guide.md`. That repo-level guide lists the
+exact context files to provide, component/source/story lookup rules, token
+rules, and mobile/desktop overlay behavior.
+
 ### How to use this guide with AI tools
 
 1. Read `design-system/ai-manifest.json` for machine-readable component metadata.
