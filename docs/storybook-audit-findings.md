@@ -53,22 +53,13 @@ its real use cases.
 Latest `storybook:audit` target state:
 
 - Component folders: 45
-- Component story files: 41
-- Missing component story folders: 8
+- Component story files: 49
+- Missing component story folders: 0
 - Story files missing `argTypes`: 0
 - Interactive candidates missing `play()`: 0
 - Story files with matrix gaps: 0
 
-Missing story folders currently reported:
-
-- `ag-grid-table`
-- `carousal`
-- `icon-chooser`
-- `option-creator`
-- `qr-scanner`
-- `react`
-- `school-structure-control`
-- `selectable-option`
+All design system component folders now have corresponding story files. No missing story folders are currently reported.
 
 ## Audit Scope Policy
 
@@ -91,17 +82,16 @@ Missing story folders currently reported:
 
 ## Next Execution Order
 
-1. Finish the remaining missing story folders, starting with the highest-risk
-   components and preserving correctness-first story authoring.
-2. Continue source, provider, token, and service-path alignment for any story
+1. Continue source, provider, token, and service-path alignment for any story
    still carrying drift from the production implementation.
-3. Keep modal, sheet, sidebar, and overlay flows separated by their true
+2. Keep modal, sheet, sidebar, and overlay flows separated by their true
    runtime path. Do not collapse `DsModalService`, `ModalSheetService`, bottom
    sheet, and sidebar service behavior into one generic example.
-4. Preserve strict audit scope: reusable DS stories stay strict, workflow proof
+3. Preserve strict audit scope: reusable DS stories stay strict, workflow proof
    stories stay valid but are not forced into DS-only metadata rules.
-5. Return to build warning cleanup only after story correctness and branch
-   policy work are stable.
+4. Maintain branch stability and workflow adherence. Ensure any new design system
+   components receive stories matching the maintenance guide standards.
+5. Return to build warning cleanup as a next priority.
 
 ## Verification Loop
 
