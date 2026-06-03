@@ -32,24 +32,24 @@ rules, and mobile/desktop overlay behavior.
 
 ## 2. Component Quick Reference
 
-| Component | Selector | Category | Key Inputs | Storybook Path |
-|---|---|---|---|---|
-| `DsButtonComponent` | `ds-button` | action | `variant`, `size`, `loading`, `disabled`, `fullWidth`, `iconStart`, `iconEnd` | 1. P0 Components/Button |
-| `DsInputComponent` | `app-ds-input` | input | `label`, `placeholder`, `errorMessage`, `disabled`, `iconStart`, `iconEnd`, `dsType`, `inputMode`, `maxLength` | 1. P0 Components/Input |
-| `DsSelectComponent` | `app-ds-select` | input | `[config]` (required), `disabled` | 1. P0 Components/Select |
-| `DsCheckboxComponent` | `app-ds-checkbox` | input | `title`, `variantInput`, `size`, `defaultValue`, `required`, `disabled`, `helperText` | 1. P0 Components/Checkbox |
-| `DsModalComponent` | `ds-modal` | layout | `headerConfig`, `footerConfig`, `modalSize`, `dismissFn`, `scrollableContent` | 1. P0 Components/Modal |
-| `DsChipComponent` | `app-ds-chip` | action | `text`, `variant`, `displayType`, `removable`, `startIcon`, `static` | 1. P0 Components/Chip |
-| `DsTabsComponent` | `app-ds-tabs` | display | `tabs`, `activeTabId`, `variant`, `scrollable` | 1. P0 Components/Tabs |
-| `AvatarComponent` | `app-ds-avatar` | display | `fullName` (required), `imageUrl`, `size`, `color`, `includeBorder` | 1. P0 Components/Avatar |
-| `DsIconComponent` | `app-ds-icon` | display | `icon`, `size`, `cssClass` | 1. P0 Components/Icon |
-| `DsProgressBarComponent` | `app-ds-progress-bar` | display | `progress`, `variant`, `size`, `showPercentage` | 2. P1 Components/Progress Bar |
-| `DsSwitchComponent` | `app-ds-switch` | input | `type`, `option1`, `option2`, `onColor`, `offColor` | 1. P0 Components/Switch |
-| `DsTextareaComponent` | `app-ds-textarea` | input | `label`, `placeholder`, `rows`, `maxLength`, `required`, `showCharacterCount` | 1. P0 Components/Text Area |
-| `DsSidebarComponent` | `ds-sidebar` | layout | `headerConfig`, `footerConfig`, `dismissFn`, `scrollableContent` | 2. P1 Components/Sidebar |
-| `DsAccordionComponent` | `ds-accordion` | layout | `title`, `subtitle`, `tags`, `expanded`, `disabled`, `menuItems` | 2. P1 Components/Accordion |
-| `SearchBoxComponent` | `app-search-box` | input | `value`, `placeholderTxt`, `includeAddButton`, `autoFocus`, `autoFocusDelay` | 2. P1 Components/Search Box |
-| `DsIconContainerComponent` | `ds-icon-container` | display | `[config]` (required) | 2. P1 Components/Icon Container |
+| Component                  | Selector              | Category | Key Inputs                                                                                                     | Storybook Path                  |
+| -------------------------- | --------------------- | -------- | -------------------------------------------------------------------------------------------------------------- | ------------------------------- |
+| `DsButtonComponent`        | `ds-button`           | action   | `variant`, `size`, `loading`, `disabled`, `fullWidth`, `iconStart`, `iconEnd`                                  | 1. P0 Components/Button         |
+| `DsInputComponent`         | `app-ds-input`        | input    | `label`, `placeholder`, `errorMessage`, `disabled`, `iconStart`, `iconEnd`, `dsType`, `inputMode`, `maxLength` | 1. P0 Components/Input          |
+| `DsSelectComponent`        | `app-ds-select`       | input    | `[config]` (required), `disabled`                                                                              | 1. P0 Components/Select         |
+| `DsCheckboxComponent`      | `app-ds-checkbox`     | input    | `title`, `variantInput`, `size`, `defaultValue`, `required`, `disabled`, `helperText`                          | 1. P0 Components/Checkbox       |
+| `DsModalComponent`         | `ds-modal`            | layout   | `headerConfig`, `footerConfig`, `modalSize`, `dismissFn`, `scrollableContent`                                  | 1. P0 Components/Modal          |
+| `DsChipComponent`          | `app-ds-chip`         | action   | `text`, `variant`, `displayType`, `removable`, `startIcon`, `static`                                           | 1. P0 Components/Chip           |
+| `DsTabsComponent`          | `app-ds-tabs`         | display  | `tabs`, `activeTabId`, `variant`, `scrollable`                                                                 | 1. P0 Components/Tabs           |
+| `AvatarComponent`          | `app-ds-avatar`       | display  | `fullName` (required), `imageUrl`, `size`, `color`, `includeBorder`                                            | 1. P0 Components/Avatar         |
+| `DsIconComponent`          | `app-ds-icon`         | display  | `icon`, `size`, `cssClass`                                                                                     | 1. P0 Components/Icon           |
+| `DsProgressBarComponent`   | `app-ds-progress-bar` | display  | `progress`, `variant`, `size`, `showPercentage`                                                                | 2. P1 Components/Progress Bar   |
+| `DsSwitchComponent`        | `app-ds-switch`       | input    | `type`, `option1`, `option2`, `onColor`, `offColor`                                                            | 1. P0 Components/Switch         |
+| `DsTextareaComponent`      | `app-ds-textarea`     | input    | `label`, `placeholder`, `rows`, `maxLength`, `required`, `showCharacterCount`                                  | 1. P0 Components/Text Area      |
+| `DsSidebarComponent`       | `ds-sidebar`          | layout   | `headerConfig`, `footerConfig`, `dismissFn`, `scrollableContent`                                               | 2. P1 Components/Sidebar        |
+| `DsAccordionComponent`     | `ds-accordion`        | layout   | `title`, `subtitle`, `tags`, `expanded`, `disabled`, `menuItems`                                               | 2. P1 Components/Accordion      |
+| `SearchBoxComponent`       | `app-search-box`      | input    | `value`, `placeholderTxt`, `includeAddButton`, `autoFocus`, `autoFocusDelay`                                   | 2. P1 Components/Search Box     |
+| `DsIconContainerComponent` | `ds-icon-container`   | display  | `[config]` (required)                                                                                          | 2. P1 Components/Icon Container |
 
 ---
 
@@ -72,19 +72,11 @@ All inputs use Angular reactive forms. Follow the Rules for AI Code Generation i
 
 ```html
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
-  <app-ds-input
-    [label]="'Full Name'"
-    formControlName="name"
-  />
+  <app-ds-input [label]="'Full Name'" formControlName="name" />
 
-  <app-ds-select
-    [config]="roleSelectConfig"
-    formControlName="role"
-  />
+  <app-ds-select [config]="roleSelectConfig" formControlName="role" />
 
-  <ds-button [variant]="'primary'" [size]="'lg'" type="submit">
-    Submit
-  </ds-button>
+  <ds-button [variant]="'primary'" [size]="'lg'" type="submit"> Submit </ds-button>
 </form>
 ```
 
@@ -105,19 +97,11 @@ Include:
 ```html
 <div data-role="student">
   <div class="flex items-center gap-3 p-4">
-    <app-ds-avatar
-      [fullName]="student.fullName"
-      [imageUrl]="student.imageUrl"
-      [size]="'lg'"
-    />
+    <app-ds-avatar [fullName]="student.fullName" [imageUrl]="student.imageUrl" [size]="'lg'" />
     <h1 class="text-ds-lg font-bold">{{ student.fullName }}</h1>
   </div>
 
-  <app-ds-tabs
-    [tabs]="tabs"
-    [activeTabId]="activeTabId"
-    (tabChange)="onTabChange($event)"
-  />
+  <app-ds-tabs [tabs]="tabs" [activeTabId]="activeTabId" (tabChange)="onTabChange($event)" />
 </div>
 ```
 
@@ -183,18 +167,11 @@ Build a list page with:
 **Expected output pattern:**
 
 ```html
-<app-search-box
-  [placeholderTxt]="'Search...'"
-  (searchChange)="onSearch($event)"
-/>
+<app-search-box [placeholderTxt]="'Search...'" (searchChange)="onSearch($event)" />
 
-<div class="flex gap-2 flex-wrap mt-3">
+<div class="mt-3 flex flex-wrap gap-2">
   @for (filter of filters; track filter.id) {
-    <app-ds-chip
-      [text]="filter.label"
-      [variant]="activeFilter === filter.id ? 'primary' : 'default'"
-      (click)="setFilter(filter.id)"
-    />
+  <app-ds-chip [text]="filter.label" [variant]="activeFilter === filter.id ? 'primary' : 'default'" (click)="setFilter(filter.id)" />
   }
 </div>
 ```
@@ -207,50 +184,50 @@ Design tokens are defined in CSS custom properties and mapped to Tailwind utilit
 
 ### Color Tokens
 
-| Namespace | Example Tailwind Class | Purpose |
-|---|---|---|
-| `brand` | `bg-brand`, `text-brand`, `border-brand-200` | Primary brand color |
-| `neutral-cool` | `border-neutral-cool-100`, `bg-neutral-cool-50` | Neutral borders and backgrounds |
-| `surface-primary` | `bg-surface-primary` | Main white/light background |
-| `surface-secondary-light` | `bg-surface-secondary-light` | Disabled field background |
-| `surface-danger-subtle` | `bg-surface-danger-subtle` | Error field background |
-| `error` / `error-ds-*` | `border-error`, `bg-error-ds-50` | Error/danger states |
-| `content-high` | `text-content-high` | Primary text color |
-| `content-low` | `text-content-low` | Disabled/placeholder text |
-| `pastels-*` | `bg-pastels-indigo-50` | Pastel background variants |
+| Namespace                 | Example Tailwind Class                          | Purpose                         |
+| ------------------------- | ----------------------------------------------- | ------------------------------- |
+| `brand`                   | `bg-brand`, `text-brand`, `border-brand-200`    | Primary brand color             |
+| `neutral-cool`            | `border-neutral-cool-100`, `bg-neutral-cool-50` | Neutral borders and backgrounds |
+| `surface-primary`         | `bg-surface-primary`                            | Main white/light background     |
+| `surface-secondary-light` | `bg-surface-secondary-light`                    | Disabled field background       |
+| `surface-danger-subtle`   | `bg-surface-danger-subtle`                      | Error field background          |
+| `error` / `error-ds-*`    | `border-error`, `bg-error-ds-50`                | Error/danger states             |
+| `content-high`            | `text-content-high`                             | Primary text color              |
+| `content-low`             | `text-content-low`                              | Disabled/placeholder text       |
+| `pastels-*`               | `bg-pastels-indigo-50`                          | Pastel background variants      |
 
 ### Spacing Tokens
 
-| Token | Tailwind Class | Value |
-|---|---|---|
-| `ds-sm` | `p-ds-sm`, `gap-ds-sm` | Small spacing |
-| `ds-md` | `p-ds-md`, `gap-ds-md` | Medium spacing |
-| `ds-lg` | `p-ds-lg`, `gap-ds-lg` | Large spacing |
-| `ds-xl` | `p-ds-xl`, `px-ds-xl` | Extra-large spacing |
+| Token   | Tailwind Class         | Value               |
+| ------- | ---------------------- | ------------------- |
+| `ds-sm` | `p-ds-sm`, `gap-ds-sm` | Small spacing       |
+| `ds-md` | `p-ds-md`, `gap-ds-md` | Medium spacing      |
+| `ds-lg` | `p-ds-lg`, `gap-ds-lg` | Large spacing       |
+| `ds-xl` | `p-ds-xl`, `px-ds-xl`  | Extra-large spacing |
 
 ### Typography Tokens
 
-| Token | Tailwind Class | Usage |
-|---|---|---|
+| Token     | Tailwind Class | Usage                  |
+| --------- | -------------- | ---------------------- |
 | `ds-base` | `text-ds-base` | Body text / input text |
-| `ds-lg` | `text-ds-lg` | Large body / button lg |
-| `ds-sm` | `text-ds-sm` | Small labels |
+| `ds-lg`   | `text-ds-lg`   | Large body / button lg |
+| `ds-sm`   | `text-ds-sm`   | Small labels           |
 
 ### Border Radius Tokens
 
-| Token | Tailwind Class | Usage |
-|---|---|---|
-| `ds-md` | `rounded-ds-md` | Chip card, small elements |
-| `ds-lg` | `rounded-ds-lg` | Inputs, buttons (md) |
-| `ds-xl` | `rounded-ds-xl` | Buttons (lg), modals |
-| `ds-full` | `rounded-ds-full` | Pill chips, avatars |
+| Token     | Tailwind Class    | Usage                     |
+| --------- | ----------------- | ------------------------- |
+| `ds-md`   | `rounded-ds-md`   | Chip card, small elements |
+| `ds-lg`   | `rounded-ds-lg`   | Inputs, buttons (md)      |
+| `ds-xl`   | `rounded-ds-xl`   | Buttons (lg), modals      |
+| `ds-full` | `rounded-ds-full` | Pill chips, avatars       |
 
 ### Font Families
 
-| Context | Font | Class |
-|---|---|---|
-| Default (LTR) | Inter | Applied globally |
-| RTL / Arabic | Lama Rounded | Applied via `dir="rtl" lang="ar"` on wrapper |
+| Context       | Font         | Class                                        |
+| ------------- | ------------ | -------------------------------------------- |
+| Default (LTR) | Nunito       | Applied globally                             |
+| RTL / Arabic  | Lama Rounded | Applied via `dir="rtl" lang="ar"` on wrapper |
 
 ---
 
@@ -296,7 +273,7 @@ When `isMobile=true` (detected automatically from the platform), the select drop
 
 ```typescript
 // Ensure IonModal is imported in the host module/component:
-import { IonModal } from '@ionic/angular/standalone';
+import { IonModal } from "@ionic/angular/standalone";
 ```
 
 ### Rule 4: Student theme is applied via a data attribute on an ancestor
@@ -322,9 +299,7 @@ Every input in this design system uses Angular's `input()` signal API. This mean
 
 ```html
 <!-- CORRECT -->
-<ds-button [variant]="'primary'" [size]="'lg'" [disabled]="isLoading">
-  Save
-</ds-button>
+<ds-button [variant]="'primary'" [size]="'lg'" [disabled]="isLoading"> Save </ds-button>
 
 <!-- WRONG — will not work for signal inputs -->
 <ds-button variant="primary" size="lg">Save</ds-button>
@@ -365,18 +340,14 @@ The `config` input carries all select settings including `label`, `placeholder`,
 // Open the modal from a service or component:
 const modal = await this.modalController.create({
   component: MyModalContentComponent, // this component contains <ds-modal>
-  cssClass: 'ds-modal-lg',
+  cssClass: "ds-modal-lg",
 });
 await modal.present();
 ```
 
 ```html
 <!-- MyModalContentComponent template -->
-<ds-modal
-  [headerConfig]="{ title: 'My Modal' }"
-  [dismissFn]="dismiss"
-  [scrollableContent]="true"
->
+<ds-modal [headerConfig]="{ title: 'My Modal' }" [dismissFn]="dismiss" [scrollableContent]="true">
   <!-- content -->
 </ds-modal>
 ```
@@ -414,34 +385,30 @@ All form-like components (input, textarea, checkbox, select trigger) share a uni
 
 ### Standard Stroke States
 
-| State | Border Class | Background Class | Notes |
-|---|---|---|---|
-| Default | `border-neutral-cool-100` (#e5e6e7) | `bg-surface-primary` | All form fields at rest |
-| Hover | `hover:border-neutral-cool-200` (#ccced0) | `bg-surface-primary` | Subtle border darkening |
-| Focused | `focus-within:border-neutral-cool-700` (#4d545a) | `bg-surface-primary` | Clear focus indicator |
-| Error | `!border-error` | `!bg-surface-danger-subtle` | Applied when `hasError=true` |
-| Disabled | `border-neutral-cool-100` | `!bg-surface-secondary-light` | Muted background, no hover |
+| State    | Border Class                                     | Background Class              | Notes                        |
+| -------- | ------------------------------------------------ | ----------------------------- | ---------------------------- |
+| Default  | `border-neutral-cool-100` (#e5e6e7)              | `bg-surface-primary`          | All form fields at rest      |
+| Hover    | `hover:border-neutral-cool-200` (#ccced0)        | `bg-surface-primary`          | Subtle border darkening      |
+| Focused  | `focus-within:border-neutral-cool-700` (#4d545a) | `bg-surface-primary`          | Clear focus indicator        |
+| Error    | `!border-error`                                  | `!bg-surface-danger-subtle`   | Applied when `hasError=true` |
+| Disabled | `border-neutral-cool-100`                        | `!bg-surface-secondary-light` | Muted background, no hover   |
 
 ### Student Theme Stroke Additions
 
 When `data-role="student"` is present on an ancestor, form fields add a thick bottom border for a playful 3D effect:
 
-| Component | Student Border Override |
-|---|---|
-| `DsInputComponent` | `student:border-[4px] student:border-b-[8px]` |
+| Component             | Student Border Override                       |
+| --------------------- | --------------------------------------------- |
+| `DsInputComponent`    | `student:border-[4px] student:border-b-[8px]` |
 | `DsTextareaComponent` | `student:border-[4px] student:border-b-[8px]` |
-| `DsCheckboxComponent` | Matching border-b treatment on checkbox box |
+| `DsCheckboxComponent` | Matching border-b treatment on checkbox box   |
 
 ### Error State Details
 
 Error state is set internally when the bound `FormControl` has `status === 'INVALID'` (after touch). It can also be forced by passing `[errorMessage]="'Your error text'"`:
 
 ```html
-<app-ds-input
-  [label]="'Email'"
-  formControlName="email"
-  [errorMessage]="form.get('email')?.hasError('email') ? 'Invalid email format' : ''"
-/>
+<app-ds-input [label]="'Email'" formControlName="email" [errorMessage]="form.get('email')?.hasError('email') ? 'Invalid email format' : ''" />
 ```
 
 Use `[suppressFormError]="true"` on `DsInputComponent` to show the error border without a message (e.g., when the message is displayed elsewhere).
@@ -504,26 +471,26 @@ When reviewing a generated or existing page for design system compliance, check 
 Quick import paths for the most common components:
 
 ```typescript
-import { DsButtonComponent } from '@ds/button/button.component';
-import { DsInputComponent } from '@ds/input/input.component';
-import { DsSelectComponent } from '@ds/select/select.component';
-import { DsCheckboxComponent } from '@ds/checkbox/checkbox.component';
-import { DsModalComponent } from '@ds/modal/modal.component';
-import { DsChipComponent } from '@ds/chip/chip.component';
-import { DsTabsComponent } from '@ds/tabs/tabs.component';
-import { AvatarComponent } from '@ds/avatar/avatar.component';
-import { DsIconComponent } from '@ds/icon/icon.component';
-import { DsProgressBarComponent } from '@ds/progress-bar/progress-bar.component';
-import { DsSwitchComponent } from '@ds/switch/switch.component';
-import { DsTextareaComponent } from '@ds/text-area/text-area.component';
-import { DsSidebarComponent } from '@ds/sidebar/sidebar.component';
-import { DsAccordionComponent } from '@ds/accordion/accordion.component';
-import { SearchBoxComponent } from '@ds/search-box/search-box.component';
-import { DsIconContainerComponent } from '@ds/icon-container/icon-container.component';
+import { DsButtonComponent } from "@ds/button/button.component";
+import { DsInputComponent } from "@ds/input/input.component";
+import { DsSelectComponent } from "@ds/select/select.component";
+import { DsCheckboxComponent } from "@ds/checkbox/checkbox.component";
+import { DsModalComponent } from "@ds/modal/modal.component";
+import { DsChipComponent } from "@ds/chip/chip.component";
+import { DsTabsComponent } from "@ds/tabs/tabs.component";
+import { AvatarComponent } from "@ds/avatar/avatar.component";
+import { DsIconComponent } from "@ds/icon/icon.component";
+import { DsProgressBarComponent } from "@ds/progress-bar/progress-bar.component";
+import { DsSwitchComponent } from "@ds/switch/switch.component";
+import { DsTextareaComponent } from "@ds/text-area/text-area.component";
+import { DsSidebarComponent } from "@ds/sidebar/sidebar.component";
+import { DsAccordionComponent } from "@ds/accordion/accordion.component";
+import { SearchBoxComponent } from "@ds/search-box/search-box.component";
+import { DsIconContainerComponent } from "@ds/icon-container/icon-container.component";
 ```
 
 > The `@ds/` path alias maps to `src/app/design-system/` as configured in `tsconfig.json`.
 
 ---
 
-*Generated: 2026-05-15 | Design System version: 1.0.0*
+_Generated: 2026-05-15 | Design System version: 1.0.0_

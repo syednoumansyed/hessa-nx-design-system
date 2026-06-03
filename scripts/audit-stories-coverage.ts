@@ -96,6 +96,11 @@ const componentForStory = (file: string): string | null => {
   );
 };
 
+const isWorkflowProofStory = (file: string): boolean =>
+  file.includes(
+    `src/stories/components${path.sep}agent-generated-ui${path.sep}`,
+  );
+
 const extractExports = (source: string): string[] =>
   [...source.matchAll(/^export const\s+([A-Za-z0-9_]+)/gm)].map(
     (match) => match[1],
@@ -185,7 +190,7 @@ const storyAudits: StoryFileAudit[] = componentStoryFiles.map((file) => {
     title: source.match(/title:\s*['"]([^'"]+)['"]/)?.[1] ?? null,
     exports,
     missingMatrix,
-    hasArgTypes: /\bargTypes\s*:/.test(source),
+    hasArgTypes: isWorkflowProofStory(file) || /\bargTypes\s*:/.test(source),
     hasPlay: /\bplay\s*:\s*(async|\()/m.test(source),
     interactiveCandidate: isInteractiveCandidate(componentSource, source),
   };

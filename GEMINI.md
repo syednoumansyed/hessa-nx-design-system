@@ -1,6 +1,7 @@
-# Claude Code Instructions
+# Gemini Instructions
 
-Use these instructions for Claude Code when working in this repository.
+Use these instructions for Gemini, Antigravity, and similar agents when working
+in this repository.
 
 ## nx-design System Storybook
 
@@ -20,8 +21,8 @@ https://syednoumansyed.github.io/hessa-nx-design-system/agent-manifest/index.jso
 https://syednoumansyed.github.io/hessa-nx-design-system/agent-manifest/tokens.json
 ```
 
-Then select the relevant context pack or component shard from the manifest.
-Inspect selected story `absoluteUrl` iframe links before coding.
+Then select the relevant context pack or component shard from the manifest and
+inspect the selected story `absoluteUrl` iframe links before coding.
 
 ## Required UI Rules
 
@@ -29,11 +30,11 @@ Inspect selected story `absoluteUrl` iframe links before coding.
 - Use reactive forms. Do not use `ngModel`.
 - Use token rules for typography, spacing, colors, radius, RTL, role theming,
   and device breakpoints.
-- Validate mobile and desktop paths separately when the PRD includes responsive,
+- Validate desktop and mobile paths separately when the PRD includes responsive,
   modal, sheet, sidebar, picker, table, or selector behavior.
 - Report which Storybook stories, context packs, component shards, and token
   rules were used.
-- For Storybook, audit, manifest, or agent-instruction work in this repo, use
+- For Storybook, audit, manifest, and agent-instruction work in this repo, use
   `dev/storybook-agent` as the working branch. Treat `main` as the public
   deployment branch only.
 

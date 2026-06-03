@@ -20,15 +20,16 @@ iframe stories, and build UI from the PRD.
 
 ## Files In This Repo
 
-| File | Use with | Purpose |
-| --- | --- | --- |
-| `AGENTS.md` | Codex and generic coding agents | Repo-wide engineering and Storybook instructions. |
-| `CLAUDE.md` | Claude Code | Project memory loaded by Claude Code. |
-| `.cursor/rules/nx-design-system-storybook.mdc` | Cursor | Project rule for Cursor Chat/Agent. |
-| `.github/copilot-instructions.md` | GitHub Copilot | Repository instructions for Copilot. |
-| `docs/agentic-ui-from-prd.md` | Any agent | Canonical PRD-to-UI workflow. |
-| `docs/llm-design-system-operating-guide.md` | Any agent | Detailed Hessa design-system behavior, tokens, devices, and component rules. |
-| `tools/storybook-agent/README.md` | Engineers and CI maintainers | Manifest generation, validation, and deploy tooling. |
+| File                                           | Use with                          | Purpose                                                                      |
+| ---------------------------------------------- | --------------------------------- | ---------------------------------------------------------------------------- |
+| `AGENTS.md`                                    | Codex and generic coding agents   | Repo-wide engineering and Storybook instructions.                            |
+| `CLAUDE.md`                                    | Claude Code                       | Project memory loaded by Claude Code.                                        |
+| `.cursor/rules/nx-design-system-storybook.mdc` | Cursor                            | Project rule for Cursor Chat/Agent.                                          |
+| `.github/copilot-instructions.md`              | GitHub Copilot                    | Repository instructions for Copilot.                                         |
+| `GEMINI.md`                                    | Gemini / Antigravity-style agents | Auto-discovery entrypoint for Gemini-compatible tools.                       |
+| `docs/agentic-ui-from-prd.md`                  | Any agent                         | Canonical PRD-to-UI workflow.                                                |
+| `docs/llm-design-system-operating-guide.md`    | Any agent                         | Detailed Hessa design-system behavior, tokens, devices, and component rules. |
+| `tools/storybook-agent/README.md`              | Engineers and CI maintainers      | Manifest generation, validation, and deploy tooling.                         |
 
 ## Remote Storybook Sources
 
@@ -40,6 +41,14 @@ https://syednoumansyed.github.io/hessa-nx-design-system/agent-manifest/index.jso
 https://syednoumansyed.github.io/hessa-nx-design-system/agent-manifest/tokens.json
 ```
 
+## Branch Policy
+
+- Use `dev/storybook-agent` for Storybook, audit, manifest, docs, and agent
+  workflow changes.
+- Use short-lived task branches from `dev/storybook-agent` when isolating a
+  batch of work.
+- Treat `main` as the stable public deployment branch for GitHub Pages.
+
 ## For Other Projects
 
 If the agent is working in another repo, copy one of these into that repo's
@@ -48,6 +57,7 @@ agent instruction system:
 - `AGENTS.md` section: "nx-design System Storybook"
 - `CLAUDE.md` for Claude Code
 - `.cursor/rules/nx-design-system-storybook.mdc` for Cursor
+- `GEMINI.md` for Gemini-compatible agents
 
 If the tool has no project instruction file, paste this short memory:
 
@@ -61,9 +71,9 @@ Storybook absoluteUrl iframe stories, use Hessa components and token rules, and
 build UI from the PRD.
 ```
 
-## Antigravity
+## Gemini And Antigravity
 
-If Antigravity is used in this repo, add the same short memory above to its
-workspace or agent instructions. If it is used in another repo, copy
+If Gemini or Antigravity is used in this repo, use `GEMINI.md` as the
+auto-discovery file. If either tool is used in another repo, copy
 `docs/agentic-ui-from-prd.md` into the workspace context or link to this GitHub
 repo file, then tell the agent: "Use nx-design system Storybook."

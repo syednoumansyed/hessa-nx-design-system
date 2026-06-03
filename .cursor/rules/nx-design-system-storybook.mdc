@@ -27,3 +27,5 @@ Rules:
 - For modal, sheet, sidebar, picker, table, and selector PRDs, validate desktop
   and mobile behavior separately.
 - In the final response, list the Storybook stories and token rules used.
+- For Storybook, audit, manifest, and agent-instruction work inside this repo,
+  target `dev/storybook-agent` rather than `main`.

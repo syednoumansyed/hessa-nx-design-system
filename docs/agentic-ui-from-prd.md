@@ -72,6 +72,13 @@ https://syednoumansyed.github.io/hessa-nx-design-system/agent-manifest/component
 10. After implementation, report which stories, context packs, component
     shards, and token rules were used.
 
+## Branch Policy For This Repo
+
+- Use `dev/storybook-agent` for Storybook, audit, manifest, and agent
+  instruction work.
+- Use `main` only for reviewed, stable changes that should update the public
+  GitHub Pages Storybook and remote manifest.
+
 ## Output Expectations
 
 The generated UI must:

@@ -37,9 +37,27 @@ Make sure to add below environment variable in your environment.ts file or in CI
 
 - [Working with dates](./guides/dates.md)
 - [Working with tables](./guides/table/table.md)
+- [Agentic UI from PRD](./docs/agentic-ui-from-prd.md)
+- [Storybook agent maintenance guide](./docs/storybook-agent-maintenance-guide.md)
 - [How to Use @Input() to Read Angular Route Parameters](https://www.freecodecamp.org/news/use-input-for-angular-route-parameters/)
 - [Passing Data Between Components in Angular](https://medium.com/@reurairin/passing-data-between-components-in-angular-6230619fe0e3)
 - [Angular Signals: Complete Guide](https://blog.angular-university.io/angular-signals/)
+
+## Using Storybook with Agents
+
+Use the public Storybook and remote agent manifest as the UI source of truth for
+PRD-driven work:
+
+- [Storybook](https://syednoumansyed.github.io/hessa-nx-design-system/)
+- [Agent manifest](https://syednoumansyed.github.io/hessa-nx-design-system/agent-manifest/index.json)
+- [Token pack](https://syednoumansyed.github.io/hessa-nx-design-system/agent-manifest/tokens.json)
+
+Canonical workflow:
+
+- Start with [docs/agentic-ui-from-prd.md](./docs/agentic-ui-from-prd.md)
+- Use [docs/agent-instruction-entrypoints.md](./docs/agent-instruction-entrypoints.md) to choose the correct instruction file for Codex, Claude, Cursor, Copilot, or Gemini
+- Use `dev/storybook-agent` for Storybook, audit, manifest, and agent-instruction work
+- Treat `main` as the stable public deployment branch
 
 ## Resources
 

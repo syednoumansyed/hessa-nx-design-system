@@ -1,6 +1,7 @@
-# GitHub Copilot Instructions for hessa-fe
+# Agent Instructions for nx-fe
 
-This document provides ground rules for AI assistants collaborating on the Hessa front end repository. Follow these instructions when proposing code, refactors, or documentation updates.
+This document provides repository-wide instructions for coding agents working in
+the nx front end repository.
 
 ## nx-design System Storybook
 
@@ -34,6 +35,9 @@ Required rules:
   validate desktop and mobile behavior separately.
 - Report which Storybook stories, context packs, component shards, and token
   rules were used.
+- For Storybook, audit, manifest, and agent-instruction work in this repo, use
+  `dev/storybook-agent` as the working branch. Treat `main` as the public
+  deployment branch only.
 
 ## Project Overview
 
