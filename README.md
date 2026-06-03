@@ -37,8 +37,8 @@ Make sure to add below environment variable in your environment.ts file or in CI
 
 - [Working with dates](./guides/dates.md)
 - [Working with tables](./guides/table/table.md)
-- [Agentic UI from PRD](./docs/agentic-ui-from-prd.md)
-- [Storybook agent maintenance guide](./docs/storybook-agent-maintenance-guide.md)
+- [Agentic UI from PRD](./docs/storybook-agent/agentic-ui-from-prd.md)
+- [Storybook agent maintenance guide](./docs/storybook-agent/maintenance-guide.md)
 - [How to Use @Input() to Read Angular Route Parameters](https://www.freecodecamp.org/news/use-input-for-angular-route-parameters/)
 - [Passing Data Between Components in Angular](https://medium.com/@reurairin/passing-data-between-components-in-angular-6230619fe0e3)
 - [Angular Signals: Complete Guide](https://blog.angular-university.io/angular-signals/)
@@ -54,10 +54,14 @@ PRD-driven work:
 
 Canonical workflow:
 
-- Start with [docs/agentic-ui-from-prd.md](./docs/agentic-ui-from-prd.md)
-- Use [docs/agent-instruction-entrypoints.md](./docs/agent-instruction-entrypoints.md) to choose the correct instruction file for Codex, Claude, Cursor, Copilot, or Gemini
+- Start with [docs/storybook-agent/agentic-ui-from-prd.md](./docs/storybook-agent/agentic-ui-from-prd.md)
+- Use [docs/storybook-agent/instruction-entrypoints.md](./docs/storybook-agent/instruction-entrypoints.md) to choose the correct instruction file for Codex, Claude, Cursor, Copilot, or Gemini
 - Use `dev/storybook-agent` for Storybook, audit, manifest, and agent-instruction work
 - Treat `main` as the stable public deployment branch
+
+## Agent Integration Templates
+
+The [`templates/agent-instructions/`](./templates/agent-instructions/) folder contains bootstrap material for new projects that want to adopt the nx design system. These are thin wrappers that reference the canonical manifest and workflow docs. For full documentation on the design system and agent workflow, see [`docs/storybook-agent/`](./docs/storybook-agent/).
 
 ## Resources
 

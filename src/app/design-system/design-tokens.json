@@ -1,9 +1,9 @@
 {
   "$schema": "https://tr.designtokens.org/format/",
   "$metadata": {
-    "name": "Hessa Design System",
+    "name": "nx design system",
     "version": "1.0.0",
-    "description": "Design tokens extracted from hessa-fe-sprint-stable Angular/Ionic PWA. 380+ color tokens, responsive spacing/gap/radius scales, typography scale across 3 breakpoints.",
+    "description": "Design tokens extracted from nx design system Angular/Ionic PWA. 380+ color tokens, responsive spacing/gap/radius scales, typography scale across 3 breakpoints.",
     "breakpoints": {
       "mobile": "default (no query)",
       "tablet": "min-width: 768px",

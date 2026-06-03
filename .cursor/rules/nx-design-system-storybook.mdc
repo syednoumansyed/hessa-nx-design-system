@@ -1,12 +1,12 @@
 ---
-description: Use Hessa nx-design system Storybook when generating UI from PRDs.
+description: Use nx design system Storybook when generating UI from PRDs.
 alwaysApply: true
 ---
 
 # nx-design System Storybook
 
 When the user says "Use nx-design system Storybook", or provides a PRD and asks
-to create Hessa UI, use `docs/agentic-ui-from-prd.md`.
+to create nx design system UI, use `docs/storybook-agent/agentic-ui-from-prd.md`.
 
 Load these remote sources first:
 
@@ -20,7 +20,7 @@ the selected Storybook `absoluteUrl` iframe links before writing UI code.
 
 Rules:
 
-- Use Hessa design-system components instead of raw HTML controls.
+- Use nx design system components instead of raw HTML controls.
 - Use reactive forms. Do not use `ngModel`.
 - Use token rules for typography, spacing, colors, radius, RTL, role theming,
   and responsive breakpoints.

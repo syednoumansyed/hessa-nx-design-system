@@ -10,8 +10,8 @@ When the user says:
 Use nx-design system Storybook
 ```
 
-or provides a PRD and asks to create Hessa UI, follow
-`docs/agentic-ui-from-prd.md`.
+or provides a PRD and asks to create nx design system UI, follow
+`docs/storybook-agent/agentic-ui-from-prd.md`.
 
 Load these remote sources first:
 
@@ -25,7 +25,7 @@ Inspect selected story `absoluteUrl` iframe links before coding.
 
 ## Required UI Rules
 
-- Use Hessa design-system components instead of raw HTML controls.
+- Use nx design system components instead of raw HTML controls.
 - Use reactive forms. Do not use `ngModel`.
 - Use token rules for typography, spacing, colors, radius, RTL, role theming,
   and device breakpoints.

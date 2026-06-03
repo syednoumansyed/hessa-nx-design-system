@@ -139,7 +139,7 @@ const meta: Meta<AgentStudentAssignmentFormStoryComponent> = {
     docs: {
       description: {
         component:
-          'Proof that story context plus token context can produce a new Hessa UI rendered through real Storybook global styles and fonts.',
+          'Proof that story context plus token context can produce new nx design system UI rendered through real Storybook global styles and fonts.',
       },
     },
   },

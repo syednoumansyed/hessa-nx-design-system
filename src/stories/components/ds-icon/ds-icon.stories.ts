@@ -235,7 +235,7 @@ export const CommonIcons: Story = {
     docs: {
       description: {
         story:
-          'Frequently-used icons across the Hessa app, all at `xl` (24px). These appear in buttons, inputs, nav bars, and status indicators.',
+          'Frequently-used icons across the nx design system app surface, all at `xl` (24px). These appear in buttons, inputs, nav bars, and status indicators.',
       },
     },
   },

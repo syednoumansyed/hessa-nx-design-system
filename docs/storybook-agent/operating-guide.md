@@ -1,9 +1,9 @@
-# Hessa Design System LLM Operating Guide
+# Nx Design System LLM Operating Guide
 
 Last updated: 2026-06-02
 
 Use this document when asking an external coding agent, such as Claude Code,
-Cursor, Antigravity, or any general LLM, to build or audit Hessa UI. It is
+Cursor, Antigravity, or any general LLM, to build or audit nx design system UI. It is
 written as a portable context pack: it tells the agent which files to load,
 which design-system rules matter, and how components behave across desktop,
 mobile, RTL, and student-role contexts.
@@ -52,7 +52,7 @@ Proof story:
 https://syednoumansyed.github.io/hessa-nx-design-system/iframe.html?id=4-agent-workflow-generated-student-assignment-form--default&viewMode=story
 ```
 
-This story validates the intended workflow: an agent-generated UI uses Hessa
+This story validates the intended workflow: an agent-generated UI uses nx design
 tokens, real design-system components, reactive forms, provider setup, student
 role styling, and a Storybook `play()` contract.
 
@@ -61,7 +61,7 @@ role styling, and a Storybook `play()` contract.
 For a small component or page task, give the agent these files:
 
 ```text
-docs/llm-design-system-operating-guide.md
+docs/storybook-agent/operating-guide.md
 src/app/design-system/AI_USAGE.md
 src/app/design-system/ai-manifest.json
 src/app/design-system/design-tokens.json
@@ -87,7 +87,7 @@ src/stories/components/ds-sidebar/ds-sidebar.stories.ts
 For broad Storybook or design-system work, also provide:
 
 ```text
-docs/storybook-audit-findings.md
+docs/storybook-agent/audit-findings.md
 scripts/audit-stories-coverage.ts
 src/stories/components/<target-story-folder>/<target>.stories.ts
 src/app/design-system/<target-component-folder>/**
@@ -101,10 +101,10 @@ target story.
 ### Copy-Paste Prompt For Any Agent
 
 ```text
-You are working in the Hessa Angular/Ionic design-system repo.
+You are working in the nx design system Angular/Ionic repo.
 
 Before editing, read:
-- docs/llm-design-system-operating-guide.md
+- docs/storybook-agent/operating-guide.md
 - src/app/design-system/AI_USAGE.md
 - src/app/design-system/ai-manifest.json
 - src/app/design-system/design-tokens.json
@@ -113,7 +113,7 @@ Before editing, read:
 - .storybook/hessa-providers.ts
 
 Rules:
-- Prefer existing Hessa design-system components over raw HTML controls.
+- Prefer existing nx design system components over raw HTML controls.
 - Use reactive forms: [formControl] or formControlName. Do not use ngModel.
 - Use semantic/token classes, not raw hex colors or ad hoc spacing.
 - Cover desktop, mobile, RTL, student role, disabled, loading, and error states only when the production component supports them.
@@ -133,7 +133,7 @@ Verification:
 ### Copy-Paste Remote Prompt For Any Agent
 
 ```text
-You are creating Hessa UI using remote Storybook as the source of truth.
+You are creating nx design system UI using remote Storybook as the source of truth.
 
 Load these first:
 - https://syednoumansyed.github.io/hessa-nx-design-system/agent-manifest/index.json
@@ -144,7 +144,7 @@ Then load the most relevant task pack or component shard:
 
 Before writing UI:
 - Inspect the selected stories through their absoluteUrl iframe links.
-- Use Hessa design-system components instead of raw HTML controls.
+- Use nx design system components instead of raw HTML controls.
 - Use reactive forms for form UI.
 - Use token classes and token rules from tokens.json.
 - Respect role, RTL, and device behavior. For modal/sidebar work, desktop,
@@ -162,7 +162,7 @@ After writing UI:
 | Claude Code | For remote use, give it the remote prompt and ask it to fetch the manifest, token pack, and one context pack. For repo-local edits, ask it to read this guide plus the exact source/story files. |
 | Cursor | Add this file to context for repo-local work. For remote design reference, paste the manifest URLs and keep the relevant component shard pinned. |
 | Antigravity | Use the remote prompt and attach the task pack URL. Ask it to report which iframe stories it inspected and which verification commands it ran. |
-| Any chat LLM | Paste the remote prompt plus one context pack or component shard. Do not ask it to infer Hessa rules from generic Angular or Ionic docs. |
+| Any chat LLM | Paste the remote prompt plus one context pack or component shard. Do not ask it to infer nx design system rules from generic Angular or Ionic docs. |
 
 ## Work Protocol For Storybook Tasks
 

@@ -1,6 +1,6 @@
 # Storybook Agent Workflow
 
-This tooling turns Hessa Storybook into remote, structured context for agents
+This tooling turns nx design system Storybook into remote, structured context for agents
 such as Claude Code, Cursor, Antigravity, or any browser-capable LLM workflow.
 
 ## Commands
@@ -53,12 +53,12 @@ not the raw Storybook index.
 ## Agent Prompt Pattern
 
 ```text
-Use these Hessa remote context files:
+Use these nx design system remote context files:
 https://syednoumansyed.github.io/hessa-nx-design-system/agent-manifest/tokens.json
 https://syednoumansyed.github.io/hessa-nx-design-system/agent-manifest/components/sidebar.json
 
 Inspect the referenced iframe URLs before creating UI.
-Use Hessa components and reactive forms.
+Use nx design system components and reactive forms.
 Use tokenPack for spacing, typography, semantic colors, RTL, and role theming.
 Do not use raw HTML controls, ngModel, raw hex colors, or arbitrary spacing.
 ```
@@ -76,4 +76,4 @@ Use the proof story as a sanity check:
 ```
 
 That story renders through real Storybook global styles, `withHessaProviders()`,
-reactive forms, Hessa components, and token classes.
+reactive forms, nx design system components, and token classes.

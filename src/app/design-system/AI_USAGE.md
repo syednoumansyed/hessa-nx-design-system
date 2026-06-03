@@ -1,12 +1,12 @@
-# Hessa Design System — AI Usage Guide
+# nx design system — AI Usage Guide
 
-> **Who this is for:** AI assistants and developers using AI-assisted code generation to build features with the Hessa Angular design system.
+> **Who this is for:** AI assistants and developers using AI-assisted code generation to build features with the nx design system.
 
 ---
 
 ## 1. Overview
 
-The Hessa Design System is a standalone Angular component library built for a bilingual (Arabic/English) educational platform. It targets web, iOS, and Android via Ionic Capacitor and uses:
+The nx design system is a standalone Angular component library built for a bilingual (Arabic/English) educational platform. It targets web, iOS, and Android via Ionic Capacitor and uses:
 
 - **Angular 17+** with signal inputs (`input()`, `output()`)
 - **Ionic Angular** for mobile modals and navigation
@@ -17,7 +17,7 @@ The Hessa Design System is a standalone Angular component library built for a bi
 
 For portable handoffs to external coding agents such as Claude Code, Cursor,
 Antigravity, or chat-based LLMs, start with
-`docs/llm-design-system-operating-guide.md`. That repo-level guide lists the
+`docs/storybook-agent/operating-guide.md`. That repo-level guide lists the
 exact context files to provide, component/source/story lookup rules, token
 rules, and mobile/desktop overlay behavior.
 
@@ -55,12 +55,12 @@ rules, and mobile/desktop overlay behavior.
 
 ## 3. Common AI Prompts
 
-Use these example prompts to generate typical Hessa UI patterns.
+Use these example prompts to generate typical nx design system UI patterns.
 
 ### Build a form with input, select, and a primary button
 
 ```
-Build an Angular component with the Hessa design system.
+Build an Angular component with the nx design system.
 Include:
 - A text input (app-ds-input) bound to formControl "name" with label "Full Name"
 - A select (app-ds-select) bound to formControl "role" with [config]="roleSelectConfig"
@@ -85,7 +85,7 @@ All inputs use Angular reactive forms. Follow the Rules for AI Code Generation i
 ### Show a student dashboard with tabs and avatar
 
 ```
-Build a student dashboard header using the Hessa design system.
+Build a student dashboard header using the nx design system.
 Include:
 - A student avatar (app-ds-avatar) showing the student's name and profile image
 - A tab bar (app-ds-tabs) with tabs for Overview, Grades, and Attendance
@@ -118,7 +118,7 @@ tabs: Tab[] = [
 ### Create a modal with scrollable content
 
 ```
-Create an Angular service method that opens a Hessa modal with:
+Create an Angular service method that opens a nx design system modal with:
 - A header showing "Edit Profile" with a close button
 - Scrollable body content
 - Footer with primary "Save" button and secondary "Cancel" button

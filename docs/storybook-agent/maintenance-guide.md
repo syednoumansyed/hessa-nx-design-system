@@ -1,7 +1,7 @@
 # Storybook Agent Maintenance Guide
 
-Use this guide when adding or correcting Storybook coverage in the Hessa nx
-design system and when making those changes available to external agents.
+Use this guide when adding or correcting Storybook coverage in the nx design
+system and when making those changes available to external agents.
 
 ## Working Branch
 
@@ -52,7 +52,8 @@ design system and when making those changes available to external agents.
 
 ## Story Patterns To Prefer
 
-- Prefer Hessa components over raw HTML controls in triggers, forms, and demos.
+- Prefer nx design system components over raw HTML controls in triggers, forms,
+  and demos.
 - Prefer token-backed classes and existing design-system utilities over raw
   colors, inline font declarations, or ad hoc spacing.
 - Prefer real reactive forms and validators over fake error shells.
@@ -71,7 +72,7 @@ design system and when making those changes available to external agents.
    - `/agent-manifest/context-packs/<task>.json`
 
 Agents in other repos or on other devices should use the public URLs from
-`docs/agentic-ui-from-prd.md`.
+`docs/storybook-agent/agentic-ui-from-prd.md`.
 
 ## Validation Commands
 

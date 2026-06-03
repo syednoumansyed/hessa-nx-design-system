@@ -1,7 +1,7 @@
 # Agentic UI From PRD
 
 Use this guide when an agent receives a PRD, product requirement, screen brief,
-or feature request and is asked to create Hessa UI using the nx-design system
+or feature request and is asked to create UI using the nx design system
 Storybook.
 
 ## Trigger Phrase
@@ -60,7 +60,7 @@ https://syednoumansyed.github.io/hessa-nx-design-system/agent-manifest/component
    smaller UI pieces.
 4. Inspect the selected stories through their `absoluteUrl` iframe links before
    writing code.
-5. Use Hessa design-system components instead of raw HTML controls.
+5. Use nx design system components instead of raw HTML controls.
 6. Use reactive forms for form UI. Do not use `ngModel`.
 7. Use token rules from `tokens.json` for typography, spacing, radius, semantic
    colors, RTL, role theming, and responsive breakpoints.
@@ -83,8 +83,8 @@ https://syednoumansyed.github.io/hessa-nx-design-system/agent-manifest/component
 
 The generated UI must:
 
-- match Hessa Storybook visual and runtime behavior,
-- use existing Angular/Ionic/Hessa patterns,
+- match nx design system Storybook visual and runtime behavior,
+- use existing Angular/Ionic/nx design system patterns,
 - preserve strict typing and standalone component imports,
 - use semantic/token classes instead of raw hex colors or arbitrary spacing,
 - handle loading, disabled, error, empty, RTL, student role, mobile, and desktop
@@ -107,7 +107,7 @@ Requirements:
 - Load the remote Storybook manifest and token pack.
 - Select the relevant context pack or component shards.
 - Inspect the referenced Storybook iframe stories before coding.
-- Use Hessa components and reactive forms.
+- Use nx design system components and reactive forms.
 - Use token rules for typography, spacing, colors, RTL, role, and device behavior.
 - Validate mobile and desktop when relevant.
 - In your final response, list the Storybook stories and token rules used.

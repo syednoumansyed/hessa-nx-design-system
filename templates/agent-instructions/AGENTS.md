@@ -11,9 +11,9 @@ When the user says:
 Use nx-design system Storybook
 ```
 
-or provides a PRD and asks for Hessa UI, use the remote Storybook agent context
+or provides a PRD and asks for nx design system UI, use the remote Storybook agent context
 before creating UI. Follow the full workflow in
-`docs/agentic-ui-from-prd.md`.
+`docs/storybook-agent/agentic-ui-from-prd.md`.
 
 Always load:
 
@@ -27,7 +27,7 @@ Inspect selected story `absoluteUrl` iframe links before coding.
 
 Required rules:
 
-- Use Hessa design-system components instead of raw HTML controls.
+- Use nx design system components instead of raw HTML controls.
 - Use reactive forms. Do not use `ngModel`.
 - Use token rules for typography, spacing, colors, radius, RTL, role theming,
   and device breakpoints.
@@ -135,4 +135,4 @@ Required rules:
 - If a change impacts both desktop and mobile flows, update `mobileViewConfig` and responsive components together.
 - For complex refactors, add or update tests and Cypress specs to cover regression risks.
 
-Adhering to these guidelines keeps the Hessa front end aligned with product expectations, reduces regressions, and ensures AI-generated contributions integrate smoothly.
+Adhering to these guidelines keeps the nx design system front end aligned with product expectations, reduces regressions, and ensures AI-generated contributions integrate smoothly.

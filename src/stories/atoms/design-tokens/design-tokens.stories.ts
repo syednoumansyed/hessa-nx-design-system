@@ -32,7 +32,7 @@ const meta: Meta<DesignTokensComponent> = {
     docs: {
       description: {
         component:
-          'Complete visual reference for the Hessa design token system. 380+ color tokens, responsive spacing/gap/radius scales, and the full 151-icon SVG library.',
+          'Complete visual reference for the nx design system token system. 380+ color tokens, responsive spacing/gap/radius scales, and the full 151-icon SVG library.',
       },
     },
     a11y: { config: { rules: [] } },

@@ -7,8 +7,8 @@ instructions.
 
 - `AGENTS.md` for repo architecture, coding conventions, verification, and
   implementation constraints
-- `docs/agentic-ui-from-prd.md` for the canonical Storybook PRD-to-UI workflow
-- `docs/agent-instruction-entrypoints.md` for tool-specific entrypoints and
+- `docs/storybook-agent/agentic-ui-from-prd.md` for the canonical Storybook PRD-to-UI workflow
+- `docs/storybook-agent/instruction-entrypoints.md` for tool-specific entrypoints and
   remote URLs
 
 ## nx-design System Storybook
@@ -19,8 +19,8 @@ When the user says:
 Use nx-design system Storybook
 ```
 
-or provides a PRD and asks for Hessa UI, follow
-`docs/agentic-ui-from-prd.md`.
+or provides a PRD and asks to create nx design system UI, follow
+`docs/storybook-agent/agentic-ui-from-prd.md`.
 
 Always load:
 
@@ -34,9 +34,9 @@ inspect the referenced Storybook `absoluteUrl` iframe stories before coding.
 
 Required Copilot behavior:
 
-- Use Hessa design-system components instead of raw HTML controls.
+- Use nx design system components instead of raw HTML controls.
 - Use reactive forms. Do not use `ngModel`.
-- Use Hessa token rules for typography, spacing, colors, RTL, role theming,
+- Use nx design system token rules for typography, spacing, colors, RTL, role theming,
   radius, and responsive behavior.
 - Validate desktop and mobile paths separately for modal, sheet, sidebar,
   picker, selector, table, and responsive workflows.

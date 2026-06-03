@@ -27,8 +27,8 @@ iframe stories, and build UI from the PRD.
 | `.cursor/rules/nx-design-system-storybook.mdc` | Cursor                            | Project rule for Cursor Chat/Agent.                                          |
 | `.github/copilot-instructions.md`              | GitHub Copilot                    | Repository instructions for Copilot.                                         |
 | `GEMINI.md`                                    | Gemini / Antigravity-style agents | Auto-discovery entrypoint for Gemini-compatible tools.                       |
-| `docs/agentic-ui-from-prd.md`                  | Any agent                         | Canonical PRD-to-UI workflow.                                                |
-| `docs/llm-design-system-operating-guide.md`    | Any agent                         | Detailed Hessa design-system behavior, tokens, devices, and component rules. |
+| `docs/storybook-agent/agentic-ui-from-prd.md`  | Any agent                         | Canonical PRD-to-UI workflow.                                                |
+| `docs/storybook-agent/operating-guide.md`      | Any agent                         | Detailed nx design system behavior, tokens, devices, and component rules.    |
 | `tools/storybook-agent/README.md`              | Engineers and CI maintainers      | Manifest generation, validation, and deploy tooling.                         |
 
 ## Remote Storybook Sources
@@ -67,7 +67,8 @@ When I say "Use nx-design system Storybook", load:
 - https://syednoumansyed.github.io/hessa-nx-design-system/agent-manifest/tokens.json
 
 Then choose the relevant context pack or component shard, inspect the selected
-Storybook absoluteUrl iframe stories, use Hessa components and token rules, and
+Storybook absoluteUrl iframe stories, use nx design system components and token
+rules, and
 build UI from the PRD.
 ```
 
@@ -75,5 +76,5 @@ build UI from the PRD.
 
 If Gemini or Antigravity is used in this repo, use `GEMINI.md` as the
 auto-discovery file. If either tool is used in another repo, copy
-`docs/agentic-ui-from-prd.md` into the workspace context or link to this GitHub
+`docs/storybook-agent/agentic-ui-from-prd.md` into the workspace context or link to this GitHub
 repo file, then tell the agent: "Use nx-design system Storybook."
